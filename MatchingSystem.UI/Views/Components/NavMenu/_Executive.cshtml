@@ -1,0 +1,72 @@
+﻿@using MatchingSystem.UI.Helpers
+@using MatchingSystem.UI.Services
+@{
+    var data = Context.Session.Get<SessionData>("Data");
+}
+
+@if (ViewData["active"].ToString() == "quota_requests")
+{
+    <li class="nav-item">
+        <a href=@Url.Action("quotas", "executive") class="active nav-link">Запросы по квотам</a>
+    </li>
+}
+else
+{
+    <li class="nav-item">
+        <a href=@Url.Action("quotas", "executive") class="nav-link">Запросы по квотам</a>
+    </li>
+}
+@if (ViewData["active"].ToString() == "statistics")
+{
+    <li class="nav-item">
+        <a href=@Url.Action("statistics", "executive") class="active nav-link">Статистика</a>
+    </li>
+}
+else
+{
+    <li class="nav-item">
+        <a href=@Url.Action("statistics", "executive") class="nav-link">Статистика</a>
+    </li>
+}
+@if (data.CurrentStage?.StageTypeCode == 5)
+{
+    @if (ViewData["active"].ToString() == "adjustment")
+    {
+        <li class="nav-item">
+            <a href=@Url.Action("adjustment", "executive") class="active nav-link">распределение</a>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a href=@Url.Action("adjustment", "executive") class="nav-link">Распределение</a>
+        </li>
+    }
+}
+@if (data.CurrentStage?.StageTypeCode > 5)
+{
+    if (ViewData["active"].ToString() == "finished")
+    {
+        <li class="nav-item">
+            <a href=@Url.Action("index", "allocation") class="active nav-link">Завершенные распределения</a>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a href=@Url.Action("index", "allocation") class="nav-link">Завершенные распределения</a>
+        </li>
+    }
+}
+@if (ViewData["active"].ToString() == "admin")
+{
+    <li class="nav-item">
+        <a href=@Url.Action("admin", "executive") class="active nav-link">Администрирование</a>
+    </li>
+}
+else
+{
+    <li class="nav-item">
+        <a href=@Url.Action("admin", "executive") class="nav-link">Администрирование</a>
+    </li>
+}

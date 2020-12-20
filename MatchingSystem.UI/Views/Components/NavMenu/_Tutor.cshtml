@@ -1,0 +1,61 @@
+﻿@using MatchingSystem.UI.Helpers
+@using MatchingSystem.UI.Services
+@{
+    SessionData data = Context.Session.Get<SessionData>("Data");
+}
+
+@if (ViewData["active"].ToString() == "projects")
+{
+    <li class="nav-item">
+        <a href=@Url.Action("projects", "tutor") class="active nav-link">Проекты</a>
+    </li>
+}
+else
+{
+    <li class="nav-item">
+        <a href=@Url.Action("projects", "tutor") class="nav-link">Проекты</a>
+    </li>
+}
+@if (ViewData["active"].ToString() == "quota")
+{
+    <li class="nav-item">
+        <a href=@Url.Action("quota", "tutor") class="active nav-link">Квота</a>
+    </li>
+}
+else
+{
+    <li class="nav-item">
+        <a href=@Url.Action("quota", "tutor") class="nav-link">Квота</a>
+    </li>
+}
+@if (data.CurrentStage?.StageTypeCode > 3)
+{
+    @if (ViewData["active"].ToString() == "iterations" )
+    {
+        <li class="nav-item">
+            <a class="active nav-link" href="@Url.Action("iterations", "tutor")">Выбор студентов</a>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a href="@Url.Action("iterations", "tutor")" class="nav-link">Выбор студентов</a>
+        </li>
+    }
+}
+
+@if (data.CurrentStage?.StageTypeCode > 5)
+{
+    @if (ViewData["active"].ToString() == "finished")
+    {
+        <li class="nav-item">
+            <a href=@Url.Action("index", "allocation") class="active nav-link">Завершенные распределения</a>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a href=@Url.Action("index", "allocation") class="nav-link">Завершенные распределения</a>
+        </li>
+    }
+}

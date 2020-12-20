@@ -1,0 +1,178 @@
+﻿@using MatchingSystem.UI.Helpers
+@using MatchingSystem.UI.Services;
+@{
+    ViewData["title"] = "Выбор студентов";
+    Layout = "~/Views/Shared/_GeneralLayout.cshtml";
+    ViewData["active"] = "iterations";
+
+    var data = Context.Session.Get<SessionData>("Data");
+}
+
+<div id="app">
+    <div class="container mt-5">
+        <div class="row" v-if="currentStage < 5">
+            <h2 class="col">
+                Выбор студентов
+            </h2>
+            <h2>Общая квота: {{generalQuota}}</h2>
+        </div>
+        <div class="row" v-if="currentStage === 5">
+            <p class="col">
+                Итерации распределения завершены. <br>
+                Распределение утверждается ответственным. Дополнительных действий не требуется.
+            </p>
+            <h2 class="col text-right">Общая квота: {{generalQuota}}</h2>
+        </div>
+        <div class="row">
+            <div class="col">
+                <button
+                    class="btn btn-primary"
+                    v-on:click.prevent="saveChoiceHandler"
+                    v-if="currentStage === 4"
+                    :disabled="!canSaveGlobal()">
+                    Сохранить выбор
+                </button>
+            </div>
+        </div>
+        <div class="row justify-content-between choices mt-4" v-if="currentStage === 4">
+            <div class="col col-lg-6 col-xl-6 col-md-6 col-12" v-for="item in choices">
+                <div class="card choices__choice">
+                    <div class="card-header choice__header">
+                        <div>{{item.projectName}}</div>
+                        <div>{{item.qtyDescription}}</div>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-hover">
+                            <tr v-for="choice in item.choices"
+                                v-if="choice.choiceID !== null"
+                                :class="{'table-success': choice.isInQuota,
+                                'table-danger': !choice.isInQuota && item.aviableQty === 0,
+                                'table-info': !choice.isInQuota && item.aviableQty > 0 }">
+                                <td class="p-2">{{choice.studentNameAbbreviation}}</td>
+                                <td class="p-2">{{choice.groupName}}</td>
+                                <td class="p-2">
+                                    <a href="javascript: void(0);"
+                                       class="material-icons text-decoration-none"
+                                       v-on:click.prevent="buttonInfoHandler(choice.studentID)">
+                                        info_outline
+                                    </a>
+                                </td>
+                                <td class="p-2">
+                                    <button
+                                        href="javascript: void(0);"
+                                        class="btn p-0 material-icons text-decoration-none"
+                                        :disabled="item.projectIsClosed"
+                                        v-on:click.prevent="moveUpHandler(choice, item)">
+                                        keyboard_arrow_up
+                                    </button>
+                                </td>
+                                <td class="p-2">
+                                    <button
+                                        href="javascript: void(0);"
+                                        class="btn p-0 material-icons text-decoration-none"
+                                        :disabled="item.projectIsClosed"
+                                        v-on:click.prevent="moveDownHandler(choice, item)">
+                                        keyboard_arrow_down
+                                    </button>
+                                </td>
+                                <td class="p-2">
+                                    <input type="checkbox"
+                                           ref="checkbox"
+                                           :disabled="(!choice.isInQuota && item.aviableQty === 0) || item.projectIsClosed"
+                                           :checked="choice.isInQuota"
+                                           v-on:click="choiceClickHandler(choice)"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-primary float-left"
+                                :disabled="item.projectIsClosed || !canSaveGlobal()"
+                                v-on:click.prevent="closeProjectHandler(item)">
+                            Закрыть проект
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col col-lg-auto" id="empty">
+                <div class="choices__choice"></div>
+            </div>
+        </div>
+
+        @**@
+
+        <div class="row justify-content-between choices mt-4" v-if="currentStage > 4">
+            <div class="col col-lg-6 col-xl-6 col-md-6 col-12" v-for="item in choices">
+                <div class="card choices__choice">
+                    <div class="card-header choice__header">
+                        <div>{{item.projectName}}</div>
+                        <div>{{item.qtyDescription}}</div>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-hover">
+                            <tr v-for="choice in item.choices"
+                                v-if="choice.choiceID !== null"
+                                :class="{'table-success': choice.isInQuota,
+                                            'table-warning': choice.typeCode === 3 || choice.typeCode === 4 }">
+                                <td class="p-2">{{choice.studentNameAbbreviation}}</td>
+                                <td class="p-2">{{choice.groupName}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col col-lg-auto" id="empty">
+                <div class="choices__choice"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-static fade" ref="infoModal" role="dialog" data-backdrop="static">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5>Информация о студенте: {{studentName}}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" v-on:click.prevent="closeWindowHandler">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col col-xl-4 col-12">Группа</div>
+                        <div class="col col-xl-8 col-12">{{student.groupName || 'Информация не заполнена'}}</div>
+                    </div>
+                    <div class="row" v-if="!!student.info2">
+                        <div class="col col-xl-4 col-12">Группа (для магистров ИВТ)</div>
+                        <div class="col col-xl-8 col-12">{{student.info2 || 'Информация не заполнена'}}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-xl-4 col-12">Интересующие технологии</div>
+                        <div class="col col-xl-8 col-12">{{student.technologiesName_List || 'Информация не заполнена'}}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-xl-4 col-12">Интересующие направления</div>
+                        <div class="col col-xl-8 col-12">{{student.workDirectionsName_List || 'Информация не заполнена'}}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-xl-4 col-12">О себе</div>
+                        <div class="col col-xl-8 col-12">{{student.info || 'Информация не заполнена'}}</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" v-on:click.prevent="closeWindowHandler">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form class="d-none">
+        <input type="hidden" ref="tutorId" value="@data.TutorID"/>
+        <input type="hidden" ref="selectedMatching" value="@data.SelectedMatching"/>
+    </form>
+</div>
+
+<script >
+    var tutorId = @data.TutorID;
+    var currentStage = @data.CurrentStage?.StageTypeCode;
+</script>
+<script src="~/js/roles/tutor/iterations.js"></script>

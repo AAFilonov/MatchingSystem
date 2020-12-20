@@ -1,0 +1,107 @@
+﻿@{
+    ViewData["title"] = "Выбор проектов";
+    ViewData["active"] = "preferences";
+    Layout = "~/Views/Shared/_GeneralLayout.cshtml";
+    SessionData data = Context.Session.Get<SessionData>("Data");
+}
+
+@using MatchingSystem.UI.Helpers
+@using MatchingSystem.UI.Services
+@model int?;
+
+<div id="app">
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col col-5">
+                <h4>Доступные проекты</h4>
+                <ul class="list-unstyled p-0 row scroll-auto" id="aviable">
+                    <li v-for="item in aviableList" class="col col-12 hoverable-item p-3">
+                        <div class="row pr-3">
+                            <div class="col col-5">{{item.tutorNameAbbreviation}}</div>
+                            <div class="col col-5">{{item.projectName}}</div>
+                            <div class="col col-1">
+                                <button :disabled="currentStageCode > 3" :data-id="item.projectID" v-on:click.prevent="toSelected(item)" class="material-icons btn p-0">add_circle_outline</button>
+                            </div>
+                            <div class="col col-1">
+                                <a :href="projectIdLink(item.projectID)" class="material-icons text-decoration-none" data-toggle="collapse">info_outline</a>
+                            </div>
+                        </div>
+                        <div class="row collapse" :id="projectIdString(item.projectID)">
+                            <ul class="list-unstyled col col-12">
+                                <li class="row">
+                                    <div class="col col-5">Технологии</div>
+                                    <div class="col col-7">{{item.technologiesName_List}}</div>
+                                </li>
+                                <li class="row">
+                                    <div class="col col-5">Направление ВКР</div>
+                                    <div class="col col-7">{{item.workDirectionsName_List}}</div>
+                                </li>
+                                <li class="row">
+                                    <div class="col col-5">Описание</div>
+                                    <div class="col col-7">{{item.info}}</div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="col col-6 offset-1">
+                <div class="row justify-content-between">
+                    <h4 class="col">Выбранные проекты</h4>
+                    <div class="text-right">
+                        <button 
+                            v-on:click.prevent="savePreferences"
+                            :disabled="currentStageCode > 3"
+                            class="btn btn-primary" id="save-lists">Сохранить</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <ul class="list-unstyled scroll-auto" id="selected">
+                        <li v-for="(item, index) in selectedList" class="col col-12 p-3 hoverable-item">
+                            <div class="row">
+                                <div class="col col-4">{{item.tutorNameAbbreviation}}</div>
+                                <div class="col col-4">{{item.projectName}}</div>
+                                <div class="col col-1">
+                                    <button :disabled="currentStageCode > 3" :data-id="item.projectID" v-on:click="toAviable(item)" class="material-icons btn p-0">remove_circle_outline</button>
+                                </div>
+                                <div class="col col-1">
+                                    <a :href="projectIdLink(item.projectID)" class="material-icons text-decoration-none" data-toggle="collapse">info_outline</a>
+                                </div>
+                                <div class="col col-1">
+                                    <button :disabled="currentStageCode > 3" class="material-icons btn p-0" v-on:click.prevent="toUp(index)">keyboard_arrow_up</button>
+                                </div>
+                                <div class="col col-1">
+                                    <button :disabled="currentStageCode > 3" class="material-icons btn p-0" v-on:click.prevent="toDown(index)">keyboard_arrow_down</button>
+                                </div>
+                            </div>
+                            <div class="row collapse" :id="projectIdString(item.projectID)">
+                                <ul class="list-unstyled col col-12">
+                                    <li class="row">
+                                        <div class="col col-4">Технологии</div>
+                                        <div class="col col-8">{{item.technologiesName_List}}</div>
+                                    </li>
+                                    <li class="row">
+                                        <div class="col col-4">Направление ВКР</div>
+                                        <div class="col col-8">{{item.workDirectionsName_List}}</div>
+                                    </li>
+                                    <li class="row">
+                                        <div class="col col-4">Описание</div>
+                                        <div class="col col-8">{{item.info}}</div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form class="d-none">
+        <input type="hidden" ref="currentStageCode" value="@data.CurrentStage.StageTypeCode">
+    </form>
+</div>
+<form class="d-none">
+    <input id="studentId" type="hidden" name="studentId" value=@Model>
+</form>
+
+<script src="~/js/roles/student/preferences.js"></script>

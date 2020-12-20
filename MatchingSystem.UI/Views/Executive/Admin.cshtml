@@ -1,0 +1,67 @@
+﻿@using MatchingSystem.UI.Helpers
+@using MatchingSystem.UI.Services;
+
+@{
+    ViewData["title"] = "Администрирование";
+    ViewData["active"] = "admin";
+    Layout = "~/Views/Shared/_GeneralLayout.cshtml";
+
+    SessionData data = Context.Session.Get<SessionData>("Data");
+}
+
+<div id="app">
+    <div class="container mt-5">
+        <div class="row">
+            <h2 class="col col-12">Информация о распределении</h2>
+        </div>
+        <div class="row">
+            <div class="col col-2">Текущий этап</div>
+            <p class="col col-8">@data.CurrentStage?.StageTypeName_ru @data.CurrentStage?.IterationNumber</p>
+            <button class="btn btn-primary col col-2" 
+                    v-on:click="requestNextStage"
+                    :disabled="btnDisabled">Завершить</button>
+        </div>
+        <div class="row">
+            <div class="col col-2">Дата начала</div>
+            <p class="col col-8">@data.CurrentStage?.StartDate</p>
+        </div>
+        <div class="row">
+            <div class="col col-2">Дата окончания</div>
+            <p class="col col-8">@data.CurrentStage?.EndPlanDate</p>
+            <button class="btn btn-primary col col-2" data-toggle="modal" data-target="#update-end-date">Изменить</button>
+        </div>
+    </div>
+    <div class="modal modal-static fade" data-backdrop="static" id="update-end-date">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Установить дату завершения</h5>
+                    <button type="button" class="close js-close-add-project" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="datetime" v-on:submit.prevent="updateEndDateHandler">
+                        <div class="form-group">
+                            <label>Дата завершения</label>
+                            <input type="date" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Время завершения</label>
+                            <input type="time" class="form-control" value="00:00" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" form="datetime">Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form class="d-none">
+        <input type="hidden" ref="matching" name="matchingId" value="@data.SelectedMatching">
+        <input type="hidden" ref="userId" value="@data.User.UserID">
+    </form>
+</div>
+
+<script src="~/js/roles/executive/admin.js"></script>

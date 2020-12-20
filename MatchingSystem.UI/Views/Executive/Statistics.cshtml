@@ -1,0 +1,32 @@
+﻿@using MatchingSystem.UI.Helpers
+@using MatchingSystem.UI.Services
+@{
+    ViewBag.Title = "Статистика";
+    ViewData["active"] = "statistics";
+    Layout = "_GeneralLayout";
+
+    var data = Context.Session.Get<SessionData>("Data");
+}
+
+<div id="app">
+    <div class="container mt-5">
+        <div class="row">
+            <h2 class="col">Статистика</h2>
+        </div>
+        <div class="row">
+            <div class="col">
+                <table class="table table-hover">
+                    <tr v-for="item in statistics">
+                        <td>{{item.statName}}</td>
+                        <td class="text-center" v-html="item.statValue_Str"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var matchingId = @data.SelectedMatching;
+    var currentStage = @data.CurrentStage.StageTypeCode;
+</script>
+<script src="~/js/roles/executive/statistics.js"></script>
