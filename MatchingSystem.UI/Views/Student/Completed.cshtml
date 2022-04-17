@@ -1,0 +1,50 @@
+﻿@{
+    ViewBag.Title = "Заверешенные распределения";
+    ViewData["active"] = "finished";
+    Layout = "_GeneralLayout";
+}
+
+<div id="app">
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col">
+                <table class="table table-hover">
+                    <tr>
+                        <th v-on:click="sortAllocationsHandler('group')" style="cursor: pointer">
+                            <div class="d-flex align-items-center">
+                                <span>Группа</span>
+                                <span class="material-icons">arrow_drop_down</span>
+                            </div>
+                        </th>
+                        <th v-on:click="sortAllocationsHandler('student')" style="cursor: pointer">
+                            <div class="d-flex align-items-center">
+                                <span>Студент</span>
+                                <span class="material-icons">arrow_drop_down</span>
+                            </div>
+                        </th>
+                        <th v-on:click="sortAllocationsHandler('tutor')" style="cursor: pointer">
+                            <div class="d-flex align-items-center">
+                                <span>Преподаватель</span>
+                                <span class="material-icons">arrow_drop_down</span>
+                            </div>
+                        </th>
+                        <th v-on:click="sortAllocationsHandler('project')" style="cursor: pointer">
+                            <div class="d-flex align-items-center">
+                                <span>Проект</span>
+                                <span class="material-icons">arrow_drop_down</span>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr v-for="student in allocations" class="table-success">
+                        <td>{{student.groupName}}</td>
+                        <td>{{student.studentNameAbbreviation}}</td>
+                        <td>{{student.tutorNameAbbreviation}}</td>
+                        <td>{{student.projectName}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/roles/student/completed.js"></script>

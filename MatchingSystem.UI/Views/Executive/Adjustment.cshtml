@@ -1,0 +1,82 @@
+﻿@using MatchingSystem.UI.Helpers
+@using MatchingSystem.UI.Services
+@{
+    ViewBag.Title = "Корректировка распределения";
+    Layout = "_GeneralLayout";
+    ViewData["active"] = "adjustment";
+
+    var data = Context.Session.Get<SessionData>("Data");
+}
+
+<div id="app">
+    <div class="container mt-5">
+        <div class="row mb-2" v-if="currentStageCode === 5">
+            <h2 class="col">Ручная корректировка</h2>
+            <div class="col text-right">
+                <button class="btn btn-primary"
+                        :disabled="allocations.filter(x => x.isAllocated === false).length === 0"
+                        v-on:click="saveAllocationClickHandler">Сохранить</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <table class="table table-hover">
+                    <tr>
+                        <th v-on:click="sortAllocationsHandler('group')" style="cursor: pointer">
+                            <div class="d-flex align-items-center">
+                                <span>Группа</span>
+                                <span class="material-icons">arrow_drop_down</span>
+                            </div>
+                        </th>
+                        <th v-on:click="sortAllocationsHandler('student')" style="cursor: pointer">
+                            <div class="d-flex align-items-center">
+                                <span>Студент</span>
+                                <span class="material-icons">arrow_drop_down</span>
+                            </div>
+                        </th>
+                        <th v-on:click="sortAllocationsHandler('tutor')" style="cursor: pointer">
+                            <div class="d-flex align-items-center">
+                                <span>Преподаватель</span>
+                                <span class="material-icons">arrow_drop_down</span>
+                            </div>
+                        </th>
+                        <th v-on:click="sortAllocationsHandler('project')" style="cursor: pointer">
+                            <div class="d-flex align-items-center">
+                                <span>Проект</span>
+                                <span class="material-icons">arrow_drop_down</span>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr v-for="student in allocations"
+                        :class="{'table-success': student.isAllocated, 'table-danger': !student.isAllocated}">
+                        <td>{{student.groupName}}</td>
+                        <td>{{student.studentNameAbbreviation}}</td>
+                        @* если студент распределен *@
+                        <td v-if="student.isAllocated">{{student.tutorNameAbbreviation}}</td>
+                        <td v-if="student.isAllocated">{{student.projectName}}</td>
+                        @* end *@
+                        @* если студент не распределен *@
+                        @* выбор преподавателя *@
+                        <td v-if="!student.isAllocated">
+                            <select v-model="student.tutorID" class="custom-select" :disabled="currentStageCode > 5">
+                                <option v-for="tutor in tutors" :value="tutor.tutorID">{{tutor.tutorNameAbbreviation}}</option>
+                            </select>
+                        </td>
+                        <td v-if="!student.isAllocated">
+                            <select v-model="student.projectID" class="custom-select" :disabled="currentStageCode > 5">
+                                <option v-for="project in projects.filter(e => e.tutorID === student.tutorID)" :value="project.projectID">{{project.projectName}}</option>
+                            </select>
+                        </td>
+                        @* end *@
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script >
+    const userId = @data.User?.UserID;
+    const matchingId = @data.SelectedMatching;
+</script>
+<script src="~/js/roles/executive/adjustment.js"></script>

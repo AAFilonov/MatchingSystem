@@ -1,0 +1,170 @@
+﻿@using MatchingSystem.UI.Helpers
+@using MatchingSystem.UI.Services
+@{
+    ViewData["title"] = "Квота";
+    ViewData["active"] = "quota";
+    Layout = "~/Views/Shared/_GeneralLayout.cshtml";
+
+    var data = Context.Session.Get<SessionData>("Data");
+}
+
+<div id="app">
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col col-12">
+                <h2>Управление квотой</h2>
+            </div>
+        </div>
+        <div class="row">
+            <h4 class="col col-12">Квота: {{commonQuota}}</h4>
+        </div>
+        <div class="row">
+            <div class="col col-12">
+                <button class="btn btn-primary"
+                        data-toggle="modal" 
+                        :disabled="stageTypeCode > 4"
+                        data-target="#request-modal">Отправить запрос на увеличение квоты</button>
+            </div>
+        </div>
+        <table class="table table-hover mt-4">
+            <tr>
+                <th>Этап</th>
+                <th class="text-center">Значение квоты</th>
+                <th>Статус</th>
+            </tr>
+            <tr v-for="item in historyList"
+                :class="{
+                'table-success': item.quotaStateCode === 1,
+                 'table-warning': item.quotaStateCode === 2 || item.isNew,
+                 'table-danger': item.quotaStateCode === 3,
+                 'table-active': item.quotaStateCode === 4
+            }">
+                <td>{{item.stageTypeName_ru}} {{item.iterationNumber || ''}}</td>
+                <td class="text-center">{{item.qty}}</td>
+                <td>{{item.quotaStateName_ru}}</td>
+            </tr>
+        </table>
+    </div>
+
+    @if (data.CurrentStage?.StageTypeCode < 4)
+    {
+        <div class="modal modal-static fade" id="request-modal" tabindex="-2" role="dialog" data-backdrop="static">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Запросить изменение квоты</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <label>Новое значение квоты</label>
+                                <input type="number" class="form-control" v-model="newQuota" :min="commonQuota + 1"/>
+                            </div>
+                            <div class="form-group">
+                                <label>Комментарий</label>
+                                <textarea class="form-control" v-model="message"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" v-on:click.prevent="sendRequestHandler">Отправить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="modal modal-static fade" id="request-modal" ref="requestModal" tabindex="-2" role="dialog" data-backdrop="static">
+            <div class="modal-dialog big-modal" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Запросить изменение квоты</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" v-on:click="closeWindowHandler">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col col-12">
+                                <table class="table table-hover">
+                                    <tr>
+                                        <th width="60%">Проект</th>
+                                        <th>Квота</th>
+                                        <th class="text-center">+</th>
+                                        <th></th>
+                                    </tr>
+                                    <tr v-for="project in projectsToChange">
+                                        <td class="pt-1 pb-1 align-middle">{{project.projectName}}</td>
+                                        <td class="pt-1 pb-1 text-right align-middle">{{project.qty || '-'}}</td>
+                                        <td class="pt-1 pb-1 align-middle">
+                                            <input type="number" class="form-control" min="0" v-on:change="numericUpDownChangeHandler" v-model="project.delta">
+                                        </td>
+                                        <td>
+                                            <a href="javascript: void(0);" class="material-icons" v-on:click.prevent="removeFromProjectToChangeHandler(project)">remove_circle_outline</a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col col-12">
+                                <div class="dropdown">
+                                    <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Добавить проект</button>
+                                    <div class="dropdown-menu">
+                                        <a href="javascript: void(0);"
+                                           class="dropdown-item"
+                                           v-for="project in projects"
+                                           v-if="!project.isClosed"
+                                           v-on:click.prevent="addProjectHandler(project)">
+                                            {{project.projectName}}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-3 mb-3">
+                            <div class="col col-12 font-weight-bolder">Общая квота преподавателя</div>
+                            <div class="col col-4">Текущее значение квоты: </div>
+                            <div class="col col-2">
+                                <span class="d-block bg-info-light w-100 text-center pt-1 pb-1">{{commonQuota}}</span>
+                            </div>
+                            <div class="col col-2 text-center">+</div>
+                            <div class="col col-2">
+                                <span class="d-block bg-info-light w-100 text-center pt-1 pb-1">{{totalDelta}}</span>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div class="row mt-3">
+                            <div class="col col-4">Новое значение квоты: </div>
+                            <div class="col col-2">
+                                <span class="d-block bg-info-light w-100 text-center pt-1 pb-1">{{commonQuota + totalDelta}}</span>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col col-12">
+                                <label for="message">Комментарий</label>
+                                <textarea class="form-control" id="message" v-model="message"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" :disabled="totalDelta === 0" v-on:click.prevent="sendRequestHandler">Отправить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <form class="d-none">
+        <input type="hidden" ref="tutorId" value="@data.TutorId?">
+        <input type="hidden" ref="matching" value="@data.SelectedMatching?">
+        <input type="hidden" ref="stageTypeCode" value="@data.CurrentStage?.StageTypeCode">
+        <input type="hidden" ref="stageName" value="@data.CurrentStage?.StageTypeName_ru">
+    </form>
+
+</div>
+<script src="~/js/roles/tutor/quota.js"></script>

@@ -1,0 +1,23 @@
+﻿.notification-bar {
+    position: fixed;
+    z-index: 1000;
+    top: 10vh;
+    right: 0;
+}
+
+.notification {
+    opacity: 1;
+    animation: notify 5s normal;
+}
+
+@keyframes notify {
+    0% {
+       opacity: 1;
+    }
+    80% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}

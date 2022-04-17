@@ -1,0 +1,177 @@
+﻿@using MatchingSystem.UI.Services;
+@using MatchingSystem.UI.Helpers
+
+@{
+    SessionData data = Context.Session.Get<SessionData>("Data");
+    var rolesMatchings = data.RolesMatchings.ToList();
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="~/css/bootstrap.css">
+    <link rel="stylesheet" href="~/css/Style.css">
+    <link rel="stylesheet" href="~/css/Tutor.css">
+    <link rel="stylesheet" href="~/css/Notification.css">
+    <script src="~/js/lib/vue.js"></script>
+    <title>@ViewData["title"]</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="~/js/lib/popper.min.js"></script>
+    <script src="~/js/lib/bootstrap.min.js"></script>
+    <script src="~/js/tools/Params.js"></script>
+    <script >
+        let currentStageCode = @data.CurrentStage?.StageTypeCode;
+        let selectedMatching = @data.SelectedMatching;
+    </script>
+</head>
+<body>
+<header class="container-fluid">
+    <div class="row">
+        <div class="left col col-12 col-xl-6 col-lg-6 col-md-6 col-sm-6">
+            <h2 style="color: white">
+                Сервис распределения студентов
+            </h2>
+            <h4 class="description-1">
+                @rolesMatchings.Find(x => x.MatchingId == data.SelectedMatching)?.MatchingName
+                <span class="material-icons" id="js-stage-info">
+                    info_outline
+                </span>
+            </h4>
+        </div>
+        <div class="right col col-12 col-xl-6 col-lg-6 col-md-6 col-sm-6">
+            <div class="dropdown">
+                <a href="javascript: void(0);" class="user-name dropdown-toggle text-decoration-none hover-link" id="fio" data-toggle="dropdown">
+                    @data.User?.NameAbbreviation
+                </a>
+                <h4 class="user-name">
+                    @rolesMatchings.Find(x => x.RoleName == data.SelectedRole)?.RoleName_ru
+                </h4>
+                <div class="dropdown-menu" aria-labelledby="fio">
+                    @* ReSharper disable once Mvc.ActionNotResolved *@
+                    <a href="@Url.Action("index")" class="dropdown-item">Учетная запись</a>
+                    <a href="@Url.Action("logout", "home")" class="dropdown-item">Выход</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<div class="container-fluid">
+    <div class="row">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary w-100">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbar">
+                <ul class="navbar-nav mr-auto">
+                    @if (data.SelectedRole.Contains("Tutor"))
+                    {
+                        await Html.RenderPartialAsync("../Components/NavMenu/_Tutor");
+                    }
+                    @if (data.SelectedRole.Contains("Executive"))
+                    {
+                        await Html.RenderPartialAsync("../Components/NavMenu/_Executive");
+                    }
+                    @if (data.SelectedRole.Contains("Student"))
+                    {
+                        await Html.RenderPartialAsync("../Components/NavMenu/_Student");
+                    }
+                </ul>
+                <ul class="navbar-nav">
+                    @if (rolesMatchings.Count > 1)
+                    {
+                        <li class="nav-item">
+                            <a href="#" class="nav-link change-lk" id="js-change-lk-trigger" data-trigger="modal">
+                                Перейти к другому ЛК
+                                <span class="material-icons">
+                                    arrow_right_alt
+                                </span>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </nav>
+    </div>
+</div>
+<div class="notification-bar col col-lg-3"></div>
+@RenderBody()
+<form class="d-none" id="metadata">
+    <input type="hidden" name="userId" id="userId" value="@data.User.UserID"/>
+    <input type="hidden" name="matchingId" id="matchingId" value="@data.SelectedMatching"/>
+    @if (data.TutorId != null)
+    {
+        <input type="hidden" name="tutorId" value=@data.TutorId/>
+    }
+</form>
+<div class="modal modal-static fade" id="js-change-lk" tabindex="-2" role="dialog" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Переход к другому Личному кабинету</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="@Url.Action("ChangeLk", "Account")" id="select-lk">
+                    <div class="form-group">
+                        <label>Распределение</label>
+                        <select class="custom-select" name="matchingID" v-on:change="selectChangeHandler">
+                            <option v-for="item in matchings" v-if="item.matchingID !== null" :selected="selectedMatching === item.matchingID" :value="item.matchingID">
+                                {{item.matchingName}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Личный кабинет</label>
+                        <select class="custom-select" name="roleName">
+                            <option v-for="item in roles" :value="item.roleName">{{item.roleName_ru}}</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" form="select-lk" class="btn btn-primary">Перейти</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*stage info*@
+
+<div class="card bg-secondary d-none" id="stage-info-popup">
+    <div class="card-header">Информация о распределении</div>
+    <div class="card-body">
+        <h5 class="card-title">Текущий этап</h5>
+        <div class="card-text">@data.CurrentStage.StageTypeName_ru @data.CurrentStage.IterationNumber</div>
+        <hr>
+        <h5 class="card-title">Дата начала</h5>
+        <div class="card-text">@data.CurrentStage.StartDate</div>
+        @if (data.CurrentStage.EndPlanDate != null)
+        {
+            <hr>
+            <h5 class="card-title">Этап завершится</h5>
+            <div class="card-text">@data.CurrentStage.EndPlanDate</div>
+        }
+    </div>
+</div>
+
+<script src="~/js/tools/Notifications.js"></script>
+<script src="~/js/Script.js"></script>
+@if (data.SelectedRole.Contains("Executive"))
+{
+    <script>
+            CheckNotificationsByExecutive("У вас есть новые запросы на изменение квоты.");
+    </script>
+}
+@if (data.SelectedRole == "Tutor")
+{
+    <script>
+        CheckNotificationsByTutor("Вам ответили на запрос на изменение квоты", @data.TutorId, @data.User.UserID, @data.SelectedMatching);
+    </script>
+}
+</body>
+</html>

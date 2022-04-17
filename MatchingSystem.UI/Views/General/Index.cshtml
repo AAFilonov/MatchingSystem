@@ -1,0 +1,66 @@
+﻿@{
+    ViewData["title"] = "Личный кабинет";
+    Layout = "_GeneralLayout";
+    ViewData["active"] = "index";
+}
+
+@model MatchingSystem.DataLayer.Entities.User;
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col col-8">
+                <div class="card bg-secondary">
+                    <div class="card-header">Информация об учетной записи</div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col col-4">
+                                @Html.DisplayNameFor(model => model.Login)
+                            </div>
+                            <div class="col col-8">
+                                @Model.Login
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col col-4">
+                                @Html.DisplayNameFor(model => model.Email)
+                            </div>
+                            <div class="col col-8">
+                                @Model.Email
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col col-4">
+                                @Html.DisplayNameFor(model => model.NameAbbreviation)
+                            </div>
+                            <div class="col col-8">
+                                @Model.Surname @Model.Name @Model.Patronimic
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col col-8">
+                <form action=@Url.Action("changePassword", "account") method="post" class="password-form">
+                    <div class="col col-12">
+                        <div class="row">
+                            <h4 class="col col-12">Изменить пароль</h4>
+                        </div>
+                        <div class="form-row align-items-center">
+                            <div class="col col-4">
+                                Новый пароль
+                            </div>
+                            <div class="col col-5">
+                                <input type="password" class="form-control" name="newPassword" minlength="4" required>
+                            </div>
+                            <div class="col col-3">
+                                <button type="submit" class="btn btn-primary w-100">Сохранить</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>

@@ -1,0 +1,165 @@
+﻿@{ 
+    Layout = "_GeneralLayout";
+    ViewData["active"] = "profile";
+    ViewData["title"] = "Информация о студенте";
+    SessionData data = Context.Session.Get<SessionData>("Data");
+}
+
+@using MatchingSystem.DataLayer.Entities
+@using MatchingSystem.UI.Helpers
+@using MatchingSystem.UI.Services
+@model MatchingSystem.UI.ViewModels.StudentViewModel;
+
+<div id="app">
+    <div class="container mt-5">
+        <div class="row justify-content-center" v-if="currentStageCode > 5">
+            <div class="col col-8">
+                <div class="col table-success pt-2 pb-2 mb-3">
+                    <p>Преподаватель: {{allocatedProject.tutorNameAbbreviation}}</p>
+                    <p class="mb-0">Проект: {{allocatedProject.projectName}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col col-8">
+                <div class="card bg-secondary">
+                    <div class="card-header">
+                        Информация о студенте @Model.Student.Surname @Model.Student.Name @Model.Student.Patronimic
+                        @if (data.CurrentStage?.StageTypeCode < 4)
+                        {
+                            <a href="javascript: void(0);" data-student-id="@Model.Student.StudentID" data-toggle="modal" data-target="#js-profile-edit-modal" class="float-right d-flex align-items-center" id="js-profile-edit-trigger">
+                                <span class="material-icons" style="font-size: inherit;">create</span> Изменить
+                            </a>
+                        }
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col col-4">
+                                @Html.DisplayNameFor(model => model.Student.GroupName)
+                            </div>
+                            <div class="col col-8">
+                                @Model.Student.GroupName
+                            </div>
+                        </div>
+                        @if(!string.IsNullOrEmpty(Model.Student.Info2))
+                        {
+                            <div class="row mb-3">
+                                <div class="col col-4">
+                                    @Html.DisplayNameFor(model => model.Student.Info2)
+                                </div>
+                                <div class="col col-8">
+                                    @Model.Student.Info2
+                                </div>
+                            </div>
+                        }
+                        <div class="row mb-3">
+                            <div class="col col-4">
+                                @Html.DisplayNameFor(model => model.Student.TechnologiesName_List)
+                            </div>
+                            <div class="col col-8">
+                                @Model.Student.TechnologiesName_List
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col col-4">
+                                @Html.DisplayNameFor(model => model.Student.WorkDirectionsName_List)
+                            </div>
+                            <div class="col col-8">
+                                @Model.Student.WorkDirectionsName_List
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col col-4">
+                                @Html.DisplayNameFor(model => model.Student.Info)
+                            </div>
+                            <div class="col col-8">
+                                @Model.Student.Info
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal modal-static fade" id="js-profile-edit-modal" role="dialog" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Редактирование профиля</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="edit">
+                    <div class="form-group">
+                        <label data-toggle="collapse" class="cursor-pointer dropdown-toggle" data-target="#tech-list">Интересующие технологии</label>
+                        <div id="tech-list" class="form-check collapse" aria-expanded="false" aria-controls="technology-list" multiple>
+                            @foreach (var item in Model.Technology)
+                            {
+                                <div>
+                                    <input class="form-check-input" name="tech" type="checkbox" value="@item.TechnologyCode">
+                                    <label class="form-check-label">@item.TechnologyName_ru</label>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label data-toggle="collapse" class="cursor-pointer dropdown-toggle" data-target="#work-list">Интересующие направления работ</label>
+                        <div id="work-list" class="form-check collapse" aria-expanded="false" aria-controls="technology-list" multiple>
+                            @foreach (var item in Model.WorkDirection)
+                            {
+                                <div>
+                                    <input class="form-check-input" name="workDirection" type="checkbox" value="@item.DirectionCode">
+                                    <label class="form-check-label">@item.DirectionName_ru</label>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    @if (data.SelectedMatching == 3 && Model.Student.GroupID.Value == 11)
+                    {
+                        <div class="form-group">
+                            <label data-toggle="collapse" class="cursor-pointer dropdown-toggle" data-target="#gr">Группа (для ИВТ)</label>
+                            <div id="gr" style="padding: 0" class="form-check collapse" aria-expanded="false" aria-controls="technology-list" multiple>
+                                <select class="custom-select" name="info2">
+                                    <option value="Компьютерный анализ и интерпретация данных (ИВТ-КАИД)">Компьютерный анализ и интерпретация данных (ИВТ-КАИД)</option>
+                                    <option value="Информационное и программное обеспечение вычислительных систем (ИВТ-ИПО)">Информационное и программное обеспечение вычислительных систем (ИВТ-ИПО)</option>
+                                </select>
+                            </div>
+                        </div>
+                    }
+                    <div class="form-group">
+                        <label>Информация о себе</label>
+                        <textarea class="form-control" name="info"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <input type="hidden" name="studentId" value=@Model.Student.StudentID />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button form="edit" type="submit" id="js-send-request-button" class="btn btn-primary">Сохранить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script >
+    var studentId = @Model.Student.StudentID;
+    @if (Model.Student.Info2 == null)
+    {
+        <text>
+            var needModal = true;
+        </text>
+        
+    }
+    else
+    {
+        <text>
+            var needModal = false;
+        </text>
+    }
+</script>
+<script src="~/js/roles/student/profile.js"></script>

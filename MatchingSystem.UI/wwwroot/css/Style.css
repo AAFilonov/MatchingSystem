@@ -1,0 +1,279 @@
+﻿.material-icons {
+    user-select: none;
+}
+
+header {
+    padding: 20px;
+    background: rgb(68, 68, 64);
+}
+
+.user-info {
+    margin-top: 2rem;
+    border: 2px solid black;
+    border-radius: 5px;
+    box-shadow: 0 0 15px black;
+}
+
+.user-info-item {
+    padding: 0.3rem 0;
+}
+
+.password-form {
+    margin-top: 2rem;
+}
+
+.user-name {
+    color: #ffffff;
+    font-size: 1.25rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 3px;
+}
+
+.user-name a {
+    color: #5D9C76;
+    font-size: 1.5rem;
+    align-self: flex-end;
+    margin-left: 1rem;
+    text-decoration: none;
+}
+
+.role {
+    color: #fff;
+    font-size: 1.3rem;
+    padding-left: 1.1rem;
+}
+
+.description-1 {
+    color: #8ce6a6;
+    /*font-size: 1.1rem;*/
+    /*font-weight: bolder;*/
+    display: flex;
+}
+
+.description-1 span.material-icons {
+    color: white;
+    cursor: pointer;
+    margin-left: 0.5rem;
+}
+
+.right {
+    display: flex;
+    justify-content: flex-end;
+}
+
+nav {
+    background: rgb(50, 50, 50);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+nav * {
+    padding: 0;
+}
+
+nav .nav-menu {
+    display: flex;
+    margin: 0;
+    list-style: none;
+}
+
+ul.nav-menu li a {
+    color: #fff;
+    position: relative;
+    font-size: 1.1rem;
+    font-weight: bolder;
+    text-decoration: none;
+    transition: color 0.15s;
+}
+
+ul.nav-menu li:not(:first-child) {
+    margin-left: 1rem;
+}
+
+ul.nav-menu li a:after {
+    content: '';
+    position: absolute;
+    display: block;
+    width: 100%;
+    top: 100%;
+}
+
+ul.nav-menu li a:hover {
+    color: rgba(93, 156, 118, 0.5);
+}
+
+nav .active {
+    color: white !important;
+}
+
+.position-left {
+    right: 0;
+}
+
+.absolute-center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.material-icons {
+    font-size: inherit;
+}
+
+.card-header a:hover {
+    text-decoration: none;
+}
+
+.hoverable-item {
+    transition: 0.3s all ease;
+}
+
+.hoverable-item:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+#selected, #aviable {
+    max-height: 55vh;
+    overflow-y: auto;
+}
+
+#selected {
+    width: 100%;
+}
+
+.custom-scroll::-webkit-scrollbar {
+    width: 3px;
+    background: transparent;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10%;
+}
+
+
+#aviable, #selected a:hover {
+    text-decoration: none !important;
+}
+
+#stage-info-popup {
+    position: absolute;
+    max-width: 20vw;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.info-hide {
+    animation: info-hiding 0.1s forwards ease-in-out;
+}
+
+.info-show {
+    animation: info-showing 0.1s forwards ease-in-out;
+}
+
+#js-stage-info {
+    user-select: none;
+}
+
+.change-lk {
+    display: flex;
+    align-items: center;
+}
+
+.hover-link:hover {
+    color: #8ce6a6;
+}
+
+@keyframes info-showing {
+    0% {
+        z-index: 10;
+        opacity: 0;
+        transform: translate(-46%, -1vh);
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 1;
+        transform: translate(-46%, -4vh);
+    }
+}
+
+@keyframes info-hiding {
+    0% {
+        opacity: 1;
+        transform: translate(-46%, -4vh);
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(-46%, -1vh);
+        z-index: -10;
+    }
+}
+
+.choices__choice {
+    min-height: 300px;
+    margin-bottom: 3rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.125);
+}
+
+.choice__header {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.choice__header div:last-child {
+    text-align: right;
+}
+
+.choices__choice .bg-success {
+    background-color: rgba(75,191,115, 0.5) !important;
+}
+
+.choices__choice .bg-danger {
+    background-color: rgba(217,83,79, 0.5) !important;
+}
+
+.bg-intermediate {
+    background-color: rgba(29, 29, 29, 0.2);
+}
+
+#empty *{
+    box-shadow: none;
+}
+
+.modal-dialog.big-modal {
+    max-width: 50%;
+}
+
+.light-dark {
+    background: rgba(0, 0, 0, 0.075);
+}
+
+.bg-dark-grey {
+    background: #444;
+}
+
+.bg-info-light {
+    background-color: rgba(31, 155, 207, 0.1) !important;
+}
+
+.btn {
+    letter-spacing: 1px !important;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.dropdown-item {
+    font-size: 1rem;
+}

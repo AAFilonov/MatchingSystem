@@ -1,0 +1,289 @@
+﻿@using MatchingSystem.UI.Helpers
+@using MatchingSystem.UI.Services;
+
+@{
+    ViewData["title"] = "Проекты";
+    Layout = "~/Views/Shared/_GeneralLayout.cshtml";
+    SessionData data = Context.Session.Get<SessionData>("Data");
+}
+
+<div id="app">
+<div class="container mt-5">
+    <div class="row">
+        <h2 class="col col--xl-6 col-lg-6 col-md-6 col-sm-6 col-12">Мои проекты</h2>
+        <h2 class="col col--xl-6 col-lg-6 col-md-6 col-sm-6 col-12 text-xl-right text-lg-right text-md-right text-sm-right text-left">Общая квота: {{commonQuota}}</h2>
+    </div>
+    <div class="row" v-if="currentStageCode < 3">
+
+        <div class="col">
+            <button class="btn btn-primary" :disabled="isReady === 1 || isMagisterMatching()" data-toggle="modal" data-target="#add-project">Создать проект</button>
+        </div>
+
+        <div class="col text-right">
+            <button class="btn btn-success" :disabled="isReady === 1" v-on:click.prevent="setReady">Я готов</button>
+        </div>
+    </div>
+    <table class="table table-hover mt-4 project-list">
+        <tr>
+            <th class="text-center">Название</th>
+            <th class="text-center" width="20%">Описание</th>
+            <th class="text-center" width="20%">Технологии</th>
+            <th class="text-center" width="20%">Направления ВКР</th>
+            <th class="text-center" width="10%">Квота</th>
+            <th class="text-center">Группы</th>
+            <th></th>
+            <th></th>
+        </tr>
+        <tr v-for="item in projects">
+            <td class="font-weight-normal p-2 text-left">
+                {{item.projectName}}
+            </td>
+            <td class="font-weight-normal p-2 text-left">
+                {{item.info}}
+            </td>
+            <td class="font-weight-normal p-2 text-left" v-html="item.technologiesName_List">
+            </td>
+            <td class="p-2 text-left" v-html="item.workDirectionsName_List">
+            </td>
+            <td class="font-weight-normal text-center p-2">
+                {{item.qty}}
+            </td>
+            <td class="font-weight-normal p-2 text-center" v-html="item.availableGroupsName_List">
+            </td>
+            <td>
+                <button class="btn p-0"
+                        :disabled="item.qty === 'Не важно' && currentStageCode > 2"
+                        v-on:click.prevent="editWindow(item)">
+                    <span class="material-icons">create</span>
+                </button>
+            </td>
+            <td>
+
+                <button v-if="isBachelorMatching()" class="btn p-0"
+                        v-on:click.prevent="deleteProject(item)"
+                        :disabled="item.isDefault || currentStageCode > 2">
+                    <span class="material-icons">remove_circle_outline</span>
+                </button>
+            </td>
+        </tr>
+    </table>
+</div>
+
+@*modal*@
+
+<div class="modal fade" id="add-project" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Редактировать проект</h5>
+                <button type="reset" form="add-project-form" v-on:click="resetForm" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="add-project-form" ref="form" v-on:submit.prevent="createProject">
+                    <div class="form-group">
+                        <label for="name">Название проекта</label>
+                        <input name="name" type="text" id="name" class="form-control" placeholder="Введите название проекта..." required/>
+                    </div>
+                    <div class="form-group">
+                        <label for="info">Описание</label>
+                        <textarea name="info" id="info" class="form-control" placeholder="Введите описание..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label data-toggle="collapse" class="cursor-pointer dropdown-toggle" data-target="#technology-list">Технологии</label>
+                        <div name="technologyList" id="technology-list" class="form-check collapse" aria-expanded="false" aria-controls="technology-list" multiple>
+                            <div v-for="item in techList">
+                                <input type="checkbox" name="technologyList" class="form-check-input" :value="item.technologyCode">
+                                <label class="form-check-label">{{item.technologyName_ru}}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label data-toggle="collapse" class="cursor-pointer dropdown-toggle" data-target="#work-direction">Направление ВКР</label>
+                        <div id="work-direction" class="form-check collapse" aria-expanded="false" aria-controls="technology-list" multiple>
+                            <div v-for="item in directionList">
+                                <input class="form-check-input" name="workDirection" type="checkbox" :value="item.directionCode">
+                                <label class="form-check-label">{{item.directionName_ru}}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="quota">Квота</label>
+                        <select name="quota" id="quota" class="form-control">
+                            <option v-for="item in qtyPerProject" :value="item">{{item}}</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label data-toggle="collapse" class="cursor-pointer  dropdown-toggle" data-target="#aviableGroups">Доступен группам</label>
+                        <div class="form-check collapse" id="aviableGroups">
+                            <div v-for="item in groupList">
+                                <input class="form-check-input" type="checkbox" name="aviableGroups" checked :value="item.groupID">
+                                <label class="form-check-label">{{item.groupName}}</label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <p class="text-danger" v-for="error in formErrors">{{error}}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" form="add-project-form" class="btn btn-primary">Сохранить</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--- вынести в компонент --->
+@if (data.CurrentStage.StageTypeCode == 2)
+{
+            @*edit modal*@
+    <div v-if="edit" class="modal fade" id="edit-project" data-backdrop="static">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Редактировать проект</h5>
+                    <button type="button" class="close js-close-add-project" v-on:click="closeEdit" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="edit-project-form" v-on:submit.prevent="saveEdit">
+                        <div class="form-group">
+                            <label for="name">Название проекта</label>
+                            <input name="name"
+                                   :value="edit.projectName"
+                                   type="text"
+                                   id="name"
+                                   class="form-control"
+                                   placeholder="Введите название проекта..."
+                                   :readonly="edit.isDefault ||!isBachelorMatching()"
+                                   required/>
+                        </div>
+                        <div class="form-group">
+                            <label for="info">Описание</label>
+                            <textarea name="info" v-model="edit.info" id="info" class="form-control" placeholder="Введите описание..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label data-toggle="collapse" class="dropdown-toggle cursor-pointer" data-target="#technology-list">Технологии</label>
+                            <div name="technologyList" id="technology-list" class="form-check collapse" aria-expanded="false" aria-controls="technology-list" multiple>
+                                <div v-for="item in techList">
+                                    <input type="checkbox" class="form-check-input" name="technologyList" :value="item.technologyCode" :checked="edit.technologiesName_List.split(', ').includes(item.technologyName_ru)">
+                                    <label class="form-check-label">{{item.technologyName_ru}}</label>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label data-toggle="collapse" class="dropdown-toggle cursor-pointer" data-target="#work-direction">Направление ВКР</label>
+                            <div id="work-direction" class="form-check collapse" aria-expanded="false" aria-controls="technology-list" multiple>
+                                <div v-for="item in directionList">
+                                    <input class="form-check-input" type="checkbox" name="workDirection" :value="item.directionCode" :checked="edit.workDirectionsName_List.split(', ').includes(item.directionName_ru)">
+                                    <label class="form-check-label">{{item.directionName_ru}}</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="quota">Квота</label>
+                            <select name="quota" id="quota" class="form-control">
+                                <option v-for="item in qtyPerProject" :value="item" :selected="edit.qty == item">{{item}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label data-toggle="collapse" class="dropdown-toggle cursor-pointer" data-target="#aviableGroups">Доступен группам</label>
+                            <div class="form-check collapse" id="aviableGroups">
+                                <div v-for="item in groupList">
+                                    <input :readonly="isMagisterMatching()" class="form-check-input" type="checkbox" name="aviableGroups" :value="item.groupID" :checked="edit.availableGroupsName_List.split('<br/>').includes(item.groupName)">
+                                    <label class="form-check-label">{{item.groupName}}</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <input type="hidden" name="projectId" :value="edit.projectID">
+                        </div>
+                    </form>
+                    <p class="text-danger" v-for="error in formErrors">{{error}}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" form="edit-project-form" class="btn btn-primary" id="js-add-project">Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else if (data.CurrentStage.StageTypeCode == 3)
+{
+    <div v-if="edit" class="modal fade" id="edit-project" data-backdrop="static">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Редактировать проект</h5>
+                    <button type="button" class="close js-close-add-project" v-on:click="closeEdit" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="edit-project-form" v-on:submit.prevent="saveNewQuota">
+                        <div class="form-group">
+                            <label for="quota">Квота</label>
+                            <select name="quota" id="quota" class="form-control">
+                                <option v-for="item in qtyPerProject" :value="item" :selected="edit.qty == item">{{item}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <input type="hidden" name="projectId" :value="edit.projectID">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" form="edit-project-form" class="btn btn-primary" id="js-add-project">Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div v-if="edit" class="modal fade" id="edit-project" data-backdrop="static">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Редактировать проект</h5>
+                    <button type="button" class="close js-close-add-project" v-on:click="closeEdit" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h5>Максимально доступное увеличение квоты: {{aviableQty}} единиц(ы)</h5>
+                    <div class="row">
+                        <p class="col">
+                            На данном этапе для увеличения квоты нужно указать <b style="color: red;">НА</b> сколько её нужно увеличить.
+                        </p>
+                    </div>
+                    <form id="edit-project-form" v-on:submit.prevent="saveQuotaDelta">
+                        <div class="form-group">
+                            <label for="quota">Квота</label>
+                            <select name="quota" id="quota" class="form-control">
+                                <option v-for="item in aviableQty" :value="item" :selected="edit.qty == item">{{item}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <input type="hidden" name="projectId" :value="edit.projectID">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" form="edit-project-form" class="btn btn-primary">Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<form class="d-none">
+    <input type="hidden" name="tid" value=@data.TutorId>
+    <input type="hidden" name="matching" value=@data.SelectedMatching>
+    <input type="hidden" ref="currentStageCode" value="@data.CurrentStage.StageTypeCode">
+    <input type="hidden" ref="matchingTypeCode" value="@data.MatchingTypeCode">
+</form>
+</div>
+
+<script src="~/js/roles/tutor/projects.js"></script>

@@ -1,0 +1,48 @@
+﻿@using MatchingSystem.UI.Helpers
+@using MatchingSystem.UI.Services
+@{
+    SessionData data = Context.Session.Get<SessionData>("Data");
+}
+
+@if (ViewData["active"].ToString() == "profile")
+{
+    <li class="nav-item">
+        <a href=@Url.Action("profile", "student") class="active nav-link">Информация о студенте</a>
+    </li>
+}
+else
+{
+    <li class="nav-item">
+        <a href=@Url.Action("profile", "student") class="nav-link">Информация о студенте</a>
+    </li>
+}
+@if (data.CurrentStage.StageTypeCode > 2)
+{
+    @if (ViewData["active"].ToString() == "preferences")
+    {
+        <li class="nav-item">
+            <a href=@Url.Action("preferences", "student") class="active nav-link">Выбор проектов</a>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a href=@Url.Action("preferences", "student") class="nav-link">Выбор проектов</a>
+        </li>
+    }
+}
+@if (data.CurrentStage?.StageTypeCode > 5)
+{
+    @if (ViewData["active"].ToString() == "finished")
+    {
+        <li class="nav-item">
+            <a href=@Url.Action("index", "allocation") class="active nav-link">Завершенные распределения</a>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a href=@Url.Action("index", "allocation") class="nav-link">Завершенные распределения</a>
+        </li>
+    }
+}
