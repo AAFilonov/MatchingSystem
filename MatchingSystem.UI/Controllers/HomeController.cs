@@ -17,12 +17,16 @@ namespace MatchingSystem.UI.Controllers
     public class HomeController : Controller
     {
         private readonly IUserRepository userRepository;
+        private MatchingSystem.Data.Feature.User.IUserRepository _userRepository;
+        private MatchingSystem.Data.Feature.Matching.IMatchingRepository _matchingRepository;
         private readonly IMatchingRepository matchingRepository;
 
-        public HomeController(IUserRepository userRepository, IMatchingRepository matchingRepository)
+        public HomeController(IUserRepository userRepository, IMatchingRepository matchingRepository, Data.Feature.User.IUserRepository userRepository2, Data.Feature.Matching.IMatchingRepository matchingRepository1)
         {
             this.userRepository = userRepository;
-            this.matchingRepository = matchingRepository;
+           this.matchingRepository = matchingRepository;
+            _userRepository = userRepository2;
+            _matchingRepository = matchingRepository1;
         }
 
         [HttpGet]
@@ -32,9 +36,10 @@ namespace MatchingSystem.UI.Controllers
 
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                var user = userRepository.GetUser(HttpContext.User.Identity.Name);
+                var user = _userRepository.findByLogin(HttpContext.User.Identity.Name);
+               
 
-                data.RolesMatchings = userRepository.GetAllRoles(user.UserID);
+                data.RolesMatchings = userRepository.GetAllRoles(user.UserId);
 
                 data.User = user;
                 data.CountRoles = data.RolesMatchings.Count();
@@ -42,14 +47,14 @@ namespace MatchingSystem.UI.Controllers
 
                 var selectedMatching = Convert.ToInt32(HttpContext.Request.Cookies["selectedMatching"]);
                 data.SelectedMatching = selectedMatching;
-                data.MatchingTypeCode = matchingRepository.GetMatchings()
-                    .First(matching => matching.MatchingID.Equals(selectedMatching)).MatchingTypeCode;
+
+                data.MatchingTypeCode = _matchingRepository.findById(selectedMatching).MatchingType.MatchingTypeCode;
                 string selectedRole = HttpContext.Request.Cookies["selectedRole"];
                 data.SelectedRole = selectedRole;
 
                 data.CurrentStage = matchingRepository.GetCurrentStage(data.SelectedMatching);
 
-                userRepository.SetLastVisitDate(user.UserID, selectedRole, System.Convert.ToInt32(selectedMatching));
+                userRepository.SetLastVisitDate(user.UserId, selectedRole, System.Convert.ToInt32(selectedMatching));
 
                 HttpContext.Session.Set<SessionData>("Data", data);
 
@@ -69,28 +74,28 @@ namespace MatchingSystem.UI.Controllers
             }
 
             SessionData data = new SessionData();
+            Data.Model.User user = null;
+            
+           
+            user = _userRepository.findByLogin(auth.Login);
 
-            var userId = await userRepository.GetUserIdByLoginAsync(auth.Login);
-
-            if (userId == -1)
+            if (user == null)
             {
                 ModelState.AddModelError("login", "Неверный логин");
                 return View();
             }
 
             ScryptEncoder encoder = new ScryptEncoder();
+            
 
-            var passwordHash = await userRepository.GetPasswordHashByLoginAsync(auth.Login);
-
-            if (!encoder.Compare(auth.Password, passwordHash))
+            if (!encoder.Compare(auth.Password, user.PasswordHash))
             {
                 ModelState.AddModelError("Password", "Неверный пароль");
                 return View();
             }
-
-            var user = await userRepository.GetUserAsync(auth.Login);
+            
            
-            data.RolesMatchings = await userRepository.GetAllRolesAsync(user.UserID);
+            data.RolesMatchings =  userRepository.GetAllRoles(user.UserId);
             data.RolesMatchings = data.RolesMatchings.OrderByDescending(matching => matching.MatchingId);
             string[] roles = data.RolesMatchings
                 .Select(roleItem => roleItem.RoleName)
@@ -105,7 +110,7 @@ namespace MatchingSystem.UI.Controllers
             HttpContext.Response.Cookies.Append("selectedMatching",
                 data.RolesMatchings.First().MatchingId.ToString()!);
            
-            await userRepository.SetLastVisitDateAsync(user.UserID, data.RolesMatchings.First().RoleName!,
+             userRepository.SetLastVisitDate(user.UserId, data.RolesMatchings.First().RoleName!,
                 data.RolesMatchings.First().MatchingId);
 
             data.CurrentStage = await matchingRepository.GetCurrentStageAsync(data.SelectedMatching);

@@ -34,7 +34,7 @@ namespace MatchingSystem.UI.Controllers
             var encoder = new ScryptEncoder();
             var passwordHash = encoder.Encode(newPassword);
             
-            userRepository.UpdatePasswordHash(data.User.UserID, passwordHash);
+            userRepository.UpdatePasswordHash(data.User.UserId, passwordHash);
 
             return RedirectToAction("login", "Home");
         }
@@ -48,7 +48,7 @@ namespace MatchingSystem.UI.Controllers
 
             HttpContext.Session.Set<SessionData>("Data", data);
 
-            userRepository.SetLastVisitDate(data.User.UserID, data.SelectedRole, data.SelectedMatching);
+            userRepository.SetLastVisitDate(data.User.UserId, data.SelectedRole, data.SelectedMatching);
 
             return roleName switch
             {

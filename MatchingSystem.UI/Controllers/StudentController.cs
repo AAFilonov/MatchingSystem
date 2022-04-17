@@ -24,7 +24,7 @@ namespace MatchingSystem.UI.Controllers
         {
             base.OnActionExecuting(ctx);
             data ??= HttpContext.Session.Get<SessionData>("Data");
-            var studentId = studentRepository.GetStudentId(data.User.UserID, data.SelectedMatching);
+            var studentId = studentRepository.GetStudentId(data.User.UserId, data.SelectedMatching);
             student = studentRepository.GetStudent(studentId);
         }
 
