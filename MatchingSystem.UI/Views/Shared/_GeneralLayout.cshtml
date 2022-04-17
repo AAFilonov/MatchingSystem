@@ -99,7 +99,7 @@
 <div class="notification-bar col col-lg-3"></div>
 @RenderBody()
 <form class="d-none" id="metadata">
-    <input type="hidden" name="userId" id="userId" value="@data.User.UserID"/>
+    <input type="hidden" name="userId" id="userId" value="@data.User.UserId"/>
     <input type="hidden" name="matchingId" id="matchingId" value="@data.SelectedMatching"/>
     @if (data.TutorId != null)
     {
@@ -170,7 +170,7 @@
 @if (data.SelectedRole == "Tutor")
 {
     <script>
-        CheckNotificationsByTutor("Вам ответили на запрос на изменение квоты", @data.TutorId, @data.User.UserID, @data.SelectedMatching);
+        CheckNotificationsByTutor("Вам ответили на запрос на изменение квоты", @data.TutorId, @data.User.UserId, @data.SelectedMatching);
     </script>
 }
 </body>

@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
 using MatchingSystem.DataLayer.Entities;
+using MatchingSystem.Data.Model;
+using Stage = MatchingSystem.DataLayer.Entities.Stage;
+using User = MatchingSystem.Data.Model.User;
 
 namespace MatchingSystem.UI.Helpers
 {

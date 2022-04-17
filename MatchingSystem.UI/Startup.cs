@@ -1,10 +1,13 @@
 ﻿using System;
+using MatchingSystem.Data;
+using MatchingSystem.DataLayer.Entities;
 using MatchingSystem.DataLayer.Interface;
 using MatchingSystem.DataLayer.Repository;
 using MatchingSystem.UI.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
@@ -57,7 +60,10 @@ namespace MatchingSystem.UI
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options => options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Home/Login"));
-
+            services.AddSingleton<DbContext, DiplomaMatchingContext>(options => new DiplomaMatchingContext(connectionString));
+            services.AddSingleton<MatchingSystem.Data.Feature.User.IUserRepository, MatchingSystem.Data.Feature.User.UserRepository>();
+            services.AddSingleton<MatchingSystem.Data.Feature.Matching.IMatchingRepository, MatchingSystem.Data.Feature.Matching.MatchingRepository>();
+            
             services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromHours(2);

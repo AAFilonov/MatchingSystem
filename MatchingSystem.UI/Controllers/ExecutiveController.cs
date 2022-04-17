@@ -51,8 +51,8 @@ namespace MatchingSystem.UI.Controllers
         {
             ExecutiveQuotaViewModel model = new ExecutiveQuotaViewModel();
 
-            model.Requests = executiveRepository.GetQuotaRequestsByExecutive(data.User.UserID, data.SelectedMatching);
-            model.History = executiveRepository.GetQuotaRequestHistoryByExecutive(data.User.UserID, data.SelectedMatching);
+            model.Requests = executiveRepository.GetQuotaRequestsByExecutive(data.User.UserId, data.SelectedMatching);
+            model.History = executiveRepository.GetQuotaRequestHistoryByExecutive(data.User.UserId, data.SelectedMatching);
 
             return View(model);
         }

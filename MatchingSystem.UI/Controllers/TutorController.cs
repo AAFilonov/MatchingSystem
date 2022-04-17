@@ -25,7 +25,7 @@ namespace MatchingSystem.UI.Controllers
             base.OnActionExecuting(ctx);
             if (data != null) return;
             data = HttpContext.Session.Get<SessionData>("Data");
-            data.TutorId = tutorRepository.GetTutorId(data.User.UserID, data.SelectedMatching);
+            data.TutorId = tutorRepository.GetTutorId(data.User.UserId, data.SelectedMatching);
             HttpContext.Session.Set<SessionData>("Data", data);
         }
 
