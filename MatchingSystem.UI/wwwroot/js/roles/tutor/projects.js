@@ -12,24 +12,31 @@
         selectedMatching: null,
         edit: null,
         currentStageCode: null,
+        matchingTypeCode: null,
         formErrors: []
     },
     computed: {
         qtyPerProject() {
             if (this.projects.length === 0) return 0;
-            
+
             let result = [];
-            
+
             for (let i = 0; i <= this.commonQuota; i++) {
                 result.push(i);
             }
-            
+
             result.push("Не важно");
 
             return result;
         },
     },
     methods: {
+        isBachelorMatching() {
+            return this.matchingTypeCode === '1';
+        },
+        isMagisterMatching() {
+            return this.matchingTypeCode === '2';
+        },
         async initialize() {
             let request = await fetch(`${params.basePath}/api/Projects/get_projects_data?tutorId=${this.tutorId}&selectedMatching=${this.selectedMatching}`);
 
@@ -67,7 +74,7 @@
         async createProject(e) {
             this.checkErrors();
             if (this.formErrors.length > 0) return;
-            
+
             let $form = e.target;
             let data = new FormData(e.target);
             data.append('tutorId', this.tutorId);
@@ -84,7 +91,7 @@
         async saveEdit(e) {
             this.checkErrors();
             if (this.formErrors.length > 0) return;
-            
+
             let $form = e.target;
             let data = new FormData(e.target);
             data.append('tutorId', this.tutorId);
@@ -127,7 +134,7 @@
                 body: data
             });
 
-            if (request.status === 204) window.location.reload();
+            if (request.ok) window.location.reload();
             else DisplayNotification('Произошла ошибка при обработке запроса', 'error');
         },
         async saveQuotaDelta(e) {
@@ -136,20 +143,22 @@
             data.append('tutorId', this.tutorId);
             data.append('projectId', this.edit.projectID);
             data.append('matching', this.selectedMatching);
-            
+
             let request = await fetch(`${params.basePath}/api/Projects/editQuotaPerProject`, {
                 method: 'patch',
                 body: data
             });
-            
-            if (request.status === 204) window.location.reload();
+
+            if (request.ok) window.location.reload();
             else DisplayNotification('Произошла ошибка при обработке запроса', 'error');
         },
         checkErrors() {
             this.formErrors = [];
             let groups = document.querySelectorAll('#aviableGroups input[type="checkbox"]');
-            
-            let countGroups = [].reduce.call(groups, (sum, c) => { return c.checked? ++sum : sum }, 0);
+
+            let countGroups = [].reduce.call(groups, (sum, c) => {
+                return c.checked ? ++sum : sum
+            }, 0);
             if (countGroups === 0) this.formErrors.push('Вы должны выбрать хотя бы одну группу.');
         },
         resetForm(e) {
@@ -160,14 +169,17 @@
         this.tutorId = parseInt(document.querySelector('input[name="tid"]').value);
         this.selectedMatching = parseInt(document.querySelector('input[name="matching"]').value);
         this.currentStageCode = parseInt(this.$refs.currentStageCode.value);
+        this.matchingTypeCode = this.$refs.matchingTypeCode.value;
+
 
         await this.initialize();
-        
+
         let usedQuota = this.projects.reduce((sum, c) => {
-            return (c.qty !== 'Не важно')? sum += c.qty : sum
+            return (c.qty !== 'Не важно') ? sum += c.qty : sum
         }, 0);
         this.aviableQty = this.commonQuota - usedQuota;
     }
+
 });
 
 function fillArray(dest, number) {
@@ -182,4 +194,6 @@ function findQtySum(source) {
         if (current.qty === 'Не важно') return sum + 0;
         return sum + current.qty;
     }, 0);
+
+
 }

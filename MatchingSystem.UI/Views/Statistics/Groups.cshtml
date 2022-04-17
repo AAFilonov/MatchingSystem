@@ -1,0 +1,43 @@
+﻿@using MatchingSystem.UI.Helpers
+@using MatchingSystem.UI.Services
+@{
+    ViewBag.Title = "Статистика";
+    ViewData["active"] = "statistics_groups";
+    Layout = "_GeneralLayout";
+
+    var data = Context.Session.Get<SessionData>("Data");
+}
+
+<div id="app">
+    <div class="container mt-5">
+        <div class="row">
+            <h2 class="col">Статистика по группам</h2>
+        </div>
+        <div class="row">
+            <div class="col">
+                <table class="table table-hover">
+                     <tr>
+                         <th class="text-center">Группа</th>
+                         <th class="text-center">Студентов сделало выбор</th>
+                         <th></th>              
+                               
+                      </tr>
+                    <tr v-for="item in statistics">
+                        <td>{{item.statName}}</td>
+                        <td class="text-center" v-html="item.statValue_Str"></td>
+                        <td width="15%">
+                            <div v-if="item.statPercentage!=null" class="progress">
+                                <div class="progress-bar bg-success" v-bind:style="{width: calculatePercentage(item) +'%'}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var matchingId = @data.SelectedMatching;
+    var currentStage = @data.CurrentStage.StageTypeCode;
+</script>
+<script src="~/js/roles/executive/statistics_groups.js"></script>

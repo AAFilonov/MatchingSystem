@@ -166,13 +166,13 @@
     </div>
 
     <form class="d-none">
-        <input type="hidden" ref="tutorId" value="@data.TutorID"/>
+        <input type="hidden" ref="tutorId" value="@data.TutorId"/>
         <input type="hidden" ref="selectedMatching" value="@data.SelectedMatching"/>
     </form>
 </div>
 
 <script >
-    var tutorId = @data.TutorID;
+    var tutorId = @data.TutorId;
     var currentStage = @data.CurrentStage?.StageTypeCode;
 </script>
 <script src="~/js/roles/tutor/iterations.js"></script>

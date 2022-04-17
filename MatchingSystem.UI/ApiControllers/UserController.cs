@@ -1,9 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using MatchingSystem.DataLayer;
-using MatchingSystem.UI.ResultModels;
-using MatchingSystem.DataLayer.Entities;
-using MatchingSystem.UI.Services;
+﻿using System.Linq;
+using MatchingSystem.DataLayer.Interface;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MatchingSystem.UI.ApiControllers
@@ -11,24 +7,28 @@ namespace MatchingSystem.UI.ApiControllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly DataContext context;
-        public UserController(DataContext ctx) => context = ctx;
-        
+        private readonly IUserRepository userRepository;
+        private readonly IMatchingRepository matchingRepository;
+
+        public UserController(IUserRepository userRepository, IMatchingRepository matchingRepository)
+        {
+            this.matchingRepository = matchingRepository;
+            this.userRepository = userRepository;
+        }
+
         [Route("api/[controller]/getMatchings")]
         [HttpGet]
-        public async Task<IActionResult> GetMatchingsForUser([FromQuery] int userId)
+        public IActionResult GetMatchingsForUser([FromQuery] int userId)
         {
-            List<Matching> model = new List<Matching>();
-            model = await context.GetMatchingsForUserAsync(userId);
+            var model = matchingRepository.GetMatchingsByUser(userId).OrderByDescending(matching =>matching.MatchingID );
             return new JsonResult(model);
         }
 
         [Route("api/[controller]/getRoles")]
         [HttpGet]
-        public async Task<IActionResult> GetRolesForUser([FromQuery] int matchingId, [FromQuery] int userId)
+        public IActionResult GetRolesForUser([FromQuery] int matchingId, [FromQuery] int userId)
         {
-            List<Role> model = new List<Role>();
-            model = await context.GetRolesForUserAsync(userId, matchingId);
+            var model = userRepository.GetRolesForUserAndMatching(userId, matchingId);
             
             return new JsonResult(model);
         }

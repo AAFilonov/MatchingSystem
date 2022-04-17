@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Threading.Tasks;
 using MatchingSystem.DataLayer;
+using MatchingSystem.DataLayer.Interface;
 using MatchingSystem.UI.Helpers;
 using MatchingSystem.UI.Services;
 using MatchingSystem.UI.ViewModels;
@@ -12,9 +14,16 @@ namespace MatchingSystem.UI.Controllers
     [Authorize(Roles = "Executive")]
     public class ExecutiveController : Controller
     {
-        private readonly DataContext context;
+        private readonly IMatchingRepository matchingRepository;
+        private readonly IExecutiveRepository executiveRepository;
         private SessionData data;
 
+        public ExecutiveController(IMatchingRepository matchingRepository, IExecutiveRepository executiveRepository)
+        {
+            this.matchingRepository = matchingRepository;
+            this.executiveRepository = executiveRepository;
+        }
+        
         public override void OnActionExecuting(ActionExecutingContext ctx)
         {
             base.OnActionExecuting(ctx);
@@ -27,13 +36,8 @@ namespace MatchingSystem.UI.Controllers
         public override void OnActionExecuted(ActionExecutedContext ctx)
         {
             base.OnActionExecuted(ctx);
-            data.CurrentStage = context.GetCurrentStageAsync(data.SelectedMatching).Result;
+            data.CurrentStage = matchingRepository.GetCurrentStage(data.SelectedMatching);
             HttpContext.Session.Set<SessionData>("Data", data);
-        }
-
-        public ExecutiveController(DataContext ctx)
-        {
-            context = ctx;
         }
 
         [HttpGet]
@@ -43,30 +47,24 @@ namespace MatchingSystem.UI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Quotas()
+        public IActionResult Quotas()
         {
             ExecutiveQuotaViewModel model = new ExecutiveQuotaViewModel();
 
-            model.Requests = await context.GetQuotaRequestAsync(data.User?.UserID, data.SelectedMatching);
-            model.History = await context.GetCommonQuotaHistoryByExecutiveAsync(data.User?.UserID, data.SelectedMatching);
-            model.History.Reverse();
-            
+            model.Requests = executiveRepository.GetQuotaRequestsByExecutive(data.User.UserID, data.SelectedMatching);
+            model.History = executiveRepository.GetQuotaRequestHistoryByExecutive(data.User.UserID, data.SelectedMatching);
+
             return View(model);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Admin()
+        public IActionResult Admin()
         {
-            data.CurrentStage = await context.GetCurrentStageAsync(data.SelectedMatching);
+            data.CurrentStage = matchingRepository.GetCurrentStage(data.SelectedMatching);
             return View();
         }
-
+        
         [HttpGet]
-        public IActionResult Statistics()
-        {
-            return View();
-        }
-
         public ViewResult Adjustment()
         {
             return View();

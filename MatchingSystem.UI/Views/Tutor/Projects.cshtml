@@ -14,9 +14,11 @@
         <h2 class="col col--xl-6 col-lg-6 col-md-6 col-sm-6 col-12 text-xl-right text-lg-right text-md-right text-sm-right text-left">Общая квота: {{commonQuota}}</h2>
     </div>
     <div class="row" v-if="currentStageCode < 3">
+
         <div class="col">
-            <button class="btn btn-primary" :disabled="isReady === 1" data-toggle="modal" data-target="#add-project">Создать проект</button>
+            <button class="btn btn-primary" :disabled="isReady === 1 || isMagisterMatching()" data-toggle="modal" data-target="#add-project">Создать проект</button>
         </div>
+
         <div class="col text-right">
             <button class="btn btn-success" :disabled="isReady === 1" v-on:click.prevent="setReady">Я готов</button>
         </div>
@@ -24,9 +26,10 @@
     <table class="table table-hover mt-4 project-list">
         <tr>
             <th class="text-center">Название</th>
+            <th class="text-center" width="20%">Описание</th>
             <th class="text-center" width="20%">Технологии</th>
             <th class="text-center" width="20%">Направления ВКР</th>
-            <th class="text-center" width="15%">Квота</th>
+            <th class="text-center" width="10%">Квота</th>
             <th class="text-center">Группы</th>
             <th></th>
             <th></th>
@@ -34,6 +37,9 @@
         <tr v-for="item in projects">
             <td class="font-weight-normal p-2 text-left">
                 {{item.projectName}}
+            </td>
+            <td class="font-weight-normal p-2 text-left">
+                {{item.info}}
             </td>
             <td class="font-weight-normal p-2 text-left" v-html="item.technologiesName_List">
             </td>
@@ -52,7 +58,8 @@
                 </button>
             </td>
             <td>
-                <button class="btn p-0"
+
+                <button v-if="isBachelorMatching()" class="btn p-0"
                         v-on:click.prevent="deleteProject(item)"
                         :disabled="item.isDefault || currentStageCode > 2">
                     <span class="material-icons">remove_circle_outline</span>
@@ -125,7 +132,7 @@
         </div>
     </div>
 </div>
-
+<!--- вынести в компонент --->
 @if (data.CurrentStage.StageTypeCode == 2)
 {
             @*edit modal*@
@@ -144,11 +151,11 @@
                             <label for="name">Название проекта</label>
                             <input name="name"
                                    :value="edit.projectName"
-                                   type="text" 
-                                   id="name" 
-                                   class="form-control" 
-                                   placeholder="Введите название проекта..." 
-                                   :readonly="edit.isDefault"
+                                   type="text"
+                                   id="name"
+                                   class="form-control"
+                                   placeholder="Введите название проекта..."
+                                   :readonly="edit.isDefault ||!isBachelorMatching()"
                                    required/>
                         </div>
                         <div class="form-group">
@@ -184,7 +191,7 @@
                             <label data-toggle="collapse" class="dropdown-toggle cursor-pointer" data-target="#aviableGroups">Доступен группам</label>
                             <div class="form-check collapse" id="aviableGroups">
                                 <div v-for="item in groupList">
-                                    <input class="form-check-input" type="checkbox" name="aviableGroups" :value="item.groupID" :checked="edit.availableGroupsName_List.split('<br/>').includes(item.groupName)">
+                                    <input :readonly="isMagisterMatching()" class="form-check-input" type="checkbox" name="aviableGroups" :value="item.groupID" :checked="edit.availableGroupsName_List.split('<br/>').includes(item.groupName)">
                                     <label class="form-check-label">{{item.groupName}}</label>
                                 </div>
                             </div>
@@ -272,9 +279,10 @@ else
 }
 
 <form class="d-none">
-    <input type="hidden" name="tid" value=@data.TutorID>
+    <input type="hidden" name="tid" value=@data.TutorId>
     <input type="hidden" name="matching" value=@data.SelectedMatching>
     <input type="hidden" ref="currentStageCode" value="@data.CurrentStage.StageTypeCode">
+    <input type="hidden" ref="matchingTypeCode" value="@data.MatchingTypeCode">
 </form>
 </div>
 

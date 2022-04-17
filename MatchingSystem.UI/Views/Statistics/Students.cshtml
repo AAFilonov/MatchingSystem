@@ -1,0 +1,190 @@
+﻿@using MatchingSystem.UI.Helpers
+@using MatchingSystem.UI.Services
+@{
+    ViewBag.Title = "Статистика";
+    ViewData["active"] = "statistics_students";
+    Layout = "_GeneralLayout";
+    var data = Context.Session.Get<SessionData>("Data");
+}
+
+<div id="app">
+    <div class="container mt-5">
+        <div class="row">
+            <h2 class="col">Статистика по студентам</h2>
+        </div>
+        <div class="row">
+            <div class="col">
+                <table class="table table-hover" v-if="currentStage==3">
+                    <tr>
+                        <th class="text-center">Группа</th>
+                        <th class="text-center">Студент</th>
+                    
+                        <th class="text-center">Выбор сделан</th>
+                        <th class="text-center">Количество проектов</th>
+                            <th class="text-center">Дата последнего посещения</th>
+                        <th></th>
+           
+                    </tr>
+                    <tr v-for="item in statistics">
+           
+                        <td class="font-weight-normal p-2 text-center">
+                            {{item.studentGroupName}}
+                        </td>
+                        <td class="font-weight-normal p-2 text-center">
+                            {{item.studentNameAbbreviation}}
+                        </td>
+                       
+                        <td class="font-weight-normal p-2 text-center">
+                            <div v-if="item.projectCount>0">
+                                Да
+                            </div>
+                            <div v-else>
+                                Нет
+                            </div>
+                        </td>
+                        <td class="font-weight-normal p-2 text-center">
+                            {{ item.projectCount}}
+                        </td>
+                         <td class="font-weight-normal p-2 text-center">
+                             <div v-if="item.studentLastVisitDate !== null">
+                                 {{item.studentLastVisitDate}}
+                             </div>
+                             <div v-else>
+                                 ---
+                             </div>
+                         </td>
+                        <td>
+                            <button class="btn btn-primary"
+                                    v-on:click.prevent="projectsByStudentInfoWindow(item)">
+                                Информация
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+                  <table class="table table-hover" v-if="currentStage>=4">
+                                    <tr>
+                                        <th class="text-center">Группа</th>
+                                        <th class="text-center">Студент</th>
+                                        <th class="text-center">Проект закрыт</th>
+                                        <th class="text-center">Попал в квоту</th>
+                                        <th class="text-center">Не может быть распределен</th>
+                                        <th class="text-center">Тип распределения</th>
+                                        
+                                        
+                                        <th class="text-center">Дата последнего посещения</th>
+                                        <th></th>
+                           
+                                    </tr>
+                                    <tr v-for="item in statistics">
+                                        <td class="font-weight-normal p-2 text-center">
+                                              {{item.studentGroupName}}
+                                        </td>
+                                        <td class="font-weight-normal p-2 text-center">
+                                            {{item.studentNameAbbreviation}}
+                                        </td>
+                                        <td class="font-weight-normal p-2 text-center">
+                                           
+                                            <div v-if="item.projectIsAllocated">
+                                                Да
+                                            </div>
+                                            <div v-else>
+                                                Нет
+                                            </div>
+                                        </td>
+                                        <td class="font-weight-normal p-2 text-center">
+                                          
+                                            <div v-if="item.choiceIsInQuota">
+                                                Да
+                                            </div>
+                                            <div v-else>
+                                                Нет
+                                            </div>
+                                        </td>
+                                        <td class="font-weight-normal p-2 text-center">
+                                          
+                                            <div v-if="item.choiceIsCantAllocated">
+                                                Да
+                                            </div>
+                                            <div v-else>
+                                                Нет
+                                            </div>
+                                        </td>
+                                        
+                                        <td class="font-weight-normal p-2 text-center">
+                                            {{ item.preferenceTypeName_ru}}
+                                        </td>
+                                        <td class="font-weight-normal p-2 text-center">
+                                            <div v-if="item.studentLastVisitDate !== null">
+                                                {{item.studentLastVisitDate}}
+                                            </div>
+                                            <div v-else>
+                                                ---
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-primary"
+                                                    v-on:click.prevent="projectsByStudentInfoWindow(item)">
+                                                Информация
+                                            </button>
+                                        </td>
+                                    </tr>
+                  </table>
+            </div>
+        </div>
+    </div>
+    
+
+    @*modal*@
+    <div class="modal fade" id="projectsByStudent" data-backdrop="static">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Проекты</h5>
+                    <button type="button" class="close js-close-add-project" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" v-if="student !== null">
+                
+                    <h3>Список проектов: {{student.studentNameAbbreviation}}</h3>
+                    <table class="table table-hover mt-4 project-list">
+                      <tr>
+                          <th class="text-center">Преподаватель</th>
+                          <th class="text-center">Проект</th>
+                          <th class="text-center" width="20%">Технологии</th>
+                          <th class="text-center" width="20%">Направления ВКР</th>
+                          <th class="text-center" width="15%">Квота</th>
+                     
+                      </tr>
+                        <tr v-for="item in projects">
+                             <td class="font-weight-normal p-2 text-left">
+                                 {{item.tutorNameAbbreviation }}
+                             </td>
+                            <td class="font-weight-normal p-2 text-left">
+                                {{item.projectsProjectName}}
+                            </td>
+                            <td class="font-weight-normal p-2 text-left" v-html="item.projectsTechnologiesName_List">
+                            </td>
+                            <td class="p-2 text-left" v-html="item.projectsWorkDirectionsName_List">
+                            </td>
+                            <td class="font-weight-normal text-center p-2">
+                                {{item.projectQty}}
+                            </td>
+                           
+
+                        </tr>
+                    </table>
+             
+                </div>
+                <div class="modal-footer">
+                        <button type="submit"  class="btn btn-primary close" data-dismiss="modal" aria-label="Close" >Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var matchingId = @data.SelectedMatching;
+    var currentStage = @data.CurrentStage.StageTypeCode;
+</script>
+<script src="~/js/roles/executive/statistics_students.js"></script>

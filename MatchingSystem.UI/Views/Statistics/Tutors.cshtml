@@ -1,0 +1,239 @@
+﻿@using MatchingSystem.UI.Helpers
+@using MatchingSystem.UI.Services
+@{
+    ViewBag.Title = "Статистика";
+    ViewData["active"] = "statistics_tutors";
+    Layout = "_GeneralLayout";
+
+    var data = Context.Session.Get<SessionData>("Data");
+}
+
+
+<div id="app">
+<div class="container-fluid mt-5">
+    <div class="row">
+        <h2 class="col">Статистика по преподавателям </h2>
+    </div>
+    <div class="row">
+        <div class="col">
+            <table class="table table-hover" v-if="currentStage<=3">
+                <tr>
+                    <th class="text-center">Преподаватель</th>
+                    <th class="text-center" width="20%">Квота</th>
+                    <th class="text-center" width="20%">Готов к распределению</th>
+                    <th class="text-center">Дата последнего посещения</th>
+                    <th></th>
+
+                </tr>
+                <tr v-for="item in statistics">
+
+                    <td class="font-weight-normal p-2 text-center">
+                        {{item.tutorNameAbbreviation}}
+                    </td>
+                    <td class="font-weight-normal p-2 text-center">
+                        {{ item.tutorQuotaQty}}
+                    </td>
+                    <td class="font-weight-normal p-2 text-center">
+                        <div v-if="item.tutorIsReadyToStart">
+                            Да
+                        </div>
+                        <div v-else>
+                            Нет
+                        </div>
+                    </td>
+                    <td class="font-weight-normal p-2 text-center">
+                        <div v-if="item.tutorLastVisitDate !== null">
+                            {{item.tutorLastVisitDate}}
+                        </div>
+                        <div v-else>
+                            ---
+                        </div>
+                    </td>
+
+                    <td>
+                        <button class="btn btn-primary"
+                                v-on:click.prevent="projectsByTutorInfoWindow(item)">
+                            <!-- data-target="#project-info" >-->
+                            Посмотреть проекты
+                        </button>
+                    </td>
+
+
+                </tr>
+            </table>
+            <table class="table table-hover" v-if="currentStage>=4">
+
+                <tr>
+                    <th class="text-center" width="15%">Преподаватель</th>
+                    <th class="text-center">Квота</th>
+                    <th class="text-center">Количество проектов</th>
+                    <th class="text-center">Проектов закрыто</th>
+                    <th class="text-center">Самостоятельный ли выбор</th>
+                    <th class="text-center">Есть ли выбор</th>
+                    <th class="text-center">Студентов в квоте</th>
+                    <th class="text-center">Студентов не в квоте</th>
+                    <th class="text-center" width="15%">Дата последнего посещения</th>
+                    <th></th>
+                    <th></th>
+
+                </tr>
+                <tr v-for="item in statistics">
+                    <td class="font-weight-normal p-2 text-center">
+                        {{item.tutorNameAbbreviation}}
+                    </td>
+                    <td class="font-weight-normal p-2 text-center">
+                        {{ item.quotaQty}}
+                    </td>
+                    <td class="font-weight-normal p-2 text-center">
+                        {{ item.tutorProjectsAllCount}}
+                    </td>
+                    <td class="font-weight-normal p-2 text-center">
+                        {{ item.tutorProjectsClosedCount}}
+                    </td>
+
+                    <td class="font-weight-normal p-2 text-center">
+                        <div v-if="item.tutorIsSelfChoice">
+                            Да
+                        </div>
+                        <div v-else>
+                            Нет
+                        </div>
+                    </td>
+                    <td class="font-weight-normal p-2 text-center">
+                        <div v-if="item.tutorIsAvailableChoice">
+                            Да
+                        </div>
+                        <div v-else>
+                            Нет
+                        </div>
+                    </td>
+
+                    <td class="font-weight-normal p-2 text-center">
+                        {{ item.tutorStudentsInQuotaCount}}
+                    </td>
+                    <td class="font-weight-normal p-2 text-center">
+                        {{ item.tutorStudentsNotInQuotaCount}}
+                    </td>
+                    <td class="font-weight-normal p-2 text-center">
+                        <div v-if="item.tutorLastVisitDate !== null">
+                            {{item.tutorLastVisitDate}}
+                        </div>
+                        <div v-else>
+                            ---
+                        </div>
+                    </td>
+
+                    <td>
+                        <button class="btn btn-primary"
+                                v-on:click.prevent="tutorProjectsAllocatedWindow(item)">
+                            Студенты
+                        </button>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary"
+                                v-on:click.prevent="projectsByTutorInfoWindow(item)">
+                            Проекты
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+@*modal*@
+<div class="modal fade" id="projectsByTutor" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" v-if="tutor !== null">
+            <div class="modal-header">
+                <h5 class="modal-title">Проекты</h5>
+                <button type="button" class="close js-close-add-project" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <h3>Список проектов: {{tutor.tutorNameAbbreviation}}</h3>
+                <table class="table table-hover mt-4 project-list" style="word-break: break-word;">
+                    <tr>
+                        <th class="text-center">Название</th>
+                        <th class="text-center" width="20%">Описание</th>
+                        <th class="text-center" width="20%">Технологии</th>
+                        <th class="text-center" width="20%">Направления ВКР</th>
+                        <th class="text-center" width="10%">Квота</th>
+                        <th class="text-center">Группы</th>
+
+                    </tr>
+                    <tr v-for="item in projects">
+                        <td class="font-weight-normal p-2 text-left">
+                            {{item.projectName}}
+                        </td>
+                        <td class="font-weight-normal p-2 text-left">
+                            {{item.info}}
+                        </td>
+                        <td class="font-weight-normal p-2 text-left" v-html="item.technologiesName_List">
+                        </td>
+                        <td class="p-2 text-left" v-html="item.workDirectionsName_List">
+                        </td>
+                        <td class="font-weight-normal text-center p-2">
+                            {{item.qty}}
+                        </td>
+                        <td class="font-weight-normal p-2 text-center" v-html="item.availableGroupsName_List">
+                        </td>
+
+                    </tr>
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@*modal*@
+<div class="modal fade" id="tutorProjectsAllocated" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" v-if="tutor !== null">
+            <div class="modal-header">
+                <h5 class="modal-title"> Подробности</h5>
+                <button type="button" class="close js-close-add-project" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h3>Преподаватель: {{tutor.tutorNameAbbreviation}}</h3>
+                <table class="table table-hover mt-4 project-list">
+                    <tr>
+                        <th class="text-center">Студент</th>
+                        <th class="text-center">Проект</th>
+                        <th class="text-center">Тип распределения</th>
+                    </tr>
+                    <tr v-for="item in projectsAllocated">
+                        <td class="font-weight-normal p-2 text-center">
+                            {{item.allocation_FullInfoStudentNameAbbreviation}}
+                        </td>
+                        <td class="font-weight-normal p-2 text-center">
+                            {{item.allocation_FullInfoProjectName}}
+                        </td>
+                        <td class="font-weight-normal p-2 text-center">
+                            {{item.allocation_FullInfoTypeName_ru}}
+                        </td>
+
+                    </tr>
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+</div>
+
+
+<script>
+var matchingId = @data.SelectedMatching;
+var currentStage = @data.CurrentStage.StageTypeCode;
+</script>
+<script src="~/js/roles/executive/statistics_tutors.js"></script>

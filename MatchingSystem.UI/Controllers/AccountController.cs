@@ -1,9 +1,6 @@
-﻿using System.Threading.Tasks;
-using MatchingSystem.DataLayer;
+﻿using MatchingSystem.DataLayer.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Data.SqlClient;
 using Scrypt;
 using MatchingSystem.UI.Helpers;
 using MatchingSystem.UI.Services;
@@ -14,12 +11,12 @@ namespace MatchingSystem.UI.Controllers
     [Authorize]
     public class AccountController : Controller
     {
-        private readonly DataContext context;
+        private readonly IUserRepository userRepository;
         private SessionData data;
 
-        public AccountController(DataContext ctx)
+        public AccountController(IUserRepository userRepository)
         {
-            context = ctx;
+            this.userRepository = userRepository;
         }
 
         public override void OnActionExecuting(ActionExecutingContext ctx)
@@ -32,30 +29,26 @@ namespace MatchingSystem.UI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ChangePassword([FromForm] string newPassword)
+        public IActionResult ChangePassword([FromForm] string newPassword)
         {
-            ScryptEncoder encoder = new ScryptEncoder();
-            string passwordhash = encoder.Encode(newPassword);
-
-            SqlParameter userID = new SqlParameter("@UserID", data.User?.UserID);
-            SqlParameter hash = new SqlParameter("@NewPasswordHash", passwordhash);
-
-            //TODO UpdatePasswordHashAsync
-            await context.Database.ExecuteSqlRawAsync("execute napp.upd_User_PasswordHash @UserID, @NewPasswordHash", userID, hash);
+            var encoder = new ScryptEncoder();
+            var passwordHash = encoder.Encode(newPassword);
+            
+            userRepository.UpdatePasswordHash(data.User.UserID, passwordHash);
 
             return RedirectToAction("login", "Home");
         }
 
-        public async Task<IActionResult> ChangeLk(int matchingID, string roleName)
+        public IActionResult ChangeLk(int matchingId, string roleName)
         {
-            data.SelectedMatching = matchingID;
+            data.SelectedMatching = matchingId;
             data.SelectedRole = roleName;
             HttpContext.Response.Cookies.Append("selectedRole", roleName);
-            HttpContext.Response.Cookies.Append("selectedMatching", matchingID.ToString());
+            HttpContext.Response.Cookies.Append("selectedMatching", matchingId.ToString());
 
             HttpContext.Session.Set<SessionData>("Data", data);
 
-            await context.SetLastVisitDate(data.User.UserID, roleName, matchingID);
+            userRepository.SetLastVisitDate(data.User.UserID, data.SelectedRole, data.SelectedMatching);
 
             return roleName switch
             {

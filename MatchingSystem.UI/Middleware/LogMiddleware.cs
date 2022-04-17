@@ -22,6 +22,7 @@ namespace MatchingSystem.UI.Middleware
 
         public async Task InvokeAsync(HttpContext context)
         {
+            context.Request.EnableBuffering();
             ILoggerRepository repository = new LogRepository(connectionString);
             if (context.Request.Path.Value != null && context.Request.Path.Value.Contains("/api"))
             {
@@ -29,21 +30,25 @@ namespace MatchingSystem.UI.Middleware
                 {
                     var requestParams = new StringBuilder(string.Empty);
 
-                    if (context.Request.HasFormContentType == true)
+                    if (context.Request.HasFormContentType)
                     {
                         var form = await context.Request.ReadFormAsync();
                         WriteRequestForm(requestParams, form);
                     }
 
-                    
+
                     await WriteRequestBody(requestParams, context.Request.Body);
                     WriteRequestQuery(requestParams, context.Request.Query);
 
                     repository.LogRequest(requestParams.ToString(), context.Request.Path.ToString());
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     await next.Invoke(context);
+                }
+                finally
+                {
+                    context.Request.Body.Position = 0;
                 }
             }
 

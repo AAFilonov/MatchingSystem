@@ -1,16 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace MatchingSystem.UI.RequestModels
+﻿namespace MatchingSystem.UI.RequestModels
 {
     public class ProjectRequest
     {
-        public int? projectId { get; set; }
-        public int tutorId { get; set; }
-        public string name { get; set; }
-        public string info { get; set; }
-        public string[] technologyList { get; set; }
-        public string[] workDirection { get; set; }
-        public string quota { get; set; }
-        public string[] aviableGroups { get; set; }
+        public int ProjectId { get; set; }
+        public int TutorId { get; set; }
+        public string Name { get; set; }
+        public string Info { get; set; }
+        public string[] TechnologyList { get; set; }
+        public string[] WorkDirection { get; set; }
+        public string Quota { get; set; }
+        public string[] AviableGroups { get; set; }
     }
 }

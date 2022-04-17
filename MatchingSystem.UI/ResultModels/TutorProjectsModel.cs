@@ -10,6 +10,6 @@ namespace MatchingSystem.UI.ResultModels
         public IEnumerable<Group> Groups { get; set; }
         public IEnumerable<Technology> Technology { get; set; }
         public IEnumerable<WorkDirection> WorkDirections { get; set; }
-        public int? IsReady { get; set; }
+        public bool IsReady { get; set; }
     }
 }

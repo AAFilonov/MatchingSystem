@@ -1,9 +1,6 @@
-﻿/* Контроллер отвечающий за получение/прочтение уведомлений */
-
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using MatchingSystem.DataLayer;
+using MatchingSystem.DataLayer.Interface;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MatchingSystem.UI.ApiControllers
@@ -11,25 +8,29 @@ namespace MatchingSystem.UI.ApiControllers
     [ApiController]
     public class NotificationController : ControllerBase
     {
-        private readonly DataContext context;
+        private readonly ITutorRepository tutorRepository;
+        private readonly IExecutiveRepository executiveRepository;
+        private readonly IUserRepository userRepository;
 
-        public NotificationController(DataContext ctx)
+        public NotificationController(ITutorRepository tutorRepository, IExecutiveRepository executiveRepository, IUserRepository userRepository)
         {
-            context = ctx;
+            this.tutorRepository = tutorRepository;
+            this.executiveRepository = executiveRepository;
+            this.userRepository = userRepository;
         }
-
+  
         [Route("api/[controller]/get_notifications")]
         [HttpGet]
-        public async Task<IActionResult> GetNotificationsByExecutive([FromQuery] int? userId, [FromQuery] int? matchingId)
+        public IActionResult GetNotificationsByExecutive(int userId, int matchingId)
         {
-            Dictionary<string, int> actionResult = new Dictionary<string, int>(1);
+            var actionResult = new Dictionary<string, int>(1);
 
             try
             {
-                var result = await context.GetNotificationsCountByExecutive(userId, matchingId);
+                var result = executiveRepository.GetNotificationsCountByExecutive(userId, matchingId);
 
                 actionResult.Add("count", result);
-                context.ReadNotifications(userId, matchingId);
+                userRepository.ReadNotifications(userId, matchingId);
             }
             catch (Exception ex)
             {
@@ -41,15 +42,15 @@ namespace MatchingSystem.UI.ApiControllers
 
         [Route("api/[controller]/getNotificationsByTutor")]
         [HttpGet]
-        public async Task<IActionResult> GetNotificationsByTutor([FromQuery] int? tutorId, [FromQuery] int? userId, [FromQuery] int? matchingId)
+        public IActionResult GetNotificationsByTutor(int tutorId, int userId, int matchingId)
         {
-            var count = await context.GetNotificationsCountByTutor(tutorId);
+            var count = tutorRepository.GetNotificationsCountByTutor(tutorId);
 
-            Dictionary<string, int> result = new Dictionary<string, int> {{"count", count}};
+            var result = new Dictionary<string, int> {{"count", count}};
 
             try
             {
-                context.ReadNotifications(userId, matchingId, tutorId);
+                userRepository.ReadNotifications(userId, matchingId, tutorId);
             }
             catch (Exception ex)
             {

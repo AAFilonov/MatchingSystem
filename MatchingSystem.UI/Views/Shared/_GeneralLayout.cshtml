@@ -3,6 +3,7 @@
 
 @{
     SessionData data = Context.Session.Get<SessionData>("Data");
+    var rolesMatchings = data.RolesMatchings.ToList();
 }
 
 <!DOCTYPE html>
@@ -34,7 +35,7 @@
                 Сервис распределения студентов
             </h2>
             <h4 class="description-1">
-                @data.RolesMatchings.Find(x => x.MatchingID == data.SelectedMatching).MatchingName
+                @rolesMatchings.Find(x => x.MatchingId == data.SelectedMatching)?.MatchingName
                 <span class="material-icons" id="js-stage-info">
                     info_outline
                 </span>
@@ -46,7 +47,7 @@
                     @data.User?.NameAbbreviation
                 </a>
                 <h4 class="user-name">
-                    @data.RolesMatchings.Find(x => x.RoleName == data.SelectedRole).RoleName_ru
+                    @rolesMatchings.Find(x => x.RoleName == data.SelectedRole)?.RoleName_ru
                 </h4>
                 <div class="dropdown-menu" aria-labelledby="fio">
                     @* ReSharper disable once Mvc.ActionNotResolved *@
@@ -79,7 +80,7 @@
                     }
                 </ul>
                 <ul class="navbar-nav">
-                    @if (data.RolesMatchings.Count > 1)
+                    @if (rolesMatchings.Count > 1)
                     {
                         <li class="nav-item">
                             <a href="#" class="nav-link change-lk" id="js-change-lk-trigger" data-trigger="modal">
@@ -100,9 +101,9 @@
 <form class="d-none" id="metadata">
     <input type="hidden" name="userId" id="userId" value="@data.User.UserID"/>
     <input type="hidden" name="matchingId" id="matchingId" value="@data.SelectedMatching"/>
-    @if (data.TutorID != null)
+    @if (data.TutorId != null)
     {
-        <input type="hidden" name="tutorId" value=@data.TutorID/>
+        <input type="hidden" name="tutorId" value=@data.TutorId/>
     }
 </form>
 <div class="modal modal-static fade" id="js-change-lk" tabindex="-2" role="dialog" data-backdrop="static">
@@ -169,7 +170,7 @@
 @if (data.SelectedRole == "Tutor")
 {
     <script>
-        CheckNotificationsByTutor("Вам ответили на запрос на изменение квоты", @data.TutorID, @data.User.UserID, @data.SelectedMatching);
+        CheckNotificationsByTutor("Вам ответили на запрос на изменение квоты", @data.TutorId, @data.User.UserID, @data.SelectedMatching);
     </script>
 }
 </body>

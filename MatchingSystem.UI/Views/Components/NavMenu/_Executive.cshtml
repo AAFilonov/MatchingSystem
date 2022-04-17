@@ -18,15 +18,41 @@ else
 }
 @if (ViewData["active"].ToString() == "statistics")
 {
-    <li class="nav-item">
-        <a href=@Url.Action("statistics", "executive") class="active nav-link">Статистика</a>
-    </li>
+<li class="nav-item dropdown">
+    <a href="" class="nav-link dropdown-toggle active" id="StatisticDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Статистика
+    </a>
+    <div class="dropdown-menu" aria-labelledby="StatisticDropdown">
+        <a class="dropdown-item" href=@Url.Action("Main", "Statistics")>Общая</a>
+        <a class="dropdown-item" href=@Url.Action("Tutors", "Statistics")>По преподавателям: детальная</a>
+        <a class="dropdown-item" href=@Url.Action("Students", "Statistics")>По студентам: детальная</a>
+    </div>
+</li>
 }
 else
 {
-    <li class="nav-item">
-        <a href=@Url.Action("statistics", "executive") class="nav-link">Статистика</a>
-    </li>
+    
+<li class="nav-item dropdown">
+    <a href="" class="nav-link dropdown-toggle" id="StatisticDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Статистика
+    </a>
+    <div class="dropdown-menu" aria-labelledby="StatisticDropdown">
+        <a class="dropdown-item" href=@Url.Action("Main", "Statistics")>Общая</a>
+        <a class="dropdown-item" href=@Url.Action("Tutors", "Statistics")>По преподавателям: детальная</a>
+       
+        @if (data.CurrentStage?.StageTypeCode > 2)
+        {
+            <a class="dropdown-item" href=@Url.Action("Students", "Statistics")>По студентам: детальная</a>
+           
+        }
+        @if (data.CurrentStage?.StageTypeCode == 3)
+        {
+            <a class="dropdown-item" href=@Url.Action("Groups", "Statistics")>По группам: детальная</a>
+        }
+    </div>
+</li>
+
+ 
 }
 @if (data.CurrentStage?.StageTypeCode == 5)
 {

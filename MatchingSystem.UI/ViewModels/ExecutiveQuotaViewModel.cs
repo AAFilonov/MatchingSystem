@@ -5,7 +5,7 @@ namespace MatchingSystem.UI.ViewModels
 {
     public class ExecutiveQuotaViewModel
     {
-        public List<QuotaRequest> Requests { get; set; }
-        public List<QuotaHistoryExecutive> History { get; set; }
+        public IEnumerable<QuotaRequest> Requests { get; set; }
+        public IEnumerable<QuotaHistoryExecutive> History { get; set; }
     }
 }

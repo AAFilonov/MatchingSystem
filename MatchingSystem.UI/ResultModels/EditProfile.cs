@@ -5,8 +5,8 @@ namespace MatchingSystem.UI.ResultModels
 {
     public class EditProfile
     {
-        public List<WorkDirection> WorkDirections { get; set; }
-        public List<Technology> Technologies { get; set; }
+        public IEnumerable<WorkDirection> WorkDirections { get; set; }
+        public IEnumerable<Technology> Technologies { get; set; }
         public string Info { get; set; }
         public string Info2 { get; set; }
     }

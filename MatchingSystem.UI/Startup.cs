@@ -1,11 +1,9 @@
 ﻿using System;
-using MatchingSystem.DataLayer;
 using MatchingSystem.DataLayer.Interface;
 using MatchingSystem.DataLayer.Repository;
 using MatchingSystem.UI.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -33,10 +31,29 @@ namespace MatchingSystem.UI
 
             services.AddDistributedMemoryCache();
             services.AddMvc();
+
             services.AddTransient<IStudentRepository, StudentRepository>(options =>
                 new StudentRepository(connectionString));
+
             services.AddTransient<IDictionaryRepository, DictionaryRepository>(options =>
                 new DictionaryRepository(connectionString));
+
+            services.AddTransient<ITutorRepository, TutorRepository>(options =>
+                new TutorRepository(connectionString));
+
+            services.AddTransient<IProjectRepository, ProjectRepository>(options =>
+                new ProjectRepository(connectionString));
+
+            services.AddTransient<IUserRepository, UserRepository>(options =>
+                new UserRepository(connectionString));
+
+            services.AddTransient<IMatchingRepository, MatchingRepository>(options =>
+                new MatchingRepository(connectionString));
+
+            services.AddTransient<IExecutiveRepository, ExecutiveRepository>(options =>
+                new ExecutiveRepository(connectionString));
+            services.AddTransient<IStatisticsRepository, StatisticsRepository>(options =>
+                new StatisticsRepository(connectionString));
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options => options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Home/Login"));
@@ -47,14 +64,11 @@ namespace MatchingSystem.UI
                 options.Cookie.Name = "SessionStorage";
             });
 
-
-            services.AddDbContext<DataContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")),
-                ServiceLifetime.Transient
-            );
+            var useMigrations = (bool) Configuration.GetValue(typeof(bool), "ApplicationSettings:UseMigrations");
+            if (useMigrations)
+                Migrations.Migrator.migrate(Configuration);
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app)
         {
             var env = Configuration.GetValue(typeof(string), "ApplicationSettings:Environment").ToString();

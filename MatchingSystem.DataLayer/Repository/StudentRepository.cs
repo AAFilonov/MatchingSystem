@@ -6,22 +6,45 @@ using Dapper;
 using MatchingSystem.DataLayer.Entities;
 using MatchingSystem.DataLayer.Interface;
 using MatchingSystem.DataLayer.Base;
-using Microsoft.Data.SqlClient;
+using MatchingSystem.DataLayer.IO.Params;
 
 namespace MatchingSystem.DataLayer.Repository
 {
     public class StudentRepository : ConnectionBase, IStudentRepository
     {
-        public Task<AllocatedByStudent> GetAllocationByStudentAsync(int studentId)
+
+        public StudentRepository(string connectionString) : base(connectionString)
         {
-            throw new NotImplementedException();
         }
+
+        public async Task<AllocatedByStudent> GetAllocationByStudentAsync(int studentId)
+        {
+            var result = await Connection.QueryFirstOrDefaultAsync(
+                    "select" +
+                    " TutorNameAbbreviation," +
+                    " ProjectName " +
+                    "from napp.get_AllocatedProject_ByStudent(@StudentID)",
+                    new { StudentId = studentId }
+                );
+            return result;
+        }
+
+        public AllocatedByStudent GetAllocationByStudent(int studentId)
+        {
+            var result =  Connection.QueryFirstOrDefault(
+                    "select" +
+                    " TutorNameAbbreviation," +
+                    " ProjectName " +
+                    "from napp.get_AllocatedProject_ByStudent(@StudentID)",
+                    new { StudentId = studentId }
+                );
+            return result;
+        }
+
 
         public async Task<Student> GetStudentAsync(int studentId)
         {
-            using IDbConnection db = new SqlConnection(ConnectionString);
-
-            var result = await db.QueryFirstAsync<Student>(
+          var result = await Connection.QueryFirstAsync<Student>(
                 "select " +
                 "StudentID, " + 
                 "GroupID, " +
@@ -41,9 +64,7 @@ namespace MatchingSystem.DataLayer.Repository
 
         public Student GetStudent(int studentId)
         {
-            using IDbConnection db = new SqlConnection(ConnectionString);
-
-            var result = db.QueryFirst<Student>(
+            var result = Connection.QueryFirst<Student>(
                 "select " +
                 "StudentID, " + 
                 "GroupID, " +
@@ -63,9 +84,8 @@ namespace MatchingSystem.DataLayer.Repository
 
         public async Task<int> GetStudentIdAsync(int userId, int matchingId)
         {
-            using IDbConnection db = new SqlConnection(ConnectionString);
-            db.Open();
-            var studentId = await db.ExecuteScalarAsync<int>(
+
+            var studentId = await Connection.ExecuteScalarAsync<int>(
                 "select napp.get_StudentID(@UserID, @MatchingID) as Value", 
                 new { UserId = userId, MatchingId = matchingId }
             );
@@ -75,9 +95,8 @@ namespace MatchingSystem.DataLayer.Repository
 
         public int GetStudentId(int userId, int matchingId)
         {
-            using IDbConnection db = new SqlConnection(ConnectionString);
-            
-            var studentId = db.ExecuteScalar<int>(
+             
+            var studentId = Connection.ExecuteScalar<int>(
                 "select napp.get_StudentID(@UserID, @MatchingID) as Value", 
                 new { UserId = userId, MatchingId = matchingId }
             );
@@ -95,21 +114,109 @@ namespace MatchingSystem.DataLayer.Repository
 
         public IEnumerable<Technology> GetTechnologiesSelectedByStudent(int studentId)
         {
-            throw new NotImplementedException();
+            return Connection.Query<Technology>(
+                  "select TechnologyCode, TechnologyName_ru from napp.get_Technologies_WithSelected_ByStudent(@StudentID) where IsSelectedByStudent = 1",
+                  new
+                  {
+                      StudentID = studentId}
+                      );
         }
 
-        public Task<IEnumerable<WorkDirection>> GetWorkDirectionsSelectedByStudentAsync(int studentId)
+        public async Task<IEnumerable<WorkDirection>> GetWorkDirectionsSelectedByStudentAsync(int studentId)
         {
-            throw new NotImplementedException();
+         
+            return await Connection.QueryAsync<WorkDirection>(
+                "select DirectionCode, DirectionName_ru from napp.get_WorkDirections_WithSelected_ByStudent(@StudentID) where IsSelectedByStudent = 1",
+                new
+                {
+                    StudentID = studentId
+                }
+                
+            );
         }
 
         public IEnumerable<WorkDirection> GetWorkDirectionsSelectedByStudent(int studentId)
         {
-            throw new NotImplementedException();
+            return  Connection.Query<WorkDirection>(
+               "select DirectionCode, DirectionName_ru from napp.get_WorkDirections_WithSelected_ByStudent(@StudentID) where IsSelectedByStudent = 1",
+               new
+               {
+                   StudentID = studentId
+               }
+               
+           );
         }
 
-        public StudentRepository(string connectionString) : base(connectionString)
+        public async Task EditProfileAsync(EditProfileParams inParams)
         {
+            await Connection.ExecuteAsync(
+                "exec napp.upd_Student_Info @StudentID, @Info, @Info2, @Technology_CodeList, @WorkDirection_CodeList",
+                new
+                {
+                    StudentID = inParams.StudentId,
+                    Info = inParams.Info,
+                    Info2 = inParams.Info2,
+                    Technology_CodeList = inParams.TechnologyCodeList,
+                    WorkDirection_CodeList = inParams.WorkDirectionCodeList
+                }
+            );
+        }
+
+        public void EditProfile(EditProfileParams inParams)
+        {
+            Connection.Execute(
+                "exec napp.upd_Student_Info @StudentID, @Info, @Info2, @Technology_CodeList, @WorkDirection_CodeList",
+                new
+                {
+                    StudentID = inParams.StudentId,
+                    Info = inParams.Info,
+                    Info2 = inParams.Info2,
+                    Technology_CodeList = inParams.TechnologyCodeList,
+                    WorkDirection_CodeList = inParams.WorkDirectionCodeList
+                }
+            );
+        }
+
+        public void SetPreferences(StudentPreferenceParams inParams)
+        {
+            Connection.Execute(
+                "exec napp.create_StudentsPreference @StudentID, @ProjectID, @OrderNumber",
+                new
+                {
+                    StudentID = inParams.StudentId,
+                    ProjectID = inParams.SelectedProjectId,
+                    OrderNumber = inParams.Order
+                }
+            );
+        }
+
+        public async Task SetPreferencesAsync(StudentPreferenceParams inParams)
+        {
+            await Connection.ExecuteAsync(
+                "exec napp.create_StudentsPreference @StudentID, @ProjectID, @OrderNumber",
+                new
+                {
+                    StudentID = inParams.StudentId,
+                    ProjectID = inParams.SelectedProjectId,
+                    OrderNumber = inParams.Order
+                }
+            );
+        }
+
+        public void ClearPreferences(int studentId)
+        {
+            Connection.Execute(
+                "exec napp.del_StudentsPreferences @StudentID", 
+                new {StudentID = studentId}
+            );
+        }
+
+        public async Task ClearPreferencesAsync(int studentId)
+        {
+            await Connection.ExecuteAsync(
+                "exec napp.del_StudentsPreferences @StudentID", 
+                new {StudentID = studentId}
+            );
         }
     }
 }

@@ -2,11 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <Configurations>Debug;Release;Production</Configurations>
+    <Configurations>Debug;Production</Configurations>
     <AssemblyName>MatchingSystem.UI</AssemblyName>
     <RootNamespace>MatchingSystem.UI</RootNamespace>
     <UserSecretsId>878e82ca-8c10-40d9-9298-92cbb8dfab0b</UserSecretsId>
     <Nullable>disable</Nullable>
+    <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -17,6 +18,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Production|AnyCPU'">
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>none</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
@@ -36,11 +39,11 @@
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
-    <Content Update="wwwroot\js\roles\executive\statistics.js">
+    <Content Update="wwwroot\js\roles\executive\statistics_main.js">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
-    <Content Update="Views\Executive\Statistics.cshtml">
+    <Content Update="Views\Executive\Statistics_Main.cshtml">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
@@ -78,7 +81,6 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
     <PackageReference Include="Microsoft.AspNetCore.Razor" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.0" />
     <PackageReference Include="Scrypt.NET" Version="1.3.0" />
@@ -116,11 +118,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\js\roles" />
+    <Folder Include="Infrastructure" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MatchingSystem.Constants\MatchingSystem.Constants.csproj" />
     <ProjectReference Include="..\MatchingSystem.DataLayer\MatchingSystem.DataLayer.csproj" />
+    <ProjectReference Include="..\MigrationLayer\MigrationLayer.csproj" />
   </ItemGroup>
 
 </Project>

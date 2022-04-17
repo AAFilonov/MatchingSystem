@@ -1,9 +1,6 @@
-﻿using System.Linq;
-using MatchingSystem.DataLayer;
+﻿using MatchingSystem.DataLayer.Interface;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Filters;
 using MatchingSystem.UI.Helpers;
 using MatchingSystem.UI.Services;
@@ -13,33 +10,30 @@ namespace MatchingSystem.UI.Controllers
     [Authorize(Roles = "Tutor")]
     public class TutorController : Controller
     {
-        private readonly DataContext context;
+        private readonly ITutorRepository tutorRepository;
+        private readonly IMatchingRepository matchingRepository;
         private SessionData data;
+        
+        public TutorController(ITutorRepository tutorRepository, IMatchingRepository matchingRepository)
+        {
+            this.matchingRepository = matchingRepository;
+            this.tutorRepository = tutorRepository;
+        }
 
         public override void OnActionExecuting(ActionExecutingContext ctx)
         {
             base.OnActionExecuting(ctx);
-            if (data == null)
-            {
-                data = HttpContext.Session.Get<SessionData>("Data");
-                //TODO GetTutorIdAsync
-                data.TutorID = context.GetInt.FromSqlRaw("select napp.get_TutorID(@UserID, @MatchingID) as Value",
-                    new SqlParameter("@UserID", data.User.UserID),
-                    new SqlParameter("@MatchingID", (int)data.SelectedMatching)).FirstOrDefault().Value;
-                HttpContext.Session.Set<SessionData>("Data", data);
-            }
+            if (data != null) return;
+            data = HttpContext.Session.Get<SessionData>("Data");
+            data.TutorId = tutorRepository.GetTutorId(data.User.UserID, data.SelectedMatching);
+            HttpContext.Session.Set<SessionData>("Data", data);
         }
 
         public override void OnActionExecuted(ActionExecutedContext ctx)
         {
             base.OnActionExecuted(ctx);
-            data.CurrentStage = context.GetCurrentStageAsync(data.SelectedMatching).Result;
+            data.CurrentStage = matchingRepository.GetCurrentStage(data.SelectedMatching);
             HttpContext.Session.Set<SessionData>("Data", data);
-        }
-
-        public TutorController(DataContext context)
-        {
-            this.context = context;
         }
 
         [HttpGet]

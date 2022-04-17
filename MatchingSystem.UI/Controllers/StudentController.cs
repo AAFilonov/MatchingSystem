@@ -14,9 +14,9 @@ namespace MatchingSystem.UI.Controllers
     [Authorize(Roles = "Student")]
     public class StudentController: Controller
     {
-        private readonly DataContext context;
-        private readonly StudentRepository studentRepository;
-        private readonly DictionaryRepository dictionaryRepository;
+        private readonly IStudentRepository studentRepository;
+        private readonly IDictionaryRepository dictionaryRepository;
+        private readonly IMatchingRepository matchingRepository;
         private SessionData data;
         private Student student;
 
@@ -24,24 +24,22 @@ namespace MatchingSystem.UI.Controllers
         {
             base.OnActionExecuting(ctx);
             data ??= HttpContext.Session.Get<SessionData>("Data");
-            var studentId = studentRepository.GetStudentId(data.User.UserID, data.SelectedMatching.Value);
+            var studentId = studentRepository.GetStudentId(data.User.UserID, data.SelectedMatching);
             student = studentRepository.GetStudent(studentId);
         }
 
         public override void OnActionExecuted(ActionExecutedContext ctx)
         {
             base.OnActionExecuted(ctx);
-            var task = context.GetCurrentStageAsync(data.SelectedMatching);
-            task.Wait();
-            data.CurrentStage = task.Result;
+            data.CurrentStage = matchingRepository.GetCurrentStage(data.SelectedMatching);
             HttpContext.Session.Set<SessionData>("Data", data);
         }
 
-        public StudentController(DataContext ctx, IStudentRepository studentRepo, IDictionaryRepository dictionaryRepo)
+        public StudentController(IStudentRepository studentRepository, IDictionaryRepository dictionaryRepository, IMatchingRepository matchingRepository)
         {
-            context = ctx;
-            studentRepository = (StudentRepository)studentRepo;
-            dictionaryRepository = (DictionaryRepository)dictionaryRepo;
+            this.studentRepository = studentRepository;
+            this.dictionaryRepository = dictionaryRepository;
+            this.matchingRepository = matchingRepository;
         }
 
         public IActionResult Index()

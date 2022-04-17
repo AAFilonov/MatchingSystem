@@ -1,51 +1,55 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
-using MatchingSystem.DataLayer;
-using MatchingSystem.DataLayer.Entities;
+using System.Data.SqlClient;
 using MatchingSystem.DataLayer.Interface;
-using MatchingSystem.DataLayer.Repository;
 using MatchingSystem.UI.RequestModels;
 using MatchingSystem.UI.ResultModels;
+using MatchingSystem.Constants;
 
 namespace MatchingSystem.UI.ApiControllers
 {
     [ApiController]
     public class ProjectsController : ControllerBase
     {
-        private readonly DataContext context;
-        private readonly DictionaryRepository dictionaryRepository;
+        private readonly IDictionaryRepository dictionaryRepository;
+        private readonly ITutorRepository tutorRepository;
+        private readonly IMatchingRepository matchingRepository;
+        private readonly IProjectRepository projectRepository;
 
-        public ProjectsController(DataContext ctx, IDictionaryRepository dicRepo)
+        public ProjectsController(
+            IDictionaryRepository dictionaryRepository, 
+            ITutorRepository tutorRepository, 
+            IMatchingRepository matchingRepository,
+            IProjectRepository projectRepository
+            )
         {
-            context = ctx;
-            dictionaryRepository = (DictionaryRepository) dicRepo;
+            this.dictionaryRepository = dictionaryRepository;
+            this.tutorRepository = tutorRepository;
+            this.matchingRepository = matchingRepository;
+            this.projectRepository = projectRepository;
         }
 
         [Route("api/[controller]/tutor/add_project")]
         [HttpPost]
-        public async Task<IActionResult> AddTutorProject([FromForm] ProjectRequest project)
+        public IActionResult AddTutorProject([FromForm] ProjectRequest project)
         {
             try
             {
-                await context.AddProject(
-                    project.tutorId,
-                    project.name,
-                    project.info ?? String.Empty,
-                    string.Join(',', project.technologyList ?? new [] { string.Empty }),
-                    string.Join(',', project.workDirection ?? new[] { string.Empty }),
-                    string.Join(',', project.aviableGroups ?? new[] { string.Empty }),
-                    project.quota
-                );
+                projectRepository.CreateProject(new DataLayer.IO.Params.ProjectParams()
+                {
+                    Info = project.Info,
+                    Quota = (project.Quota=="Не важно")?null:project.Quota,
+                    TutorId = project.TutorId,
+                    ProjectName = project.Name,
+                    CommaSeparatedTechList = string.Join(',', project.TechnologyList ?? new [] { string.Empty }),
+                    CommaSeparatedWorkList = string.Join(',', project.WorkDirection ?? new[] { string.Empty }),
+                    CommaSeparatedGroupList = string.Join(',', project.AviableGroups ?? new[] { string.Empty })
+                });
             }
             catch (Exception)
             {
-                return Problem(detail: "Возникла неизвестная ошибка", statusCode: 500);
+                return Problem("Возникла неизвестная ошибка", statusCode: 500);
             }
 
             return new JsonResult(true);
@@ -53,38 +57,37 @@ namespace MatchingSystem.UI.ApiControllers
 
         [Route("api/[controller]/tutor/edit_project")]
         [HttpPut]
-        public async Task<IActionResult> EditProject([FromForm] ProjectRequest project)
+        public IActionResult EditProject([FromForm] ProjectRequest project)
         {
             try
             {
-                await context.EditProject(
-                    project.projectId.Value,
-                    project.tutorId,
-                    project.name ?? string.Empty,
-                    project.info ?? string.Empty,
-                    string.Join(',', project.technologyList ?? new [] { string.Empty }),
-                    string.Join(',', project.workDirection ?? new [] { string.Empty }),
-                    string.Join(',', project.aviableGroups ?? new [] { string.Empty }),
-                    project.quota
-                );
+                projectRepository.EditProject(new DataLayer.IO.Params.ProjectParams()
+                {
+                    Info = project.Info,
+                    Quota = (project.Quota=="Не важно")?null:project.Quota,
+                    TutorId = project.TutorId,
+                    ProjectName = project.Name,
+                    CommaSeparatedTechList = string.Join(',', project.TechnologyList ?? new [] { string.Empty }),
+                    CommaSeparatedWorkList = string.Join(',', project.WorkDirection ?? new[] { string.Empty }),
+                    CommaSeparatedGroupList = string.Join(',', project.AviableGroups ?? new[] { string.Empty }),
+                    ProjectId = project.ProjectId
+                });
+                
                 return Ok();
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return Problem(detail: "Возникла неизвестная ошибка", statusCode: 500);
+                return Problem("Возникла неизвестная ошибка: "+e.Message, statusCode: 500);
             }
         }
 
         [Route("api/[controller]/delete")]
         [HttpDelete]
-        public async Task<IActionResult> DeleteProject([FromQuery] int? projectId)
+        public IActionResult DeleteProject([FromQuery] int projectId)
         {
-            if (!projectId.HasValue) return Problem(detail: "Отсутствует обязательный параметр.", statusCode: 400);
             try
             {
-                //TODO DeleteProjectAsync
-                await context.Database.ExecuteSqlRawAsync("exec napp.del_Project null, @ProjectID",
-                    new SqlParameter("@ProjectID", projectId));
+                projectRepository.DeleteProject(projectId);
                 return NoContent();
             }
             catch (Exception ex)
@@ -95,111 +98,87 @@ namespace MatchingSystem.UI.ApiControllers
 
         [Route("api/[controller]/get_projects_data")]
         [HttpGet]
-        public async Task<IActionResult> GetProjectsData([FromQuery] int? tutorId)
+        public IActionResult GetProjectsData([FromQuery] int tutorId)
         {
-            if (!tutorId.HasValue) return Problem(detail: "Отсутствует обязательный параметр.", statusCode: 400);
+            if (tutorId == default)
+            {
+                return BadRequest("Отсутствует обязательный параметр.");
+            }
             
-            TutorProjectsModel model = new TutorProjectsModel();
+            var model = new TutorProjectsModel
+            {
+                Projects = projectRepository.GetProjectsByTutor(tutorId).ToList(),
+                Groups = tutorRepository.GetGroupsByTutor(tutorId),
+                Technology = dictionaryRepository.GetTechnologiesAll(),
+                WorkDirections = dictionaryRepository.GetWorkDirectionsAll(),
+                CommonQuota = tutorRepository.GetCommonQuotaByTutor(tutorId),
+                IsReady = tutorRepository.GetReadyByTutor(tutorId)
+            };
 
-            model.Projects = await context.GetTutorProjectsAsync(tutorId);
-            model.Projects.ForEach(x => { x.AvailableGroupsName_List = x.AvailableGroupsName_List?.Replace(", ", "<br/>"); });
-            
-            model.Groups = await context.GetGroupsByTutorAsync(tutorId);
-
-            model.Technology = await dictionaryRepository.GetTechnologiesAllAsync();
-            model.WorkDirections = await dictionaryRepository.GetWorkDirectionsAllAsync();
-            model.CommonQuota = await context.GetCommonQuotaAsync(tutorId);
-
-            model.IsReady = await context.GetReady(tutorId);
+            model.Projects.ForEach(x =>
+                x.AvailableGroupsName_List = x.AvailableGroupsName_List?.Replace(", ", "<br/>")
+            );
 
             return new JsonResult(model);
         }
 
         [Route("api/[controller]/editQuotaPerProject")]
         [HttpPatch]
-        public async Task<IActionResult> EditQuota()
+        public IActionResult EditQuota()
         {
-            var data = await Request.ReadFormAsync();
-            var tutorId = new SqlParameter("@TutorID", Convert.ToInt32(data["tutorId"]));
+            var data = Request.Form;
+            
+            var projectId = Convert.ToInt32(data["projectId"]);
+            var quota = Convert.ToInt32(data["quota"]);
+            var tutorId = Convert.ToInt32(data["tutorId"]);
+            
 
-            var currentStageCode =
-                (await context.GetCurrentStageAsync(Convert.ToInt32(data["matching"]))).StageTypeCode;
+            var currentStageCode = matchingRepository.GetCurrentStage(Convert.ToInt32(data["matching"])).StageTypeCode;
 
-            if (currentStageCode == 3)
+            try
             {
-                try
+                switch (currentStageCode)
                 {
-                    //TODO UpdateProjectQuotaStage3Async
-                    await context.Database.ExecuteSqlRawAsync(
-                        "exec napp.upd_ProjectQuota_ForStage3 @TutorID, @ProjectID, @NewQuotaQty",
-                        tutorId,
-                        new SqlParameter("@ProjectID", Convert.ToInt32(data["projectId"])),
-                        new SqlParameter("@NewQuotaQty", Convert.ToInt32(data["quota"])));
-                    return NoContent();
+                    case StageCode.CollectStudentPreferences:
+                        projectRepository.UpdateProjectQuotaStage3(tutorId, projectId, quota);
+                        break;
+                    case StageCode.CollectTutorPreferences:
+                        projectRepository.UpdateProjectQuotaStage4(tutorId, projectId, (short)quota);
+                        break;
+                    default:
+                        return BadRequest("На данном этапе запрещено изменять проекты");
                 }
-                catch (Exception ex)
-                {
-                    return Problem(detail: ex.Message);
-                }
+
+                return Ok();
             }
-            else if (currentStageCode == 4)
+            catch (Exception ex)
             {
-                try
-                {
-                    var dataTable = new DataTable();
-                    dataTable.Columns.Add("ProjectID", type: typeof(int));
-                    dataTable.Columns.Add("Quota", type: typeof(short));
-
-                    var row = dataTable.NewRow();
-                    row.SetField(columnName: "ProjectID", Convert.ToInt32(data["projectId"]));
-                    row.SetField(columnName: "Quota", Convert.ToInt32(data["quota"]));
-                    dataTable.Rows.Add(row);
-
-                    var projectQuota = new SqlParameter("@ProjectQuota", dataTable) {TypeName = "dbo.ProjectQuota"};
-
-                    //TODO UpdateProjectQuotaStage4Async
-                    await context.Database.ExecuteSqlRawAsync(
-                        "execute napp.upd_ProjectsQuota_ForStage4 @TutorID, @ProjectQuota",
-                        tutorId,
-                        projectQuota);
-                    return NoContent();
-                }
-                catch (Exception ex)
-                {
-                    return Problem(detail: ex.Message, statusCode: 500);
-                }
+                return Problem(ex.Message);
             }
-
-            return Ok();
+            
         }
 
         [Route("api/[controller]/closeProject")]
         [HttpPatch]
-        public async Task<IActionResult> CloseProject([FromQuery] int? tutorId, [FromQuery] int? projectId)
+        public IActionResult CloseProject(int tutorId, int projectId)
         {
-            if (tutorId == null || projectId == null) return BadRequest("Отсутствует требуемый HTTP параметр");
-
             try
             {
-                //TODO SetProjectCloseAsync
-                await context.Database.ExecuteSqlRawAsync("exec napp.upd_Project_Close @TutorID, @ProjectID",
-                    new SqlParameter("@TutorID", tutorId),
-                    new SqlParameter("@ProjectID", projectId));
-
+                projectRepository.SetProjectClose(tutorId, projectId);
                 return Ok();
             }
             catch (SqlException ex)
             {
-                return Problem(detail: ex.Message, statusCode: 500);
+                return Problem(ex.Message, statusCode: 500);
             }
         }
 
         [Route("api/[controller]/getProjectsByTutor")]
         [HttpGet]
-        public async Task<IActionResult> GetProjectsByTutor([FromQuery] int? tutorId)
+        public IActionResult GetProjectsByTutor([FromQuery] int tutorId)
         {
-            if (!tutorId.HasValue) return Problem(detail: "Отсутствует обязательный параметр.", statusCode: 400);
-            var model = await context.GetTutorProjectsAsync(tutorId);
+            var model = projectRepository.GetProjectsByTutor(tutorId);
+            
             return new JsonResult(model);
         }
     }

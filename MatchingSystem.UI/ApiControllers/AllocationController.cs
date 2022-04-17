@@ -1,37 +1,36 @@
 ﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using MatchingSystem.DataLayer;
 using Microsoft.AspNetCore.Mvc;
-using MatchingSystem.DataLayer.Entities;
+using MatchingSystem.DataLayer.Interface;
 using MatchingSystem.UI.ResultModels;
-using MatchingSystem.UI.Services;
 
 namespace MatchingSystem.UI.ApiControllers
 {
     [ApiController]
     public class AllocationController : ControllerBase
     {
-        private readonly DataContext context;
+        private readonly IMatchingRepository matchingRepository;
 
-        public AllocationController(DataContext ctx) => context = ctx;
+        public AllocationController(IMatchingRepository matchingRepository)
+        {
+            this.matchingRepository = matchingRepository;
+        }
 
         [Route("api/[controller]/getFinalAllocations")]
         [HttpGet]
-        public async Task<IActionResult> GetAllocations()
+        public IActionResult GetAllocations()
         {
             try
             {
                 var model = new AllocationData
                 {
-                    Allocations = await context.GetFinalAllocation(),
-                    Matchings = await context.GetMatchingsInfoAsync()
+                    Allocations = matchingRepository.GetFinalAllocations(),
+                    Matchings = matchingRepository.GetMatchingsInfo()
                 };
                 return new JsonResult(model);
             }
             catch (Exception ex)
             {
-                return Problem(detail: "произошла неизвестная ошибка.", statusCode: 500);
+                return Problem("произошла неизвестная ошибка.", statusCode: 500);
             }
         }
     }
