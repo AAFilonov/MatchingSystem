@@ -15,7 +15,7 @@ public class DynamicAllocationProcessor<T, U>
         this.algorithm = algorithm;
     }
 
-    public Allocation<T, U> computeAllocationStep(Allocation<T, U> allocation)
+    public OneToOneAllocation<T, U> computeAllocationStep(OneToOneAllocation<T, U> allocation)
     {
         algorithm.computeStep(allocation);
         return allocation;

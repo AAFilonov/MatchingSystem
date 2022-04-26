@@ -30,7 +30,7 @@ public class StaticAllocationProcessorTests
             { new("Alice"), new("Brie"), new("Cirno") };
 
 
-        var allocation = new Allocation<SimpleAllocated, SimpleAllocated>(men,women);
+        var allocation = new OneToOneAllocation<SimpleAllocated, SimpleAllocated>(men,women);
         allocation.setPreferencesActive(men[0], new List<SimpleAllocated>() { women[0], women[1], women[2] }); //A B C
         allocation.setPreferencesActive(men[1], new List<SimpleAllocated>() { women[1], women[2], women[0] }); //B C A
         allocation.setPreferencesActive(men[2], new List<SimpleAllocated>() { women[2], women[0], women[1] }); //C A B
@@ -55,7 +55,7 @@ public class StaticAllocationProcessorTests
             { new("Alice"), new("Brie"), new("Cirno") };
 
 
-        var allocation = new Allocation<SimpleAllocated, SimpleAllocated>(men,women);
+        var allocation = new OneToOneAllocation<SimpleAllocated, SimpleAllocated>(men,women);
         allocation.setPreferencesActive(men[0], new List<SimpleAllocated>() { women[0], women[1], women[2] }); //A B C
         allocation.setPreferencesActive(men[1], new List<SimpleAllocated>() { women[0], women[2] });           //A C 
         allocation.setPreferencesActive(men[2], new List<SimpleAllocated>() { women[2], women[0], women[1] }); //C A B

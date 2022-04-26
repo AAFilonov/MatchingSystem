@@ -11,6 +11,6 @@ public interface IAllocationAlgorithm<T, U>
     /// <summary>
     /// Вычисляет один шаг алгоритма, модифицирует значение переданного аргумента
     /// </summary>
-    public void computeStep(Allocation<T,U> allocation);
-    public Boolean isFinal(Allocation<T,U> allocation);
+    public void computeStep(OneToOneAllocation<T,U> allocation);
+    public Boolean isFinal(OneToOneAllocation<T,U> allocation);
 }
