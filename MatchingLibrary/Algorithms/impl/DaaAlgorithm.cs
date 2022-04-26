@@ -24,7 +24,7 @@ public class DAAAlgorithm<T, U> : IOneToOneAllocationAlgorithm<T, U>
     where T : class, ISolitaryAllocated
     where U : class, ISolitaryAllocated
 {
-    public void computeStep(Allocation<T, U> allocation)
+    public void computeStep(OneToOneAllocation<T, U> allocation)
     {
         var freeMen = allocation.active.Where(allocated => HaveReacheblePair(allocated,allocation));
         foreach (var freeMan in freeMen)
@@ -33,7 +33,7 @@ public class DAAAlgorithm<T, U> : IOneToOneAllocationAlgorithm<T, U>
         }
     }
 
-    private static void findPair(Allocation<T, U> allocation, T freeMan)
+    private static void findPair(OneToOneAllocation<T, U> allocation, T freeMan)
     {
         var DesiredWomen = allocation.getPreferencesActive(freeMan);
         if (!DesiredWomen.Any())
@@ -59,13 +59,13 @@ public class DAAAlgorithm<T, U> : IOneToOneAllocationAlgorithm<T, U>
     }
 
 
-    public bool isFinal(Allocation<T, U> allocation)
+    public bool isFinal(OneToOneAllocation<T, U> allocation)
     {
         var freeMen = allocation.active.Where(allocated => HaveReacheblePair(allocated,allocation));
         return !freeMen.Any();
     }
 
-    private bool HaveReacheblePair(T allocated, Allocation<T, U> allocation)
+    private bool HaveReacheblePair(T allocated, OneToOneAllocation<T, U> allocation)
     {
         bool havePair = allocation.pairs.ContainsValue(allocated);
         bool canFindPair = allocation.getPreferencesActive(allocated).Any();

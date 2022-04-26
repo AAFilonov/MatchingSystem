@@ -15,7 +15,7 @@ public class StaticAllocationProcessor<T,U>
         this.algorithm = algorithm;
     }
 
-    public Allocation<T,U> allocate(Allocation<T,U> allocation)
+    public OneToOneAllocation<T,U> allocate(OneToOneAllocation<T,U> allocation)
     {
         while (!algorithm.isFinal(allocation))
         {

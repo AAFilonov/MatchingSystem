@@ -26,7 +26,7 @@ public class DAAATests
             { new("Alice"), new("Brie"), new("Cirno") };
 
 
-        var allocation = new Allocation<SimpleAllocated, SimpleAllocated>(men, women);
+        var allocation = new OneToOneAllocation<SimpleAllocated, SimpleAllocated>(men, women);
         allocation.setPreferencesActive(men[0], new List<SimpleAllocated>() { women[0], women[1], women[2] }); 
         allocation.setPreferencesActive(men[1], new List<SimpleAllocated>() { women[1], women[2], women[0] }); 
         allocation.setPreferencesActive(men[2], new List<SimpleAllocated>() { women[2], women[0], women[1] });
@@ -45,7 +45,7 @@ public class DAAATests
             { new("Alice"), new("Brie"), new("Cirno") };
 
 
-        var allocation = new Allocation<SimpleAllocated, SimpleAllocated>(men, women);
+        var allocation = new OneToOneAllocation<SimpleAllocated, SimpleAllocated>(men, women);
         allocation.setPreferencesActive(men[0], new List<SimpleAllocated>() { }); 
         allocation.setPreferencesActive(men[1], new List<SimpleAllocated>() { }); 
         allocation.setPreferencesActive(men[2], new List<SimpleAllocated>() { });
@@ -63,7 +63,7 @@ public class DAAATests
         List<SimpleAllocated> women = new List<SimpleAllocated>()
             { new("Alice"), new("Brie"), new("Cirno") };
         
-        var allocation = new Allocation<SimpleAllocated, SimpleAllocated>(men, women);
+        var allocation = new OneToOneAllocation<SimpleAllocated, SimpleAllocated>(men, women);
 
         var expectedIsFinal = true;
         var actualIsFinal = alg.isFinal(allocation);
@@ -78,7 +78,7 @@ public class DAAATests
         List<SimpleAllocated> women = new List<SimpleAllocated>()
             { new("Alice"), new("Brie"), new("Cirno") };
         
-        var allocation = new Allocation<SimpleAllocated, SimpleAllocated>(men, women);
+        var allocation = new OneToOneAllocation<SimpleAllocated, SimpleAllocated>(men, women);
         
         allocation.setPreferencesActive(men[0], new List<SimpleAllocated>() { women[0], women[1], women[2] }); 
         allocation.setPreferencesActive(men[1], new List<SimpleAllocated>() { women[1], women[2], women[0] }); 
@@ -98,7 +98,7 @@ public class DAAATests
         List<SimpleAllocated> women = new List<SimpleAllocated>()
             { new("Alice"), new("Brie"), new("Cirno") };
         
-        var allocation = new Allocation<SimpleAllocated, SimpleAllocated>(men, women);
+        var allocation = new OneToOneAllocation<SimpleAllocated, SimpleAllocated>(men, women);
         allocation.setPair(men[0],women[0]);
         allocation.setPair(men[1],women[1]);
         //Для последнего достижимых нет
@@ -116,7 +116,7 @@ public class DAAATests
         List<SimpleAllocated> women = new List<SimpleAllocated>()
             { new("Alice"), new("Brie"), new("Cirno") };
         
-        var allocation = new Allocation<SimpleAllocated, SimpleAllocated>(men, women);
+        var allocation = new OneToOneAllocation<SimpleAllocated, SimpleAllocated>(men, women);
         allocation.setPair(men[0],women[0]);
         allocation.setPair(men[1],women[1]);
         allocation.setPair(men[2],women[2]);

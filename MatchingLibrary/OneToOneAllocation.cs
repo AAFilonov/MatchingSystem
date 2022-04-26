@@ -2,11 +2,11 @@ using TestStand.Allocated;
 
 namespace MatchingLibrary;
 
-public class Allocation<T, U> //OneToOneAllocation only
+public class OneToOneAllocation<T, U> //OneToOneAllocation only
     where T : class, IAllocated
     where U : class, IAllocated
 {
-    public Allocation(List<T> active, List<U> passive)
+    public OneToOneAllocation(List<T> active, List<U> passive)
     {
         this.active = active;
         this.passive = passive;
