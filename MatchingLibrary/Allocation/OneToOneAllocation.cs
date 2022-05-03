@@ -2,7 +2,7 @@ using TestStand.Allocated;
 
 namespace MatchingLibrary;
 
-public class OneToOneAllocation<T, U> //OneToOneAllocation only
+public class OneToOneAllocation<T, U> 
     where T : class, IAllocated
     where U : class, IAllocated
 {
