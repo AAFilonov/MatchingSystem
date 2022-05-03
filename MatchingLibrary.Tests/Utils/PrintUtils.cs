@@ -47,4 +47,32 @@ public class PrintUtils
         pairs.ToList().ForEach(pair => result.Append(toString(pair)));
         return result.ToString();
     }
+
+    
+    public static object toString(List<(SimpleCapaciousAllocated, List<(SimpleCapaciousAllocated, List<SimpleAllocated>)>)> pairs)
+    {
+        var result = new StringBuilder();
+        pairs.ToList().ForEach(pair => result.Append(toString(pair)));
+        return result.ToString();
+    }
+
+    private static string toString((SimpleCapaciousAllocated, List<(SimpleCapaciousAllocated, List<SimpleAllocated>)>) tuple)
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.Append("{ ");
+        if (tuple.Item2 != null)
+        {
+            tuple.Item2.ForEach(projectTuple =>
+            {
+                sb.Append(projectTuple.Item1);
+                sb.Append(" ( ");
+                projectTuple.Item2.ForEach(student =>   sb.Append(student+" "));
+                sb.Append(")");
+
+            });
+          
+        }
+        sb.Append("}");
+        return $"pair: [{tuple.Item1} {sb.ToString()}], ";
+    }
 }

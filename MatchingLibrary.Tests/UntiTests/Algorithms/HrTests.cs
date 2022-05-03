@@ -6,6 +6,7 @@ using TestStand.Allocated;
 
 namespace MatchingLibrary.Tests.UntiTests.Algorithms;
 
+[TestFixture]
 public class HrTests
 {
     private HrAlgorithm<SimpleAllocated, SimpleCapaciousAllocated> alg;
@@ -16,183 +17,204 @@ public class HrTests
         alg = new HrAlgorithm<SimpleAllocated, SimpleCapaciousAllocated>();
     }
 
-
-    [Test]
-    public void testIsFinal_WhenListsNotEmptyAndNoPairs()
+    [TestFixture]
+    public class IsFinalTests : HrTests
     {
-        List<SimpleAllocated> residents = new List<SimpleAllocated>()
-            { new("Alex"), new("Bob"), new("Carl") };
-        List<SimpleCapaciousAllocated> hospitals = new List<SimpleCapaciousAllocated>()
-            { new("A", 1), new("B", 2), new("C", 1) };
+        [Test]
+        public void testIsFinal_WhenListsNotEmptyAndNoPairs()
+        {
+            List<SimpleAllocated> residents = new List<SimpleAllocated>()
+                { new("Alex"), new("Bob"), new("Carl") };
+            List<SimpleCapaciousAllocated> hospitals = new List<SimpleCapaciousAllocated>()
+                { new("A", 1), new("B", 2), new("C", 1) };
 
-        var allocation = new OneToManyAllocation<SimpleAllocated, SimpleCapaciousAllocated>(residents, hospitals);
+            var allocation = new OneToManyAllocation<SimpleAllocated, SimpleCapaciousAllocated>(residents, hospitals);
 
-        Assert.AreEqual(true, alg.isFinal(allocation));
+            Assert.AreEqual(true, alg.isFinal(allocation));
+        }
+
+        [Test]
+        public void testIsFinal_WhenListsNotEmptyAndThereIsPreferences()
+        {
+            List<SimpleAllocated> residents = new List<SimpleAllocated>()
+                { new("Alex"), new("Bob"), new("Carl") };
+            List<SimpleCapaciousAllocated> hospitals = new List<SimpleCapaciousAllocated>()
+                { new("A", 1), new("B", 2), new("C", 1) };
+
+            var allocation = new OneToManyAllocation<SimpleAllocated, SimpleCapaciousAllocated>(residents, hospitals);
+            allocation.setPreferencesForStudent(residents[0],
+                new List<SimpleCapaciousAllocated>() { hospitals[0], hospitals[1] }); //A B
+
+            Assert.AreEqual(false, alg.isFinal(allocation));
+        }
+
+        [Test]
+        public void testIsFinal_WhenListsNotEmptyAndThereAndAllPaired()
+        {
+            List<SimpleAllocated> stundents = new List<SimpleAllocated>()
+                { new("Alex"), new("Bob"), new("Carl") };
+            List<SimpleCapaciousAllocated> teachers = new List<SimpleCapaciousAllocated>()
+                { new("A", 1), new("B", 2), new("C", 1) };
+
+            var allocation = new OneToManyAllocation<SimpleAllocated, SimpleCapaciousAllocated>(stundents, teachers);
+            allocation.setPreferencesForStudent(stundents[0], new List<SimpleCapaciousAllocated>() { teachers[0] }); //A
+            allocation.setPreferencesForStudent(stundents[0], new List<SimpleCapaciousAllocated>() { teachers[1] }); //B
+            allocation.setPreferencesForStudent(stundents[0], new List<SimpleCapaciousAllocated>() { teachers[2] }); //C
+            allocation.setPair(teachers[0], stundents[0]);
+            allocation.setPair(teachers[1], stundents[1]);
+            allocation.setPair(teachers[2], stundents[2]);
+
+            Assert.AreEqual(true, alg.isFinal(allocation));
+        }
     }
-
-    [Test]
-    public void testIsFinal_WhenListsNotEmptyAndThereIsPreferences()
+    
+    [TestFixture]
+    public class ComputeIterationTests : HrTests
     {
-        List<SimpleAllocated> residents = new List<SimpleAllocated>()
-            { new("Alex"), new("Bob"), new("Carl") };
-        List<SimpleCapaciousAllocated> hospitals = new List<SimpleCapaciousAllocated>()
-            { new("A", 1), new("B", 2), new("C", 1) };
+        [Test]
+        public void testComputeStep_whenPreferencesOfStudentEmpty()
+        {
+            List<SimpleAllocated> students = new List<SimpleAllocated>()
+                { new("a") };
+            List<SimpleCapaciousAllocated> teachers = new List<SimpleCapaciousAllocated>()
+                { new("A", 2), };
 
-        var allocation = new OneToManyAllocation<SimpleAllocated, SimpleCapaciousAllocated>(residents, hospitals);
-        allocation.setPreferencesForStudent(residents[0],
-            new List<SimpleCapaciousAllocated>() { hospitals[0], hospitals[1] }); //A B
+            //A  ни к кому не обратится - будет не распределен
 
-        Assert.AreEqual(false, alg.isFinal(allocation));
-    }
+            var allocation = new OneToManyAllocation<SimpleAllocated, SimpleCapaciousAllocated>(students, teachers);
+            allocation.setPreferencesForStudent(students[0], new List<SimpleCapaciousAllocated>() { }); // a: 
 
-    [Test]
-    public void testIsFinal_WhenListsNotEmptyAndThereAndAllPaired()
-    {
-        List<SimpleAllocated> stundents = new List<SimpleAllocated>()
-            { new("Alex"), new("Bob"), new("Carl") };
-        List<SimpleCapaciousAllocated> teachers = new List<SimpleCapaciousAllocated>()
-            { new("A", 1), new("B", 2), new("C", 1) };
+            allocation.setPreferencesForTeacher(teachers[0], new List<SimpleAllocated>() { }); //A:
 
-        var allocation = new OneToManyAllocation<SimpleAllocated, SimpleCapaciousAllocated>(stundents, teachers);
-        allocation.setPreferencesForStudent(stundents[0], new List<SimpleCapaciousAllocated>() { teachers[0] }); //A
-        allocation.setPreferencesForStudent(stundents[0], new List<SimpleCapaciousAllocated>() { teachers[1] }); //B
-        allocation.setPreferencesForStudent(stundents[0], new List<SimpleCapaciousAllocated>() { teachers[2] }); //C
-        allocation.setPair(teachers[0], stundents[0]);
-        allocation.setPair(teachers[1], stundents[1]);
-        allocation.setPair(teachers[2], stundents[2]);
+            alg.computeStep(allocation);
 
-        Assert.AreEqual(true, alg.isFinal(allocation));
-    }
+            var resultString = PrintUtils.toString(allocation.calcFinalAllocation());
+            Console.WriteLine(resultString);
+            Assert.AreEqual("pair: [A { }], pair: [ { a }], ", resultString);
+            //Should be A_ _a
+        }
+        
+        [Test]
+        public void testComputeStep_whenStundentIsNotAcceptable()
+        {
+            List<SimpleAllocated> students = new List<SimpleAllocated>()
+                { new("a") };
+            List<SimpleCapaciousAllocated> teachers = new List<SimpleCapaciousAllocated>()
+                { new("A", 2), };
 
-    [Test]
-    public void testComputeStep_whenPreferencesOfStudentEmpty()
-    {
-        List<SimpleAllocated> students = new List<SimpleAllocated>()
-            { new("a") };
-        List<SimpleCapaciousAllocated> teachers = new List<SimpleCapaciousAllocated>()
-            { new("A", 2), };
+            var allocation = new OneToManyAllocation<SimpleAllocated, SimpleCapaciousAllocated>(students, teachers);
+            allocation.setPreferencesForStudent(students[0],
+                new List<SimpleCapaciousAllocated>() { teachers[0] }); // a: 
 
-        //A  ни к кому не обратится - будет не распределен
+            allocation.setPreferencesForTeacher(teachers[0], new List<SimpleAllocated>() { }); //A:
 
-        var allocation = new OneToManyAllocation<SimpleAllocated, SimpleCapaciousAllocated>(students, teachers);
-        allocation.setPreferencesForStudent(students[0], new List<SimpleCapaciousAllocated>() { }); // a: 
+            alg.computeStep(allocation);
 
-        allocation.setPreferencesForTeacher(teachers[0], new List<SimpleAllocated>() { }); //A:
+            var resultString = PrintUtils.toString(allocation.calcFinalAllocation());
+            Console.WriteLine(resultString);
+            Assert.AreEqual("pair: [A { }], pair: [ { a }], ", resultString);
+            //Should be A_ _a
+        }
 
-        alg.computeStep(allocation);
+        [Test]
+        public void testComputeStep_whenQuotaNotFull()
+        {
+            List<SimpleAllocated> students = new List<SimpleAllocated>()
+                { new("a") };
+            List<SimpleCapaciousAllocated> teachers = new List<SimpleCapaciousAllocated>()
+                { new("A", 2), };
 
-        var resultString = PrintUtils.toString(allocation.calcFinalAllocation());
-        Console.WriteLine(resultString);
-        Assert.AreEqual("pair: [A { }], pair: [ { a }], ", resultString);
-        //Should be A_ _a
-    }
+            var allocation = new OneToManyAllocation<SimpleAllocated, SimpleCapaciousAllocated>(students, teachers);
+            allocation.setPreferencesForStudent(students[0],
+                new List<SimpleCapaciousAllocated>() { teachers[0] }); //a: A 
 
+            allocation.setPreferencesForTeacher(teachers[0], new List<SimpleAllocated>() { students[0] }); //A: a
 
-    [Test]
-    public void testComputeStep_whenStundentIsNotAcceptable()
-    {
-        List<SimpleAllocated> students = new List<SimpleAllocated>()
-            { new("a") };
-        List<SimpleCapaciousAllocated> teachers = new List<SimpleCapaciousAllocated>()
-            { new("A", 2), };
+            alg.computeStep(allocation);
 
-        var allocation = new OneToManyAllocation<SimpleAllocated, SimpleCapaciousAllocated>(students, teachers);
-        allocation.setPreferencesForStudent(students[0], new List<SimpleCapaciousAllocated>() { teachers[0] }); // a: 
+            var resultString = PrintUtils.toString(allocation.calcFinalAllocation());
+            Console.WriteLine(resultString);
+            Assert.AreEqual("pair: [A { a }], ", resultString);
+            //Should be Aa
+        }
 
-        allocation.setPreferencesForTeacher(teachers[0], new List<SimpleAllocated>() { }); //A:
+        [Test]
+        public void testComputeStep_whenQuotaIsFull()
+        {
+            List<SimpleAllocated> students = new List<SimpleAllocated>()
+                { new("a"), new("b") };
+            List<SimpleCapaciousAllocated> teachers = new List<SimpleCapaciousAllocated>()
+                { new("A", 2), };
 
-        alg.computeStep(allocation);
+            var allocation = new OneToManyAllocation<SimpleAllocated, SimpleCapaciousAllocated>(students, teachers);
+            allocation.setPreferencesForStudent(students[0],
+                new List<SimpleCapaciousAllocated>() { teachers[0] }); // a: A
+            allocation.setPreferencesForStudent(students[1],
+                new List<SimpleCapaciousAllocated>() { teachers[0] }); // b: A
 
-        var resultString = PrintUtils.toString(allocation.calcFinalAllocation());
-        Console.WriteLine(resultString);
-        Assert.AreEqual("pair: [A, {}], pair: [, {a,}], ", resultString);
-        //Should be A_ _a
-    }
+            allocation.setPreferencesForTeacher(teachers[0],
+                new List<SimpleAllocated>() { students[0], students[1] }); //A: a b
 
-    [Test]
-    public void testComputeStep_whenQuotaNotFull()
-    {
-        List<SimpleAllocated> students = new List<SimpleAllocated>()
-            { new("a") };
-        List<SimpleCapaciousAllocated> teachers = new List<SimpleCapaciousAllocated>()
-            { new("A", 2), };
+            alg.computeStep(allocation);
 
-        var allocation = new OneToManyAllocation<SimpleAllocated, SimpleCapaciousAllocated>(students, teachers);
-        allocation.setPreferencesForStudent(students[0], new List<SimpleCapaciousAllocated>() { teachers[0] }); //a: A 
+            var resultString = PrintUtils.toString(allocation.calcFinalAllocation());
+            Console.WriteLine(resultString);
+            Assert.AreEqual("pair: [A { a b }], ", resultString);
+            //Should be Aab
+        }
 
-        allocation.setPreferencesForTeacher(teachers[0], new List<SimpleAllocated>() { students[0] }); //A: a
+        [Test]
+        public void testComputeStep_whenQuotaIsFull_AndOneOverQuotaAndIsWorse()
+        {
+            List<SimpleAllocated> students = new List<SimpleAllocated>()
+                { new("a"), new("b"), new("c") };
+            List<SimpleCapaciousAllocated> teachers = new List<SimpleCapaciousAllocated>()
+                { new("A", 2), };
 
-        alg.computeStep(allocation);
+            var allocation = new OneToManyAllocation<SimpleAllocated, SimpleCapaciousAllocated>(students, teachers);
+            allocation.setPreferencesForStudent(students[0],
+                new List<SimpleCapaciousAllocated>() { teachers[0] }); // a: A
+            allocation.setPreferencesForStudent(students[1],
+                new List<SimpleCapaciousAllocated>() { teachers[0] }); // b: A
+            allocation.setPreferencesForStudent(students[2],
+                new List<SimpleCapaciousAllocated>() { teachers[0] }); // c: A
 
-        var resultString = PrintUtils.toString(allocation.calcFinalAllocation());
-        Console.WriteLine(resultString);
-        Assert.AreEqual("pair: [A, {a,}], ", resultString);
-        //Should be Aa
-    }
+            allocation.setPreferencesForTeacher(teachers[0],
+                new List<SimpleAllocated>() { students[0], students[1], students[2] }); //A: a b c
 
-    [Test]
-    public void testComputeStep_whenQuotaIsFull()
-    {
-        List<SimpleAllocated> students = new List<SimpleAllocated>()
-            { new("a"), new("b") };
-        List<SimpleCapaciousAllocated> teachers = new List<SimpleCapaciousAllocated>()
-            { new("A", 2), };
+            alg.computeStep(allocation);
 
-        var allocation = new OneToManyAllocation<SimpleAllocated, SimpleCapaciousAllocated>(students, teachers);
-        allocation.setPreferencesForStudent(students[0], new List<SimpleCapaciousAllocated>() { teachers[0] }); // a: A
-        allocation.setPreferencesForStudent(students[1], new List<SimpleCapaciousAllocated>() { teachers[0] }); // b: A
+            var resultString = PrintUtils.toString(allocation.calcFinalAllocation());
+            Console.WriteLine(resultString);
+            Assert.AreEqual("pair: [A { a b }], pair: [ { c }], ", resultString);
+            //Should be Aab _c
+        }
 
-        allocation.setPreferencesForTeacher(teachers[0], new List<SimpleAllocated>() { students[0],students[1] }); //A: a b
+        [Test]
+        public void testComputeStep_whenQuotaIsFull_AndOneOverQuotaAndIsBetter()
+        {
+            List<SimpleAllocated> students = new List<SimpleAllocated>()
+                { new("a"), new("b"), new("c") };
+            List<SimpleCapaciousAllocated> teachers = new List<SimpleCapaciousAllocated>()
+                { new("A", 2), };
 
-        alg.computeStep(allocation);
+            var allocation = new OneToManyAllocation<SimpleAllocated, SimpleCapaciousAllocated>(students, teachers);
+            allocation.setPreferencesForStudent(students[0],
+                new List<SimpleCapaciousAllocated>() { teachers[0] }); // a: A
+            allocation.setPreferencesForStudent(students[1],
+                new List<SimpleCapaciousAllocated>() { teachers[0] }); // b: A
+            allocation.setPreferencesForStudent(students[2],
+                new List<SimpleCapaciousAllocated>() { teachers[0] }); // c: A
 
-        var resultString = PrintUtils.toString(allocation.calcFinalAllocation());
-        Console.WriteLine(resultString);
-        Assert.AreEqual("pair: [A { a b }], ", resultString);
-        //Should be Aab
-    }
-    [Test]
-    public void testComputeStep_whenQuotaIsFull_AndOneOverQuotaAndIsWorse()
-    {
-        List<SimpleAllocated> students = new List<SimpleAllocated>()
-            { new("a"), new("b") ,new("c")};
-        List<SimpleCapaciousAllocated> teachers = new List<SimpleCapaciousAllocated>()
-            { new("A", 2), };
+            allocation.setPreferencesForTeacher(teachers[0],
+                new List<SimpleAllocated>() { students[2], students[0], students[1] }); //A: c a b
 
-        var allocation = new OneToManyAllocation<SimpleAllocated, SimpleCapaciousAllocated>(students, teachers);
-        allocation.setPreferencesForStudent(students[0], new List<SimpleCapaciousAllocated>() { teachers[0] }); // a: A
-        allocation.setPreferencesForStudent(students[1], new List<SimpleCapaciousAllocated>() { teachers[0] }); // b: A
-        allocation.setPreferencesForStudent(students[2], new List<SimpleCapaciousAllocated>() { teachers[0] }); // c: A
+            alg.computeStep(allocation);
 
-        allocation.setPreferencesForTeacher(teachers[0], new List<SimpleAllocated>() { students[0],students[1] ,students[2]}); //A: a b c
-
-        alg.computeStep(allocation);
-
-        var resultString = PrintUtils.toString(allocation.calcFinalAllocation());
-        Console.WriteLine(resultString);
-        Assert.AreEqual("pair: [A { a b }], pair: [ { c }], ", resultString);
-        //Should be Aab _c
-    }
-    [Test]
-    public void testComputeStep_whenQuotaIsFull_AndOneOverQuotaAndIsBetter()
-    {
-        List<SimpleAllocated> students = new List<SimpleAllocated>()
-            { new("a"), new("b") ,new("c")};
-        List<SimpleCapaciousAllocated> teachers = new List<SimpleCapaciousAllocated>()
-            { new("A", 2), };
-
-        var allocation = new OneToManyAllocation<SimpleAllocated, SimpleCapaciousAllocated>(students, teachers);
-        allocation.setPreferencesForStudent(students[0], new List<SimpleCapaciousAllocated>() { teachers[0] }); // a: A
-        allocation.setPreferencesForStudent(students[1], new List<SimpleCapaciousAllocated>() { teachers[0] }); // b: A
-        allocation.setPreferencesForStudent(students[2], new List<SimpleCapaciousAllocated>() { teachers[0] }); // c: A
-
-        allocation.setPreferencesForTeacher(teachers[0], new List<SimpleAllocated>() { students[2], students[0],students[1] }); //A: c a b
-
-        alg.computeStep(allocation);
-
-        var resultString = PrintUtils.toString(allocation.calcFinalAllocation());
-        Console.WriteLine(resultString);
-        Assert.AreEqual("pair: [A { a c }], pair: [ { b }], ", resultString);
-        //Should be Acb _b
+            var resultString = PrintUtils.toString(allocation.calcFinalAllocation());
+            Console.WriteLine(resultString);
+            Assert.AreEqual("pair: [A { a c }], pair: [ { b }], ", resultString);
+            //Should be Acb _b
+        }
     }
 }
