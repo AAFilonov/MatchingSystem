@@ -1,6 +1,6 @@
-namespace TestStand.Allocated;
+namespace MatchingLibrary.Utils;
 
-public class SimpleAllocated : ISolitaryAllocated    ,IEquatable<SimpleAllocated>
+public class SimpleAllocated : IEquatable<SimpleAllocated>
 {
     
     public SimpleAllocated(string name)
@@ -9,24 +9,7 @@ public class SimpleAllocated : ISolitaryAllocated    ,IEquatable<SimpleAllocated
     }
 
     private string name { get; set; }
-    public IAllocated? pair { get; set; }
-    public List<IAllocated> preferences { get; set; } = new List<IAllocated>();
-
-    public IEnumerable<IAllocated> GetPreferences()
-    {
-        return preferences;
-    }
-
-    public bool isFree()
-    {
-        return pair == null;
-    }
-
-    public IAllocated? getPair()
-    {
-        return pair;
-    }
-
+ 
     public override string ToString()
     {
         return $"{name}";

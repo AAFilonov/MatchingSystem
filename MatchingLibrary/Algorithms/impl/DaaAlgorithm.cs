@@ -1,74 +1,58 @@
 using System.Linq.Expressions;
-using TestStand.Algorithms;
-using TestStand.Allocated;
+using MatchingLibrary.Algorithms.interfaces;
+using MatchingLibrary.Allocation.impl;
+using MatchingLibrary.Allocation.interfaces;
 
 namespace MatchingLibrary.Algorithms.impl;
 
-/*
-// Изначально все мужчины не женаты и все женщины незамужние.
-while существует свободный мужчина
-M = некоторый свободный мужчина
-w = первая женщина из текущего списка M
-if w свободна
- помечаем M и w помолвленными
-else if w предпочитает M своему текущему жениху M'
- помечаем M и w помолвленными
- вычёркиваем w из списка предпочтений M'
- помечаем M' свободным
-else
- вычёркиваем w из списка предпочтений M
- */
-
-//Классический Алгоритм Гейла Шепли
-public class DAAAlgorithm<T, U> : IOneToOneAllocationAlgorithm<T, U>
-    where T : class, ISolitaryAllocated
-    where U : class, ISolitaryAllocated
+public class DAAAlgorithm<M, W> : IOneToOneAllocationAlgorithm<M, W>
+    where M : class
+    where W : class
 {
-    public void computeStep(OneToOneAllocation<T, U> allocation)
+    public void computeIteration(ISmpAllocation<M, W> allocation)
     {
-        var freeMen = allocation.active.Where(allocated => HaveReacheblePair(allocated,allocation));
-        foreach (var freeMan in freeMen)
+        foreach (var freeMan in allocation.getMList())
         {
-            findPair(allocation, freeMan);
+            if (HaveReacheblePair(freeMan, allocation))
+                findPair(allocation, freeMan);
         }
     }
 
-    private static void findPair(OneToOneAllocation<T, U> allocation, T freeMan)
+    private void findPair(ISmpAllocation<M, W> allocation, M freeMan)
     {
-        var DesiredWomen = allocation.getPreferencesActive(freeMan);
+        var DesiredWomen = allocation.getTPreferences(freeMan);
         if (!DesiredWomen.Any())
             return; //список предпочтений пуст
         var DesiredWoman = DesiredWomen.First();
 
-        var womanPref = allocation.getPreferencesPassive(DesiredWoman);
-        var womanPair = allocation.getPairT(DesiredWoman);
+        var womanPref = allocation.getUPreferences(DesiredWoman);
+        var womanPair = allocation.getAssignedByW(DesiredWoman);
         if (womanPair == null)
         {
-            allocation.setPair(DesiredWoman, freeMan);
+            allocation.assign(freeMan, DesiredWoman);
         }
         else if (womanPref.IndexOf(freeMan) > -1 &&
                  womanPref.IndexOf(freeMan) < womanPref.IndexOf(womanPair)) //новый мужчина лучше предыдущего
         {
-            allocation.setPair(DesiredWoman, freeMan);
-            allocation.deleteFromPref(womanPair, DesiredWoman);
+            allocation.assign(freeMan, DesiredWoman);
+            allocation.deleteFromTPref(womanPair, DesiredWoman);
         }
         else
         {
-            allocation.deleteFromPref(freeMan, DesiredWoman);
+            allocation.deleteFromTPref(freeMan, DesiredWoman);
         }
     }
-
-
-    public bool isFinal(OneToOneAllocation<T, U> allocation)
+    
+    public bool isFinal(ISmpAllocation<M, W> allocation)
     {
-        var freeMen = allocation.active.Where(allocated => HaveReacheblePair(allocated,allocation));
+        var freeMen = allocation.getMList().Where(allocated => HaveReacheblePair(allocated, allocation));
         return !freeMen.Any();
     }
 
-    private bool HaveReacheblePair(T allocated, OneToOneAllocation<T, U> allocation)
+    private bool HaveReacheblePair(M allocated, ISmpAllocation<M, W> allocation)
     {
-        bool havePair = allocation.pairs.ContainsValue(allocated);
-        bool canFindPair = allocation.getPreferencesActive(allocated).Any();
+        bool havePair = allocation.getAssignedByM(allocated) != null;
+        bool canFindPair = allocation.getTPreferences(allocated).Any();
         return !havePair && canFindPair;
     }
 }

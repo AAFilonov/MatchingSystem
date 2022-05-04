@@ -1,5 +1,5 @@
 using System.Text;
-using TestStand.Allocated;
+using MatchingLibrary.Utils;
 
 namespace MatchingLibrary.Tests.Utils;
 
@@ -10,7 +10,7 @@ public class PrintUtils
         return $"pair: [{tuple.Item1}:{tuple.Item2}],";
     }
 
-    public static string toString(ValueTuple<SimpleCapaciousAllocated, List<SimpleAllocated>> tuple)
+    public static string toString(ValueTuple<SimpleAllocated, List<SimpleAllocated>> tuple)
     {
         StringBuilder sb = new StringBuilder();
         sb.Append("{ ");
@@ -41,7 +41,7 @@ public class PrintUtils
         return result.ToString();
     }
 
-    public static string toString(List<(SimpleCapaciousAllocated, List<SimpleAllocated>)> pairs)
+    public static string toString(List<(SimpleAllocated, List<SimpleAllocated>)> pairs)
     {
         var result = new StringBuilder();
         pairs.ToList().ForEach(pair => result.Append(toString(pair)));
@@ -49,14 +49,14 @@ public class PrintUtils
     }
 
     
-    public static object toString(List<(SimpleCapaciousAllocated, List<(SimpleCapaciousAllocated, List<SimpleAllocated>)>)> pairs)
+    public static object toString(List<(SimpleAllocated, List<(SimpleAllocated, List<SimpleAllocated>)>)> pairs)
     {
         var result = new StringBuilder();
         pairs.ToList().ForEach(pair => result.Append(toString(pair)));
         return result.ToString();
     }
 
-    private static string toString((SimpleCapaciousAllocated, List<(SimpleCapaciousAllocated, List<SimpleAllocated>)>) tuple)
+    private static string toString((SimpleAllocated, List<(SimpleAllocated, List<SimpleAllocated>)>) tuple)
     {
         StringBuilder sb = new StringBuilder();
         sb.Append("{ ");

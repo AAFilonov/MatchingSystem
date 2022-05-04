@@ -1,76 +1,70 @@
 using System.Linq.Expressions;
-using TestStand.Algorithms;
-using TestStand.Allocated;
+using MatchingLibrary.Algorithms.interfaces;
+using MatchingLibrary.Allocation.interfaces;
 
 namespace MatchingLibrary.Algorithms.impl;
 
-public class HrAlgorithm<S, T>
-    where S : class, ISolitaryAllocated
-    where T : class, ICapaciousAllocated
+public class HrAlgorithm<S, L>  :IOneToManyAllocationAlgorithm<S,L>
+    where S : class
+    where L : class
 
 {
-    public void computeStep(OneToManyAllocation<S, T> allocation)
+    public void computeIteration(IOneToManyAllocation<S, L> allocation)
     {
-        var freeStudents = allocation.students.FindAll(allocated => HaveReacheblePair(allocated, allocation));
-        foreach (var student in freeStudents)
+        foreach (var student in allocation.getListS())
         {
-            findPair(allocation, student);
+            if (haveReachablePair(student,allocation)) 
+                findPair(allocation, student);
         }
     }
 
-    private void findPair(OneToManyAllocation<S, T> allocation, S freeStudent)
+    private void findPair(IOneToManyAllocation<S, L> allocation, S student)
     {
-        var studetnPreferences = allocation.getPreferencesForStudent(freeStudent);
+        var studetnPreferences = allocation.getStudentPreferences(student);
 
         if (!studetnPreferences.Any())
             return; //список предпочтений пуст
 
-        var desiredTeacher = studetnPreferences.First();
-        var teacherPreferences = allocation.getPreferencesForTeacher(desiredTeacher);
-        if (!teacherPreferences.Contains(freeStudent))
+        var lecturer = studetnPreferences.First();
+        var teacherPreferences = allocation.getLecturersPreferences(lecturer);
+        if (!teacherPreferences.Contains(student))
         {
-            deleteFromPreferences(allocation, desiredTeacher, freeStudent);
+            allocation.deleteFromStudentPreferences(student,lecturer);
             return; //cтудент не является примлемым для препода   
         }
 
 
-        allocation.setPair(desiredTeacher, freeStudent);
-        var teatherAssigned = allocation.pairs[desiredTeacher];
-        if (teatherAssigned.Count > desiredTeacher.getCapacity())
+        allocation.assign(lecturer,student);
+        var assignedStudents = allocation.getAssignedByL(lecturer);
+        if (assignedStudents.Count > allocation.getLecturerCapacity(lecturer))
         {
-            S worstAssignedStudent = findWorstAssignedStudent(desiredTeacher, allocation);
-            deletePair(allocation, desiredTeacher, worstAssignedStudent);
+            S worstAssignedStudent = findWorstAssignedStudent(lecturer, allocation);
+            allocation.breakAssigment(worstAssignedStudent,lecturer);
         }
-        else if (teatherAssigned.Count == desiredTeacher.getCapacity())
+        else if (assignedStudents.Count ==  allocation.getLecturerCapacity(lecturer))
         {
-            S worstAssignedStudent = findWorstAssignedStudent(desiredTeacher, allocation);
-            int worstAssignedStudentIndex =
-                teacherPreferences.FindIndex(allocated => allocated == worstAssignedStudent);
-            teacherPreferences.RemoveRange(worstAssignedStudentIndex+1,
-                teacherPreferences.Count - worstAssignedStudentIndex - 1);
+            S worstAssignedStudent = findWorstAssignedStudent(lecturer, allocation);
+            deleteSuccessors(teacherPreferences, worstAssignedStudent);
         }
     }
 
-    private static void deletePair(OneToManyAllocation<S, T> allocation, T desiredTeacher, S student)
+    private static void deleteSuccessors(List<S> teacherPreferences, S worstAssignedStudent)
     {
-        allocation.pairs[desiredTeacher].Remove(student);
+        int worstAssignedStudentIndex =
+            teacherPreferences.FindIndex(allocated => allocated == worstAssignedStudent);
+        teacherPreferences.RemoveRange(worstAssignedStudentIndex + 1,
+            teacherPreferences.Count - worstAssignedStudentIndex - 1);
     }
+    
 
-    private static void deleteFromPreferences(OneToManyAllocation<S, T> allocation, T desiredTeacher, S student)
+    private S findWorstAssignedStudent(L lecturer, IOneToManyAllocation<S, L> allocation)
     {
-        var prefs = allocation.getPreferencesForTeacher(desiredTeacher);
-        prefs.Remove(student);
-        allocation.teachersPreference[desiredTeacher] = prefs;
-    }
-
-    private S findWorstAssignedStudent(T teacher, OneToManyAllocation<S, T> allocation)
-    {
-        List<S> preferences = new List<S>(allocation.getPreferencesForTeacher(teacher));
+        List<S> preferences = new List<S>(allocation.getLecturersPreferences(lecturer));
         preferences.Reverse(); //список по возрастанию
 
         S worstStudent = null;
         int worstScore = preferences.Count; //меньше = хуже
-        allocation.pairs[teacher].ForEach(student =>
+        allocation.getAssignedByL(lecturer).ForEach(student =>
         {
             var score = preferences.FindIndex(allocated => allocated == student);
             if (score < worstScore)
@@ -83,16 +77,16 @@ public class HrAlgorithm<S, T>
     }
 
 
-    public bool isFinal(OneToManyAllocation<S, T> allocation)
+    public bool isFinal(IOneToManyAllocation<S, L> allocation)
     {
-        var freeMen = allocation.students.Where(allocated => HaveReacheblePair(allocated, allocation));
-        return !freeMen.Any();
+        var freeStudents = allocation.getListS().Where(s => haveReachablePair(s, allocation));
+        return !freeStudents.Any();
     }
 
-    bool HaveReacheblePair(S student, OneToManyAllocation<S, T> allocation)
+    private bool haveReachablePair(S s, IOneToManyAllocation<S, L> allocation)
     {
-        bool havePair = allocation.pairs.Any(pair => pair.Value.Contains(student));
-        bool canFindPair = allocation.getPreferencesForStudent(student).Any();
+        bool havePair = allocation.getAssignedByS(s)!=null;
+        bool canFindPair = allocation.getStudentPreferences(s).Any();
         return !havePair && canFindPair;
     }
 }
