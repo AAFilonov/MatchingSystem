@@ -1,38 +1,26 @@
-using TestStand.Allocated;
+using MatchingLibrary.Algorithms.interfaces;
+using MatchingLibrary.Allocation.impl;
+using MatchingLibrary.Allocation.interfaces;
 
 namespace MatchingLibrary.Algorithms.impl;
 
-public class SpAlgorithm<S, L, P>
-    where S : class, ISolitaryAllocated
-    where L : class, ICapaciousAllocated
-    where P : class, ICapaciousAllocated
+public class SpAlgorithm<S, L, P> :ITwoStepAllocationAlgorithm  <S,L,P>
+    where S : class
+    where L : class
+    where P : class
 {
-    public TwoStepAllocation<S, L, P> allocate(TwoStepAllocation<S, L, P> allocation)
+    public void  computeIteration(ITwoStepAllocation<S, L, P> allocation)
     {
-        while (!isFinal(allocation))
+        foreach (var student in allocation.getListS())
         {
-            computeIteration(allocation);
-        }
-
-        return allocation;
-    }
-
-    public void  computeIteration(TwoStepAllocation<S, L, P> allocation)
-    {
-        var freeStudents = allocation.students.FindAll(allocated => HaveReacheblePair(allocated, allocation));
-        foreach (var student in freeStudents)
-        {
-            findPair(allocation, student);
+            if (haveReachablePair(student,allocation)) 
+                findPair(allocation, student);
         }
     }
 
-    private void findPair(TwoStepAllocation<S, L, P> allocation, S student)
+    private void findPair(ITwoStepAllocation<S, L, P> allocation, S student)
     {
-        var studentPreferences = allocation.getStudentPreferences(student);
-        if (studentPreferences.Count == 0)
-            return;
-
-        P project = studentPreferences.First();
+        P project =  allocation.getStudentPreferences(student).First();
         L lecturer = allocation.getLecturerByProject(project);
         
         var teacherPreferences = allocation.getLecturerPreferences(lecturer);
@@ -49,36 +37,36 @@ public class SpAlgorithm<S, L, P>
 
         
         allocation.assign(student, project);
-        var studentsByProject = allocation.getAssigned(project);
-        var studentsByLecturer = allocation.getAssigned(lecturer);
+        var studentsByProject = allocation.getAssignedByP(project);
+        var studentsByLecturer = allocation.getAssignedByL(lecturer);
 
-        if (studentsByProject.Count > project.getCapacity())
+        if (studentsByProject.Count >allocation.getProjectCapacity(project))
         {
             S worstStudent = findWorstStudentByProject(allocation, project);
             allocation.breakAssigment(worstStudent, project);
         }
 
-        if (studentsByLecturer.Count > lecturer.getCapacity())
+        if (studentsByLecturer.Count > allocation.getLecturerCapacity(lecturer))
         {
             S worstStudent = findWorstStudentByLecturer(allocation, lecturer);
-            P projectWithWorstStudent = allocation.getProjectByAssigned(worstStudent);
+            P projectWithWorstStudent = allocation.getProjectByAssigned(worstStudent) ?? throw new InvalidOperationException();
             allocation.breakAssigment(worstStudent, projectWithWorstStudent);
         }
 
-        if (studentsByProject.Count == project.getCapacity())
+        if (studentsByProject.Count == allocation.getProjectCapacity(project))
         {
             S worstStudent = findWorstStudentByProject(allocation, project);
-            deleteSuccessors(allocation, worstStudent, project);
+            deleteSuccessors(allocation, worstStudent, lecturer ,project);
         }
 
-        if (studentsByLecturer.Count == lecturer.getCapacity())
+        if (studentsByLecturer.Count == allocation.getLecturerCapacity(lecturer))
         {
             S worstStudent = findWorstStudentByLecturer(allocation, lecturer);
             deleteSuccessors(allocation, worstStudent, lecturer);
         }
     }
 
-    private void deleteSuccessors(TwoStepAllocation<S, L, P> allocation, S student, L lecturer)
+    private void deleteSuccessors(ITwoStepAllocation<S, L, P> allocation, S student, L lecturer)
     {
         var preferences = allocation.getLecturerPreferences(lecturer);
         var lecturerProjects = allocation.getProjects(lecturer);
@@ -97,9 +85,8 @@ public class SpAlgorithm<S, L, P>
         });
     }
 
-    private void deleteSuccessors(TwoStepAllocation<S, L, P> allocation, S student, P project)
+    private void deleteSuccessors(ITwoStepAllocation<S, L, P> allocation, S student, L lecturer, P project)
     {
-        L lecturer = allocation.getLecturerByProject(project);
         List<S> preferences = allocation.getLecturerPreferences(lecturer);
         
         var studentsReachableForThisProject = preferences
@@ -111,10 +98,10 @@ public class SpAlgorithm<S, L, P>
         successors.ForEach(successor => { allocation.deleteStudentPreferencePair(successor, project); });
     }
 
-    private S findWorstStudentByLecturer(TwoStepAllocation<S, L, P> allocation, L lecturer)
+    private S findWorstStudentByLecturer(ITwoStepAllocation<S, L, P> allocation, L lecturer)
     {
         List<S> preferences = new List<S>(allocation.getLecturerPreferences(lecturer));
-        var assignedStudents = allocation.getAssigned(lecturer);
+        var assignedStudents = allocation.getAssignedByL(lecturer);
 
         bool AllNotAssigned(S allocated) => !assignedStudents.Contains(allocated);
         
@@ -122,15 +109,15 @@ public class SpAlgorithm<S, L, P>
         return preferences.Last();
     }
 
-    private S findWorstStudentByProject(TwoStepAllocation<S, L, P> allocation, P project)
+    private S findWorstStudentByProject(ITwoStepAllocation<S, L, P> allocation, P project)
     {
         L lecturer = allocation.getLecturerByProject(project);
         List<S> preferences = new List<S>(allocation.getLecturerPreferences(lecturer));
         preferences.Reverse(); //sort in ascending order.
 
 
-        var assignedStudents = allocation.getAssigned(project);
-        S worstStudent = null;
+        var assignedStudents = allocation.getAssignedByP(project);
+        S worstStudent = assignedStudents.First();
         int worstScore = preferences.Count; //less is worse = хуже
         foreach (var student in assignedStudents)
         {
@@ -145,13 +132,13 @@ public class SpAlgorithm<S, L, P>
     }
 
 
-    public bool isFinal(TwoStepAllocation<S, L, P> allocation)
+    public bool isFinal(ITwoStepAllocation<S, L, P> allocation)
     {
-        var freeStudents = allocation.students.Where(allocated => HaveReacheblePair(allocated, allocation));
+        var freeStudents = allocation.getListS().Where(s => haveReachablePair(s, allocation));
         return !freeStudents.Any();
     }
 
-    bool HaveReacheblePair(S student, TwoStepAllocation<S, L, P> allocation)
+    private bool haveReachablePair(S student, ITwoStepAllocation<S, L, P> allocation)
     {
         bool havePair = allocation.getProjectByAssigned(student) != null;
         bool canFindPair = allocation.getStudentPreferences(student).Any();
