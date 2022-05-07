@@ -71,8 +71,7 @@ namespace MatchingSystem.UI
             });
 
             var useMigrations = (bool) Configuration.GetValue(typeof(bool), "ApplicationSettings:UseMigrations");
-            if (useMigrations)
-                Migrations.Migrator.migrate(Configuration);
+           
         }
 
         public void Configure(IApplicationBuilder app)
