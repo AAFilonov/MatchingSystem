@@ -125,7 +125,6 @@
     <ProjectReference Include="..\MatchingSystem.Constants\MatchingSystem.Constants.csproj" />
     <ProjectReference Include="..\MatchingSystem.DataLayer\MatchingSystem.DataLayer.csproj" />
     <ProjectReference Include="..\MatchingSystem.Data\MatchingSystem.Data.csproj" />
-    <ProjectReference Include="..\MigrationLayer\MigrationLayer.csproj" />
   </ItemGroup>
 
 </Project>

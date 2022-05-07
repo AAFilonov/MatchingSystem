@@ -1,1 +1,0 @@
-DROP FUNCTION  [napp].[get_Matchings];
