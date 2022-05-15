@@ -17,11 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Feature\Group" />
-      <Folder Include="Feature\Stage" />
-      <Folder Include="Feature\Students" />
-      <Folder Include="Feature\Teachers" />
-      <Folder Include="Feature\UserRoles" />
+      <Folder Include="Exceprions\" />
       <Folder Include="Schema" />
     </ItemGroup>
 
