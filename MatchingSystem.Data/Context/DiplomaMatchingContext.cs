@@ -37,7 +37,7 @@ public partial class DiplomaMatchingContext :DbContext
     public virtual DbSet<Matching> Matchings { get; set; } = null!;
     public virtual DbSet<MatchingType> MatchingTypes { get; set; } = null!;
     public virtual DbSet<Project> Projects { get; set; } = null!;
-    public virtual DbSet<Project1> Projects1 { get; set; } = null!;
+    //public virtual DbSet<Project1> Projects1 { get; set; } = null!;
     public virtual DbSet<ProjectsGroup> ProjectsGroups { get; set; } = null!;
     public virtual DbSet<ProjectsTechnology> ProjectsTechnologies { get; set; } = null!;
     public virtual DbSet<ProjectsWorkDirection> ProjectsWorkDirections { get; set; } = null!;
@@ -354,7 +354,7 @@ public partial class DiplomaMatchingContext :DbContext
                 .HasConstraintName("FK_Projects_Tutors");
         });
 
-        modelBuilder.Entity<Project1>(entity =>
+        /*modelBuilder.Entity<Project1>(entity =>
         {
             entity.HasNoKey();
 
@@ -388,6 +388,7 @@ public partial class DiplomaMatchingContext :DbContext
 
             entity.Property(e => e.WorkDirectionsNameList).HasColumnName("WorkDirectionsName_List");
         });
+        */
 
         modelBuilder.Entity<ProjectsGroup>(entity =>
         {
