@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatchingSystem.Data", "Matc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatchingSystem.Service", "MatchingSystem.Service\MatchingSystem.Service.csproj", "{00071BE1-A638-4E23-A154-ADCE728A3ACA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatchingLibrary", "MatchingLibrary\MatchingLibrary.csproj", "{EF449E7A-4230-4AC9-83FB-8F743F78DB51}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatchingLibrary.Tests", "MatchingLibrary.Tests\MatchingLibrary.Tests.csproj", "{434BB582-D8A8-4BD3-9F64-1610FCC14EF4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{00071BE1-A638-4E23-A154-ADCE728A3ACA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{00071BE1-A638-4E23-A154-ADCE728A3ACA}.Production|Any CPU.ActiveCfg = Debug|Any CPU
 		{00071BE1-A638-4E23-A154-ADCE728A3ACA}.Production|Any CPU.Build.0 = Debug|Any CPU
+		{EF449E7A-4230-4AC9-83FB-8F743F78DB51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF449E7A-4230-4AC9-83FB-8F743F78DB51}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF449E7A-4230-4AC9-83FB-8F743F78DB51}.Production|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF449E7A-4230-4AC9-83FB-8F743F78DB51}.Production|Any CPU.Build.0 = Debug|Any CPU
+		{434BB582-D8A8-4BD3-9F64-1610FCC14EF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{434BB582-D8A8-4BD3-9F64-1610FCC14EF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{434BB582-D8A8-4BD3-9F64-1610FCC14EF4}.Production|Any CPU.ActiveCfg = Debug|Any CPU
+		{434BB582-D8A8-4BD3-9F64-1610FCC14EF4}.Production|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
