@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Service.Notification;
 
 namespace MatchingSystem.UI
 {
@@ -55,7 +56,7 @@ namespace MatchingSystem.UI
 
             services.AddTransient<IExecutiveRepository, ExecutiveRepository>(options =>
                 new ExecutiveRepository(connectionString));
-            services.AddTransient<IStatisticsRepository, StatisticsRepository>(options =>
+            services.AddSingleton<IStatisticsRepository, StatisticsRepository>(options =>
                 new StatisticsRepository(connectionString));
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -63,6 +64,7 @@ namespace MatchingSystem.UI
             services.AddSingleton<DbContext, DiplomaMatchingContext>(options => new DiplomaMatchingContext(connectionString));
             services.AddSingleton<MatchingSystem.Data.Feature.User.IUserRepository, MatchingSystem.Data.Feature.User.UserRepository>();
             services.AddSingleton<MatchingSystem.Data.Feature.Matching.IMatchingRepository, MatchingSystem.Data.Feature.Matching.MatchingRepository>();
+            services.AddSingleton<INotificationService, NotificationService>();
             
             services.AddSession(options =>
             {

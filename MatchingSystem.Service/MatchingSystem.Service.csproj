@@ -8,8 +8,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\MatchingSystem.DataLayer\MatchingSystem.DataLayer.csproj" />
       <ProjectReference Include="..\MatchingSystem.Data\MatchingSystem.Data.csproj" />
-      <ProjectReference Include="..\MatchingSystem.UI\MatchingSystem.UI.csproj" />
     </ItemGroup>
 
 </Project>
