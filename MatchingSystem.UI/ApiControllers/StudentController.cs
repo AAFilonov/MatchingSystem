@@ -1,80 +1,57 @@
 ﻿using System;
 using System.Linq;
-using MatchingSystem.DataLayer;
 using MatchingSystem.DataLayer.Interface;
 using MatchingSystem.DataLayer.IO.Params;
-using MatchingSystem.UI.Dto.Student;
+using MatchingSystem.DataLayer.Dto;
 using Microsoft.AspNetCore.Mvc;
+using Service.Student;
 
 namespace MatchingSystem.UI.ApiControllers
 {
     [ApiController]
     public class StudentController : ControllerBase
     {
-        private readonly IStudentRepository studentRepository;
-        private readonly IProjectRepository projectRepository;
+        private readonly IStudentService studentService;
 
-        public StudentController(IStudentRepository studentRepository, IProjectRepository projectRepository)
+        public StudentController(IStudentService studentService)
         {
-            this.studentRepository = studentRepository;
-            this.projectRepository = projectRepository;
+            this.studentService = studentService;
         }
 
         [Route("api/[controller]/get_selected_info")]
         [HttpGet]
         public IActionResult GetSelectedParams(int studentId)
         {
-            try
-            {
-                var student = studentRepository.GetStudent(studentId);
-                var model = new GetData()
-                {
-                    Technologies = studentRepository.GetTechnologiesSelectedByStudent(studentId),
-                    WorkDirections = studentRepository.GetWorkDirectionsSelectedByStudent(studentId),
-                    Info = student.Info,
-                    Info2 = student.Info2
-                };
-
-                return new JsonResult(model);
-            }
-            catch (Exception ex)
-            {
-                return Problem(ex.Message);
-            }
+            var model = studentService.GetSelectedParams(studentId);
+            return new JsonResult(model);
         }
 
         [Route("api/[controller]/edit_profile")]
         [HttpPatch]
         public IActionResult EditProfile()
         {
-            try
+            var data = Request.Form;
+            
+            var editParams = new EditProfileParams()
             {
-                var data = Request.Form;
+                StudentId = Convert.ToInt32(data["studentId"]),
+                Info = data["info"].ToString(),
+                Info2 = data["info2"].ToString(),
+                TechnologyCodeList = data["tech"].ToString(),
+                WorkDirectionCodeList = data["workDirection"].ToString()
+            };
+            studentService.EditProfile(editParams);
 
-                studentRepository.EditProfile(new EditProfileParams()
-                {
-                    StudentId = Convert.ToInt32(data["studentId"]),
-                    Info = data["info"].ToString(),
-                    Info2 = data["info2"].ToString(),
-                    TechnologyCodeList = data["tech"].ToString(),
-                    WorkDirectionCodeList = data["workDirection"].ToString()
-                });
-
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return Problem(ex.Message);
-            }
+            return NoContent();
         }
 
         [Route("api/[controller]/get_projects")]
         [HttpGet]
         public IActionResult GetProjects([FromQuery] int studentId)
         {
-            var model = projectRepository.GetProjectsByStudent(studentId);
+            var model = studentService.GetProjects(studentId);
 
-            return new JsonResult(model.OrderBy(x => x.OrderNumber));
+            return new JsonResult(model);
         }
 
         [Route("api/[controller]/set_preferences")]
@@ -85,28 +62,9 @@ namespace MatchingSystem.UI.ApiControllers
 
             var studentId = Convert.ToInt32(data["studentId"]);
 
-            var temp = data["selectedList"].ToString().Split(',');
-            var selectedIds = new int[temp.Length];
+            var temp = data["selectedList"].ToString();
 
-            try
-            {
-                studentRepository.ClearPreferences(studentId);
-
-                for (var i = 0; i < temp.Length; i++)
-                {
-                    selectedIds[i] = Convert.ToInt32(temp[i]);
-                    studentRepository.SetPreferences(new StudentPreferenceParams()
-                    {
-                        StudentId = studentId,
-                        Order = i + 1,
-                        SelectedProjectId = selectedIds[i]
-                    });
-                }
-            }
-            catch (Exception ex)
-            {
-                return Problem("Произошла ошибка при изменении списка предпочтений: " + ex.Message);
-            }
+            studentService.SetPreferences(studentId, temp);
 
             return Ok();
         }
@@ -119,8 +77,7 @@ namespace MatchingSystem.UI.ApiControllers
             {
                 return BadRequest("В запросе отстутствует параметр StudentID");
             }
-
-            var student = studentRepository.GetStudent(studentId.Value);
+            var student = studentService.GetStudentInfo(studentId);
 
             return new JsonResult(student);
         }
@@ -133,8 +90,7 @@ namespace MatchingSystem.UI.ApiControllers
             {
                 return BadRequest("Некорректный запрос.");
             }
-
-            var model = studentRepository.GetAllocationByStudent(studentId.Value);
+            var model = studentService.GetAllocatedProject(studentId);
             
             return new JsonResult(model);
         }

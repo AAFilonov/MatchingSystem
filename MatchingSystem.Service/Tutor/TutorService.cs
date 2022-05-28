@@ -1,59 +1,53 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MatchingSystem.UI.ResultModels;
-using Microsoft.AspNetCore.Mvc;
+﻿using MatchingSystem.DataLayer.Interface;
 using MatchingSystem.DataLayer.Entities;
-using MatchingSystem.DataLayer.Interface;
+using MatchingSystem.DataLayer.Dto;
 
-namespace Service.Tutor
+
+namespace Service.Tutor;
+
+public class TutorService : ITutorService
 {
-    internal class TutorService
+    private readonly ITutorRepository tutorRepository;
+
+    public TutorService(ITutorRepository tutorRepository)
     {
-        private readonly ITutorRepository tutorRepository;
+        this.tutorRepository = tutorRepository;
+    }
 
-        public TutorService(ITutorRepository tutorRepository)
+    public IterationData GetChoice(int tutorId)
+    {
+        var result = tutorRepository.GetChoiceByTutor(tutorId).ToList();
+
+        var projects = result.Select(x => x.ProjectID).Distinct();
+
+        var viewModel = new IterationData
         {
-            this.tutorRepository = tutorRepository;
-        }
+            CommonQuota = tutorRepository.GetCommonQuotaByTutor(tutorId)
+        };
 
-        public IActionResult GetChoice(int tutorId)
+
+        foreach (var proj in projects)
         {
-            var result = tutorRepository.GetChoiceByTutor(tutorId).ToList();
-
-            var projects = result.Select(x => x.ProjectID).Distinct();
-
-            var viewModel = new IterationData
+            viewModel.ChoiceDatas.Add(new TutorChoiceData
             {
-                CommonQuota = tutorRepository.GetCommonQuotaByTutor(tutorId)
-            };
-
-
-            foreach (var proj in projects)
-            {
-                viewModel.ChoiceDatas.Add(new TutorChoiceData
-                {
-                    ProjectID = proj,
-                    ProjectName = result.FirstOrDefault(x => x.ProjectID == proj)?.ProjectName,
-                    Qty = result.FirstOrDefault(x => x.ProjectID == proj)?.Qty,
-                    Choices = result.Where(x => x.ProjectID == proj).OrderBy(t => t.SortOrderNumber).ToList(),
-                    ProjectIsClosed = result.FirstOrDefault(x => x.ProjectID == proj)?.ProjectIsClosed
-                });
-            }
-
-            return new JsonResult(viewModel);
+                ProjectID = proj,
+                ProjectName = result.FirstOrDefault(x => x.ProjectID == proj)?.ProjectName,
+                Qty = result.FirstOrDefault(x => x.ProjectID == proj)?.Qty,
+                Choices = result.Where(x => x.ProjectID == proj).OrderBy(t => t.SortOrderNumber).ToList(),
+                ProjectIsClosed = result.FirstOrDefault(x => x.ProjectID == proj)?.ProjectIsClosed
+            });
         }
 
-        public async void SetReady([FromQuery] int tutorId)
-        {
-                await tutorRepository.SetReadyAsync(tutorId);
-        }
+        return viewModel;
+    }
 
-        public void SaveChoice([FromBody] List<TutorChoice_1> data, [FromQuery] int tutorId)
-        {
-                tutorRepository.SetPreferences(data, tutorId);
-        }
+    public async void SetReady(int tutorId)
+    {
+            await tutorRepository.SetReadyAsync(tutorId);
+    }
+
+    public void SaveChoice(List<TutorChoice_1> data, int tutorId)
+    {
+            tutorRepository.SetPreferences(data, tutorId);
     }
 }

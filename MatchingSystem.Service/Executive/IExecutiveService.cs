@@ -1,25 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MatchingSystem.UI.ResultModels;
-using Microsoft.AspNetCore.Mvc;
-using MatchingSystem.DataLayer.Interface;
-using MatchingSystem.DataLayer.IO.Params;
-using MatchingSystem.UI.RequestModels;
+﻿using MatchingSystem.DataLayer.Interface;
+using MatchingSystem.DataLayer.Entities;
+using MatchingSystem.DataLayer.Dto;
 
-namespace Service.Executive
+
+namespace Service.Executive;
+public interface IExecutiveService
 {
-    internal interface IExecutiveService
-    {
-        public IActionResult SetNextStage([FromQuery] int? matchingId, [FromQuery] int? userId);
+    public void SetNextStage(int? matchingId, int? userId);
 
-        public IActionResult SetEndDate([FromForm] string endDate, [FromForm] int matchingId);
+    public void SetEndDate(DateTime endDate, int matchingId);
 
-        public IActionResult GetAllocationByExecutive([FromQuery] int? userId, [FromQuery] int? matchingId);
+    public AdjustmentData GetAllocationByExecutive(int? userId, int? matchingId);
 
-        public IActionResult SetAllocationByExecutive([FromBody] AdjustmentRequest request);
+    public void SetAllocationByExecutive(AdjustmentRequest request);
 
-    }
 }

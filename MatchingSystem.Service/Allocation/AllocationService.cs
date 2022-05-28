@@ -1,31 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MatchingSystem.UI.ResultModels;
-using Microsoft.AspNetCore.Mvc;
-using MatchingSystem.DataLayer.Interface;
+﻿using MatchingSystem.DataLayer.Interface;
+using MatchingSystem.DataLayer.Dto;
 
-namespace Service.Allocation
+namespace Service.Allocation;
+
+public class AllocationService : IAllocationService
 {
-    internal class AllocationService
+    private readonly IMatchingRepository matchingRepository;
+
+    public AllocationService(IMatchingRepository matchingRepository)
     {
-        private readonly IMatchingRepository matchingRepository;
+        this.matchingRepository = matchingRepository;
+    }
 
-        public AllocationService(IMatchingRepository matchingRepository)
+    public AllocationData GetAllocations()
+    {
+        var model = new AllocationData
         {
-            this.matchingRepository = matchingRepository;
-        }
-
-        public IActionResult GetAllocations()
-        {
-            var model = new AllocationData
-            {
-                Allocations = matchingRepository.GetFinalAllocations(),
-                Matchings = matchingRepository.GetMatchingsInfo()
-            };
-            return new JsonResult(model);
-        }
+            Allocations = matchingRepository.GetFinalAllocations(),
+            Matchings = matchingRepository.GetMatchingsInfo()
+        };
+        return model;
     }
 }
