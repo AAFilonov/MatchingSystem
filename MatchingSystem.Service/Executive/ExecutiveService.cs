@@ -2,55 +2,57 @@
 using MatchingSystem.DataLayer.Entities;
 using MatchingSystem.DataLayer.Dto;
 using MatchingSystem.DataLayer.IO.Params;
+using MatchingSystem.UI.RequestModels;
 
-namespace Service.Executive;
-
-public class ExecutiveService : IExecutiveService
+namespace Service.Executive
 {
-    private readonly ITutorRepository tutorRepository;
-    private readonly IExecutiveRepository executiveRepository;
-    private readonly IMatchingRepository matchingRepository;
-    private readonly IProjectRepository projectRepository;
-
-    public ExecutiveService(
-        ITutorRepository tutorRepository,
-        IExecutiveRepository executiveRepository,
-        IMatchingRepository matchingRepository,
-        IProjectRepository projectRepository
-        )
+    internal class ExecutiveService
     {
-        this.tutorRepository = tutorRepository;
-        this.executiveRepository = executiveRepository;
-        this.matchingRepository = matchingRepository;
-        this.projectRepository = projectRepository;
-    }
+        private readonly ITutorRepository tutorRepository;
+        private readonly IExecutiveRepository executiveRepository;
+        private readonly IMatchingRepository matchingRepository;
+        private readonly IProjectRepository projectRepository;
 
-    public void SetNextStage(int? matchingId, int? userId)
-    {
-        var quotaRequest = executiveRepository.GetQuotaRequestsByExecutive(userId.Value, matchingId.Value);
-        matchingRepository.SetNextStage(matchingId.Value);
-    }
-
-    public AdjustmentData GetAllocationByExecutive(int? userId, int? matchingId)
-    {
-        var model = new AdjustmentData()
+        public ExecutiveService(
+            ITutorRepository tutorRepository,
+            IExecutiveRepository executiveRepository,
+            IMatchingRepository matchingRepository,
+            IProjectRepository projectRepository
+            )
         {
-            Allocations = executiveRepository.GetAllocationsByExecutive(userId.Value, matchingId.Value),
-            Tutors = tutorRepository.GetTutorsByMatching(matchingId.Value),
-            Projects = new List<Project>()
-        };
-
-        var tutorIds = model.Tutors.Select(x => x.TutorID).ToList();
-
-        foreach (var tutorId in tutorIds)
-        {
-            var temp = projectRepository.GetProjectsByTutor(tutorId).ToList();
-            temp.ForEach(x => x.TutorID = tutorId);
-            model.Projects.AddRange(temp);
+            this.tutorRepository = tutorRepository;
+            this.executiveRepository = executiveRepository;
+            this.matchingRepository = matchingRepository;
+            this.projectRepository = projectRepository;
         }
 
-        return model;
-    }
+        public void SetNextStage([FromQuery] int? matchingId, [FromQuery] int? userId)
+        {
+            var quotaRequest = executiveRepository.GetQuotaRequestsByExecutive(userId.Value, matchingId.Value);
+
+            matchingRepository.SetNextStage(matchingId.Value);
+        }
+
+        public IActionResult GetAllocationByExecutive([FromQuery] int? userId, [FromQuery] int? matchingId)
+        {
+            var model = new AdjustmentData()
+            {
+                Allocations = executiveRepository.GetAllocationsByExecutive(userId.Value, matchingId.Value),
+                Tutors = tutorRepository.GetTutorsByMatching(matchingId.Value),
+                Projects = new List<Project>()
+            };
+
+            var tutorIds = model.Tutors.Select(x => x.TutorID).ToList();
+
+            foreach (var tutorId in tutorIds)
+            {
+                var temp = projectRepository.GetProjectsByTutor(tutorId).ToList();
+                temp.ForEach(x => x.TutorID = tutorId);
+                model.Projects.AddRange(temp);
+            }
+
+            return new JsonResult(model);
+        }
 
     public void SetAllocationByExecutive(AdjustmentRequest request)
     {
