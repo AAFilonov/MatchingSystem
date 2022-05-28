@@ -1,9 +1,8 @@
+using MatchingSystem.Data.Feature.User;
+
 namespace Service.Notification;
-using MatchingSystem.UI.ResultModels;
-using Microsoft.AspNetCore.Mvc;
 using MatchingSystem.DataLayer.Interface;
-using MatchingSystem.DataLayer.IO.Params;
-using MatchingSystem.UI.RequestModels;
+
 
 public class NotificationService  : INotificationService
 {
@@ -24,7 +23,7 @@ public class NotificationService  : INotificationService
         throw new NotImplementedException();
     }*/
 
-    public IActionResult GetNotificationsByTutor(int tutorId, int userId, int matchingId)
+    public Dictionary<string, int> GetNotificationsByTutor(int tutorId, int userId, int matchingId)
     {
         var count = tutorRepository.GetNotificationsCountByTutor(tutorId);
 
@@ -32,10 +31,10 @@ public class NotificationService  : INotificationService
 
         userRepository.ReadNotifications(userId, matchingId, tutorId);
 
-        return new JsonResult(result);
+        return result;
     }
 
-    public IActionResult GetNotificationsByExecutive(int userId, int matchingId)
+    public Dictionary<string, int> GetNotificationsByExecutive(int userId, int matchingId)
     {
         var actionResult = new Dictionary<string, int>(1);
 
@@ -44,7 +43,7 @@ public class NotificationService  : INotificationService
         actionResult.Add("count", result);
         userRepository.ReadNotifications(userId, matchingId);
 
-        return new JsonResult(actionResult);
+        return actionResult;
     }
 
 

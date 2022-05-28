@@ -3,97 +3,44 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using System.Data.SqlClient;
 using MatchingSystem.DataLayer.Interface;
-using MatchingSystem.UI.RequestModels;
-using MatchingSystem.UI.ResultModels;
+using MatchingSystem.DataLayer.Dto;
 using MatchingSystem.Constants;
+using Service.Projects;
 
 namespace MatchingSystem.UI.ApiControllers
 {
     [ApiController]
     public class ProjectsController : ControllerBase
     {
-        private readonly IDictionaryRepository dictionaryRepository;
-        private readonly ITutorRepository tutorRepository;
-        private readonly IMatchingRepository matchingRepository;
-        private readonly IProjectRepository projectRepository;
+        private readonly IProjectsService projectsService;
 
-        public ProjectsController(
-            IDictionaryRepository dictionaryRepository, 
-            ITutorRepository tutorRepository, 
-            IMatchingRepository matchingRepository,
-            IProjectRepository projectRepository
-            )
+        public ProjectsController(IProjectsService projectsService)
         {
-            this.dictionaryRepository = dictionaryRepository;
-            this.tutorRepository = tutorRepository;
-            this.matchingRepository = matchingRepository;
-            this.projectRepository = projectRepository;
+            this.projectsService = projectsService;
         }
 
         [Route("api/[controller]/tutor/add_project")]
         [HttpPost]
         public IActionResult AddTutorProject([FromForm] ProjectRequest project)
         {
-            try
-            {
-                projectRepository.CreateProject(new DataLayer.IO.Params.ProjectParams()
-                {
-                    Info = project.Info,
-                    Quota = (project.Quota=="Не важно")?null:project.Quota,
-                    TutorId = project.TutorId,
-                    ProjectName = project.Name,
-                    CommaSeparatedTechList = string.Join(',', project.TechnologyList ?? new [] { string.Empty }),
-                    CommaSeparatedWorkList = string.Join(',', project.WorkDirection ?? new[] { string.Empty }),
-                    CommaSeparatedGroupList = string.Join(',', project.AviableGroups ?? new[] { string.Empty })
-                });
-            }
-            catch (Exception)
-            {
-                return Problem("Возникла неизвестная ошибка", statusCode: 500);
-            }
-
-            return new JsonResult(true);
+            var result = projectsService.AddTutorProject(project);
+            return new JsonResult(result);
         }
 
         [Route("api/[controller]/tutor/edit_project")]
         [HttpPut]
         public IActionResult EditProject([FromForm] ProjectRequest project)
         {
-            try
-            {
-                projectRepository.EditProject(new DataLayer.IO.Params.ProjectParams()
-                {
-                    Info = project.Info,
-                    Quota = (project.Quota=="Не важно")?null:project.Quota,
-                    TutorId = project.TutorId,
-                    ProjectName = project.Name,
-                    CommaSeparatedTechList = string.Join(',', project.TechnologyList ?? new [] { string.Empty }),
-                    CommaSeparatedWorkList = string.Join(',', project.WorkDirection ?? new[] { string.Empty }),
-                    CommaSeparatedGroupList = string.Join(',', project.AviableGroups ?? new[] { string.Empty }),
-                    ProjectId = project.ProjectId
-                });
-                
-                return Ok();
-            }
-            catch (Exception e)
-            {
-                return Problem("Возникла неизвестная ошибка: "+e.Message, statusCode: 500);
-            }
+            projectsService.EditProject(project);
+            return Ok();
         }
 
         [Route("api/[controller]/delete")]
         [HttpDelete]
         public IActionResult DeleteProject([FromQuery] int projectId)
         {
-            try
-            {
-                projectRepository.DeleteProject(projectId);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return Problem(title: ex.Message, statusCode: 500);
-            }
+            projectsService.DeleteProject(projectId);
+            return NoContent();
         }
 
         [Route("api/[controller]/get_projects_data")]
@@ -104,21 +51,7 @@ namespace MatchingSystem.UI.ApiControllers
             {
                 return BadRequest("Отсутствует обязательный параметр.");
             }
-            
-            var model = new TutorProjectsModel
-            {
-                Projects = projectRepository.GetProjectsByTutor(tutorId).ToList(),
-                Groups = tutorRepository.GetGroupsByTutor(tutorId),
-                Technology = dictionaryRepository.GetTechnologiesAll(),
-                WorkDirections = dictionaryRepository.GetWorkDirectionsAll(),
-                CommonQuota = tutorRepository.GetCommonQuotaByTutor(tutorId),
-                IsReady = tutorRepository.GetReadyByTutor(tutorId)
-            };
-
-            model.Projects.ForEach(x =>
-                x.AvailableGroupsName_List = x.AvailableGroupsName_List?.Replace(", ", "<br/>")
-            );
-
+            var model = projectsService.GetProjectsData(tutorId);
             return new JsonResult(model);
         }
 
@@ -131,54 +64,25 @@ namespace MatchingSystem.UI.ApiControllers
             var projectId = Convert.ToInt32(data["projectId"]);
             var quota = Convert.ToInt32(data["quota"]);
             var tutorId = Convert.ToInt32(data["tutorId"]);
-            
+            var matchingId = Convert.ToInt32(data["matching"]);
 
-            var currentStageCode = matchingRepository.GetCurrentStage(Convert.ToInt32(data["matching"])).StageTypeCode;
-
-            try
-            {
-                switch (currentStageCode)
-                {
-                    case StageCode.CollectStudentPreferences:
-                        projectRepository.UpdateProjectQuotaStage3(tutorId, projectId, quota);
-                        break;
-                    case StageCode.CollectTutorPreferences:
-                        projectRepository.UpdateProjectQuotaStage4(tutorId, projectId, (short)quota);
-                        break;
-                    default:
-                        return BadRequest("На данном этапе запрещено изменять проекты");
-                }
-
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return Problem(ex.Message);
-            }
-            
+            projectsService.EditQuota(projectId, quota, tutorId, matchingId);
+            return Ok();
         }
 
         [Route("api/[controller]/closeProject")]
         [HttpPatch]
         public IActionResult CloseProject(int tutorId, int projectId)
         {
-            try
-            {
-                projectRepository.SetProjectClose(tutorId, projectId);
-                return Ok();
-            }
-            catch (SqlException ex)
-            {
-                return Problem(ex.Message, statusCode: 500);
-            }
+            projectsService.CloseProject(tutorId, projectId);
+            return Ok();
         }
 
         [Route("api/[controller]/getProjectsByTutor")]
         [HttpGet]
         public IActionResult GetProjectsByTutor([FromQuery] int tutorId)
         {
-            var model = projectRepository.GetProjectsByTutor(tutorId);
-            
+            var model = projectsService.GetProjectsByTutor(tutorId);
             return new JsonResult(model);
         }
     }

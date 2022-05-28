@@ -1,26 +1,25 @@
 ﻿using System.Linq;
 using MatchingSystem.DataLayer.Interface;
 using Microsoft.AspNetCore.Mvc;
+using Service.User;
 
 namespace MatchingSystem.UI.ApiControllers
 {
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IUserRepository userRepository;
-        private readonly IMatchingRepository matchingRepository;
+        private readonly IUserService userService;
 
-        public UserController(IUserRepository userRepository, IMatchingRepository matchingRepository)
+        public UserController(IUserService userService)
         {
-            this.matchingRepository = matchingRepository;
-            this.userRepository = userRepository;
+            this.userService = userService;
         }
 
         [Route("api/[controller]/getMatchings")]
         [HttpGet]
         public IActionResult GetMatchingsForUser([FromQuery] int userId)
         {
-            var model = matchingRepository.GetMatchingsByUser(userId).OrderByDescending(matching =>matching.MatchingID );
+            var model = userService.GetMatchingsForUser(userId);
             return new JsonResult(model);
         }
 
@@ -28,8 +27,7 @@ namespace MatchingSystem.UI.ApiControllers
         [HttpGet]
         public IActionResult GetRolesForUser([FromQuery] int matchingId, [FromQuery] int userId)
         {
-            var model = userRepository.GetRolesForUserAndMatching(userId, matchingId);
-            
+            var model = userService.GetRolesForUser(matchingId, userId);
             return new JsonResult(model);
         }
     }

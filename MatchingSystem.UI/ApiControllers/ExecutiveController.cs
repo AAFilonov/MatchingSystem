@@ -6,57 +6,31 @@ using System.Linq;
 using MatchingSystem.DataLayer.Entities;
 using MatchingSystem.DataLayer.Interface;
 using MatchingSystem.DataLayer.IO.Params;
-using MatchingSystem.UI.RequestModels;
-using MatchingSystem.UI.ResultModels;
+using MatchingSystem.DataLayer.Dto;
+using Service.Executive;
 
 namespace MatchingSystem.UI.ApiControllers
 {
     [ApiController]
     public class ExecutiveController : ControllerBase
     {
-        private readonly ITutorRepository tutorRepository;
-        private readonly IExecutiveRepository executiveRepository;
-        private readonly IMatchingRepository matchingRepository;
-        private readonly IProjectRepository projectRepository;
+        private readonly IExecutiveService executiveService;
 
-        public ExecutiveController(
-            ITutorRepository tutorRepository, 
-            IExecutiveRepository executiveRepository, 
-            IMatchingRepository matchingRepository, 
-            IProjectRepository projectRepository
-            )
+        public ExecutiveController(IExecutiveService executiveService)
         {
-            this.tutorRepository = tutorRepository;
-            this.executiveRepository = executiveRepository;
-            this.matchingRepository = matchingRepository;
-            this.projectRepository = projectRepository;
+            this.executiveService = executiveService;
         }
 
         [Route("api/[controller]/setNextStage")]
         [HttpPatch]
-        public IActionResult SetNextStage([FromQuery] int? matchingId, [FromQuery] int? userId)
+        public IActionResult SetNextStage(int? matchingId,int? userId)
         {
             if (matchingId == null || userId == null)
             {
                 return BadRequest("Неверный формат запроса");
             }
-
-            var quotaRequest = executiveRepository.GetQuotaRequestsByExecutive(userId.Value, matchingId.Value);
-            
-            if (quotaRequest.Any())
-            {
-                return Problem("Вы не можете завершить этап, пока есть активные запросы на изменение квоты.", statusCode: 400);
-            }
-
-            try
-            {
-                matchingRepository.SetNextStage(matchingId.Value);
-                return Ok();
-            } 
-            catch (Exception ex)
-            {
-                return Problem(ex.Message, statusCode: 500);
-            }
+            executiveService.SetNextStage(matchingId, userId);
+            return Ok();
         }
 
         [Route("api/[controller]/setEndDate")]
@@ -64,26 +38,14 @@ namespace MatchingSystem.UI.ApiControllers
         public IActionResult SetEndDate([FromForm] string endDate, [FromForm] int matchingId)
         {
             var isParsed = DateTime.TryParse(endDate, out var time);
-            
+
             if (!isParsed)
             {
                 return BadRequest("Получена некорректная дата");
             }
-
-            try
-            {
-                matchingRepository.SetStageEndDate(time, matchingId);
-                return Ok();
-            }
-            catch (SqlException ex)
-            {
-                return Problem(ex.Message, statusCode: 500);
-            }
+            executiveService.SetEndDate(time, matchingId);
+            return Ok();
         }
-
-   
-        
-        
         
         [Route("api/[controller]/getAllocation")]
         [HttpGet]
@@ -93,31 +55,8 @@ namespace MatchingSystem.UI.ApiControllers
             {
                 return BadRequest("Некорректный запрос.");
             }
-
-            try
-            {
-                var model = new AdjustmentData()
-                {
-                    Allocations = executiveRepository.GetAllocationsByExecutive(userId.Value, matchingId.Value),
-                    Tutors = tutorRepository.GetTutorsByMatching(matchingId.Value),
-                    Projects = new List<Project>()
-                };
-
-                var tutorIds = model.Tutors.Select(x => x.TutorID).ToList();
-
-                foreach (var tutorId in tutorIds)
-                {
-                    var temp = projectRepository.GetProjectsByTutor(tutorId).ToList();
-                    temp.ForEach(x => x.TutorID = tutorId);
-                    model.Projects.AddRange(temp);
-                }
-
-                return new JsonResult(model);
-            }
-            catch (Exception e)
-            {
-                return Problem(e.Message, statusCode: 500);
-            }
+            var model = executiveService.GetAllocationByExecutive(userId, matchingId);
+            return new JsonResult(model);
         }
 
         [Route("api/[controller]/setAllocation")]
@@ -129,29 +68,7 @@ namespace MatchingSystem.UI.ApiControllers
             {
                 return BadRequest("Некорректный запрос.");
             }
-
-            try
-            {
-                foreach (var student in request.Allocations)
-                {
-                    var inParams = new AdjustmentParams()
-                    {
-                        MatchingId = request.MatchingID.Value,
-                        ProjectId = student.ProjectID.Value,
-                        StudentId = student.StudentID.Value,
-                        UserId = request.UserID.Value
-                    };
-                    executiveRepository.SetAdjustmentByExecutive(inParams);
-                }
-            }
-            catch (Exception)
-            {
-                return Problem(
-                    "При обработке запроса произошла неизвестная ошибка. Перезагрузите страницу и проверье данные.", 
-                    statusCode: 500
-                );
-            }
-            
+            executiveService.SetAllocationByExecutive(request);
             return Ok();
         }
     }
