@@ -1,92 +1,85 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using MatchingSystem.DataLayer.Interface;
+﻿using MatchingSystem.DataLayer.Interface;
+using MatchingSystem.DataLayer.Entities;
+using MatchingSystem.DataLayer.Dto;
 
-namespace Service.Statistics
+namespace Service.Statistics;
+public class StatisticsService : IStatisticsService
 {
-    internal class StatisticsService
+    private readonly IStatisticsRepository statisticsRepository;
+    public StatisticsService(IStatisticsRepository statisticsRepository)
     {
-        private readonly IStatisticsRepository statisticsRepository;
-        public StatisticsService(IStatisticsRepository statisticsRepository)
+        this.statisticsRepository = statisticsRepository;
+    }
+
+    public IEnumerable<StatisticsMain> GetStatisticsMain(int? matchingId,int? currentStage)
+    {
+        if (currentStage > 4)
         {
-            this.statisticsRepository = statisticsRepository;
+            currentStage = 4;
         }
 
-        public IActionResult GetStatisticsMain([FromQuery] int? matchingId, [FromQuery] int? currentStage)
+        var result = statisticsRepository.GetStatisticsMain(matchingId.Value, currentStage.Value);
+
+        foreach (var stat in result)
         {
-            if (currentStage > 4)
-            {
-                currentStage = 4;
-            }
-
-            var result = statisticsRepository.GetStatisticsMain(matchingId.Value, currentStage.Value);
-
-            foreach (var stat in result)
-            {
-                stat.StatValue_Str = stat.StatValue_Str?.Replace(",", "<br>");
-            }
-
-            return new JsonResult(result);
+            stat.StatValue_Str = stat.StatValue_Str?.Replace(",", "<br>");
         }
 
-        public IActionResult GetStatisticsGroups([FromQuery] int? matchingId)
+        return result;
+    }
+
+    public IEnumerable<StatisticsMain> GetStatisticsGroups(int? matchingId)
+    {
+        var result = statisticsRepository.GetStatisticsGroups(matchingId.Value);
+
+        foreach (var stat in result)
         {
-            var result = statisticsRepository.GetStatisticsGroups(matchingId.Value);
-
-            foreach (var stat in result)
-            {
-                stat.StatValue_Str = stat.StatValue_Str?.Replace(",", "<br>");
-            }
-
-            return new JsonResult(result);
-
+            stat.StatValue_Str = stat.StatValue_Str?.Replace(",", "<br>");
         }
 
-        public IActionResult GetStatisticsTutors([FromQuery] int? matchingId, [FromQuery] int? currentStage)
+        return result;
+    }
+
+    public IEnumerable<StatisticsTutors> GetStatisticsTutors(int? matchingId,int? currentStage)
+    {
+        if (currentStage > 4)
         {
-            if (currentStage > 4)
-            {
-                currentStage = 4;
-            }
-
-            var result = statisticsRepository.GetStatisticsTutors(matchingId.Value, currentStage.Value);
-
-            return new JsonResult(result);
+            currentStage = 4;
         }
 
-        public IActionResult GetStatisticsStudents([FromQuery] int? matchingId, [FromQuery] int? currentStage)
+        var result = statisticsRepository.GetStatisticsTutors(matchingId.Value, currentStage.Value);
+
+        return result;
+    }
+
+    public IEnumerable<StatisticsStudents> GetStatisticsStudents(int? matchingId, int? currentStage)
+    {
+        if (currentStage > 4)
         {
-            if (currentStage > 4)
-            {
-                currentStage = 4;
-            }
-
-            var result = statisticsRepository.GetStatisticsStudents(matchingId.Value, currentStage.Value);
-
-            return new JsonResult(result);
+            currentStage = 4;
         }
 
-        public IActionResult GetStatisticsTutorsProjectAllocated([FromQuery] int? matchingId, [FromQuery] int? tutorId)
-        {
-            var result = statisticsRepository.GetStatisticsTutorProjectAllocated(matchingId.Value, tutorId.Value);
-            return new JsonResult(result);
-        }
+        var result = statisticsRepository.GetStatisticsStudents(matchingId.Value, currentStage.Value);
 
-        public IActionResult GetStatisticsStudentsProjects([FromQuery] int? matchingId, [FromQuery] int? studentId)
-        {
-            var model = statisticsRepository.GetStatisticsStudentsProjects(matchingId.Value, studentId.Value);
+        return result;
+    }
 
-            return new JsonResult(model.OrderBy(project => project.OrderNumber));
-        }
+    public IEnumerable<TutorsProjectAllocation> GetStatisticsTutorsProjectAllocated(int? matchingId, int? tutorId)
+    {
+        var result = statisticsRepository.GetStatisticsTutorProjectAllocated(matchingId.Value, tutorId.Value);
+        return result;
+    }
 
-        public IActionResult GetStatisticsTutorsProjects([FromQuery] int? matchingId, [FromQuery] int? tutorId)
-        {
-            var result = statisticsRepository.GetStatisticsTutorsProjects(matchingId.Value, tutorId.Value);
-            return new JsonResult(result);
-        }
+    public IEnumerable<StatisticsStudentsProjects> GetStatisticsStudentsProjects(int? matchingId, int? studentId)
+    {
+        var model = statisticsRepository.GetStatisticsStudentsProjects(matchingId.Value, studentId.Value);
+
+        return model.OrderBy(project => project.OrderNumber);
+    }
+
+    public IEnumerable<Project> GetStatisticsTutorsProjects(int? matchingId, int? tutorId)
+    {
+        var result = statisticsRepository.GetStatisticsTutorsProjects(matchingId.Value, tutorId.Value);
+        return result;
     }
 }

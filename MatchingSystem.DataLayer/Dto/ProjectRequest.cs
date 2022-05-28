@@ -1,4 +1,4 @@
-﻿namespace MatchingSystem.UI.RequestModels
+﻿namespace MatchingSystem.DataLayer.Dto
 {
     public class ProjectRequest
     {

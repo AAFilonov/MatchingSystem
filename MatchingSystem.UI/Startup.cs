@@ -11,6 +11,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Service.Notification;
+using Service.Allocation;
+using Service.Projects;
+using Service.Quotas;
+using Service.Statistics;
+using Service.Student;
+using Service.Tutor;
+using Service.User;
+using Service.Executive;
 
 namespace MatchingSystem.UI
 {
@@ -64,8 +72,23 @@ namespace MatchingSystem.UI
             services.AddSingleton<DbContext, DiplomaMatchingContext>(options => new DiplomaMatchingContext(connectionString));
             services.AddSingleton<MatchingSystem.Data.Feature.User.IUserRepository, MatchingSystem.Data.Feature.User.UserRepository>();
             services.AddSingleton<MatchingSystem.Data.Feature.Matching.IMatchingRepository, MatchingSystem.Data.Feature.Matching.MatchingRepository>();
-            services.AddSingleton<INotificationService, NotificationService>();
             
+
+
+            //--Services
+            services.AddSingleton<INotificationService, NotificationService>();
+            services.AddSingleton<IStatisticsService, StatisticsService>();
+            services.AddSingleton<IAllocationService, AllocationService>();
+            services.AddSingleton<IExecutiveService, ExecutiveService>();
+            services.AddSingleton<IProjectsService, ProjectsService>();
+            services.AddSingleton<IStudentService, StudentService>();
+            services.AddSingleton<IQuotasService, QuotasService>();
+            services.AddSingleton<ITutorService, TutorService>();
+            services.AddSingleton<IUserService, UserService>();            
+            //--Services
+
+
+
             services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromHours(2);

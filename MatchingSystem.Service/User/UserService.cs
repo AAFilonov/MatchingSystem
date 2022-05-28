@@ -1,35 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using MatchingSystem.DataLayer.Interface;
+﻿using MatchingSystem.DataLayer.Interface;
+using MatchingSystem.DataLayer.Entities;
+using MatchingSystem.DataLayer.Dto;
 
-namespace Service.User
+namespace Service.User;
+public class UserService : IUserService
 {
-    internal class UserService
+    private readonly IUserRepository userRepository;
+    private readonly IMatchingRepository matchingRepository;
+
+    public UserService(IUserRepository userRepository, IMatchingRepository matchingRepository)
     {
-        private readonly IUserRepository userRepository;
-        private readonly IMatchingRepository matchingRepository;
+        this.matchingRepository = matchingRepository;
+        this.userRepository = userRepository;
+    }
 
-        public UserService(IUserRepository userRepository, IMatchingRepository matchingRepository)
-        {
-            this.matchingRepository = matchingRepository;
-            this.userRepository = userRepository;
-        }
+    public IEnumerable<Matching> GetMatchingsForUser(int userId)
+    {
+        var model = matchingRepository.GetMatchingsByUser(userId).OrderByDescending(matching => matching.MatchingID);
+        return model;
+    }
 
-        public IActionResult GetMatchingsForUser([FromQuery] int userId)
-        {
-            var model = matchingRepository.GetMatchingsByUser(userId).OrderByDescending(matching => matching.MatchingID);
-            return new JsonResult(model);
-        }
+    public IEnumerable<Role> GetRolesForUser(int matchingId, int userId)
+    {
+        var model = userRepository.GetRolesForUserAndMatching(userId, matchingId);
 
-        public IActionResult GetRolesForUser([FromQuery] int matchingId, [FromQuery] int userId)
-        {
-            var model = userRepository.GetRolesForUserAndMatching(userId, matchingId);
-
-            return new JsonResult(model);
-        }
+        return model;
     }
 }

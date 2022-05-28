@@ -5,55 +5,26 @@ using System.Data.SqlClient;
 using System.Linq;
 using MatchingSystem.DataLayer.Entities;
 using MatchingSystem.DataLayer.Interface;
-using MatchingSystem.DataLayer.IO.Params;
-using MatchingSystem.UI.RequestModels;
-using MatchingSystem.UI.ResultModels;
+using MatchingSystem.DataLayer.Dto;
+using Service.Statistics;
 
 namespace MatchingSystem.UI.ApiControllers
 {
     [ApiController]
     public class StatisticsController : ControllerBase
     {
-        private readonly IStatisticsRepository statisticsRepository;
-        public StatisticsController(IStatisticsRepository statisticsRepository)
+        private readonly IStatisticsService statisticsService;
+        public StatisticsController(IStatisticsService statisticsService)
         {
-            this.statisticsRepository = statisticsRepository;
+            this.statisticsService = statisticsService;
         }
 
         [Route("api/[controller]/getStatisticsMain")]
         [HttpGet]
         public IActionResult GetStatisticsMain([FromQuery] int? matchingId, [FromQuery] int? currentStage)
         {
-            if (!matchingId.HasValue || !currentStage.HasValue)
-            {
-                return BadRequest("Некорректный запрос.");
-            }
-            
-            try
-            {
-                if (currentStage > 4)
-                {
-                    currentStage = 4;
-                }
-                
-                var result = statisticsRepository.GetStatisticsMain(matchingId.Value, currentStage.Value);
-                
-                foreach (var stat in result)
-                {
-                    stat.StatValue_Str = stat.StatValue_Str?.Replace(",", "<br>");
-                }
-                
-                return new JsonResult(result);
-            }
-            catch (SqlException ex)
-            {
-                return Problem(ex.Message, statusCode: 500);
-            }
-            catch (Exception ex)
-            {
-                return Problem(ex.Message, statusCode: 500);
-            }
-            
+            var result = statisticsService.GetStatisticsMain(matchingId, currentStage);
+            return new JsonResult(result);
         }
         
         [Route("api/[controller]/getStatisticsGroups")]
@@ -64,28 +35,8 @@ namespace MatchingSystem.UI.ApiControllers
             {
                 return BadRequest("Некорректный запрос.");
             }
-            
-            try
-            {
-              
-                var result = statisticsRepository.GetStatisticsGroups(matchingId.Value);
-                
-                foreach (var stat in result)
-                {
-                    stat.StatValue_Str = stat.StatValue_Str?.Replace(",", "<br>");
-                }
-                
-                return new JsonResult(result);
-            }
-            catch (SqlException ex)
-            {
-                return Problem(ex.Message, statusCode: 500);
-            }
-            catch (Exception ex)
-            {
-                return Problem(ex.Message, statusCode: 500);
-            }
-            
+            var result = statisticsService.GetStatisticsGroups(matchingId);    
+            return new JsonResult(result);            
         }
 
         [Route("api/[controller]/getStatisticsTutors")]
@@ -97,25 +48,13 @@ namespace MatchingSystem.UI.ApiControllers
                 return BadRequest("Некорректный запрос.");
             }
 
-            try
+            if (currentStage > 4)
             {
-                if (currentStage > 4)
-                {
-                    currentStage = 4;
-                }
-                
-                var result = statisticsRepository.GetStatisticsTutors(matchingId.Value, currentStage.Value);
+                currentStage = 4;
+            }
+            var result = statisticsService.GetStatisticsTutors(matchingId, currentStage);
 
-                return new JsonResult(result);
-            }
-            catch (SqlException ex)
-            {
-                return Problem(ex.Message, statusCode: 500);
-            }
-            catch (Exception ex)
-            {
-                return Problem(ex.Message, statusCode: 500);
-            }
+            return new JsonResult(result);
 
         }
 
@@ -128,26 +67,14 @@ namespace MatchingSystem.UI.ApiControllers
                 return BadRequest("Некорректный запрос.");
             }
 
-            try
+            if (currentStage > 4)
             {
-                if (currentStage > 4)
-                {
-                    currentStage = 4;
-                }
-
-                var result = statisticsRepository.GetStatisticsStudents(matchingId.Value, currentStage.Value);
-
-                return new JsonResult(result);
-            }
-            catch (SqlException ex)
-            {
-                return Problem(ex.Message, statusCode: 500);
-            }
-            catch (Exception ex)
-            {
-                return Problem(ex.Message, statusCode: 500);
+                currentStage = 4;
             }
 
+            var result = statisticsService.GetStatisticsStudents(matchingId, currentStage);
+
+            return new JsonResult(result);
         }
 
 
@@ -159,20 +86,9 @@ namespace MatchingSystem.UI.ApiControllers
             {
                 return BadRequest("Некорректный запрос.");
             }
-            try
-            {
-                var result = statisticsRepository.GetStatisticsTutorProjectAllocated(matchingId.Value, tutorId.Value);
-                return new JsonResult(result);
-            }
-            catch (SqlException ex)
-            {
-                return Problem(ex.Message, statusCode: 500);
-            }
-            catch (Exception ex)
-            {
-                return Problem(ex.Message, statusCode: 500);
-            }
+            var result = statisticsService.GetStatisticsTutorsProjectAllocated(matchingId, tutorId);
 
+            return new JsonResult(result);
         }
         
         
@@ -184,21 +100,8 @@ namespace MatchingSystem.UI.ApiControllers
             {
                 return BadRequest("Некорректный запрос.");
             }
-            try
-            {
-                var model = statisticsRepository.GetStatisticsStudentsProjects(matchingId.Value, studentId.Value);
-              
-                return new JsonResult(  model.OrderBy(project => project.OrderNumber));
-            }
-            catch (SqlException ex)
-            {
-                return Problem(ex.Message, statusCode: 500);
-            }
-            catch (Exception ex)
-            {
-                return Problem(ex.Message, statusCode: 500);
-            }
-
+            var model = statisticsService.GetStatisticsStudentsProjects(matchingId, studentId);
+            return new JsonResult(model);
         }
 
  
@@ -210,22 +113,8 @@ namespace MatchingSystem.UI.ApiControllers
             {
                 return BadRequest("Некорректный запрос.");
             }
-            try
-            {
-                var result = statisticsRepository.GetStatisticsTutorsProjects(matchingId.Value, tutorId.Value);
-                return new JsonResult(result);
-            }
-            catch (SqlException ex)
-            {
-                return Problem(ex.Message, statusCode: 500);
-            }
-            catch (Exception ex)
-            {
-                return Problem(ex.Message, statusCode: 500);
-            }
-
+            var result = statisticsService.GetStatisticsTutorsProjects(matchingId, tutorId);
+            return new JsonResult(result);
         }
-
-
     }
 }
