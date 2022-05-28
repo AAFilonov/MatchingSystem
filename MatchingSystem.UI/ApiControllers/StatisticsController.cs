@@ -5,9 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using MatchingSystem.DataLayer.Entities;
 using MatchingSystem.DataLayer.Interface;
-using MatchingSystem.DataLayer.IO.Params;
-using MatchingSystem.UI.RequestModels;
-using MatchingSystem.UI.ResultModels;
+using MatchingSystem.DataLayer.Dto;
 
 namespace MatchingSystem.UI.ApiControllers
 {

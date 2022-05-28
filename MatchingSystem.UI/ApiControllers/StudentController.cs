@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Linq;
-using MatchingSystem.DataLayer;
 using MatchingSystem.DataLayer.Interface;
 using MatchingSystem.DataLayer.IO.Params;
-using MatchingSystem.UI.Dto.Student;
+using MatchingSystem.DataLayer.Dto;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MatchingSystem.UI.ApiControllers

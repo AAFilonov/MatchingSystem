@@ -1,26 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using MatchingSystem.DataLayer.Interface;
+﻿using MatchingSystem.DataLayer.Interface;
+using MatchingSystem.DataLayer.Entities;
+using MatchingSystem.DataLayer.Dto;
 
-namespace Service.Statistics
+namespace Service.Statistics;
+public interface IStatisticsService
 {
-    internal interface IStatisticsService
-    {
-        public IActionResult GetStatisticsMain([FromQuery] int? matchingId, [FromQuery] int? currentStage);
-        public IActionResult GetStatisticsGroups([FromQuery] int? matchingId);
-        
-        public IActionResult GetStatisticsTutors([FromQuery] int? matchingId, [FromQuery] int? currentStage);
+    public IEnumerable<StatisticsMain> GetStatisticsMain(int? matchingId,int? currentStage);
+    public IEnumerable<StatisticsMain> GetStatisticsGroups(int? matchingId);
+    
+    public IEnumerable<StatisticsTutors> GetStatisticsTutors(int? matchingId, int? currentStage);
 
-        public IActionResult GetStatisticsStudents([FromQuery] int? matchingId, [FromQuery] int? currentStage);
+    public IEnumerable<StatisticsStudents> GetStatisticsStudents(int? matchingId, int? currentStage);
 
-        public IActionResult GetStatisticsTutorsProjectAllocated([FromQuery] int? matchingId, [FromQuery] int? tutorId);
+    public IEnumerable<TutorsProjectAllocation> GetStatisticsTutorsProjectAllocated(int? matchingId, int? tutorId);
 
-        public IActionResult GetStatisticsStudentsProjects([FromQuery] int? matchingId, [FromQuery] int? studentId);
+    public IEnumerable<StatisticsStudentsProjects> GetStatisticsStudentsProjects(int? matchingId, int? studentId);
 
-        public IActionResult GetStatisticsTutorsProjects([FromQuery] int? matchingId, [FromQuery] int? tutorId);
-    }
+    public IEnumerable<Project> GetStatisticsTutorsProjects(int? matchingId, int? tutorId);
 }

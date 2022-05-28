@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.AspNetCore.Mvc;
-using MatchingSystem.DataLayer.Entities;
+﻿using MatchingSystem.DataLayer.Entities;
+using MatchingSystem.DataLayer.Dto;
 
-namespace Service.Tutor
+namespace Service.Tutor;
+public interface ITutorService
 {
-    internal interface ITutorService
-    {
-        public IActionResult GetChoice(int tutorId);
+    public IterationData GetChoice(int tutorId);
 
-        public void SetReady([FromQuery] int tutorId);
+    public void SetReady(int tutorId);
 
-        public void SaveChoice([FromBody] List<TutorChoice_1> data, [FromQuery] int tutorId);
-    }
+    public void SaveChoice(List<TutorChoice_1> data, int tutorId);
 }

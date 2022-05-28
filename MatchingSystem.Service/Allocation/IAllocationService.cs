@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MatchingSystem.UI.ResultModels;
-using Microsoft.AspNetCore.Mvc;
-using MatchingSystem.DataLayer.Interface;
+﻿using MatchingSystem.DataLayer.Interface;
+using MatchingSystem.DataLayer.Dto;
 
-namespace Service.Allocation
+namespace Service.Allocation;
+
+public interface IAllocationService
 {
-    internal interface IAllocationservice
-    {
-        void ReadNotifications(int userId, int matchingId);
-        IActionResult GetAllocations();
-    }
+    void ReadNotifications(int userId, int matchingId);
+    AllocationData GetAllocations();
 }

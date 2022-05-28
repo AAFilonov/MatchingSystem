@@ -3,8 +3,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using System.Data.SqlClient;
 using MatchingSystem.DataLayer.Interface;
-using MatchingSystem.UI.RequestModels;
-using MatchingSystem.UI.ResultModels;
+using MatchingSystem.DataLayer.Dto;
 using MatchingSystem.Constants;
 
 namespace MatchingSystem.UI.ApiControllers

@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 using MatchingSystem.DataLayer.Interface;
-using MatchingSystem.UI.ResultModels;
+using MatchingSystem.DataLayer.Dto;
 
 namespace MatchingSystem.UI.ApiControllers
 {

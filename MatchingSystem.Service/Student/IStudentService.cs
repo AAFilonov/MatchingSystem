@@ -1,25 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MatchingSystem.DataLayer.Entities;
+using MatchingSystem.DataLayer.Dto;
 
-using Microsoft.AspNetCore.Mvc;
+namespace Service.Student;
 
-namespace Service.Student
+public interface IStudentService
 {
-    internal interface IStudentService
-    {
-        public IActionResult GetSelectedParams(int studentId);
+    public GetData GetSelectedParams(int studentId);
 
-        public IActionResult EditProfile();
+    public void EditProfile(int studentId, string info, string info2, string tech, string workDirection);
 
-        public IActionResult GetProjects([FromQuery] int studentId);
+    public IEnumerable<ProjectForStudent> GetProjects(int studentId);
 
-        public IActionResult SetPreferences();
+    public void SetPreferences(int studentId, string selectedList);
 
-        public IActionResult GetStudentInfo([FromQuery] int? studentId);
-        public IActionResult GetAllocatedProject([FromQuery] int? studentId);
-
-    }
+    public MatchingSystem.DataLayer.Entities.Student GetStudentInfo(int? studentId);
+    public AllocatedByStudent GetAllocatedProject(int? studentId);
 }

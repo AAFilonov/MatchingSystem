@@ -1,27 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using MatchingSystem.UI.RequestModels;
+﻿using MatchingSystem.DataLayer.Entities;
+using MatchingSystem.DataLayer.Dto;
 
-namespace Service.Projects
+namespace Service.Projects;
+public interface IProjectsService
 {
-    internal interface IProjectsService
-    {
-        public IActionResult AddTutorProject([FromForm] ProjectRequest project);
+    public void AddTutorProject(ProjectRequest project);
 
-        public void EditProject([FromForm] ProjectRequest project);
+    public void EditProject(ProjectRequest project);
 
-        public void DeleteProject([FromQuery] int projectId);
+    public void DeleteProject(int projectId);
 
-        public IActionResult GetProjectsData([FromQuery] int tutorId);
+    public TutorProjectsModel GetProjectsData(int tutorId);
 
-        public void EditQuota(int projectId, int quota, int tutorId, int matchingid);
+    public void EditQuota(int projectId, int quota, int tutorId, int matchingid);
 
-        public void CloseProject(int tutorId, int projectId);
+    public void CloseProject(int tutorId, int projectId);
 
-        public IActionResult GetProjectsByTutor([FromQuery] int tutorId);
-    }
+    public IEnumerable<Project> GetProjectsByTutor(int tutorId);
 }

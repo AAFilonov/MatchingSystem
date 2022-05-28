@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using MatchingSystem.DataLayer.Entities;
 using MatchingSystem.DataLayer.Interface;
-using MatchingSystem.UI.ResultModels;
+using MatchingSystem.DataLayer.Dto;
 using Microsoft.AspNetCore.Mvc;
 using System.Data.SqlClient;
 
