@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using MatchingSystem.DataLayer.Interface;
+using MatchingSystem.Service.Notification;
 using Microsoft.AspNetCore.Mvc;
-using Service.Notification;
 
 namespace MatchingSystem.UI.ApiControllers
 {

@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using System.Data.SqlClient;
-using MatchingSystem.DataLayer.Interface;
 using MatchingSystem.DataLayer.Dto;
-using MatchingSystem.Constants;
-using Service.Projects;
+using MatchingSystem.Service.Projects;
 
 namespace MatchingSystem.UI.ApiControllers
 {

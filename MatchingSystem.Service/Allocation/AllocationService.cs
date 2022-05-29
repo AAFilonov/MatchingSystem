@@ -1,7 +1,7 @@
-﻿using MatchingSystem.DataLayer.Interface;
-using MatchingSystem.DataLayer.Dto;
+﻿using MatchingSystem.DataLayer.Dto;
+using MatchingSystem.DataLayer.Interface;
 
-namespace Service.Allocation;
+namespace MatchingSystem.Service.Allocation;
 
 public class AllocationService : IAllocationService
 {

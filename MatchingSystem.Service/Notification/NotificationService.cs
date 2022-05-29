@@ -1,8 +1,8 @@
-using MatchingSystem.Data.Feature.User;
-
-namespace Service.Notification;
+using System.Collections.Generic;
 using MatchingSystem.DataLayer.Interface;
+using IUserRepository = MatchingSystem.DataLayer.Interface.IUserRepository;
 
+namespace MatchingSystem.Service.Notification;
 
 public class NotificationService  : INotificationService
 {

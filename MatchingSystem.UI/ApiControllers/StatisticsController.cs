@@ -6,7 +6,7 @@ using System.Linq;
 using MatchingSystem.DataLayer.Entities;
 using MatchingSystem.DataLayer.Interface;
 using MatchingSystem.DataLayer.Dto;
-using Service.Statistics;
+using MatchingSystem.Service.Statistics;
 
 namespace MatchingSystem.UI.ApiControllers
 {

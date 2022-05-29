@@ -1,9 +1,7 @@
-﻿using MatchingSystem.DataLayer.Interface;
-using MatchingSystem.DataLayer.Entities;
+﻿using System;
 using MatchingSystem.DataLayer.Dto;
 
-
-namespace Service.Executive;
+namespace MatchingSystem.Service.Executive;
 public interface IExecutiveService
 {
     public void SetNextStage(int? matchingId, int? userId);

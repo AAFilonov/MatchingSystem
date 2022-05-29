@@ -3,8 +3,8 @@ using System.Linq;
 using MatchingSystem.DataLayer.Interface;
 using MatchingSystem.DataLayer.IO.Params;
 using MatchingSystem.DataLayer.Dto;
+using MatchingSystem.Service.Student;
 using Microsoft.AspNetCore.Mvc;
-using Service.Student;
 
 namespace MatchingSystem.UI.ApiControllers
 {

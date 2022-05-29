@@ -4,7 +4,7 @@ using MatchingSystem.DataLayer.IO.Params;
 using MatchingSystem.DataLayer.Dto;
 using Microsoft.AspNetCore.Mvc;
 using System.Data.SqlClient;
-using Service.Quotas;
+using MatchingSystem.Service.Quotas;
 
 namespace MatchingSystem.UI.ApiControllers
 {

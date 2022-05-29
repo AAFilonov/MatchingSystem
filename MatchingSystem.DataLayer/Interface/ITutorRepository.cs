@@ -21,6 +21,7 @@ namespace MatchingSystem.DataLayer.Interface
         int GetCommonQuotaByTutor(int tutorId);
         Task<IEnumerable<QuotaHistoryTutor>> GetQuotaRequestHistoryByTutorAsync(int tutorId);
         IEnumerable<QuotaHistoryTutor> GetQuotaRequestHistoryByTutor(int tutorId);
+        IEnumerable<Tutor> GetAllTutors();
         
         /// <summary>
         /// Создает запрос на увеличение квоты к ответственному на втором этапе распределения

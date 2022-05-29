@@ -1,9 +1,10 @@
-﻿using MatchingSystem.DataLayer.Interface;
-using MatchingSystem.DataLayer.Entities;
+﻿using System.Collections.Generic;
+using System.Linq;
 using MatchingSystem.DataLayer.Dto;
+using MatchingSystem.DataLayer.Entities;
+using MatchingSystem.DataLayer.Interface;
 
-
-namespace Service.Tutor;
+namespace MatchingSystem.Service.Tutor;
 
 public class TutorService : ITutorService
 {
@@ -49,5 +50,34 @@ public class TutorService : ITutorService
     public void SaveChoice(List<TutorChoice_1> data, int tutorId)
     {
             tutorRepository.SetPreferences(data, tutorId);
+    }
+
+    public List<TutorDto> GetAllTutors()
+    {
+        var tutors = tutorRepository.GetAllTutors();
+        List<GroupTutorDto>  groups = new List<GroupTutorDto>()
+        {
+            new GroupTutorDto("18-ПРИ", false),
+            new GroupTutorDto("18-МОА", false),
+            new GroupTutorDto("18-ИВТ-1", false)
+        };
+        var tutorDtos = new List<TutorDto>();
+        foreach (var tutor in tutors)
+        {
+            //tutorDtos.Add(tutor); //(TutorDto.construct(tutor,groups));  
+            tutorDtos.Add(this.construct(tutor, groups));
+        }
+
+        return tutorDtos;
+    }
+    private TutorDto construct(DataLayer.Entities.Tutor tutor,  List<GroupTutorDto>  groups)
+    {
+        TutorDto dto = new TutorDto();
+        dto.id = tutor.TutorID;
+        dto.nameAbbreviation = tutor.NameAbbreviation;
+        dto.isIncluded = true;
+        dto.groups = groups;
+        dto.quota = 3;
+        return dto;
     }
 }
