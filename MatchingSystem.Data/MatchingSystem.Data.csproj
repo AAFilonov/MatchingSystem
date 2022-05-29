@@ -17,7 +17,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Feature\Group" />
       <Folder Include="Feature\Stage" />
       <Folder Include="Schema" />
     </ItemGroup>
