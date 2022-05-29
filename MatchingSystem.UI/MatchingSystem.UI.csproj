@@ -118,12 +118,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Dto\Student\" />
-    <Folder Include="Infrastructure" />
-    <Folder Include="RequestModels\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\MatchingSystem.Constants\MatchingSystem.Constants.csproj" />
     <ProjectReference Include="..\MatchingSystem.DataLayer\MatchingSystem.DataLayer.csproj" />
     <ProjectReference Include="..\MatchingSystem.Data\MatchingSystem.Data.csproj" />
