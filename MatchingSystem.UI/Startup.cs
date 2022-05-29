@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Service.Notification;
 using Service.Allocation;
 using Service.Projects;
@@ -116,6 +117,7 @@ namespace MatchingSystem.UI
             app.UseRouting();
             app.UseAuthorization();
             app.UseRequestLogger(Configuration.GetConnectionString("DefaultConnection"));
+            app.UseMiddleware<ErrorHandlerMiddleware>();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

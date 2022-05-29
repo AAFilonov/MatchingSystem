@@ -6,24 +6,26 @@ using MatchingSystem.DataLayer.Interface;
 using MatchingSystem.DataLayer.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace MatchingSystem.UI.Middleware
 {
     public class LogMiddleware
     {
         private readonly RequestDelegate next;
-        private readonly string connectionString;
+        private readonly ILogger<LogMiddleware> logger;
+     
 
-        public LogMiddleware(RequestDelegate next, string connectionString)
+        public LogMiddleware(RequestDelegate next, string connectionString, ILogger<LogMiddleware> logger)
         {
             this.next = next;
-            this.connectionString = connectionString;
+            this.logger = logger;
         }
 
         public async Task InvokeAsync(HttpContext context)
         {
             context.Request.EnableBuffering();
-            ILoggerRepository repository = new LogRepository(connectionString);
             if (context.Request.Path.Value != null && context.Request.Path.Value.Contains("/api"))
             {
                 try
@@ -35,15 +37,15 @@ namespace MatchingSystem.UI.Middleware
                         var form = await context.Request.ReadFormAsync();
                         WriteRequestForm(requestParams, form);
                     }
-
-
+                    
                     await WriteRequestBody(requestParams, context.Request.Body);
-                    WriteRequestQuery(requestParams, context.Request.Query);
-
-                    repository.LogRequest(requestParams.ToString(), context.Request.Path.ToString());
+                    WriteRequestQuery(requestParams, context.Request.Query);  
+              
+                    logger.LogInformation("INCOMING REQUEST: {}  on path:{}",requestParams,context.Request.Path.ToString());
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    logger.LogError("Exception during logging: {}" ,e.Message);
                     await next.Invoke(context);
                 }
                 finally
@@ -57,45 +59,46 @@ namespace MatchingSystem.UI.Middleware
 
         private void WriteRequestForm(StringBuilder writer, IFormCollection form)
         {
-            writer.AppendLine("[FORM]");
+            writer.Append( JsonConvert.SerializeObject( form));
+               return;
             foreach (var data in form)
             {
-                writer.AppendLine($@"{data.Key} : {{");
+                writer.Append($@"{data.Key}: {{");
                 foreach (var value in data.Value)
                 {
-                    writer.AppendLine($"\t{value}");
+                    writer.Append($"{value}");
                 }
 
-                writer.AppendLine("}");
+                writer.Append("}");
             }
-
-            writer.AppendLine("[ENDFORM]");
         }
 
         private async Task WriteRequestBody(StringBuilder writer, Stream bodyStream)
         {
             var reader = new StreamReader(bodyStream);
-            writer.AppendLine("[BODY]");
-            writer.AppendLine("\t" + await reader.ReadToEndAsync());
-            writer.AppendLine("[ENDBODY]");
+            writer.Append( await reader.ReadToEndAsync());
         }
 
         private void WriteRequestQuery(StringBuilder writer, IQueryCollection query)
         {
-            writer.AppendLine("[QUERY]");
-
+            
             foreach (var data in query)
             {
-                writer.AppendLine($@"{data.Key} : {{");
+                writer.Append("[");
+                //writer.AppendLine( JsonConvert.SerializeObject( data));
+                
+                writer.Append($@"{data.Key}:");
+                if (data.Value.Count > 1) 
+                    writer.Append("{");
                 foreach (var value in data.Value)
                 {
-                    writer.AppendLine($"\t{value}");
+                    writer.Append(JsonConvert.SerializeObject( value));
                 }
-
-                writer.AppendLine("}");
+                if (data.Value.Count > 1) 
+                    writer.Append("}");
+                writer.Append("]");
             }
-
-            writer.AppendLine("[ENDQUERY]");
+            
         }
     }
 
