@@ -18,7 +18,7 @@ namespace MatchingSystem.UI.Controllers
     {
         private readonly IUserRepository userRepository;
         private MatchingSystem.Data.Feature.User.IUserRepository _userRepository;
-        private MatchingSystem.Data.Feature.Matching.IMatchingRepository _matchingRepository;
+        //private MatchingSystem.Data.Feature.Matching.IMatchingRepository _matchingRepository;
         private readonly IMatchingRepository matchingRepository;
 
         public HomeController(IUserRepository userRepository, IMatchingRepository matchingRepository, Data.Feature.User.IUserRepository userRepository2, Data.Feature.Matching.IMatchingRepository matchingRepository1)
@@ -26,7 +26,7 @@ namespace MatchingSystem.UI.Controllers
             this.userRepository = userRepository;
            this.matchingRepository = matchingRepository;
             _userRepository = userRepository2;
-            _matchingRepository = matchingRepository1;
+          //  _matchingRepository = matchingRepository1;
         }
 
         [HttpGet]
@@ -45,16 +45,18 @@ namespace MatchingSystem.UI.Controllers
                 data.CountRoles = data.RolesMatchings.Count();
 
 
-                var selectedMatching = Convert.ToInt32(HttpContext.Request.Cookies["selectedMatching"]);
-                data.SelectedMatching = selectedMatching;
+                var selectedMatchingId = Convert.ToInt32(HttpContext.Request.Cookies["selectedMatching"]);
+                data.SelectedMatching = selectedMatchingId;
 
-                data.MatchingTypeCode = _matchingRepository.findById(selectedMatching).MatchingType.MatchingTypeCode;
+               // data.MatchingTypeCode = _matchingRepository.findById(selectedMatchingId).MatchingType.MatchingTypeCode;
+                data.MatchingTypeCode =  matchingRepository.GetMatchings().First(matching => matching.MatchingID == selectedMatchingId)
+                    .MatchingTypeCode;
                 string selectedRole = HttpContext.Request.Cookies["selectedRole"];
                 data.SelectedRole = selectedRole;
 
                 data.CurrentStage = matchingRepository.GetCurrentStage(data.SelectedMatching);
 
-                userRepository.SetLastVisitDate(user.UserId, selectedRole, System.Convert.ToInt32(selectedMatching));
+                userRepository.SetLastVisitDate(user.UserId, selectedRole, System.Convert.ToInt32(selectedMatchingId));
 
                 HttpContext.Session.Set<SessionData>("Data", data);
 

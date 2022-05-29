@@ -28,7 +28,7 @@ namespace MatchingSystem.DataLayer.Repository
 
         public async Task<IEnumerable<Matching>> GetMatchingsAsync()
         {
-            return await Connection.QueryAsync<Matching>("select * from napp.get_Matchings()");
+            return await Connection.QueryAsync<Matching>("select * from dbo.Matching");
         }
 
         public async Task<Stage> GetCurrentStageAsync(int matchingId)

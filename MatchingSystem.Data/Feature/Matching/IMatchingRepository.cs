@@ -5,5 +5,5 @@ namespace MatchingSystem.Data.Feature.Matching;
 
 public interface IMatchingRepository :  IRepository<Model.Matching>
 {
-    Stage GetCurrentStage(int matchingId);
+    Model.Stage GetCurrentStage(int matchingId);
 }
