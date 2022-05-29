@@ -288,5 +288,11 @@ namespace MatchingSystem.DataLayer.Repository
                 new {Choices = table.AsTableValuedParameter("dbo.TutorsChoice_1"), TutorID = tutorId}
             );
         }
+        public IEnumerable<Tutor> GetAllTutors()
+        {
+            return Connection.Query<Tutor>(
+                "select distinct NameAbbreviation, UserID from dbo_v.Tutors" 
+            );
+        }
     }
 }

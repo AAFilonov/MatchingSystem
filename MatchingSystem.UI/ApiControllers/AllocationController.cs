@@ -1,8 +1,6 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
-using MatchingSystem.DataLayer.Interface;
+﻿using Microsoft.AspNetCore.Mvc;
 using MatchingSystem.DataLayer.Dto;
-using Service.Allocation;
+using MatchingSystem.Service.Allocation;
 
 namespace MatchingSystem.UI.ApiControllers
 {

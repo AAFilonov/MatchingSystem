@@ -1,8 +1,9 @@
-﻿using MatchingSystem.DataLayer.Entities;
+﻿using System.Collections.Generic;
 using MatchingSystem.DataLayer.Dto;
+using MatchingSystem.DataLayer.Entities;
 using MatchingSystem.DataLayer.IO.Params;
 
-namespace Service.Student;
+namespace MatchingSystem.Service.Student;
 
 public interface IStudentService
 {

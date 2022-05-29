@@ -1,8 +1,7 @@
-﻿using MatchingSystem.DataLayer.Interface;
+﻿using System.Collections.Generic;
 using MatchingSystem.DataLayer.Entities;
-using MatchingSystem.DataLayer.Dto;
 
-namespace Service.User;
+namespace MatchingSystem.Service.User;
 public interface IUserService
 {
     public IEnumerable<Matching> GetMatchingsForUser(int userId);

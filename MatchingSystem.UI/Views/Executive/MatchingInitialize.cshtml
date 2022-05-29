@@ -1,0 +1,298 @@
+@{
+    ViewData["title"] = "Администрирование";
+    ViewData["active"] = "admin";
+    Layout = "~/Views/Shared/_GeneralLayout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>aa</title>        
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+<div id="app">
+    <div class="modal modal-static fade" id="tutor-modal" ref="infoModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5>Информация о студенте: {{selectedTutor.fullName}}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" v-on:click.prevent="closeTutorModal">&times;</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container mt-5">
+        <div class="row">
+            <h2 class="col col-12">Инциализация распределения</h2>
+        </div>
+        <div class="row">
+            <div class="col col-12">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#allocation">Распределение</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" :class="{ disabled: !isReady}" data-toggle="tab" href="#students">Студенты</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" :class="{ disabled: !isReady}" data-toggle="tab" href="#tutors">Преподаватели</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" :class="{ disabled: !isReady}" data-toggle="tab" href="#result">Итог</a>
+                    </li>
+                </ul>
+                <div id="tabContent" class="tab-content m-4 ">
+                    <div class="tab-pane fade show active col-5 mx-auto" id="allocation">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Новое распределение</h5>
+                            </div>
+                            <form class="card-body" id="matchingForm">
+                                <div class="form-group">
+                                    <label for="name">Название</label>
+                                    <input type="text"
+                                           class="form-control required"
+                                           id="name"
+                                           v-model="matching.name"
+                                           required
+                                           placeholder="Название нового распределения">
+                                </div>
+                                <div class="form-group">
+                                    <label for="matchingType">Тип распределения</label>
+                                    <select class="form-control required"
+                                            id="matchingType"
+                                            v-model="matching.typeCode">
+                                        <option value="MG">Магистратура</option>
+                                        <option value="BC">Бакалавриат</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="startDatePicker">Дата начала</label>
+                                    <input type="date"
+                                           class="required"
+                                           id="startDatePicker"
+                                           required
+                                           v-model="matching.startDate">
+                                </div>
+                                <button type="submit" class="btn btn-primary"
+                                        v-on:click="onAllocationFormReady">
+                                    <span>Готово</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade mx-auto" id="students">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Студенты</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="custom-file">
+                                    <label for="studentsFile">Данные студентов</label>
+                                    <input id="studentsFile" type="file" v-on:change="onStudentsFileChange">
+                                </div>
+
+                                <table class="table table-hover" v-if="studentRecords.length">
+                                    <th style="cursor: pointer">
+                                        <div class="d-flex align-items-center">
+                                            <span>Группа</span>
+                                        </div>
+                                    </th>
+                                    <th style="cursor: pointer">
+                                        <div class="d-flex align-items-center">
+                                            <span>Фамилия</span>
+                                        </div>
+                                    </th>
+                                    <th style="cursor: pointer">
+                                        <div class="d-flex align-items-center">
+                                            <span>Имя</span>
+                                        </div>
+
+                                    </th>
+                                    <th style="cursor: pointer">
+                                        <div class="d-flex align-items-center">
+                                            <span>Отчество</span>
+                                        </div>
+
+                                    </th>
+                                    <tr v-for="student in studentRecords">
+                                        <td>{{student.groupName}}</td>
+                                        <td>
+                                            <input type="text" class="form-control" v-model="student.firstName"/>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" v-model="student.middleName"/>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" v-model="student.lastName"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade mx-auto" id="tutors">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Преподаватели</h5>
+                            </div>
+                            <div class="card-body">
+
+                                <table class="table table-hover" v-if="tutorRecords.length">
+                                    <th>
+                                        <div class="d-flex align-items-center">
+                                            <span>Участвует</span>
+                                        </div>
+                                    </th>
+                                    <th style="cursor: pointer">
+                                        <div class="d-flex align-items-center">
+                                            <span>ФИО</span>
+                                        </div>
+                                    </th>
+                                    <th style="cursor: pointer">
+                                        <div class="d-flex align-items-center">
+                                            <span>Квота </span>
+                                        </div>
+                                    </th>
+                                    <th style="cursor: pointer">
+                                        <div class="d-flex align-items-center">
+                                            <span>Группы</span>
+                                        </div>
+                                    </th>
+
+                                    <tr v-for="tutor in tutorRecords" v-bind:class="{'table-success': tutor.isIncluded }">
+                                        <td>
+                                            <input type="checkbox" v-model="tutor.isIncluded">
+                                        </td>
+                                        <td>{{tutor.nameAbbreviation}}</td>
+                                        <td>
+                                            <input type="number" class="form-control w-50" v-model="tutor.quota"/>
+                                        </td>
+                                        <td>
+                                            <div v-for="group in tutor.groups">
+                                                <label> {{group.name}}</label>
+                                                <input type="checkbox" v-model="group.value" checked>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade col-5 mx-auto" id="result">
+                        Итог
+                        <button class="btn btn-primary"
+                                v-on:click="finishCreation">
+                            <span>Готово</span>
+                        </button>    
+                        <button class="btn btn-primary"
+                                v-on:click="onGetStudentData">
+                            <span>Экспорт студентов</span>
+                        </button>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
+
+<script>
+
+const students = [
+            {groupName:"18-ПРИ",firstName:"Иван",middleName:"Иванович",lastName:"Иванов",},
+            {groupName:"18-ПРИ",firstName:"Иван",middleName:"Иванович",lastName:"Иванов",},
+            {groupName:"18-ПРИ",firstName:"Иван",middleName:"Иванович",lastName:"Иванов",},
+];
+
+const tutors = [
+            {id:1,nameAbbreviation:"Васильев В. В.",quota:"3",groups:[{ name:"18-ПРИ",value:false},{ name:"18-МОА",value:false}], isIncluded:false},
+            {id:2,nameAbbreviation:"Васильев В. В.",quota:"3",groups:[{ name:"18-ПРИ",value:false},{ name:"18-МОА",value:false}], isIncluded:false},
+            {id:3,nameAbbreviation:"Васильев В. В.",quota:"3",groups:[{ name:"18-ПРИ",value:false},{ name:"18-МОА",value:false}], isIncluded:false}
+];
+let app = new Vue({
+  el: '#app',
+  data (){
+   return {
+       matching:{
+           name: "",
+           typeCode:"BC",
+           startDate: "",
+       },
+       studentFile: null,
+       studentRecords:[], 
+       groupRecords:[], 
+       tutorRecords:[],
+       selectedTutor:{},
+       isReady:true   ,
+   }
+  },
+   async mounted(){
+        
+        let responce = await fetch(`${params.basePath}/api/matchingInitialization/get_tutors`);
+          if (responce.ok) {                 
+              let result = await responce.json();             
+              this.tutorRecords = await result.tutors;
+          } 
+    },
+  methods:{
+     onStudentsFileChange(event){
+          this.studentFile = event.target.files; 
+          
+           axios.post( `${params.basePath}/api/matchingInitialization/upload_student_data`,
+            this.studentFile,
+            {
+              headers: {
+                  'Content-Type': 'multipart/form-data'
+              }
+            }
+          ).then(function(){
+            console.log('SUCCESS!!');
+          }).catch(function(){
+              console.log('FAILURE!!');
+            });
+          this.studentRecords = students;
+     },
+     onGetStudentData(){
+           axios.get(`${params.basePath}/api/matchingInitialization/get_students`)                                                                                          
+           .then(response => {
+              console.log('SUCCESS students!!');
+                var FILE = window.URL.createObjectURL(new Blob([response.data]));
+                var docUrl = document.createElement('a');
+                docUrl.href = FILE;
+                docUrl.setAttribute('download', 'Reports.xlsx');
+                document.body.appendChild(docUrl);
+                docUrl.click();
+                    
+              
+           }) .catch(function(){
+              console.log('FAILURE!!');
+            });
+     },
+     onAllocationFormReady(){
+         console.log(this.matching);
+         //TODO  валидация
+         this.isReady = !this.isReady;
+     }  ,
+     finishCreation(){
+         console.log(this.tutorRecords);
+         //TODO  запрос преподов с бэка
+         //TODO  загрузка списка студентов в бэк
+         //TODO  парсинг списка студентов на бэке
+         //TODO  запрос студентов с бэка
+        
+     } 
+  }
+})
+</script>

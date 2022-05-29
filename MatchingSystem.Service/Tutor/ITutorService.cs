@@ -1,7 +1,8 @@
-﻿using MatchingSystem.DataLayer.Entities;
+﻿using System.Collections.Generic;
 using MatchingSystem.DataLayer.Dto;
+using MatchingSystem.DataLayer.Entities;
 
-namespace Service.Tutor;
+namespace MatchingSystem.Service.Tutor;
 public interface ITutorService
 {
     public IterationData GetChoice(int tutorId);
@@ -9,4 +10,5 @@ public interface ITutorService
     public void SetReady(int tutorId);
 
     public void SaveChoice(List<TutorChoice_1> data, int tutorId);
+    public List<TutorDto> GetAllTutors();
 }

@@ -1,7 +1,8 @@
-﻿using MatchingSystem.DataLayer.Entities;
+﻿using System.Collections.Generic;
 using MatchingSystem.DataLayer.Dto;
+using MatchingSystem.DataLayer.Entities;
 
-namespace Service.Projects;
+namespace MatchingSystem.Service.Projects;
 public interface IProjectsService
 {
     public bool AddTutorProject(ProjectRequest project);

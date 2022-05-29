@@ -6,8 +6,9 @@ using MatchingSystem.DataLayer.Entities;
 using MatchingSystem.DataLayer.Interface;
 using MatchingSystem.DataLayer.Dto;
 using Microsoft.AspNetCore.Mvc;
-using System.Data.SqlClient;
-using Service.Tutor;
+using MatchingSystem.Service.Tutor;
+using MatchingSystem.UI.Helpers;
+using MatchingSystem.UI.Services;
 
 namespace MatchingSystem.UI.ApiControllers
 {
@@ -15,10 +16,12 @@ namespace MatchingSystem.UI.ApiControllers
     public class TutorController : ControllerBase
     {
         private readonly ITutorService tutorService;
+        private ITutorRepository repository;
 
-        public TutorController(ITutorService tutorService)
+        public TutorController(ITutorService tutorService, ITutorRepository repository)
         {
             this.tutorService = tutorService;
+            this.repository = repository;
         } 
 
         [Route("api/[controller]/getChoice")]

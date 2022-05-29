@@ -7,7 +7,7 @@ using MatchingSystem.DataLayer.Entities;
 using MatchingSystem.DataLayer.Interface;
 using MatchingSystem.DataLayer.IO.Params;
 using MatchingSystem.DataLayer.Dto;
-using Service.Executive;
+using MatchingSystem.Service.Executive;
 
 namespace MatchingSystem.UI.ApiControllers
 {

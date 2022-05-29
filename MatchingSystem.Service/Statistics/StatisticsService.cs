@@ -1,8 +1,9 @@
-﻿using MatchingSystem.DataLayer.Interface;
+﻿using System.Collections.Generic;
+using System.Linq;
 using MatchingSystem.DataLayer.Entities;
-using MatchingSystem.DataLayer.Dto;
+using MatchingSystem.DataLayer.Interface;
 
-namespace Service.Statistics;
+namespace MatchingSystem.Service.Statistics;
 public class StatisticsService : IStatisticsService
 {
     private readonly IStatisticsRepository statisticsRepository;

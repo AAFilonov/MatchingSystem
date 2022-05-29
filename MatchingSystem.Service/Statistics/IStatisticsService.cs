@@ -1,8 +1,7 @@
-﻿using MatchingSystem.DataLayer.Interface;
+﻿using System.Collections.Generic;
 using MatchingSystem.DataLayer.Entities;
-using MatchingSystem.DataLayer.Dto;
 
-namespace Service.Statistics;
+namespace MatchingSystem.Service.Statistics;
 public interface IStatisticsService
 {
     public IEnumerable<StatisticsMain> GetStatisticsMain(int? matchingId,int? currentStage);
