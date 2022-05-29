@@ -69,5 +69,11 @@ namespace MatchingSystem.UI.Controllers
         {
             return View();
         }
+        [HttpGet]
+        public ViewResult  matchingInitialize()
+        {
+            return View();
+        }
+       
     }
 }

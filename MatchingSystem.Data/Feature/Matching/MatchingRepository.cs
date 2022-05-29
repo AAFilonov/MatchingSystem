@@ -9,7 +9,7 @@ public class MatchingRepository :  Repository<Model.Matching>,IMatchingRepositor
     {
     }
       
-    public Stage GetCurrentStage(int matchingId)
+    public Model.Stage GetCurrentStage(int matchingId)
     {
         throw new NotImplementedException();
     }
