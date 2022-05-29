@@ -10,6 +10,15 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Service.Notification;
+using Service.Allocation;
+using Service.Projects;
+using Service.Quotas;
+using Service.Statistics;
+using Service.Student;
+using Service.Tutor;
+using Service.User;
+using Service.Executive;
 
 namespace MatchingSystem.UI
 {
@@ -55,7 +64,7 @@ namespace MatchingSystem.UI
 
             services.AddTransient<IExecutiveRepository, ExecutiveRepository>(options =>
                 new ExecutiveRepository(connectionString));
-            services.AddTransient<IStatisticsRepository, StatisticsRepository>(options =>
+            services.AddSingleton<IStatisticsRepository, StatisticsRepository>(options =>
                 new StatisticsRepository(connectionString));
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -64,6 +73,22 @@ namespace MatchingSystem.UI
             services.AddSingleton<MatchingSystem.Data.Feature.User.IUserRepository, MatchingSystem.Data.Feature.User.UserRepository>();
             services.AddSingleton<MatchingSystem.Data.Feature.Matching.IMatchingRepository, MatchingSystem.Data.Feature.Matching.MatchingRepository>();
             
+
+
+            //--Services
+            services.AddSingleton<INotificationService, NotificationService>();
+            services.AddSingleton<IStatisticsService, StatisticsService>();
+            services.AddSingleton<IAllocationService, AllocationService>();
+            services.AddSingleton<IExecutiveService, ExecutiveService>();
+            services.AddSingleton<IProjectsService, ProjectsService>();
+            services.AddSingleton<IStudentService, StudentService>();
+            services.AddSingleton<IQuotasService, QuotasService>();
+            services.AddSingleton<ITutorService, TutorService>();
+            services.AddSingleton<IUserService, UserService>();            
+            //--Services
+
+
+
             services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromHours(2);
