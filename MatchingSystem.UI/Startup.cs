@@ -3,6 +3,17 @@ using MatchingSystem.Data;
 using MatchingSystem.DataLayer.Entities;
 using MatchingSystem.DataLayer.Interface;
 using MatchingSystem.DataLayer.Repository;
+using MatchingSystem.Service;
+using MatchingSystem.Service.Allocation;
+using MatchingSystem.Service.DocumentsProcessing;
+using MatchingSystem.Service.Executive;
+using MatchingSystem.Service.Notification;
+using MatchingSystem.Service.Projects;
+using MatchingSystem.Service.Quotas;
+using MatchingSystem.Service.Statistics;
+using MatchingSystem.Service.Student;
+using MatchingSystem.Service.Tutor;
+using MatchingSystem.Service.User;
 using MatchingSystem.UI.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,15 +22,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Service.Notification;
-using Service.Allocation;
-using Service.Projects;
-using Service.Quotas;
-using Service.Statistics;
-using Service.Student;
-using Service.Tutor;
-using Service.User;
-using Service.Executive;
 
 namespace MatchingSystem.UI
 {
@@ -86,6 +88,7 @@ namespace MatchingSystem.UI
             services.AddSingleton<IQuotasService, QuotasService>();
             services.AddSingleton<ITutorService, TutorService>();
             services.AddSingleton<IUserService, UserService>();            
+            services.AddSingleton<IDocumentsProcessingService, DocumentsProcessingService>();            
             //--Services
 
 

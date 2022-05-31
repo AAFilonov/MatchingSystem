@@ -1,8 +1,9 @@
-﻿using MatchingSystem.DataLayer.Interface;
+﻿using System.Collections.Generic;
+using System.Linq;
 using MatchingSystem.DataLayer.Entities;
-using MatchingSystem.DataLayer.Dto;
+using MatchingSystem.DataLayer.Interface;
 
-namespace Service.User;
+namespace MatchingSystem.Service.User;
 public class UserService : IUserService
 {
     private readonly IUserRepository userRepository;

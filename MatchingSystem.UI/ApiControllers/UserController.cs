@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using MatchingSystem.DataLayer.Interface;
+using MatchingSystem.Service.User;
 using Microsoft.AspNetCore.Mvc;
-using Service.User;
 
 namespace MatchingSystem.UI.ApiControllers
 {

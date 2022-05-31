@@ -1,9 +1,12 @@
-﻿using MatchingSystem.DataLayer.IO.Params;
-using MatchingSystem.DataLayer.Interface;
-using MatchingSystem.DataLayer.Entities;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using MatchingSystem.DataLayer.Dto;
+using MatchingSystem.DataLayer.Entities;
+using MatchingSystem.DataLayer.Interface;
+using MatchingSystem.DataLayer.IO.Params;
 
-namespace Service.Student;
+namespace MatchingSystem.Service.Student;
 
 public class StudentService : IStudentService
 {

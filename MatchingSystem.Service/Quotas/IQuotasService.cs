@@ -1,7 +1,6 @@
-﻿using MatchingSystem.DataLayer.Entities;
-using MatchingSystem.DataLayer.Dto;
+﻿using MatchingSystem.DataLayer.Dto;
 
-namespace Service.Quotas;
+namespace MatchingSystem.Service.Quotas;
 
 public interface IQuotasService
 {

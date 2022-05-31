@@ -1,9 +1,8 @@
-﻿using MatchingSystem.DataLayer.Entities;
-using MatchingSystem.DataLayer.Dto;
+﻿using MatchingSystem.DataLayer.Dto;
 using MatchingSystem.DataLayer.Interface;
 using MatchingSystem.DataLayer.IO.Params;
 
-namespace Service.Quotas;
+namespace MatchingSystem.Service.Quotas;
 public class QuotasService: IQuotasService
 {
     private readonly ITutorRepository tutorRepository;

@@ -1,4 +1,6 @@
-namespace Service.Notification;
+using System.Collections.Generic;
+
+namespace MatchingSystem.Service.Notification;
 
 
 public interface INotificationService

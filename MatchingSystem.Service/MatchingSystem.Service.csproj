@@ -2,15 +2,21 @@
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-        <RootNamespace>Service</RootNamespace>
+        <AssemblyName>MatchingSystem.Service</AssemblyName>
+        <RootNamespace>MatchingSystem.Service</RootNamespace>
+        <Nullable>disable</Nullable>
+        <Configurations>Debug</Configurations>
+        <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\MatchingSystem.Constants\MatchingSystem.Constants.csproj" />
       <ProjectReference Include="..\MatchingSystem.DataLayer\MatchingSystem.DataLayer.csproj" />
       <ProjectReference Include="..\MatchingSystem.Data\MatchingSystem.Data.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="EPPlus" Version="6.0.4" />
     </ItemGroup>
 
 </Project>

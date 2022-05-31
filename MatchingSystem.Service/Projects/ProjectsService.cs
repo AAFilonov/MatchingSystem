@@ -1,10 +1,12 @@
-﻿using MatchingSystem.DataLayer.Interface;
-using MatchingSystem.DataLayer.IO.Params;
-using MatchingSystem.DataLayer.Entities;
-using MatchingSystem.DataLayer.Dto;
+﻿using System.Collections.Generic;
+using System.Linq;
 using MatchingSystem.Constants;
+using MatchingSystem.DataLayer.Dto;
+using MatchingSystem.DataLayer.Entities;
+using MatchingSystem.DataLayer.Interface;
+using MatchingSystem.DataLayer.IO.Params;
 
-namespace Service.Projects;
+namespace MatchingSystem.Service.Projects;
 public class ProjectsService : IProjectsService
 {
 
