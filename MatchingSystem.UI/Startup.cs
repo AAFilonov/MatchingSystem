@@ -7,6 +7,7 @@ using MatchingSystem.Service;
 using MatchingSystem.Service.Allocation;
 using MatchingSystem.Service.DocumentsProcessing;
 using MatchingSystem.Service.Executive;
+using MatchingSystem.Service.MatchingInitialization;
 using MatchingSystem.Service.Notification;
 using MatchingSystem.Service.Projects;
 using MatchingSystem.Service.Quotas;
@@ -46,6 +47,9 @@ namespace MatchingSystem.UI
 
             services.AddDistributedMemoryCache();
             services.AddMvc();
+            services
+                .AddControllersWithViews()
+                .AddRazorRuntimeCompilation();
 
             services.AddTransient<IStudentRepository, StudentRepository>(options =>
                 new StudentRepository(connectionString));
@@ -89,6 +93,7 @@ namespace MatchingSystem.UI
             services.AddSingleton<ITutorService, TutorService>();
             services.AddSingleton<IUserService, UserService>();            
             services.AddSingleton<IDocumentsProcessingService, DocumentsProcessingService>();            
+            services.AddSingleton<IMatchingInitializationService, MatchingInitializationService>();            
             //--Services
 
 

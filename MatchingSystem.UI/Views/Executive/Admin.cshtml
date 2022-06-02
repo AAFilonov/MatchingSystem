@@ -114,7 +114,22 @@
                    
                    if (response.ok) window.location.reload();
                    else DisplayNotification((await response.json()).detail, 'error');
-               }
+               },
+               onGetStudentData(){
+                      axios.get(`${params.basePath}/api/report/student_data_report`)                                                                                          
+                      .then(response => {
+                         console.log('SUCCESS students!!');
+                           var FILE = window.URL.createObjectURL(new Blob([response.data]));
+                           var docUrl = document.createElement('a');
+                           docUrl.href = FILE;
+                           docUrl.setAttribute('download', 'Reports.xlsx');
+                           document.body.appendChild(docUrl);
+                           docUrl.click();
+               
+                      }) .catch(function(){
+                         console.log('FAILURE!!');
+                       });
+                },
            },
            mounted() {
                this.matchingId = parseInt(this.$refs.matching.value);
