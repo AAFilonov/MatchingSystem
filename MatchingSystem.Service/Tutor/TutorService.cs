@@ -55,28 +55,22 @@ public class TutorService : ITutorService
     public List<TutorDto> GetAllTutors()
     {
         var tutors = tutorRepository.GetAllTutors();
-        List<GroupTutorDto>  groups = new List<GroupTutorDto>()
-        {
-            new GroupTutorDto("18-ПРИ", false),
-            new GroupTutorDto("18-МОА", false),
-            new GroupTutorDto("18-ИВТ-1", false)
-        };
         var tutorDtos = new List<TutorDto>();
         foreach (var tutor in tutors)
         {
             //tutorDtos.Add(tutor); //(TutorDto.construct(tutor,groups));  
-            tutorDtos.Add(this.construct(tutor, groups));
+            tutorDtos.Add(this.construct(tutor));
         }
 
         return tutorDtos;
     }
-    private TutorDto construct(DataLayer.Entities.Tutor tutor,  List<GroupTutorDto>  groups)
+    private TutorDto construct(DataLayer.Entities.Tutor tutor)
     {
         TutorDto dto = new TutorDto();
         dto.id = tutor.TutorID;
         dto.nameAbbreviation = tutor.NameAbbreviation;
         dto.isIncluded = true;
-        dto.groups = groups;
+        dto.groups = null;
         dto.quota = 3;
         return dto;
     }
