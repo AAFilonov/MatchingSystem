@@ -13,34 +13,58 @@ public class DocumentsProcessingService : IDocumentsProcessingService
         var package = new ExcelPackage();
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
     }
-    
+
     public List<StudentDto> parseStudentData(ExcelPackage package)
     {
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-        ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
-        int colCount = worksheet.Dimension.End.Column;  //get Column Count
-        int rowCount = worksheet.Dimension.End.Row;     //get row count
-        for (int row = 1; row <= rowCount; row++)
+        List<StudentDto> dtos = new List<StudentDto>();
+        foreach (var worksheet in package.Workbook.Worksheets)
         {
-            for (int col = 1; col <= colCount; col++)
+            var groupName = worksheet.Name;
+            
+            int rowCount = worksheet.Dimension.End.Row; //get row count
+            for (int row = 1; row <= rowCount; row++)
             {
-                Console.WriteLine(" Row:" + row + " column:" + col + " Value:" + worksheet.Cells[row, col].Value?.ToString().Trim());
+                StudentDto dto = new StudentDto();
+                dto.groupName = groupName;
+                dto.lastName = (string)worksheet.Cells["A"+row].Value;
+                dto.firstName = (string)worksheet.Cells["B"+row].Value;
+                dto.middleName = (string)worksheet.Cells["C"+row].Value;
+              
+                dtos.Add(dto);
             }
         }
 
-        return null;
+        return dtos;
     }
+
+    public List<GroupTutorDto> parseGroupData(ExcelPackage package)
+        {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            List<GroupTutorDto> dtos = new List<GroupTutorDto>();
+            foreach (var worksheet in package.Workbook.Worksheets)
+            {
+                GroupTutorDto group = new GroupTutorDto
+                {
+                    name = worksheet.Name,
+                    value = false
+                };
+                dtos.Add(group);
+
+            }
+
+            return dtos;
+        }
+    
     
     public ExcelPackage formStudentDataReport(List<StudentDto> students)
-    
     {
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-        ExcelPackage package = new ExcelPackage(); 
-        
+        ExcelPackage package = new ExcelPackage();
         ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Студенты");
         worksheet.Cells["A1"].Value = "Группа";
-        worksheet.Cells["B1"].Value = "Имя";
-        worksheet.Cells["C1"].Value = "Фамилия";
+        worksheet.Cells["B1"].Value = "Фамилия";
+        worksheet.Cells["C1"].Value = "Имя";
         worksheet.Cells["D1"].Value = "Отчество";
         worksheet.Cells["E1"].Value = "Пароль";
 
@@ -54,7 +78,6 @@ public class DocumentsProcessingService : IDocumentsProcessingService
             worksheet.Cells["D" + rowIndex].Value = student.middleName;
             worksheet.Cells["E" + rowIndex].Value = student.password;
         }
-        
         return package;
     }
 }
