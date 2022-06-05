@@ -1,10 +1,8 @@
-using MatchingSystem.DataLayer.Entities;
+namespace MatchingSystem.DataLayer.Dto.MatchingInit;
 
-namespace MatchingSystem.DataLayer.Dto;
-
-public class StudentDto
+public class StudentInitDto
 {
-    public StudentDto(string groupName, string firstName, string middleName, string lastName, string password)
+    public StudentInitDto(string groupName, string firstName, string middleName, string lastName, string password)
     {
         this.groupName = groupName;
         this.firstName = firstName;
@@ -13,7 +11,7 @@ public class StudentDto
         this.password = password;
     }
 
-    public StudentDto()
+    public StudentInitDto()
     {
     }
 

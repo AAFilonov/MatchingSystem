@@ -1,12 +1,9 @@
-
-
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using MatchingSystem.DataLayer.Dto;
-using MatchingSystem.Service;
+using MatchingSystem.DataLayer.Dto.MatchingInit;
 using MatchingSystem.Service.DocumentsProcessing;
 using MatchingSystem.Service.MatchingInitialization;
 using MatchingSystem.Service.Tutor;
@@ -28,9 +25,9 @@ public class MatchingInitializationController : ControllerBase
     private readonly ILogger<MatchingInitializationController> logger;
 
 
-    public MatchingInitializationController(ITutorService service, ILogger<MatchingInitializationController> logger, IDocumentsProcessingService documentsProcessingService, IMatchingInitializationService matchingInitializationService)
+    public MatchingInitializationController(ITutorService tutorService, ILogger<MatchingInitializationController> logger, IDocumentsProcessingService documentsProcessingService, IMatchingInitializationService matchingInitializationService)
     {
-        this.tutorService = service;
+        this.tutorService = tutorService;
         this.logger = logger;
         this.documentsProcessingService = documentsProcessingService;
         this.matchingInitializationService = matchingInitializationService;
@@ -114,6 +111,6 @@ public class MatchingInitializationController : ControllerBase
     
     public class TutorsResponce
     {
-        public IEnumerable<TutorDto> tutors { get; set; }
+        public IEnumerable<TutorDtoInit> tutors { get; set; }
     }
 }

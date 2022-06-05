@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using MatchingSystem.DataLayer.Dto;
+using MatchingSystem.DataLayer.Dto.MatchingInit;
 using MatchingSystem.Service;
 using MatchingSystem.Service.DocumentsProcessing;
 using MatchingSystem.Service.Tutor;
@@ -37,10 +38,10 @@ public class ReportController : ControllerBase
     public FileResult getStudents()
     {
         
-        List<StudentDto> students = new List<StudentDto>()
+        List<StudentInitDto> students = new List<StudentInitDto>()
         {
-            new StudentDto("18ИВТ-1", "Иван", "Иванович", "Иванов", "sa35g7G57"),
-            new StudentDto("18ИВТ-1", "Иван", "Иванович", "Иванов", "sa35g7G57"),
+            new StudentInitDto("18ИВТ-1", "Иван", "Иванович", "Иванов", "sa35g7G57"),
+            new StudentInitDto("18ИВТ-1", "Иван", "Иванович", "Иванов", "sa35g7G57"),
         };
         var package =  documentsProcessingService.formStudentDataReport(students);
         

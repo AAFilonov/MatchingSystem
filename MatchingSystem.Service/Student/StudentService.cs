@@ -22,10 +22,10 @@ public class StudentService : IStudentService
     }
 
 
-    public GetData GetSelectedParams(int studentId)
+    public StudentInfoDto getStudentInfo(int studentId)
     {
             var student = studentRepository.GetStudent(studentId);
-            var model = new GetData()
+            var model = new StudentInfoDto()
             {
                 Technologies = studentRepository.GetTechnologiesSelectedByStudent(studentId),
                 WorkDirections = studentRepository.GetWorkDirectionsSelectedByStudent(studentId),
