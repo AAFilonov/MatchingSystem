@@ -11,6 +11,9 @@ namespace MatchingSystem.DataLayer.Interface
         AllocatedByStudent GetAllocationByStudent(int studentId);
         Task<Student> GetStudentAsync(int studentId);
         Student GetStudent(int studentId);
+        IEnumerable<StudentPreferences> GetStudentPreferencesByMatching(int matchingId);
+        public IEnumerable<StudentPreferences> GetStudentAssignedToProject(int matchingId);
+        IEnumerable<StudentPreferences> GetStudentAvailablePreferencesByMatching(int matchingId);
         Task<int> GetStudentIdAsync(int userId, int matchingId);
         int GetStudentId(int userId, int matchingId);
         Task<IEnumerable<Technology>> GetTechnologiesSelectedByStudentAsync(int studentId);

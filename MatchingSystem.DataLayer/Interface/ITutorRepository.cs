@@ -17,6 +17,8 @@ namespace MatchingSystem.DataLayer.Interface
         IEnumerable<Group> GetGroupsByTutor(int tutorId);
         Task<IEnumerable<TutorChoice>> GetChoiceByTutorAsync(int tutorId);
         IEnumerable<TutorChoice> GetChoiceByTutor(int tutorId);
+        IEnumerable<TutorChoice> getChoicesByMatchingCurrentStage(int MatchingId);
+        public IEnumerable<TutorChoice> getChoicesByMatching(int MatchingId);
         Task<int> GetCommonQuotaByTutorAsync(int tutorId);
         int GetCommonQuotaByTutor(int tutorId);
         Task<IEnumerable<QuotaHistoryTutor>> GetQuotaRequestHistoryByTutorAsync(int tutorId);

@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using MatchingSystem.DataLayer.Entities;
 using MatchingSystem.DataLayer.Interface;
-using MatchingSystem.DataLayer.Dto;
+using MatchingSystem.Service.Follow;
 using Microsoft.AspNetCore.Mvc;
 using MatchingSystem.Service.Tutor;
 using MatchingSystem.UI.Helpers;
@@ -16,12 +14,14 @@ namespace MatchingSystem.UI.ApiControllers
     public class TutorController : ControllerBase
     {
         private readonly ITutorService tutorService;
-        private ITutorRepository repository;
-
-        public TutorController(ITutorService tutorService, ITutorRepository repository)
+        private readonly IStageTransitionService stageTransitionService;
+        private readonly ITutorRepository tutorRepository;
+        
+        public TutorController(ITutorService tutorService, IStageTransitionService stageTransitionService, ITutorRepository tutorRepository)
         {
             this.tutorService = tutorService;
-            this.repository = repository;
+            this.stageTransitionService = stageTransitionService;
+            this.tutorRepository = tutorRepository;
         } 
 
         [Route("api/[controller]/getChoice")]
@@ -36,6 +36,11 @@ namespace MatchingSystem.UI.ApiControllers
         public async Task<IActionResult> SetReady([FromQuery] int tutorId)
         {
             tutorService.SetReady(tutorId);
+            var sessionData = HttpContext.Session.Get<SessionData>("Data"); 
+            var currentMatchingId = sessionData .SelectedMatching;
+            var need = stageTransitionService.isNeedToTransit(currentMatchingId);
+            if (need)
+                stageTransitionService.TransitionIfExistNeed(currentMatchingId);
             return Ok();
         }
 
@@ -44,6 +49,16 @@ namespace MatchingSystem.UI.ApiControllers
         public IActionResult SaveChoice([FromBody] List<TutorChoice_1> data, [FromQuery] int tutorId)
         {
             tutorService.SaveChoice(data, tutorId);
+            var sessionData = HttpContext.Session.Get<SessionData>("Data"); 
+            var currentMatchingId = sessionData .SelectedMatching;
+            //check transition between Iterations
+            var need = stageTransitionService.isNeedToTransit(currentMatchingId);
+            if (need)
+                stageTransitionService.TransitionIfExistNeed(currentMatchingId);
+            //check transition from 'manual adjustment' to 'final'
+            need = stageTransitionService.isNeedToTransit(currentMatchingId);
+            if (need)
+                stageTransitionService.TransitionIfExistNeed(currentMatchingId);
             return Ok();
         }
     }

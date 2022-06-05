@@ -92,6 +92,7 @@ namespace MatchingSystem.DataLayer.Repository
                 "Qty, " +
                 "SortOrderNumber, " +
                 "ProjectIsClosed, " +
+                "UpdateDate" +
                 "TypeCode " +
                 "from napp.get_TutorsChoice_ByTutor(@TutorID)",
                 new { TutorID = tutorId }
@@ -111,11 +112,58 @@ namespace MatchingSystem.DataLayer.Repository
                 "Qty, " +
                 "SortOrderNumber, " +
                 "ProjectIsClosed, " +
+                "UpdateDate," +
                 "TypeCode " +
                 "from napp.get_TutorsChoice_ByTutor(@TutorID)",
                 new { TutorID = tutorId }
             );
         }
+
+        public IEnumerable<TutorChoice> getChoicesByMatchingCurrentStage(int MatchingId)
+        {
+            return Connection.Query<TutorChoice>(
+                "SELECT " +
+                "ChoiceID" +
+                ",StudentID" +
+                ",null" +
+                ",null" +
+                ",ProjectID" +
+                ",null" +
+                ",IsInQuota" +
+                ",null" +
+                ",SortOrderNumber " +
+                ",null" +
+                ",UpdateDate" +
+                ",TypeID " +
+                "from dbo.TutorsChoice Choice with(nolock) " +
+                "WHERE " +
+                "Choice.StageID = napp_in.get_CurrentStageID_ByMatching(@MatchingId)",
+                new { MatchingId = MatchingId }
+               );
+        }
+
+        public IEnumerable<TutorChoice> getChoicesByMatching(int MatchingId)
+        {
+            return Connection.Query<TutorChoice>(
+               "SELECT ChoiceID " +
+               ",StudentID	" +
+               ",null--StudentNameAbbreviation	" +
+               ",null--GroupName	" +
+               ",ProjectID	" +
+               ",null--ProjectName" +
+               ",IsInQuota " +
+               ",null--Qty " +
+               ",SortOrderNumber " +
+               ",null--ProjectIsClosed " +
+               "UpdateDate" +
+               ",TypeID " +
+               "from dbo.TutorsChoice Choice with(nolock) " +
+               "WHERE " +
+               "Choice.StageID in (select StageID from stages where MatchingId = @MatchingId))",
+               new { MatchingId = MatchingId }
+               );
+        }
+
 
         public async Task<int> GetCommonQuotaByTutorAsync(int tutorId)
         {
@@ -227,6 +275,11 @@ namespace MatchingSystem.DataLayer.Repository
                 "select count(*) from napp.get_CommonQuota_Request_Notification_ByTutor(@TutorID)",
                 new { TutorID = tutorId }
             );
+        }
+
+        public int GetCurrentMatching(int tutorId)
+        {
+            throw new System.NotImplementedException();
         }
 
         public async Task SetReadyAsync(int tutorId)

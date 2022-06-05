@@ -1,4 +1,6 @@
-﻿namespace MatchingSystem.DataLayer.Entities
+﻿using System;
+
+namespace MatchingSystem.DataLayer.Entities
 {
     #nullable enable
     public class TutorChoice
@@ -13,6 +15,7 @@
         public short? Qty { get; set; }
         public short? SortOrderNumber { get; set; }
         public bool? ProjectIsClosed { get; set; }
+        public DateTime? UpdateDate { get; set; }
         public int? TypeCode { get; set; }
     }
 }
