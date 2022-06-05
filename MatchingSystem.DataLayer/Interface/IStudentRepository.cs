@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using MatchingSystem.DataLayer.Dto.MatchingInit;
 using MatchingSystem.DataLayer.Entities;
 using MatchingSystem.DataLayer.IO.Params;
 
@@ -12,14 +11,12 @@ namespace MatchingSystem.DataLayer.Interface
         AllocatedByStudent GetAllocationByStudent(int studentId);
         Task<Student> GetStudentAsync(int studentId);
         Student GetStudent(int studentId);
-        Task<IEnumerable<Student>> GetStudentsByMatching(int matchingId);
+        IEnumerable<Student> GetStudentsByMatching(int matchingId);
         IEnumerable<StudentPreferences> GetStudentPreferencesByMatching(int matchingId);
         IEnumerable<StudentPreferences> GetStudentAssignedToProject(int matchingId);
         IEnumerable<StudentPreferences> GetStudentAvailablePreferencesByMatching(int matchingId);
         Task<int> GetStudentIdAsync(int userId, int matchingId);
         int GetStudentId(int userId, int matchingId);
-        void setNewUserRoles_Students(List<StudentInitDto> studs, int matchingID);
-        IEnumerable<StudentInitDto> SetNewStudents(List<StudentInitDto> users,int matchingId);
         Task<IEnumerable<Technology>> GetTechnologiesSelectedByStudentAsync(int studentId);
         IEnumerable<Technology> GetTechnologiesSelectedByStudent(int studentId);
         Task<IEnumerable<WorkDirection>> GetWorkDirectionsSelectedByStudentAsync(int studentId);
