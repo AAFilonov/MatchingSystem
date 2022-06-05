@@ -1,0 +1,202 @@
+@{
+    Layout = "~/Views/Shared/_GeneralLayout.cshtml";
+    ViewData["active"] = "monitoring";
+    ViewData["title"] = "Мониторинг: студенты";
+}
+
+<!DOCTYPE html>
+
+<html lang="ru">
+<head>
+    <title>Мониторинг: Студеты</title>
+</head>
+<body>
+<div id="app">
+    <div id="app">
+        <v-app>
+            <v-container  style="max-width: 1200px">
+                <h2 class="col col-12">Мониторинг распределния: Студенты</h2>
+                <div v-if="students">
+
+                    <div>
+                        <v-card-title>
+                            <v-spacer></v-spacer>
+                            <v-spacer></v-spacer>
+                            <v-spacer></v-spacer>
+                            <v-text-field
+                                v-model="tableSearch"
+                                label="Поиск"
+
+                                hide-details>
+                            </v-text-field>
+                        </v-card-title>
+                    </div>
+                    <v-data-table
+                       
+                        v-if="students"
+                        :headers="headers"
+                        :items="students"
+                        :search="tableSearch"
+                        hide-default-footer>
+                        <template v-slot:item="{ item }">
+                             <tr class="text-center">
+                                <td>
+                                    {{item.groupName}}
+                                </td>
+
+                                <td>
+                                    {{item.nameAbbreviation}}
+                                </td>
+
+                                <td >
+                                    <a v-on:click.prevent="viewProject(item.assignedProject)" class="btn" v-if="item.assignedProject">
+                                        {{item.assignedProject.projectName}}
+                                    </a>
+                                    <span v-else>---</span>
+                                </td>
+                                <td>
+                                    <div v-for="project in item.preferences">
+                                        <a v-on:click.prevent="viewProject(project)" class="btn" :class="{ disabled: !project.isActive}">
+                                            {{project.orderInStudentPrefs}}.{{project.projectName}}
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </template>
+                    </v-data-table>
+                </div>
+
+                <v-row align="center" justify="center" v-else style="min-height: 250px">
+                    <v-progress-circular
+                        indeterminate
+                        size="200"
+                        color="primary">
+                    </v-progress-circular>
+                </v-row>
+            </v-container>
+            <v-dialog
+                v-model="showProjectModal"
+                max-width="600">
+                <v-card tile v-if="projectToView">
+                    <v-toolbar dark>
+                        <div>{{projectToView.projectName}}</div>
+                    </v-toolbar>
+                    <v-card-text>
+                        <v-form>
+                            <v-text-field
+                                :label="'Название'"
+                                v-model="projectToView.projectName"
+                                readonly>
+                            </v-text-field>
+
+                            <v-text-field
+                                :label="'Описание'"
+                                v-model="projectToView.info"
+                                readonly>
+                            </v-text-field>
+
+                            <v-text-field
+                                :label="'Квота'"
+                                v-model="projectToView.quota"
+                                readonly>
+                            </v-text-field>
+
+                            <v-text-field
+                                :label="'Технологии'"
+                                v-model="projectToView.technologiesNameList"
+                                readonly>
+                            </v-text-field>
+
+                            <v-text-field
+                                :label="'Направления ВКР'"
+                                v-model="projectToView.workDirectionsNameList"
+                                readonly>
+                            </v-text-field>
+
+                            <v-text-field
+                                :label="'Группы'"
+                                v-model="projectToView.availableGroupsNameList"
+                                readonly>
+                            </v-text-field>
+
+                        </v-form>
+
+                    </v-card-text>
+                    <v-card-actions class="justify-end">
+                        <v-btn
+                            text
+                            v-on:click="showProjectModal = false">
+                            Close
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
+        </v-app>
+    </div>
+</div>
+</body>
+</html>
+
+<script>
+
+ const tableHeaders=[
+    {
+      value: 'groupName',
+      text: 'Группа',
+      groupable:true,
+      sortable: true,
+      align: 'center'
+    },     
+    {
+      value: 'nameAbbreviation',
+      text: 'ФИО',
+      sortable: true,
+      align: 'center'
+    },
+    {
+      value: 'assignedProject',
+      text: 'Назначение',
+       align: 'center'      
+    },
+    {
+      value: 'preferences',
+      text: 'Предпочтения',                
+      sortable: false,
+      align: 'center'    
+    }                                     
+];
+ 
+let app = new Vue({
+  el: '#app',
+  vuetify: new Vuetify(),  
+  data (){
+      return {
+         tableSearch:"",
+         students: null,
+         headers: [],
+         projectToView:null,
+         showProjectModal:false,
+      }
+  },
+  mounted(){ 
+      this.headers = tableHeaders;
+      //this.students = studentsData;
+      axios.get(`${params.basePath}/api/monitoring/students`) 
+      .then(response => {
+          this.students =  response.data.studentRecords;
+      })
+      .catch(function(reason){
+          DisplayNotification('Ошибка при загрузке данных','error' );
+      });
+   
+   },
+  methods:{
+     viewProject(project){       
+          this.projectToView=project;
+          this.showProjectModal=true;
+          
+     },
+ }
+})
+</script>

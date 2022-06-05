@@ -41,33 +41,33 @@
         </div>
         
     </div>
-    <div class="modal modal-static fade" data-backdrop="static" id="update-end-date">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Установить дату завершения</h5>
-                    <button type="button" class="close js-close-add-project" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="datetime" v-on:submit.prevent="updateEndDateHandler">
-                        <div class="form-group">
-                            <label>Дата завершения</label>
-                            <input type="date" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Время завершения</label>
-                            <input type="time" class="form-control" value="00:00" required>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" form="datetime">Сохранить</button>
+        <div class="modal modal-static fade" data-backdrop="static" id="update-end-date">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Установить дату завершения</h5>
+                        <button type="button" class="close js-close-add-project" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="datetime" v-on:submit.prevent="updateEndDateHandler">
+                            <div class="form-group">
+                                <label>Дата завершения</label>
+                                <input type="date" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Время завершения</label>
+                                <input type="time" class="form-control" value="00:00" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" form="datetime">Сохранить</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     <form class="d-none">
         <input type="hidden" ref="matching" name="matchingId" value="@data.SelectedMatching">
         <input type="hidden" ref="userId" value="@data.User.UserId">
