@@ -1,7 +1,6 @@
-using MatchingSystem.DataLayer.Dto;
-using MatchingSystem.Service.MatchingInitialization;
+using MatchingSystem.DataLayer.Dto.MatchingInit;
 
-namespace MatchingSystem.Service;
+namespace MatchingSystem.Service.MatchingInitialization;
 
 public class MatchingInitializationService   : IMatchingInitializationService
 {

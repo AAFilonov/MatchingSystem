@@ -20,9 +20,9 @@ namespace MatchingSystem.UI.ApiControllers
 
         [Route("api/[controller]/get_selected_info")]
         [HttpGet]
-        public IActionResult GetSelectedParams(int studentId)
+        public IActionResult getStudentInfo(int studentId)
         {
-            var model = studentService.GetSelectedParams(studentId);
+            var model = studentService.getStudentInfo(studentId);
             return new JsonResult(model);
         }
 

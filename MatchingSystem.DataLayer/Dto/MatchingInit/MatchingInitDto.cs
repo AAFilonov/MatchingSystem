@@ -1,6 +1,6 @@
-namespace MatchingSystem.DataLayer.Dto;
+namespace MatchingSystem.DataLayer.Dto.MatchingInit;
 
-public class MatchingDto
+public class MatchingInitDto
 {
     public string name { get; set; } = "";
     public string typeCode { get; set; } = "";

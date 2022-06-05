@@ -1,14 +1,13 @@
 using System.Collections.Generic;
-using MatchingSystem.DataLayer.Entities;
 
-namespace MatchingSystem.DataLayer.Dto;
+namespace MatchingSystem.DataLayer.Dto.MatchingInit;
 
-public class TutorDto
+public class TutorDtoInit
 {
     public int id { get; set; }
     public string nameAbbreviation { get; set; }
     public bool isIncluded { get; set; }
     public int quota { get; set; }
-    public List<GroupTutorDto> groups { get; set; }
+    public List<GroupInitDto> groups { get; set; }
     
 }

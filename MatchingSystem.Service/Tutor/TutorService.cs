@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using MatchingSystem.DataLayer.Dto;
+using MatchingSystem.DataLayer.Dto.MatchingInit;
 using MatchingSystem.DataLayer.Entities;
 using MatchingSystem.DataLayer.Interface;
 
@@ -52,10 +53,10 @@ public class TutorService : ITutorService
             tutorRepository.SetPreferences(data, tutorId);
     }
 
-    public List<TutorDto> GetAllTutors()
+    public List<TutorDtoInit> GetAllTutors()
     {
         var tutors = tutorRepository.GetAllTutors();
-        var tutorDtos = new List<TutorDto>();
+        var tutorDtos = new List<TutorDtoInit>();
         foreach (var tutor in tutors)
         {
             //tutorDtos.Add(tutor); //(TutorDto.construct(tutor,groups));  
@@ -64,14 +65,14 @@ public class TutorService : ITutorService
 
         return tutorDtos;
     }
-    private TutorDto construct(DataLayer.Entities.Tutor tutor)
+    private TutorDtoInit construct(DataLayer.Entities.Tutor tutor)
     {
-        TutorDto dto = new TutorDto();
-        dto.id = tutor.TutorID;
-        dto.nameAbbreviation = tutor.NameAbbreviation;
-        dto.isIncluded = true;
-        dto.groups = null;
-        dto.quota = 3;
-        return dto;
+        TutorDtoInit dtoInit = new TutorDtoInit();
+        dtoInit.id = tutor.TutorID;
+        dtoInit.nameAbbreviation = tutor.NameAbbreviation;
+        dtoInit.isIncluded = true;
+        dtoInit.groups = null;
+        dtoInit.quota = 3;
+        return dtoInit;
     }
 }

@@ -7,7 +7,7 @@ namespace MatchingSystem.Service.Student;
 
 public interface IStudentService
 {
-    public GetData GetSelectedParams(int studentId);
+    public StudentInfoDto getStudentInfo(int studentId);
 
     public void EditProfile(EditProfileParams editParams);
 
