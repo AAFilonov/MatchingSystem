@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using MatchingSystem.DataLayer.Dto;
+using MatchingSystem.DataLayer.Dto.MatchingInit;
 using OfficeOpenXml;
 
 namespace MatchingSystem.Service.DocumentsProcessing;
@@ -14,10 +15,10 @@ public class DocumentsProcessingService : IDocumentsProcessingService
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
     }
 
-    public List<StudentDto> parseStudentData(ExcelPackage package)
+    public List<StudentInitDto> parseStudentData(ExcelPackage package)
     {
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-        List<StudentDto> dtos = new List<StudentDto>();
+        List<StudentInitDto> dtos = new List<StudentInitDto>();
         foreach (var worksheet in package.Workbook.Worksheets)
         {
             var groupName = worksheet.Name;
@@ -25,26 +26,26 @@ public class DocumentsProcessingService : IDocumentsProcessingService
             int rowCount = worksheet.Dimension.End.Row; //get row count
             for (int row = 1; row <= rowCount; row++)
             {
-                StudentDto dto = new StudentDto();
-                dto.groupName = groupName;
-                dto.lastName = (string)worksheet.Cells["A"+row].Value;
-                dto.firstName = (string)worksheet.Cells["B"+row].Value;
-                dto.middleName = (string)worksheet.Cells["C"+row].Value;
+                StudentInitDto initDto = new StudentInitDto();
+                initDto.groupName = groupName;
+                initDto.lastName = (string)worksheet.Cells["A"+row].Value;
+                initDto.firstName = (string)worksheet.Cells["B"+row].Value;
+                initDto.middleName = (string)worksheet.Cells["C"+row].Value;
               
-                dtos.Add(dto);
+                dtos.Add(initDto);
             }
         }
 
         return dtos;
     }
 
-    public List<GroupTutorDto> parseGroupData(ExcelPackage package)
+    public List<GroupInitDto> parseGroupData(ExcelPackage package)
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-            List<GroupTutorDto> dtos = new List<GroupTutorDto>();
+            List<GroupInitDto> dtos = new List<GroupInitDto>();
             foreach (var worksheet in package.Workbook.Worksheets)
             {
-                GroupTutorDto group = new GroupTutorDto
+                GroupInitDto group = new GroupInitDto
                 {
                     name = worksheet.Name,
                     value = false
@@ -57,7 +58,7 @@ public class DocumentsProcessingService : IDocumentsProcessingService
         }
     
     
-    public ExcelPackage formStudentDataReport(List<StudentDto> students)
+    public ExcelPackage formStudentDataReport(List<StudentInitDto> students)
     {
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         ExcelPackage package = new ExcelPackage();
