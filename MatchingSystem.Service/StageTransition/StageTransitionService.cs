@@ -27,7 +27,7 @@ public class StageTransitionService : IStageTransitionService
             case 2://переход со стадии создания проектов к заполнению списков предпочтений
                 needToTransit = (tutorRepository.GetTutorsByMatching(matchingId).All(x => tutorRepository.GetReadyByTutor(x.TutorID) != false)); break;
             case 3://переход со стадии заполнения списков предпочтений к 1 итерации
-                var studPref = studentRepository.GetStudentPreferencesByMatching(matchingId).Where(x => x.OrderNumber == 1 || x.OrderNumber == null);
+                var studPref = studentRepository.GetStudentPreferencesByMatching(matchingId).Where(x => x.OrderNumber == 1);
                 needToTransit = studPref.All(x => x.ProjectID != null); break;
             case 4:
                 needToTransit = needToTransitionInIteration(matchingId); break;
