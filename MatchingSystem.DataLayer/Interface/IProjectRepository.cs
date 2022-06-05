@@ -23,6 +23,7 @@ namespace MatchingSystem.DataLayer.Interface
         void SetProjectClose(int tutorId, int projectId);
         Task<IEnumerable<Project>> GetProjectsByTutorAsync(int tutorId);
         IEnumerable<Project> GetProjectsByTutor(int tutorId);
+        public IEnumerable<Project> GetProjectsByMatching(int MatchingId);
         Task<IEnumerable<ProjectForStudent>> GetProjectsByStudentAsync(int studentId);
         IEnumerable<ProjectForStudent> GetProjectsByStudent(int studentId);
     }

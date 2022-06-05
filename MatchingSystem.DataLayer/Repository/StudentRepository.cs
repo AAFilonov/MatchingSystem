@@ -81,6 +81,75 @@ namespace MatchingSystem.DataLayer.Repository
             );
             return result;
         }
+        public IEnumerable<StudentPreferences> GetStudentPreferencesByMatching(int matchingId)
+        {
+            var result = Connection.Query<StudentPreferences>(
+                "SELECT " +
+                "stud.StudentID, " +
+                "stud_pref.ProjectID, " +
+                "stud_pref.OrderNumber " +
+                "from dbo_v.Students stud " +
+                "left join dbo.StudentsPreferences  stud_pref on " +
+                "stud_pref.StudentID = stud.StudentID " +
+                "WHERE MatchingID = @MatchingID",
+                new { MatchingID = matchingId }
+            );
+            return result;
+        }
+        
+        public IEnumerable<StudentPreferences> GetStudentAssignedToProject(int matchingId)
+        {
+            var result = Connection.Query<StudentPreferences>(
+                "SELECT " +
+                "stud.StudentID, " +
+                "tch.ProjectID, " +
+                "tch.SortOrderNumber " +
+                "from dbo_v.Students stud " +
+                "left join dbo.TutorsChoice  tch on " +
+                "tch.StudentID = stud.StudentID " +
+                "WHERE MatchingID = @MatchingID",
+                new { MatchingID = matchingId }
+            );
+            return result;
+        }
+
+        public IEnumerable<StudentPreferences> GetStudentAvailablePreferencesByMatching(int matchingId)
+        {
+            var result = Connection.Query<StudentPreferences>(
+                   "SELECT " +
+                   "stud.StudentID," +
+                   "stud_pref.ProjectID," +
+                   "stud_pref.OrderNumber" +
+                   "from dbo_v.Students stud " +
+                   "left join dbo_v.AvailableStudentsPreferences  stud_pref on " +
+                   "stud_pref.StudentID = stud.StudentID" +
+                   "WHERE MatchingID = @MatchingID",
+                   new { MatchingID = matchingId }
+               );
+            return result;
+        }
+
+
+        public Student GetStudents(int studentId)
+        {
+            var result = Connection.QueryFirst<Student>(
+                "select " +
+                "StudentID, " +
+                "GroupID, " +
+                "GroupName, " +
+                "Surname, " +
+                "Name, " +
+                "Patronimic, " +
+                "Info, " +
+                "Info2, " +
+                "WorkDirectionsName_List, " +
+                "TechnologiesName_List " +
+                "from napp.get_StudentInfo(@StudentID)",
+                new { StudentId = studentId }
+            );
+            return result;
+        }
+
 
         public async Task<int> GetStudentIdAsync(int userId, int matchingId)
         {

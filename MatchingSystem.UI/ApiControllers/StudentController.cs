@@ -3,7 +3,10 @@ using System.Linq;
 using MatchingSystem.DataLayer.Interface;
 using MatchingSystem.DataLayer.IO.Params;
 using MatchingSystem.DataLayer.Dto;
+using MatchingSystem.Service.Follow;
 using MatchingSystem.Service.Student;
+using MatchingSystem.UI.Helpers;
+using MatchingSystem.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MatchingSystem.UI.ApiControllers
@@ -12,10 +15,12 @@ namespace MatchingSystem.UI.ApiControllers
     public class StudentController : ControllerBase
     {
         private readonly IStudentService studentService;
+        private readonly IStageTransitionService stageTransitionService;
 
-        public StudentController(IStudentService studentService)
+        public StudentController(IStudentService studentService,IStageTransitionService stageTransitionService)
         {
             this.studentService = studentService;
+            this.stageTransitionService = stageTransitionService;
         }
 
         [Route("api/[controller]/get_selected_info")]
@@ -63,8 +68,14 @@ namespace MatchingSystem.UI.ApiControllers
             var studentId = Convert.ToInt32(data["studentId"]);
 
             var temp = data["selectedList"].ToString();
-
+            
             studentService.SetPreferences(studentId, temp);
+            
+            var sessionData = HttpContext.Session.Get<SessionData>("Data"); 
+            var currentMatchingId = sessionData .SelectedMatching;
+            var need = stageTransitionService.isNeedToTransit(currentMatchingId);
+            if (need)
+                stageTransitionService.TransitionIfExistNeed(currentMatchingId);
 
             return Ok();
         }
