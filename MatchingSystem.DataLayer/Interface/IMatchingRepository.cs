@@ -15,6 +15,7 @@ namespace MatchingSystem.DataLayer.Interface
         IEnumerable<MatchingInfo> GetMatchingsInfo();
         Task<IEnumerable<Allocation>> GetFinalAllocationsAsync();
         IEnumerable<Allocation> GetFinalAllocations();
+        public IEnumerable<Allocation> GetFinalAllocationByMatching(int MatchingId);
         Task<IEnumerable<Matching>> GetMatchingsByUserAsync(int userId);
         IEnumerable<Matching> GetMatchingsByUser(int userId);
         Task<Stage> GetCurrentStageAsync(int matchingId);

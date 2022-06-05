@@ -47,6 +47,19 @@ namespace MatchingSystem.DataLayer.Repository
                                                 "from napp.get_FinishedAllocations()");
         }
 
+        public IEnumerable<Allocation> GetFinalAllocationByMatching(int MatchingId)
+        {
+            return Connection.Query<Allocation>("SELECT " +
+                                                "MatchingID, " +
+                                                "ProjectID, StudentID, TutorID, GroupID, " +
+                                                "StudentNameAbbreviation, GroupName, " +
+                                                "ProjectName, TutorNameAbbreviation, IsAllocated " +
+                                                "from napp.get_FinishedAllocations() " +
+                                                "WHERE MatchingId = @MatchingId",
+                                                new {MatchingId = MatchingId }
+                                                );
+        }
+
         public async Task<IEnumerable<Allocation>> GetFinalAllocationsAsync()
         {
             return await Connection.QueryAsync<Allocation>("select MatchingID, " +
