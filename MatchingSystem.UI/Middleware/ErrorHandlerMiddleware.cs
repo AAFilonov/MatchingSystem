@@ -1,6 +1,8 @@
 using System;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
+using MatchingSystem.Service.Exception;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -24,19 +26,22 @@ public class ErrorHandlerMiddleware
         {
             await next(context);
         }
-        catch (Exception error)
+        catch (InputDataException ex)
         {
+            logger.LogError("Error: {}\n Source:{}",ex.Message,ex.StackTrace);
             var response = context.Response;
             response.ContentType = "application/json";
-
-            switch(error)
-            {
-                default:
-                    // unhandled error
-                    response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                    logger.LogError("Error: {}\n Source:{}",error.Message,error.StackTrace);
-                    break;
-            }
+            response.StatusCode = (int)HttpStatusCode.BadRequest;
+            
+            var result = JsonConvert.SerializeObject(ex.Message);
+            await response.WriteAsync(result);
+        }
+        catch (Exception error)
+        {
+            logger.LogError("Error: {}\n Source:{}",error.Message,error.StackTrace);
+            var response = context.Response;
+            response.ContentType = "application/json";
+            response.StatusCode = (int)HttpStatusCode.InternalServerError;
             
             var result = JsonConvert.SerializeObject(error.Message);
            await response.WriteAsync(result);

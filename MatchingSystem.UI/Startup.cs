@@ -92,6 +92,8 @@ namespace MatchingSystem.UI
             services.AddSingleton<IQuotasService, QuotasService>();
             services.AddSingleton<ITutorService, TutorService>();
             services.AddSingleton<IUserService, UserService>();            
+            services.AddSingleton<ITutorsParsingService, TutorParsingService>();            
+            services.AddSingleton<IStudentsParsingService, StudentsParsingService>();            
             services.AddSingleton<IDocumentsProcessingService, DocumentsProcessingService>();            
             services.AddSingleton<IMatchingInitializationService, MatchingInitializationService>();            
             //--Services

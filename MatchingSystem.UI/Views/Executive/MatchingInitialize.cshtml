@@ -24,10 +24,10 @@
                         <a class="nav-link active" data-toggle="tab" href="#students">Студенты</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" :class="{ disabled: !isReady}" data-toggle="tab" href="#tutors">Преподаватели</a>
+                        <a class="nav-link" :class="{ disabled: !studentsAreReady}" data-toggle="tab" href="#tutors">Преподаватели</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" :class="{ disabled: !isReady}" data-toggle="tab" href="#allocation">Распределение</a>
+                        <a class="nav-link" :class="{ disabled: !tutorsAreReady}" data-toggle="tab" href="#allocation">Распределение</a>
                     </li>
                 </ul>
                 <div id="tabContent" class="tab-content m-4 ">
@@ -42,7 +42,7 @@
                                     <input id="studentsFile" type="file" v-on:change="onStudentsFileChange"  accept=".xls,.xlsx,.csv">
                                 </div>
 
-                                <table class="table table-hover" v-if="matchingData.studentRecords.length">
+                                <table class="table table-hover" v-if="studentsAreReady">
                                     <th style="cursor: pointer">
                                         <div class="d-flex align-items-center">
                                             <span>Группа</span>
@@ -88,8 +88,12 @@
                                 <h5>Преподаватели</h5>
                             </div>
                             <div class="card-body">
-
-                                <table class="table table-hover" v-if="matchingData.tutorRecords.length">
+                                <div class="custom-file">
+                                    <label for="tutorsFile">Данные преподавателей</label>
+                                    <input id="tutorsFile" type="file" v-on:change="onTutorsFileChange"  accept=".xls,.xlsx,.csv">
+                                </div>
+                                
+                                <table class="table table-hover" v-if="tutorsAreReady">
                                     <th>
                                         <div class="d-flex align-items-center">
                                             <span>Участвует</span>
@@ -192,15 +196,20 @@ let app = new Vue({
               tutorRecords:[], 
           },
           studentFile: null,
+          tutorsFile: null,
       }
   },
   async mounted(){ 
       this.getMatchingData();
    },
   computed:{
-     isReady(){
+     studentsAreReady(){
+         return this.matchingData.studentRecords.length>0;
+     },
+     tutorsAreReady(){
          return this.matchingData.tutorRecords.length>0;
-   }
+     }
+          
   },
   methods:{
      getMatchingData(){
@@ -229,35 +238,47 @@ let app = new Vue({
      onStudentsFileChange(event){
           this.studentFile = event.target.files;  
         
-          axios.post( `${params.basePath}/api/matchingInitialization/upload_student_data`,
+          axios.post( `${params.basePath}/api/matchingInitialization/upload_students_data`,
             this.studentFile,{
               headers: {
                   'Content-Type': 'multipart/form-data'
               }
             }
           )
-          .then(response =>this.onStudentUploadSucess(response))
-          .catch(function(){
-              DisplayNotification('Ошибка при загрузке данных данных','error' );
-            });
+          .then(response =>this.onStudentsUploadSuccess(response))
+          .catch(error => DisplayNotification('Ошибка при загрузке данных данных: '+ error.response.data,'error' ));
     
      },
-     async onStudentUploadSucess(response){
-         console.log('suuces in student upload!!');
+     onTutorsFileChange(event){
+               this.tutorsFile = event.target.files;              
+               axios.post( `${params.basePath}/api/matchingInitialization/upload_tutors_data`,
+                 this.tutorsFile,{
+                   headers: {
+                       'Content-Type': 'multipart/form-data'
+                   }
+                 }
+               )
+               .then(response => this.onTutorsUploadSuccess(response))
+               .catch(error => DisplayNotification('Ошибка при загрузке данных данных: '+ error.response.data,'error' ));
+          },
+     async onStudentsUploadSuccess(response){
          if (response.data) {                       
              this.matchingData.studentRecords =  response.data;
-             DisplayNotification('Данные студентов загружены успешно');
+             DisplayNotification('Данные загружены успешно');
          }
          else{
-             DisplayNotification('Ошибка при синхронизации данных данных','error' );
+             DisplayNotification('Ошибка при загрузке данных','error' );
+         }       
+     }, 
+     async onTutorsUploadSuccess(response){
+         if (response.data) {                       
+             this.matchingData.tutorRecords =  response.data;
+             DisplayNotification('Данные загружены успешно');
          }
-         
-         let responce = await fetch(`${params.basePath}/api/matchingInitialization/get_tutors`);
-              if (responce.ok) {                 
-                  let result = await responce.json();             
-                  this.matchingData.tutorRecords = await result.tutors;
-         } 
-     },    
+         else{
+             DisplayNotification('Ошибка при загрузке данных','error' );
+         }       
+      },    
   }
 })
 </script>
