@@ -53,10 +53,10 @@ public class TutorService : ITutorService
             tutorRepository.SetPreferences(data, tutorId);
     }
 
-    public List<TutorDtoInit> GetAllTutors()
+    public List<TutorInitDto> GetAllTutors()
     {
         var tutors = tutorRepository.GetAllTutors();
-        var tutorDtos = new List<TutorDtoInit>();
+        var tutorDtos = new List<TutorInitDto>();
         foreach (var tutor in tutors)
         {
             //tutorDtos.Add(tutor); //(TutorDto.construct(tutor,groups));  
@@ -65,14 +65,14 @@ public class TutorService : ITutorService
 
         return tutorDtos;
     }
-    private TutorDtoInit construct(DataLayer.Entities.Tutor tutor)
+    private TutorInitDto construct(DataLayer.Entities.Tutor tutor)
     {
-        TutorDtoInit dtoInit = new TutorDtoInit();
-        dtoInit.id = tutor.TutorID;
-        dtoInit.nameAbbreviation = tutor.NameAbbreviation;
-        dtoInit.isIncluded = true;
-        dtoInit.groups = null;
-        dtoInit.quota = 3;
-        return dtoInit;
+        TutorInitDto initDto = new TutorInitDto();
+        initDto.id = tutor.TutorID;
+        initDto.nameAbbreviation = tutor.NameAbbreviation;
+        initDto.isIncluded = true;
+        initDto.groups = null;
+        initDto.quota = 3;
+        return initDto;
     }
 }
