@@ -11,6 +11,7 @@ namespace MatchingSystem.Data.Migrations
         
         protected override void Up(MigrationBuilder migrationBuilder)
         {   
+            /*
             migrationBuilder.CreateTable(
                 name: "ChoosingTypes",
                 columns: table => new
@@ -795,6 +796,7 @@ namespace MatchingSystem.Data.Migrations
                 column: "Version",
                 unique: true)
                 .Annotation("SqlServer:Clustered", true);
+                */
         }
      
         protected override void Down(MigrationBuilder migrationBuilder)
