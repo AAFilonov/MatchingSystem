@@ -8,6 +8,9 @@ using MatchingSystem.DataLayer.Interface;
 using MatchingSystem.DataLayer.IO.Params;
 using MatchingSystem.DataLayer.Dto;
 using MatchingSystem.Service.Executive;
+using MatchingSystem.Service.Follow;
+using MatchingSystem.UI.Helpers;
+using MatchingSystem.UI.Services;
 
 namespace MatchingSystem.UI.ApiControllers
 {
@@ -15,10 +18,12 @@ namespace MatchingSystem.UI.ApiControllers
     public class ExecutiveController : ControllerBase
     {
         private readonly IExecutiveService executiveService;
+        private readonly IStageTransitionService stageTransitionService;
 
-        public ExecutiveController(IExecutiveService executiveService)
+        public ExecutiveController(IExecutiveService executiveService,IStageTransitionService stageTransitionService)
         {
             this.executiveService = executiveService;
+            this.stageTransitionService = stageTransitionService;
         }
 
         [Route("api/[controller]/setNextStage")]
@@ -69,6 +74,12 @@ namespace MatchingSystem.UI.ApiControllers
                 return BadRequest("Некорректный запрос.");
             }
             executiveService.SetAllocationByExecutive(request);
+            var sessionData = HttpContext.Session.Get<SessionData>("Data"); 
+            var currentMatchingId = sessionData .SelectedMatching;
+            //check transition from 'manual adjustment' to 'final'
+            var need = stageTransitionService.isNeedToTransit(currentMatchingId);
+            if (need)
+                stageTransitionService.TransitionIfExistNeed(currentMatchingId);
             return Ok();
         }
     }

@@ -31,6 +31,25 @@ namespace MatchingSystem.DataLayer.Repository
             );
         }
 
+        public IEnumerable<Project> GetProjectsByMatching(int MatchingId)
+        {
+            return Connection.Query<Project>(
+                "SELECT " +
+                "ProjectID " +
+                ",ProjectName " +
+                ",Info " +
+                ",IsClosed " +
+                ",ProjectQuotaQty " +
+                ",null,null,null " +
+                ",IsDefault " +
+                ",TutorID " +
+                "FROM Projects " +
+                "WHERE " +
+                "MatchingId = @MatchingId",
+                new {MatchingId = MatchingId}
+            );
+        }
+
         public async Task<IEnumerable<ProjectForStudent>> GetProjectsByStudentAsync(int studentId)
         {
             return await Connection.QueryAsync<ProjectForStudent>(
