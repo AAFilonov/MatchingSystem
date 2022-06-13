@@ -1,12 +1,15 @@
 ﻿using System;
 using MatchingSystem.Data;
+using MatchingSystem.DataLayer.Entities;
 using MatchingSystem.DataLayer.Interface;
 using MatchingSystem.DataLayer.Repository;
+using MatchingSystem.Service;
 using MatchingSystem.Service.Allocation;
 using MatchingSystem.Service.DocumentsProcessing;
 using MatchingSystem.Service.Executive;
 using MatchingSystem.Service.Follow;
 using MatchingSystem.Service.MatchingInitialization;
+using MatchingSystem.Service.Monitoring;
 using MatchingSystem.Service.Notification;
 using MatchingSystem.Service.Projects;
 using MatchingSystem.Service.Quotas;
@@ -21,6 +24,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace MatchingSystem.UI
 {
@@ -94,6 +98,7 @@ namespace MatchingSystem.UI
             services.AddSingleton<IStudentsParsingService, StudentsParsingService>();            
             services.AddSingleton<IDocumentsProcessingService, DocumentsProcessingService>();            
             services.AddSingleton<IMatchingInitializationService, MatchingInitializationService>();            
+            services.AddSingleton<IMonitoringService, MonitoringService>();            
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<IStageTransitionService, StageTransitionService>();
             //--Services

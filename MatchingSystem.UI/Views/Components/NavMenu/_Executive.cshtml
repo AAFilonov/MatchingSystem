@@ -15,23 +15,8 @@ else
     <li class="nav-item">
         <a href=@Url.Action("quotas", "executive") class="nav-link">Запросы по квотам</a>
     </li>
-}
-@if (ViewData["active"].ToString() == "statistics")
-{
-<li class="nav-item dropdown">
-    <a href="" class="nav-link dropdown-toggle active" id="StatisticDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Статистика
-    </a>
-    <div class="dropdown-menu" aria-labelledby="StatisticDropdown">
-        <a class="dropdown-item" href=@Url.Action("Main", "Statistics")>Общая</a>
-        <a class="dropdown-item" href=@Url.Action("Tutors", "Statistics")>По преподавателям: детальная</a>
-        <a class="dropdown-item" href=@Url.Action("Students", "Statistics")>По студентам: детальная</a>
-    </div>
-</li>
-}
-else
-{
-    
+}  
+
 <li class="nav-item dropdown">
     <a href="" class="nav-link dropdown-toggle" id="StatisticDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Статистика
@@ -52,8 +37,16 @@ else
     </div>
 </li>
 
- 
-}
+<li class="nav-item dropdown">
+    <a href="" class="nav-link dropdown-toggle" id="MonitoringDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Мониторинг
+    </a>
+    <div class="dropdown-menu" aria-labelledby="MonitoringDropdown">
+        <a class="dropdown-item" href=@Url.Action("monitoringTutors", "executive") >Преподаватели</a>    
+        <a class="dropdown-item" href=@Url.Action("monitoringStudents", "executive") >Студенты</a>
+    </div>
+</li>
+
 @if (data.CurrentStage?.StageTypeCode == 5)
 {
     @if (ViewData["active"].ToString() == "adjustment")
