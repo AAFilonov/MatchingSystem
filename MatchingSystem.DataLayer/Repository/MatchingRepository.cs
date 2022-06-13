@@ -89,26 +89,24 @@ namespace MatchingSystem.DataLayer.Repository
             return Connection.Query<MatchingInfo>("select * from napp.get_FinishedMatchings()");
         }
 
-        public async Task<int> SetNewMatching(MatchingInitDto data)
+        public int SetNewMatching(MatchingInitDto data)
         {
-            var IdInsertedRecord = Connection.ExecuteScalarAsync<int>("insert into Matching (MatchingName,MatchingTypeId,CreatorUserId) output INSERTED.MatchingID Values(@MatchingName,@MatchingTypeId,@CreatorUserId)"
+            return  Connection.ExecuteScalar<int>("insert into Matching (MatchingName,MatchingTypeID,CreatorUserID) output INSERTED.MatchingID Values(@MatchingName,@MatchingTypeId,@CreatorUserId)"
                 ,new {
                     @MatchingName = data.name
                     ,@MatchingTypeId = (data.typeCode=="MG")?2:1
                     ,@CreatorUserId=2
                 }
                 );
-            return await IdInsertedRecord;
         }
 
-        public async Task<int> SetNewFirstStageInMatching(int MatchingID)
+        public  int SetNewFirstStageInMatching(int MatchingID)
         {
-            var IdInsertedRecord = Connection.ExecuteScalarAsync<int>("insert into Stages(StageTypeID,StartDate,EndPlanDate,IsCurrent,MatchingID) OUTPUT INSERTED.StageID VALUES(1,getdate(),DATEADD(HOUR,1,getdate()),1,@MatchingId)"
+            return  Connection.ExecuteScalar<int>("insert into Stages(StageTypeID,StartDate,EndPlanDate,IsCurrent,MatchingID) OUTPUT INSERTED.StageID VALUES(1,getdate(),DATEADD(HOUR,1,getdate()),1,@MatchingId)"
                 ,new {
                     MatchingId = MatchingID
                 }
             );
-            return await IdInsertedRecord;
         }
         
         public async Task<IEnumerable<MatchingInfo>> GetMatchingsInfoAsync()
