@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
+using MatchingSystem.DataLayer.Dto.MatchingInit;
 using MatchingSystem.DataLayer.Entities;
 using MatchingSystem.DataLayer.IO.Params;
 using MatchingSystem.DataLayer.Repository;
@@ -10,6 +11,8 @@ namespace MatchingSystem.DataLayer.Interface
     public interface IProjectRepository
     {
         Task CreateProjectAsync(ProjectParams @params);
+        IEnumerable<TutorInitDto> SetDefaultProjectsForTutors(List<TutorInitDto> tutors, int matchingId);
+        void SetDefaultProjects_Groups(List<TutorInitDto> tuts);
         void CreateProject(ProjectParams @params);
         Task EditProjectAsync(ProjectParams @params);
         void EditProject(ProjectParams @params);

@@ -20,4 +20,8 @@ public class StudentInitDto
     public string middleName { get; set; }
     public string lastName { get; set; }
     public string password { get; set; }
+    public int UserId { get; set; }
+    public int StudentId { get; set; }
+    public int GroupId { get; set; }
 }
+

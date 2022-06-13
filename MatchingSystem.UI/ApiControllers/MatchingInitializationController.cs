@@ -40,14 +40,17 @@ public class MatchingInitializationController : ControllerBase
     [HttpPost]
     public IActionResult createNewMatching([FromBody] MatchingInitData data)
     {
-        var result = "HelloWorld";
-        matchingInitializationService.createMatching(data);
+        var sessionData = HttpContext.Session.Get<SessionData>("Data"); 
+        var currentMatchingInitData = sessionData .matchingInitData;
+        currentMatchingInitData.matching = data.matching;
+        
+        matchingInitializationService.createMatching(currentMatchingInitData,sessionData.User.UserId);
         //TODO создать новое распределение и перейти в личный кабинет по нему             
         return Ok();  
     }
 
     [Route("api/[controller]/upload_students_data")]
-    [HttpPost]
+    [HttpPost]  
     public async Task<IActionResult> uploadStudentsDataAsync(IFormCollection files)
     {
         var data = files.Files[0];
