@@ -4,7 +4,9 @@ namespace MatchingSystem.DataLayer.Dto.MatchingInit;
 
 public class TutorInitDto
 {
-    public int id { get; set; }
+    public int UserId { get; set; }
+    public int TutorId { get; set; }
+    public int DefaultProjectId { get; set; } 
     public string nameAbbreviation { get; set; }
     public bool isIncluded { get; set; }
     public int quota { get; set; }

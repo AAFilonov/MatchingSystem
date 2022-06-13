@@ -1,9 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using MatchingSystem.DataLayer.Base;
+using MatchingSystem.DataLayer.Dto.MatchingInit;
 using MatchingSystem.DataLayer.Entities;
 using MatchingSystem.DataLayer.Interface;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace MatchingSystem.DataLayer.Repository
 {
@@ -11,6 +15,20 @@ namespace MatchingSystem.DataLayer.Repository
     {
         public UserRepository(string connectionString) : base(connectionString)
         {
+        }
+        
+        public static string Translit(string str)
+        {
+            string[] lat_up = {"A", "B", "V", "G", "D", "E", "Yo", "Zh", "Z", "I", "Y", "K", "L", "M", "N", "O", "P", "R", "S", "T", "U", "F", "Kh", "Ts", "Ch", "Sh", "Shch", "", "Y", "", "E", "Yu", "Ya"};
+            string[] lat_low = {"a", "b", "v", "g", "d", "e", "yo", "zh", "z", "i", "y", "k", "l", "m", "n", "o", "p", "r", "s", "t", "u", "f", "kh", "ts", "ch", "sh", "shch", "", "y", "", "e", "yu", "ya"};
+            string[] rus_up = {"А", "Б", "В", "Г", "Д", "Е", "Ё", "Ж", "З", "И", "Й", "К", "Л", "М", "Н", "О", "П", "Р", "С", "Т", "У", "Ф", "Х", "Ц", "Ч", "Ш", "Щ", "Ъ", "Ы", "Ь", "Э", "Ю", "Я"};
+            string[] rus_low = { "а", "б", "в", "г", "д", "е", "ё", "ж", "з", "и", "й", "к", "л", "м", "н", "о", "п", "р", "с", "т", "у", "ф", "х", "ц", "ч", "ш", "щ", "ъ", "ы", "ь", "э", "ю", "я"};
+            for (int i = 0; i <= 32; i++)
+            {
+                str = str.Replace(rus_up[i],lat_up[i]);
+                str = str.Replace(rus_low[i],lat_low[i]);              
+            }
+            return str;
         }
 
         public IEnumerable<RoleMatching> GetAllRoles(int userId)
@@ -25,8 +43,58 @@ namespace MatchingSystem.DataLayer.Repository
                 new { UserID = userId });
           
         }
+        
+        public  IEnumerable<TutorInitDto> GetTutorUsers(List<TutorInitDto> tutors)
+        {
+            foreach (var tutor in tutors)
+            {
+                tutor.UserId = Connection.ExecuteScalar<int>(
+                    "Select Top 1 UserId from Users where Surname+' '+Name+' '+ Patronimic=@NameAbbriviation"
+                    , new { NameAbbriviation = tutor.nameAbbreviation }
+                );
+                if (tutor.UserId == 0)
+                {
+                    tutor.UserId = Connection.ExecuteScalar<int>(
+                        "Select top 1 UserId from Users where Surname+' '+left(Name,1)+'. '+ left(Patronimic,1)+'.'=@NameAbbriviation"
+                        , new { NameAbbriviation = tutor.nameAbbreviation }
+                    );  
+                }
+            }
+            return tutors;
+
+        }
+
+        public async void SetUser_Role(int userId,int matchingId)
+        {
+            await Connection.ExecuteAsync(
+                "insert Users_Roles (UserId,RoleId,MatchingId) VALUES(@UserId,@RoleId,@MatchingId)"
+                , new
+                {
+                    UserId = userId, RoleId = 3, MatchingId = matchingId
+                }
+            );
+        }
 
 
+        public List<StudentInitDto> SetNewUsersForStudents(List<StudentInitDto> users)
+        {
+            foreach (var user in users)
+            {
+                user.UserId =Connection.ExecuteScalar<int>(
+                    "insert Users (Login,PasswordHash,Name,Surname,Patronimic) OUTPUT INSERTED.UserId Values(@Login,@Password,@Name,@Surname,@Patronimic)",
+                    new
+                    {
+                        Name = user.firstName
+                        ,Surname = user.lastName
+                        ,Patronimic = user.middleName
+                        ,Password = "$s2$16384$8$1$DJBTMOcK+VGXFk8BTUvWYNr7PZE4Cx0l2OdvbWA4/TA=$R7TZahOx+lmeP+B8FiLe6IQzQJ/mSVYQa+7M57kvcOs="//user.password
+                        ,Login = Translit(user.lastName + user.firstName.Substring(0, 1) +
+                                         ((user.middleName != null) ? user.middleName.Substring(0, 1) : ""))
+                    });
+            }
+
+            return users;
+        }
         public string GetPasswordHashByLogin(string login)
         {
             return  Connection.QueryFirstOrDefault<string>("select napp.get_UserPasswordHash(@login)",
