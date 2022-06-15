@@ -64,7 +64,8 @@ namespace MatchingSystem.UI
 
             services.AddTransient<IProjectRepository, ProjectRepository>(options =>
                 new ProjectRepository(connectionString));
-
+            services.AddTransient<IGroupRepository, GroupRepository>(options =>
+                new GroupRepository(connectionString));
             services.AddTransient<IUserRepository, UserRepository>(options =>
                 new UserRepository(connectionString));
 

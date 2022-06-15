@@ -44,7 +44,7 @@ namespace MatchingSystem.DataLayer.Repository
                 "select * from napp.get_Allocation_ByExecutive(@UserID, @MatchingID)",
                 new {UserID = userId, MatchingID = matchingId});
         }
-        public IEnumerable<Allocation> GetAllocationsByExecutive(int userId, int matchingId)
+        public IEnumerable<Allocation>  GetAllocationsByExecutive(int userId, int matchingId)
         {
             return Connection.Query<Allocation>("select * from napp.get_Allocation_ByExecutive(@UserID, @MatchingID)",
                 new {UserID = userId, MatchingID = matchingId});

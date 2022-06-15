@@ -68,7 +68,7 @@ public class TutorService : ITutorService
     private TutorInitDto construct(DataLayer.Entities.Tutor tutor)
     {
         TutorInitDto initDto = new TutorInitDto();
-        initDto.id = tutor.TutorID;
+        initDto.UserId = tutor.TutorID;
         initDto.nameAbbreviation = tutor.NameAbbreviation;
         initDto.isIncluded = true;
         initDto.groups = null;
