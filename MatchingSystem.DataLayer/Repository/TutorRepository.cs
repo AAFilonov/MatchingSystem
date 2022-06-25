@@ -92,11 +92,13 @@ namespace MatchingSystem.DataLayer.Repository
         {
             foreach (var tut in tuts)
             {
+
                 Connection.Execute("INSERT INTO CommonQuotas(TutorID,Qty,CreateDate,QuotaStateId,StageId) VALUES(@TutorID,@Qty,getdate(),1,@StageId)"
                     , new { 
                         TutorID = tut.TutorId
                         ,@Qty = tut.quota
                         ,@StageId = stageId
+
                     });   
             }
         }

@@ -36,6 +36,7 @@ namespace MatchingSystem.UI.Controllers
         public override void OnActionExecuted(ActionExecutedContext ctx)
         {
             base.OnActionExecuted(ctx);
+            if (data == null) return;
             data.CurrentStage = matchingRepository.GetCurrentStage(data.SelectedMatching);
             HttpContext.Session.Set<SessionData>("Data", data);
         }
@@ -71,6 +72,16 @@ namespace MatchingSystem.UI.Controllers
         }
         [HttpGet]
         public ViewResult matchingInitialize()
+        {
+            return View();
+        }
+        [HttpGet]
+        public ViewResult monitoringTutors()
+        {
+            return View();
+        }
+        [HttpGet]
+        public ViewResult monitoringStudents()
         {
             return View();
         }
