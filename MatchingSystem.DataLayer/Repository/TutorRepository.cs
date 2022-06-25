@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
@@ -91,14 +92,13 @@ namespace MatchingSystem.DataLayer.Repository
         {
             foreach (var tut in tuts)
             {
-                Connection.ExecuteAsync("INSERT CommonQuotas (TutorID,Qty,CreateDate,QuotaStateId,QuotaStateId,StageId) " +
-                                        "VALUES(@TutorID,@Qty,@CreateDate,@QuotaStateId,@StageId)"
+
+                Connection.Execute("INSERT INTO CommonQuotas(TutorID,Qty,CreateDate,QuotaStateId,StageId) VALUES(@TutorID,@Qty,getdate(),1,@StageId)"
                     , new { 
                         TutorID = tut.TutorId
-                        ,Qty = tut.quota
-                        ,CreateDate = "GETDATE()"
-                        ,QuotaStateId = 1
-                        ,StageId = stageId
+                        ,@Qty = tut.quota
+                        ,@StageId = stageId
+
                     });   
             }
         }
