@@ -1,11 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 using Dapper;
 using MatchingSystem.DataLayer.Base;
+using MatchingSystem.DataLayer.Dto.MatchingInit;
 using MatchingSystem.DataLayer.Entities;
 using MatchingSystem.DataLayer.Interface;
 using MatchingSystem.DataLayer.IO.Params;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace MatchingSystem.DataLayer.Repository
 {
@@ -91,6 +94,41 @@ namespace MatchingSystem.DataLayer.Repository
                       WorkDirection_CodeList = @params.CommaSeparatedWorkList,
                       Group_IdList = @params.CommaSeparatedGroupList
                   });
+        }
+
+        public IEnumerable<TutorInitDto> SetDefaultProjectsForTutors(List<TutorInitDto> tutors,int matchingId)
+        {
+            foreach (var tut in tutors)
+            {
+                tut.DefaultProjectId = Connection.ExecuteScalar<int>(
+                    "insert Projects (ProjectName,TutorId,IsClosed,IsDefault,MatchingID,CreateDate) OUTPUT INSERTED.ProjectID VALUES (@ProjectName,@TutorId,@IsClosed,@IsDefault,@MatchingID,GETDATE())"
+                    , new
+                    {
+                        ProjectName = "Записаться к преподавателю"
+                        ,TutorId = tut.TutorId
+                        ,IsClosed = 0
+                        ,IsDefault = 1
+                        ,MatchingID = matchingId
+                    });
+            }
+
+            return tutors;
+        }
+        
+        public void SetDefaultProjects_Groups(List<TutorInitDto> tuts)
+        {
+            foreach (var tut in tuts)
+            {
+                foreach (var tutGroup in tut.groups)
+                {
+                    Connection.Execute(
+                        "insert Projects_Groups (ProjectId,GroupId) OUTPUT INSERTED.ProjectId VALUES (@ProjectId,@GroupId)", new
+                        {
+                            @ProjectId = tut.DefaultProjectId
+                            ,@GroupId = tutGroup.groupId
+                        });
+                }
+            }
         }
 
         public void CreateProject(ProjectParams @params)

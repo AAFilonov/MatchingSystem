@@ -5,5 +5,5 @@ namespace MatchingSystem.Service.MatchingInitialization;
 
 public interface IMatchingInitializationService
 {
-    public void createMatching(MatchingInitData data);
+    public void createMatching(MatchingInitData data,int creatorUserId);
 }

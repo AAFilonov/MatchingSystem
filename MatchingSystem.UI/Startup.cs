@@ -7,6 +7,7 @@ using MatchingSystem.Service.DocumentsProcessing;
 using MatchingSystem.Service.Executive;
 using MatchingSystem.Service.Follow;
 using MatchingSystem.Service.MatchingInitialization;
+using MatchingSystem.Service.Monitoring;
 using MatchingSystem.Service.Notification;
 using MatchingSystem.Service.Projects;
 using MatchingSystem.Service.Quotas;
@@ -60,7 +61,8 @@ namespace MatchingSystem.UI
 
             services.AddTransient<IProjectRepository, ProjectRepository>(options =>
                 new ProjectRepository(connectionString));
-
+            services.AddTransient<IGroupRepository, GroupRepository>(options =>
+                new GroupRepository(connectionString));
             services.AddTransient<IUserRepository, UserRepository>(options =>
                 new UserRepository(connectionString));
 
@@ -90,8 +92,11 @@ namespace MatchingSystem.UI
             services.AddSingleton<IQuotasService, QuotasService>();
             services.AddSingleton<ITutorService, TutorService>();
             services.AddSingleton<IUserService, UserService>();            
+            services.AddSingleton<ITutorsParsingService, TutorParsingService>();            
+            services.AddSingleton<IStudentsParsingService, StudentsParsingService>();            
             services.AddSingleton<IDocumentsProcessingService, DocumentsProcessingService>();            
             services.AddSingleton<IMatchingInitializationService, MatchingInitializationService>();            
+            services.AddSingleton<IMonitoringService, MonitoringService>();
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<IStageTransitionService, StageTransitionService>();
             //--Services

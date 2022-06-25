@@ -45,9 +45,6 @@ public class ReportController : ControllerBase
         };
         var package =  documentsProcessingService.formStudentDataReport(students);
         
-        
-        var path = AppDomain.CurrentDomain.BaseDirectory;
-        package.SaveAs(new FileInfo(path+"/test.xlsx"));
 
          return File(package.GetAsByteArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Reports.xlsx");  
     }

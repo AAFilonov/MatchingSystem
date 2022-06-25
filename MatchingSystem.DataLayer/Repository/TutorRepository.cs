@@ -1,11 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using MatchingSystem.DataLayer.Base;
+using MatchingSystem.DataLayer.Dto.MatchingInit;
+using MatchingSystem.DataLayer.Dto.MatchingMonitoring;
 using MatchingSystem.DataLayer.Entities;
 using MatchingSystem.DataLayer.Interface;
 using MatchingSystem.DataLayer.IO.Params;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace MatchingSystem.DataLayer.Repository
 {
@@ -55,6 +60,49 @@ namespace MatchingSystem.DataLayer.Repository
             );
         }
 
+        public void setNewUserRoles_Tutors(List<TutorInitDto> tuts,int matchingID)
+        {
+            foreach (var tut in tuts)
+            {
+                Connection.ExecuteAsync(
+                    "insert Users_Roles (UserID,RoleID,MatchingID,TutorID) VALUES (@UserID,@RoleID,@MatchingID,@TutorID)", new
+                    {
+                        UserID = tut.UserId
+                        ,RoleID = 1
+                        ,MatchingID = matchingID
+                        ,TutorID = tut.TutorId
+                    });
+            }
+        }
+        
+        public IEnumerable<TutorInitDto> SetNewTutors(List<TutorInitDto> tuts,int matchingId)
+        {
+            foreach (var tut in tuts)
+            {
+                tut.TutorId = Connection.ExecuteScalar<int>(
+                    "insert Tutors (MatchingID) OUTPUT INSERTED.TutorID VALUES (@MatchingID)", new
+                    {
+                        MatchingID = matchingId
+                    });
+            }
+            return tuts;
+        }
+
+        public void SetCommonQuotasForTutors(List<TutorInitDto> tuts,int stageId)
+        {
+            foreach (var tut in tuts)
+            {
+
+                Connection.Execute("INSERT INTO CommonQuotas(TutorID,Qty,CreateDate,QuotaStateId,StageId) VALUES(@TutorID,@Qty,getdate(),1,@StageId)"
+                    , new { 
+                        TutorID = tut.TutorId
+                        ,@Qty = tut.quota
+                        ,@StageId = stageId
+
+                    });   
+            }
+        }
+        
         public IEnumerable<Tutor> GetTutorsByMatching(int matchingId)
         {
             return Connection.Query<Tutor>(

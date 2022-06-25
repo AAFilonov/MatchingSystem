@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using MatchingSystem.DataLayer.Entities;
 using MatchingSystem.DataLayer.Interface;
 using MatchingSystem.DataLayer.Base;
+using MatchingSystem.DataLayer.Dto.MatchingInit;
 using MatchingSystem.DataLayer.IO.Params;
 
 namespace MatchingSystem.DataLayer.Repository
@@ -179,6 +181,36 @@ namespace MatchingSystem.DataLayer.Repository
                 "select TechnologyCode, TechnologyName_ru from napp.get_Technologies_WithSelected_ByStudent(@StudentID) where IsSelectedByStudent = 1",
                 studentId
             );
+        }
+
+        public void setNewUserRoles_Students(List<StudentInitDto> studs,int matchingID)
+        {
+            foreach (var stud in studs)
+            {
+                Connection.ExecuteAsync(
+                    "insert Users_Roles (UserID,RoleID,MatchingID,StudentID) VALUES (@UserID,@RoleID,@MatchingID,@StudentID)", new
+                    {
+                        UserID = stud.UserId
+                        ,RoleID = 2
+                        ,MatchingID = matchingID
+                        ,StudentID = stud.StudentId
+                    });
+            }
+        }
+        
+        public IEnumerable<StudentInitDto> SetNewStudents(List<StudentInitDto> studs,int matchingId)
+        {
+            foreach (var stud in studs)
+            {
+                stud.StudentId = Connection.ExecuteScalar<int>(
+                    "insert Students (GroupID,MatchingID) OUTPUT INSERTED.StudentId VALUES (@GroupID,@MatchingID)", new
+                    {
+                        GroupID = stud.GroupId,
+                        MatchingID = matchingId
+                    });
+            }
+
+            return studs;
         }
 
         public IEnumerable<Technology> GetTechnologiesSelectedByStudent(int studentId)

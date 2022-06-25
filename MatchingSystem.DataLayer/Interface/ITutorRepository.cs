@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using MatchingSystem.DataLayer.Dto.MatchingInit;
 using MatchingSystem.DataLayer.Entities;
 using MatchingSystem.DataLayer.IO.Params;
 
@@ -14,6 +15,9 @@ namespace MatchingSystem.DataLayer.Interface
         Task<IEnumerable<Tutor>> GetTutorsByMatchingAsync(int matchingId);
         IEnumerable<Tutor> GetTutorsByMatching(int matchingId);
         Task<IEnumerable<Group>> GetGroupsByTutorAsync(int tutorId);
+        void SetCommonQuotasForTutors(List<TutorInitDto> tuts, int stageId);
+        IEnumerable<TutorInitDto> SetNewTutors(List<TutorInitDto> tuts, int matchingId);
+        void setNewUserRoles_Tutors(List<TutorInitDto> tuts, int matchingID);
         IEnumerable<Group> GetGroupsByTutor(int tutorId);
         Task<IEnumerable<TutorChoice>> GetChoiceByTutorAsync(int tutorId);
         IEnumerable<TutorChoice> GetChoiceByTutor(int tutorId);
