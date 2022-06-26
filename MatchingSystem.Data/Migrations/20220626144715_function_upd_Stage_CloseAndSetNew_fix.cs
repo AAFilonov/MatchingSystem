@@ -11,14 +11,6 @@ namespace MatchingSystem.Data.Migrations
 	        migrationBuilder.Sql(@"
 USE [DiplomaMatching]
 GO
-/****** Object:  StoredProcedure [napp_in].[upd_Stage_CloseAndSetNew]    Script Date: 25.06.2022 22:56:10 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-
 
 
 -- =============================================
@@ -148,6 +140,7 @@ END
 	        migrationBuilder.Sql(@"
 USE [DiplomaMatching]
 GO
+<<<<<<< HEAD
 /****** Object:  StoredProcedure [napp_in].[upd_Stage_CloseAndSetNew]    Script Date: 26.06.2022 17:49:31 ******/
 SET ANSI_NULLS ON
 GO
@@ -156,6 +149,8 @@ GO
 
 
 
+=======
+>>>>>>> BD-35
 
 
 -- =============================================

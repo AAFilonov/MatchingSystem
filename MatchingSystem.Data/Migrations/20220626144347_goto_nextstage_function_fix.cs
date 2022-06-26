@@ -11,21 +11,7 @@ namespace MatchingSystem.Data.Migrations
             migrationBuilder.Sql(@"
 USE [DiplomaMatching]
 GO
-/****** Object:  StoredProcedure [napp_in].[upd_Stage_CloseAndSetNew]    Script Date: 25.06.2022 22:56:10 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-Раскрыть
-2closeAndNew.sql
-6 кб
-﻿
-USE [DiplomaMatching]
-GO
-/****** Object:  StoredProcedure [napp].[goto_NextStage]    Script Date: 25.06.2022 22:42:59 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
+
 -- =============================================
 -- Author:		Antyukhova Ekaterina
 -- Create date: 06.03.2020
@@ -190,6 +176,7 @@ END
 	        migrationBuilder.Sql(@"
 USE [DiplomaMatching]
 GO
+<<<<<<< HEAD
 /****** Object:  StoredProcedure [napp].[goto_NextStage]    Script Date: 26.06.2022 17:48:36 ******/
 SET ANSI_NULLS ON
 GO
@@ -197,6 +184,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 
+=======
+>>>>>>> BD-35
 
 
 -- =============================================

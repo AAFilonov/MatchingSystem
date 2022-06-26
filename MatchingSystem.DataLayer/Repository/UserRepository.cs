@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using MatchingSystem.DataLayer.Base;
 using MatchingSystem.DataLayer.Dto.MatchingInit;
 using MatchingSystem.DataLayer.Entities;
 using MatchingSystem.DataLayer.Interface;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace MatchingSystem.DataLayer.Repository
 {
