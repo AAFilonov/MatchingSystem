@@ -43,7 +43,7 @@
 
 
         </div>
-        <div class="row mt-2 mb-2">
+        <div class="row mt-2 mb-2" v-if="currentStageCode==1">
             <div class="col col-2">Экспорт списка студентов</div>
             <p class="col col-8"> </p>
             <button class="btn btn-primary col col-2" v-on:click.prevent="exportStudents">

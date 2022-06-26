@@ -8,7 +8,12 @@
 
 <html lang="ru">
 <head>
-    <title>Мониторинг: Студеты</title>
+    <title>Мониторинг: Студеты</title> 
+    <style>
+        a.refused{
+            color: gray;
+        }
+    </style>
 </head>
 <body>
 <div id="app">
@@ -56,7 +61,7 @@
                                 </td>
                                 <td>
                                     <div v-for="project in item.preferences">
-                                        <a v-on:click.prevent="viewProject(project)" class="btn" :class="{ disabled: !project.isActive}">
+                                        <a v-on:click.prevent="viewProject(project)" class="btn" :class="{ refused: !project.isActive}">
                                             {{project.orderInStudentPrefs}}.{{project.projectName}}
                                         </a>
                                     </div>
@@ -79,7 +84,7 @@
                 max-width="600">
                 <v-card tile v-if="projectToView">
                     <v-toolbar dark>
-                        <div>{{projectToView.projectName}}</div>
+                        <v-toolbar-title>Проект</v-toolbar-title>
                     </v-toolbar>
                     <v-card-text>
                         <v-form>

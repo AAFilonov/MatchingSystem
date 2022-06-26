@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using MatchingSystem.DataLayer.Dto.MatchingInit;
+using MatchingSystem.DataLayer.Interface;
 using MatchingSystem.Service.DocumentsProcessing;
 using MatchingSystem.Service.Exception;
 using MatchingSystem.Service.MatchingInitialization;
@@ -20,15 +21,19 @@ namespace MatchingSystem.UI.ApiControllers;
 public class MatchingInitializationController : ControllerBase
 {
     private readonly ITutorService tutorService;
-   
+
     private readonly ITutorsParsingService tutorsParsingService;
     private readonly IStudentsParsingService studentsParsingService;
     private readonly IMatchingInitializationService matchingInitializationService;
     private readonly ILogger<MatchingInitializationController> logger;
-    private readonly  IDocumentsProcessingService documentsProcessingService;
+    private readonly IDocumentsProcessingService documentsProcessingService;
+    private readonly ITutorRepository tutorRepository;
 
 
-    public MatchingInitializationController(ITutorService tutorService, ILogger<MatchingInitializationController> logger, IMatchingInitializationService matchingInitializationService, ITutorsParsingService tutorsParsingService, IStudentsParsingService studentsParsingService, IDocumentsProcessingService documentsProcessingService)
+    public MatchingInitializationController(ITutorService tutorService,
+        ILogger<MatchingInitializationController> logger, IMatchingInitializationService matchingInitializationService,
+        ITutorsParsingService tutorsParsingService, IStudentsParsingService studentsParsingService,
+        IDocumentsProcessingService documentsProcessingService, ITutorRepository tutorRepository)
     {
         this.tutorService = tutorService;
         this.logger = logger;
@@ -36,67 +41,91 @@ public class MatchingInitializationController : ControllerBase
         this.tutorsParsingService = tutorsParsingService;
         this.studentsParsingService = studentsParsingService;
         this.documentsProcessingService = documentsProcessingService;
+        this.tutorRepository = tutorRepository;
     }
 
-   
-     // шаг 1
+
+    // шаг 1
     [Route("api/[controller]/upload_students_data")]
-    [HttpPost]  
+    [HttpPost]
     public async Task<IActionResult> uploadStudentsDataAsync(IFormCollection files)
     {
         var data = files.Files[0];
-      
-        logger.LogInformation("INFO: Accepting student data upload request. Filename is {}",data.FileName);
+
+        logger.LogInformation("INFO: Accepting student data upload request. Filename is {}", data.FileName);
 
         await using var memoryStream = new MemoryStream();
         await data.CopyToAsync(memoryStream);
-       var sessionData = HttpContext.Session.Get<SessionData>("Data");
-        
+        var sessionData = HttpContext.Session.Get<SessionData>("Data");
+
         ExcelPackage package = new ExcelPackage(memoryStream);
         var groups = studentsParsingService.parseStudentGroupData(package);
-        var students =  studentsParsingService.tryToParseStudentData(package);
+        var students = studentsParsingService.tryToParseStudentData(package);
 
         sessionData.matchingInitData.studentRecords = students;
         sessionData.matchingInitData.groupRecords = groups;
-     
+
         HttpContext.Session.Set("Data", sessionData);
-        logger.LogInformation("INFO: Student data upload for file {} was successful. Session context was updated",data.FileName);
-        return new JsonResult( students);
+        logger.LogInformation("INFO: Student data upload for file {} was successful. Session context was updated",
+            data.FileName);
+        return new JsonResult(students);
     }
-    
+
     // шаг 2
     [Route("api/[controller]/upload_tutors_data")]
     [HttpPost]
     public async Task<IActionResult> uploadTutorDataAsync(IFormCollection files)
     {
         var data = files.Files[0];
-      
-        logger.LogInformation("INFO: Accepting tutors data upload request. Filename is {}",data.FileName);
+
+        logger.LogInformation("INFO: Accepting tutors data upload request. Filename is {}", data.FileName);
 
         await using var memoryStream = new MemoryStream();
         await data.CopyToAsync(memoryStream);
         var sessionData = HttpContext.Session.Get<SessionData>("Data");
-        
+
         ExcelPackage package = new ExcelPackage(memoryStream);
         var groups = tutorsParsingService.parseTutorGroupData(package);
         bool tutorGroupsMatchWithStudentGroups =
-            groups.All(dto => sessionData.matchingInitData.groupRecords.Contains(dto)) &&
-            sessionData.matchingInitData.groupRecords.All(dto => groups.Contains(dto))
+                groups.All(dto => sessionData.matchingInitData.groupRecords.Contains(dto)) &&
+                sessionData.matchingInitData.groupRecords.All(dto => groups.Contains(dto))
             ;
-        
-        if(!tutorGroupsMatchWithStudentGroups)
+
+        if (!tutorGroupsMatchWithStudentGroups)
         {
             throw new InputDataException("Tutor groups does`t match with student groups!");
         }
+
+        var tutors = tutorsParsingService.tryToParseTutorsData(package);
         
-        var tutors =  tutorsParsingService.tryToParseTutorsData(package);
+      
+        var dublicatedTutors = tutors.GroupBy(x => x.nameAbbreviation)
+            .Where(g => g.Count() > 1)
+            .ToDictionary(x => x.Key, y => y.Count())
+            .Where(pair =>pair.Value>0 ).ToList();
+        if (dublicatedTutors.Count > 0)
+        {
+            throw new InputDataException("There are dublicates in tutors list!");
+        }
+        
+        var existing_tutors = tutorRepository.GetAllTutors().ToList();
+
+        tutors.ToList().ForEach(tutorDto =>
+        {
+            if (!existing_tutors.Any(tutor => tutor.NameAbbreviation.Equals(tutorDto.nameAbbreviation)))
+            {
+                throw new InputDataException("Tutor with name" + tutorDto.nameAbbreviation + " does`t not exist!");
+            }
+        });
+
         sessionData.matchingInitData.tutorRecords = tutors;
-        
+
         HttpContext.Session.Set("Data", sessionData);
-        logger.LogInformation("INFO: Tutors data upload for file {} was successful. Session context was updated",data.FileName);
-        return new JsonResult( tutors);
+        logger.LogInformation("INFO: Tutors data upload for file {} was successful. Session context was updated",
+            data.FileName);
+        return new JsonResult(tutors);
     }
-   
+
     // шаг 3
     [Route("api/[controller]/create_matching")]
     [HttpPost]
@@ -105,14 +134,15 @@ public class MatchingInitializationController : ControllerBase
         var sessionData = HttpContext.Session.Get<SessionData>("Data");
         sessionData.matchingInitData.matching = data.matching;
         HttpContext.Session.Set("Data", sessionData);
-        var currentMatchingInitData = sessionData .matchingInitData;
+        var currentMatchingInitData = sessionData.matchingInitData;
         currentMatchingInitData.matching = data.matching;
-        
-       var updatedData = matchingInitializationService.createMatching(currentMatchingInitData,sessionData.User.UserId);
-       HttpContext.Session.Set("Data", updatedData);
-       return Ok();  
+
+        var updatedData =
+            matchingInitializationService.createMatching(currentMatchingInitData, sessionData.User.UserId);
+        HttpContext.Session.Set("Data", updatedData);
+        return Ok();
     }
-    
+
     //шаг 4 
     [Route("api/[controller]/student_data_report")]
     [HttpGet]
@@ -123,10 +153,11 @@ public class MatchingInitializationController : ControllerBase
 
 
         List<StudentInitDto> students = data.studentRecords;
-        var package =  documentsProcessingService.formStudentDataReport(students);
-        return File(package.GetAsByteArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Reports.xlsx");  
+        var package = documentsProcessingService.formStudentDataReport(students);
+        return File(package.GetAsByteArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "Reports.xlsx");
     }
-    
+
     [Route("api/[controller]/matching_data_sync")]
     [HttpGet]
     public IActionResult getMatchingData()
