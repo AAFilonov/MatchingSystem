@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using MatchingSystem.DataLayer.Dto.MatchingMonitoring;
 using MatchingSystem.DataLayer.Entities;
 using MatchingSystem.DataLayer.Interface;
 using MatchingSystem.DataLayer.IO.Params;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace MatchingSystem.DataLayer.Repository
 {
@@ -39,16 +41,6 @@ namespace MatchingSystem.DataLayer.Repository
             return await Connection.ExecuteScalarAsync<int>(
                 "select napp.get_TutorID(@UserID, @MatchingID)",
                 new { UserID = userId, MatchingID = matchingId }
-            );
-        }
-        
-        public IEnumerable<TutorFullDTO> GetFullInfoTutorByMatching(int matchingId)
-        {
-            return Connection.Query<TutorFullDTO>(
-                "select tut.TutorID,tut.NameAbbreviation,tut.UserID,TUT.MatchingID,TUT.IsClosed, tut.LastVisitDate,Qty from dbo_v.Tutors tut " +
-            "join CommonQuotas cq on cq.TutorID = tut.TutorID " +
-            "where QuotaStateID = 1 AND MatchingID = @MatchingID "
-                , new {@MatchingID = matchingId }
             );
         }
 
