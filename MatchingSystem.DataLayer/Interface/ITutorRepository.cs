@@ -17,8 +17,9 @@ namespace MatchingSystem.DataLayer.Interface
         IEnumerable<TutorFullDTO> GetFullInfoTutorByMatching(int matchingId);
         Task<IEnumerable<Group>> GetGroupsByTutorAsync(int tutorId);
         void SetCommonQuotasForTutors(List<TutorInitDto> tuts, int stageId);
-        IEnumerable<TutorInitDto> SetNewTutors(List<TutorInitDto> tuts, int matchingId);
-        void setNewUserRoles_Tutors(List<TutorInitDto> tuts, int matchingID);
+        IEnumerable<TutorInitDto> CreateTutors(List<TutorInitDto> tuts, int matchingId);
+         //Вынести в репозиторий ролей
+        void AssignTutorRole(List<TutorInitDto> tuts, int matchingID);
         IEnumerable<Group> GetGroupsByTutor(int tutorId);
         Task<IEnumerable<TutorChoice>> GetChoiceByTutorAsync(int tutorId);
         IEnumerable<TutorChoice> GetChoiceByTutor(int tutorId);

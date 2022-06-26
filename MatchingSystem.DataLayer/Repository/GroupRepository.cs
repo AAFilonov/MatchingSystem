@@ -23,25 +23,25 @@ public class GroupRepository :ConnectionBase, IGroupRepository
         return  Connection.Query<Group>("select groupID, GroupName from Groups");
     }
     
-    public async Task<int> SetNewGroup(string groupName,int matchingId)
+    public int CreateGroup(string groupName,int matchingId)
     {
-        return await Connection.ExecuteScalarAsync<int>(
-            "insert into Groups (GroupName,MatchingId) OUTPUT INSERTED.GroupId Values(@GroupName,@MatchingId)",
+        return Connection.ExecuteScalar<int>(
+            "insert into Groups (GroupName,MatchingID) OUTPUT INSERTED.GroupID Values(@GroupName,@MatchingId)",
             new
             {
-                GroupName = groupName
-                ,MatchingId = matchingId
+                GroupName = groupName,
+                MatchingId = matchingId
             });
     }
 
-    public void  SetNew_Tutors_Groups(List<TutorInitDto> tutors, int matchingId)
+    public void  AssignGroupsToTutors(List<TutorInitDto> tutors, int matchingId)
     {
         foreach (var tut in tutors)
         {
             foreach (var tutGroup in tut.groups)
             {
                 Connection.Execute(
-                    "insert into Tutors_Groups (TutorId,GroupId) Values(@TutorId,@GroupId)",
+                    "insert into Tutors_Groups (TutorID,GroupID) Values(@TutorId,@GroupId)",
                     new
                     {
                         TutorId = tut.TutorId

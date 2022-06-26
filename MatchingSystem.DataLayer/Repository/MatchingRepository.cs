@@ -89,15 +89,15 @@ namespace MatchingSystem.DataLayer.Repository
             return Connection.Query<MatchingInfo>("select * from napp.get_FinishedMatchings()");
         }
 
-        public int SetNewMatching(MatchingInitDto data)
+        public int CreateMatching(MatchingInitDto data)
         {
-            return  Connection.ExecuteScalar<int>("insert into Matching (MatchingName,MatchingTypeID,CreatorUserID) output INSERTED.MatchingID Values(@MatchingName,@MatchingTypeId,@CreatorUserId)"
+            var IdInsertedRecord =   Connection.ExecuteScalar<int>("insert into Matching (MatchingName,MatchingTypeID,CreatorUserID) output INSERTED.MatchingID Values(@MatchingName,@MatchingTypeId,@CreatorUserId)"
                 ,new {
-                    @MatchingName = data.name
-                    ,@MatchingTypeId = (data.typeCode=="MG")?2:1
-                    ,@CreatorUserId=2
+                    MatchingName = data.name,
+                    MatchingTypeId = (data.typeCode=="MG")?2:1,CreatorUserId=2
                 }
                 );
+            return IdInsertedRecord;
         }
 
         public  int SetNewFirstStageInMatching(int MatchingID)

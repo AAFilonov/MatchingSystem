@@ -20,7 +20,7 @@ public class TutorParsingService : ITutorsParsingService
         var worksheet = package.Workbook.Worksheets[0];
         int totalCols = worksheet.Dimension.End.Column;
         var range = worksheet.Cells[1, 1, 1, totalCols];
-        for (int i = TUTOR_GROUP_SINCE_COLUMN_INDEX; i < totalCols; i++)
+        for (int i = TUTOR_GROUP_SINCE_COLUMN_INDEX; i <= totalCols; i++)
         {
             var cell = (string)range[1, i].Value;
             dtos.Add(new GroupInitDto() { name = cell, value = false });

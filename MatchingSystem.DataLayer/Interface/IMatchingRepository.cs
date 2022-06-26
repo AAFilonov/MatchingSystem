@@ -12,8 +12,8 @@ namespace MatchingSystem.DataLayer.Interface
         void SetStageEndDate(DateTime date, int matchingId);
         Task SetNextStageAsync(int matchingId);
         void SetNextStage(int matchingId);
-        Task<int> SetNewMatching(MatchingInitDto data);
-        Task<int> SetNewFirstStageInMatching(int MatchingID);
+        Task<int> CreateMatching(MatchingInitDto data);
+        int SetNewFirstStageInMatching(int MatchingID);
         Task<IEnumerable<MatchingInfo>> GetMatchingsInfoAsync();
         IEnumerable<MatchingInfo> GetMatchingsInfo();
         Task<IEnumerable<Allocation>> GetFinalAllocationsAsync();

@@ -17,7 +17,7 @@ namespace MatchingSystem.DataLayer.Repository
         {
         }
         
-        public static string Translit(string str)
+        public static string Transliterate(string str)
         {
             string[] lat_up = {"A", "B", "V", "G", "D", "E", "Yo", "Zh", "Z", "I", "Y", "K", "L", "M", "N", "O", "P", "R", "S", "T", "U", "F", "Kh", "Ts", "Ch", "Sh", "Shch", "", "Y", "", "E", "Yu", "Ya"};
             string[] lat_low = {"a", "b", "v", "g", "d", "e", "yo", "zh", "z", "i", "y", "k", "l", "m", "n", "o", "p", "r", "s", "t", "u", "f", "kh", "ts", "ch", "sh", "shch", "", "y", "", "e", "yu", "ya"};
@@ -44,18 +44,18 @@ namespace MatchingSystem.DataLayer.Repository
           
         }
         
-        public  IEnumerable<TutorInitDto> GetTutorUsers(List<TutorInitDto> tutors)
+        public  IEnumerable<TutorInitDto> SetUserIdForTutors(List<TutorInitDto> tutors)
         {
             foreach (var tutor in tutors)
             {
                 tutor.UserId = Connection.ExecuteScalar<int>(
-                    "Select Top 1 UserId from Users where Surname+' '+Name+' '+ Patronimic=@NameAbbriviation"
+                    "Select Top 1 UserID from Users where Surname+' '+Name+' '+ Patronimic=@NameAbbriviation"
                     , new { NameAbbriviation = tutor.nameAbbreviation }
                 );
                 if (tutor.UserId == 0)
                 {
                     tutor.UserId = Connection.ExecuteScalar<int>(
-                        "Select top 1 UserId from Users where Surname+' '+left(Name,1)+'. '+ left(Patronimic,1)+'.'=@NameAbbriviation"
+                        "Select top 1 UserID from Users where Surname+' '+left(Name,1)+'. '+ left(Patronimic,1)+'.'=@NameAbbriviation"
                         , new { NameAbbriviation = tutor.nameAbbreviation }
                     );  
                 }
@@ -64,10 +64,10 @@ namespace MatchingSystem.DataLayer.Repository
 
         }
 
-        public async void SetUser_Role(int userId,int matchingId)
+        public  void AssignRoleForUser(int userId,int matchingId)
         {
-            await Connection.ExecuteAsync(
-                "insert Users_Roles (UserId,RoleId,MatchingId) VALUES(@UserId,@RoleId,@MatchingId)"
+            Connection.Execute(
+                "insert into Users_Roles (UserID,RoleID,MatchingID) VALUES(@UserId,@RoleId,@MatchingId)"
                 , new
                 {
                     UserId = userId, RoleId = 3, MatchingId = matchingId
@@ -76,19 +76,19 @@ namespace MatchingSystem.DataLayer.Repository
         }
 
 
-        public List<StudentInitDto> SetNewUsersForStudents(List<StudentInitDto> users)
+        public List<StudentInitDto> CreateUsersForStudents(List<StudentInitDto> users)
         {
             foreach (var user in users)
             {
                 user.UserId =Connection.ExecuteScalar<int>(
-                    "insert Users (Login,PasswordHash,Name,Surname,Patronimic) OUTPUT INSERTED.UserId Values(@Login,@Password,@Name,@Surname,@Patronimic)",
+                    "insert into Users (Login,PasswordHash,Name,Surname,Patronimic) OUTPUT INSERTED.UserID Values(@Login,@Password,@Name,@Surname,@Patronimic)",
                     new
                     {
                         Name = user.firstName
                         ,Surname = user.lastName
                         ,Patronimic = user.middleName
                         ,Password = "$s2$16384$8$1$DJBTMOcK+VGXFk8BTUvWYNr7PZE4Cx0l2OdvbWA4/TA=$R7TZahOx+lmeP+B8FiLe6IQzQJ/mSVYQa+7M57kvcOs="//user.password
-                        ,Login = Translit(user.lastName + user.firstName.Substring(0, 1) +
+                        ,Login = Transliterate(user.lastName + user.firstName.Substring(0, 1) +
                                          ((user.middleName != null) ? user.middleName.Substring(0, 1) : ""))
                     });
             }

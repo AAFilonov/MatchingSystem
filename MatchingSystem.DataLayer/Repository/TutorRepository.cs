@@ -68,7 +68,7 @@ namespace MatchingSystem.DataLayer.Repository
             );
         }
 
-        public void setNewUserRoles_Tutors(List<TutorInitDto> tuts,int matchingID)
+        public void AssignTutorRole(List<TutorInitDto> tuts,int matchingID)
         {
             foreach (var tut in tuts)
             {
@@ -83,7 +83,7 @@ namespace MatchingSystem.DataLayer.Repository
             }
         }
         
-        public IEnumerable<TutorInitDto> SetNewTutors(List<TutorInitDto> tuts,int matchingId)
+        public IEnumerable<TutorInitDto> CreateTutors(List<TutorInitDto> tuts,int matchingId)
         {
             foreach (var tut in tuts)
             {

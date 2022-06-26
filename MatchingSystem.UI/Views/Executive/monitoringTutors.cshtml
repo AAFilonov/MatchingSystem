@@ -82,10 +82,19 @@
                         </v-text-field>
 
                         <v-text-field
+                            v-if="projectToView.quota!=null"
                             :label="'Квота'"
                             v-model="projectToView.quota"
                             readonly>
                         </v-text-field>
+                        <v-text-field
+                            v-else
+                            :label="'Квота'"
+                            value="Не важно"
+                            readonly>
+                        </v-text-field>
+                     
+                        
 
                         <v-text-field
                             :label="'Технологии'"

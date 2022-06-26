@@ -25,30 +25,21 @@ public class MatchingInitializationController : ControllerBase
     private readonly IStudentsParsingService studentsParsingService;
     private readonly IMatchingInitializationService matchingInitializationService;
     private readonly ILogger<MatchingInitializationController> logger;
+    private readonly  IDocumentsProcessingService documentsProcessingService;
 
 
-    public MatchingInitializationController(ITutorService tutorService, ILogger<MatchingInitializationController> logger, IMatchingInitializationService matchingInitializationService, ITutorsParsingService tutorsParsingService, IStudentsParsingService studentsParsingService)
+    public MatchingInitializationController(ITutorService tutorService, ILogger<MatchingInitializationController> logger, IMatchingInitializationService matchingInitializationService, ITutorsParsingService tutorsParsingService, IStudentsParsingService studentsParsingService, IDocumentsProcessingService documentsProcessingService)
     {
         this.tutorService = tutorService;
         this.logger = logger;
         this.matchingInitializationService = matchingInitializationService;
         this.tutorsParsingService = tutorsParsingService;
         this.studentsParsingService = studentsParsingService;
+        this.documentsProcessingService = documentsProcessingService;
     }
 
-    [Route("api/[controller]/create_matching")]
-    [HttpPost]
-    public IActionResult createNewMatching([FromBody] MatchingInitData data)
-    {
-        var sessionData = HttpContext.Session.Get<SessionData>("Data"); 
-        var currentMatchingInitData = sessionData .matchingInitData;
-        currentMatchingInitData.matching = data.matching;
-        
-        matchingInitializationService.createMatching(currentMatchingInitData,sessionData.User.UserId);
-        //TODO создать новое распределение и перейти в личный кабинет по нему             
-        return Ok();  
-    }
-
+   
+     // шаг 1
     [Route("api/[controller]/upload_students_data")]
     [HttpPost]  
     public async Task<IActionResult> uploadStudentsDataAsync(IFormCollection files)
@@ -73,6 +64,7 @@ public class MatchingInitializationController : ControllerBase
         return new JsonResult( students);
     }
     
+    // шаг 2
     [Route("api/[controller]/upload_tutors_data")]
     [HttpPost]
     public async Task<IActionResult> uploadTutorDataAsync(IFormCollection files)
@@ -88,7 +80,9 @@ public class MatchingInitializationController : ControllerBase
         ExcelPackage package = new ExcelPackage(memoryStream);
         var groups = tutorsParsingService.parseTutorGroupData(package);
         bool tutorGroupsMatchWithStudentGroups =
-            groups.All(dto => sessionData.matchingInitData.groupRecords.Contains(dto));
+            groups.All(dto => sessionData.matchingInitData.groupRecords.Contains(dto)) &&
+            sessionData.matchingInitData.groupRecords.All(dto => groups.Contains(dto))
+            ;
         
         if(!tutorGroupsMatchWithStudentGroups)
         {
@@ -102,29 +96,37 @@ public class MatchingInitializationController : ControllerBase
         logger.LogInformation("INFO: Tutors data upload for file {} was successful. Session context was updated",data.FileName);
         return new JsonResult( tutors);
     }
-    
-    [Route("api/[controller]/get_tutors")]
-    [HttpGet]
-    public IActionResult getTutors()
+   
+    // шаг 3
+    [Route("api/[controller]/create_matching")]
+    [HttpPost]
+    public IActionResult createNewMatching([FromBody] MatchingInitData data)
     {
-      
         var sessionData = HttpContext.Session.Get<SessionData>("Data");
-
-        var tutorDtos = sessionData.matchingInitData.tutorRecords;
-        if (tutorDtos == null)
-        {
-            tutorDtos = tutorService.GetAllTutors();
-            if (sessionData.matchingInitData.groupRecords != null)
-                tutorDtos.ToList().ForEach(dto => dto.groups = sessionData.matchingInitData.groupRecords);
-        }
-
-        TutorsResponce responce = new TutorsResponce();
-        responce.tutors = tutorDtos;
+        sessionData.matchingInitData.matching = data.matching;
+        HttpContext.Session.Set("Data", sessionData);
+        var currentMatchingInitData = sessionData .matchingInitData;
+        currentMatchingInitData.matching = data.matching;
         
-        
-        return new JsonResult(responce);
+       var updatedData = matchingInitializationService.createMatching(currentMatchingInitData,sessionData.User.UserId);
+       HttpContext.Session.Set("Data", updatedData);
+       return Ok();  
     }
+    
+    //шаг 4 
+    [Route("api/[controller]/student_data_report")]
+    [HttpGet]
+    public FileResult getStudentDataReport()
+    {
+        var sessionData = HttpContext.Session.Get<SessionData>("Data");
+        var data = sessionData.matchingInitData;
 
+
+        List<StudentInitDto> students = data.studentRecords;
+        var package =  documentsProcessingService.formStudentDataReport(students);
+        return File(package.GetAsByteArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Reports.xlsx");  
+    }
+    
     [Route("api/[controller]/matching_data_sync")]
     [HttpGet]
     public IActionResult getMatchingData()
@@ -132,18 +134,5 @@ public class MatchingInitializationController : ControllerBase
         var sessionData = HttpContext.Session.Get<SessionData>("Data");
         var data = sessionData.matchingInitData;
         return new JsonResult(data);
-    }
-    [Route("api/[controller]/matching_data_sync")]
-    [HttpPost]
-    public IActionResult postMatchingData()
-    {
-        var sessionData = HttpContext.Session.Get<SessionData>("Data");
-        var data = sessionData.matchingInitData;
-        return new JsonResult(data);
-    }
-    
-    public class TutorsResponce
-    {
-        public IEnumerable<TutorInitDto> tutors { get; set; }
     }
 }
