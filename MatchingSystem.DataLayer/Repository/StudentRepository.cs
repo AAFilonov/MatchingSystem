@@ -183,12 +183,12 @@ namespace MatchingSystem.DataLayer.Repository
             );
         }
 
-        public void setNewUserRoles_Students(List<StudentInitDto> studs,int matchingID)
+        public void CreateUserRoles_Students(List<StudentInitDto> studs,int matchingID)
         {
             foreach (var stud in studs)
             {
                 Connection.ExecuteAsync(
-                    "insert Users_Roles (UserID,RoleID,MatchingID,StudentID) VALUES (@UserID,@RoleID,@MatchingID,@StudentID)", new
+                    "insert into  Users_Roles (UserID,RoleID,MatchingID,StudentID) VALUES (@UserID,@RoleID,@MatchingID,@StudentID)", new
                     {
                         UserID = stud.UserId
                         ,RoleID = 2
@@ -198,12 +198,12 @@ namespace MatchingSystem.DataLayer.Repository
             }
         }
         
-        public IEnumerable<StudentInitDto> SetNewStudents(List<StudentInitDto> studs,int matchingId)
+        public IEnumerable<StudentInitDto> CreateStudents(List<StudentInitDto> studs,int matchingId)
         {
             foreach (var stud in studs)
             {
                 stud.StudentId = Connection.ExecuteScalar<int>(
-                    "insert Students (GroupID,MatchingID) OUTPUT INSERTED.StudentId VALUES (@GroupID,@MatchingID)", new
+                    "insert into Students (GroupID,MatchingID) OUTPUT INSERTED.StudentID VALUES (@GroupID,@MatchingID)", new
                     {
                         GroupID = stud.GroupId,
                         MatchingID = matchingId

@@ -8,7 +8,7 @@ namespace MatchingSystem.DataLayer.Interface
 {
     public interface IGroupRepository
     {
-       Task<int> SetNewGroup(string groupName, int matchingId);
-      void SetNew_Tutors_Groups(List<TutorInitDto> tutors, int matchingId);
+       int CreateGroup(string groupName, int matchingId);
+      void AssignGroupsToTutors(List<TutorInitDto> tutors, int matchingId);
     }
 }

@@ -140,7 +140,7 @@
                             <div class="card-header">
                                 <h5>Новое распределение</h5>
                             </div>
-                            <form class="card-body" id="matchingForm">
+                            <div class="card-body" id="matchingForm">
                                 <div class="form-group">
                                     <label for="name">Название</label>
                                     <input type="text"
@@ -171,7 +171,7 @@
                                         v-on:click="postMatchingData">
                                     <span>Готово</span>
                                 </button>
-                            </form>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -184,12 +184,27 @@
 
 
 <script>
+function getCurrentDate() {
+    var today = new Date();
+    var minutes = String(today.getMinutes()).padStart(2, '0');
+    var hours = String(today.getHours()).padStart(2, '0');
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+    
+    return hours+'_'+ minutes+'_'+mm + '_' + dd + '_' + yyyy;
+}
 let app = new Vue({
   el: '#app',
   data (){
       return {
           matchingData:{
-              matching:{},
+              matching:
+                {
+                    name:"",
+                    typeCode:"",
+                    startDate:"",
+                },
               studentRecords:[], 
               groupRecords:[], 
               tutorRecords:[], 
@@ -217,26 +232,8 @@ let app = new Vue({
               this.matchingData =  response.data;            
           });
      },
-     postMatchingData(){
-           axios.post( `${params.basePath}/api/matchingInitialization/create_matching`,
-             this.matchingData,{
-               headers: {
-                   'Content-Type': 'application/json'
-               }
-             }
-           )
-           .then(function(response){
-             window.location.href="../executive/admin"
-             DisplayNotification('Запрос на создание распределения отправлен!');
-             
-           })
-           .catch(function(reason){
-              DisplayNotification('Ошибка при создании распределения','error' );
-           });
-       },
      onStudentsFileChange(event){
-          this.studentFile = event.target.files;  
-        
+          this.studentFile = event.target.files;        
           axios.post( `${params.basePath}/api/matchingInitialization/upload_students_data`,
             this.studentFile,{
               headers: {
@@ -277,7 +274,41 @@ let app = new Vue({
          else{
              DisplayNotification('Ошибка при загрузке данных','error' );
          }       
-      },    
+     }, 
+     postMatchingData(){
+        if (this.matchingData.matching.name ==="" ||this.matchingData.matching.typeCode ==="" ||this.matchingData.matching.startDate ==="" )
+            return;
+        axios.post( `${params.basePath}/api/matchingInitialization/create_matching`,
+          this.matchingData,{
+            headers: {
+                'Content-Type': 'application/json'
+            }
+          }
+        )
+        .then(response =>{         
+          this.exportStudents();
+          //window.location.href="../executive/admin"
+          DisplayNotification('Запрос на создание распределения отправлен!');
+          
+        })
+        .catch(function(reason){
+           DisplayNotification('Ошибка при создании распределения','error' );
+        });
+     },
+     async exportStudents(){
+        axios.get(`${params.basePath}/api/matchingInitialization/student_data_report`,{ responseType: 'blob'})                                                                      
+            .then(response => {
+                this.matchingData =  response.data; 
+                console.log(response.data);
+                const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }) ;
+                const link = document.createElement('a') ;
+                link.href = URL.createObjectURL(blob) ;
+                var today = getCurrentDate();
+                link.download = "students_"+today+".xlsx" ;
+                link.click();
+                URL.revokeObjectURL(link.href);
+        });
+     },   
   }
 })
 </script>

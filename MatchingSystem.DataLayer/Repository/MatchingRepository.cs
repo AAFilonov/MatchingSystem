@@ -89,9 +89,9 @@ namespace MatchingSystem.DataLayer.Repository
             return Connection.Query<MatchingInfo>("select * from napp.get_FinishedMatchings()");
         }
 
-        public async Task<int> SetNewMatching(MatchingInitDto data)
+        public async Task<int> CreateMatching(MatchingInitDto data)
         {
-            var IdInsertedRecord = Connection.ExecuteScalarAsync<int>("insert matching (MatchingName,MatchingTypeId,CreatorUserId) output INSERTED.MatchingID Values(@MatchingName,@MatchingTypeId,@CreatorUserId)"
+            var IdInsertedRecord = Connection.ExecuteScalarAsync<int>("insert into dbo.Matching (MatchingName,MatchingTypeID,CreatorUserID) output INSERTED.MatchingID Values(@MatchingName,@MatchingTypeId,@CreatorUserId)"
                 ,new {
                     MatchingName = data.name
                     ,MatchingTypeId = (data.typeCode=="MG")?2:1
@@ -101,14 +101,14 @@ namespace MatchingSystem.DataLayer.Repository
             return await IdInsertedRecord;
         }
 
-        public async Task<int> SetNewFirstStageInMatching(int MatchingID)
+        public int SetNewFirstStageInMatching(int MatchingID)
         {
-            var IdInsertedRecord = Connection.ExecuteScalarAsync<int>("insert into Stages(StageTypeID,StartDate,EndPlanDate,IsCurrent,MatchingID) OUTPUT INSERTED.StageID VALUES(1,getdate(),DATEADD(HOUR,1,getdate()),1,@MatchingId)"
+            var IdInsertedRecord = Connection.ExecuteScalar<int>("insert into Stages(StageTypeID,StartDate,EndPlanDate,IsCurrent,MatchingID) OUTPUT INSERTED.StageID VALUES(1,getdate(),DATEADD(HOUR,1,getdate()),1,@MatchingID)"
                 ,new {
-                    MatchingId = MatchingID
+                    MatchingID = MatchingID
                 }
             );
-            return await IdInsertedRecord;
+            return IdInsertedRecord;
         }
         
         public async Task<IEnumerable<MatchingInfo>> GetMatchingsInfoAsync()
