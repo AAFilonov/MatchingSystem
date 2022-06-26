@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
@@ -59,12 +60,12 @@ namespace MatchingSystem.DataLayer.Repository
             );
         }
 
-        public void setNewUserRoles_Tutors(List<TutorInitDto> tuts,int matchingID)
+        public void AssignTutorRole(List<TutorInitDto> tuts,int matchingID)
         {
             foreach (var tut in tuts)
             {
-                Connection.ExecuteAsync(
-                    "insert Users_Roles (UserID,RoleID,MatchingID,TutorID) VALUES (@UserID,@RoleID,@MatchingID,@TutorID)", new
+                Connection.Execute(
+                    "insert into Users_Roles (UserID,RoleID,MatchingID,TutorID) VALUES (@UserID,@RoleID,@MatchingID,@TutorID)", new
                     {
                         UserID = tut.UserId
                         ,RoleID = 1
@@ -74,12 +75,12 @@ namespace MatchingSystem.DataLayer.Repository
             }
         }
         
-        public IEnumerable<TutorInitDto> SetNewTutors(List<TutorInitDto> tuts,int matchingId)
+        public IEnumerable<TutorInitDto> CreateTutors(List<TutorInitDto> tuts,int matchingId)
         {
             foreach (var tut in tuts)
             {
                 tut.TutorId = Connection.ExecuteScalar<int>(
-                    "insert Tutors (MatchingID) OUTPUT INSERTED.TutorID VALUES (@MatchingID)", new
+                    "insert into Tutors (MatchingID) OUTPUT INSERTED.TutorID VALUES (@MatchingID)", new
                     {
                         MatchingID = matchingId
                     });
@@ -91,14 +92,13 @@ namespace MatchingSystem.DataLayer.Repository
         {
             foreach (var tut in tuts)
             {
-                Connection.ExecuteAsync("INSERT CommonQuotas (TutorID,Qty,CreateDate,QuotaStateId,QuotaStateId,StageId) " +
-                                        "VALUES(@TutorID,@Qty,@CreateDate,@QuotaStateId,@StageId)"
+
+                Connection.Execute("INSERT INTO CommonQuotas(TutorID,Qty,CreateDate,QuotaStateID,StageID) VALUES(@TutorID,@Qty,getdate(),1,@StageId)"
                     , new { 
                         TutorID = tut.TutorId
-                        ,Qty = tut.quota
-                        ,CreateDate = "GETDATE()"
-                        ,QuotaStateId = 1
-                        ,StageId = stageId
+                        ,@Qty = tut.quota
+                        ,@StageId = stageId
+
                     });   
             }
         }

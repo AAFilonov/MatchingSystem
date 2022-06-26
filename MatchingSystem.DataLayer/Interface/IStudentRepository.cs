@@ -17,8 +17,8 @@ namespace MatchingSystem.DataLayer.Interface
         IEnumerable<StudentPreferences> GetStudentAvailablePreferencesByMatching(int matchingId);
         Task<int> GetStudentIdAsync(int userId, int matchingId);
         int GetStudentId(int userId, int matchingId);
-        void setNewUserRoles_Students(List<StudentInitDto> studs, int matchingID);
-        IEnumerable<StudentInitDto> SetNewStudents(List<StudentInitDto> users,int matchingId);
+        void CreateUserRoles_Students(List<StudentInitDto> studs, int matchingID);
+        IEnumerable<StudentInitDto> CreateStudents(List<StudentInitDto> users,int matchingId);
         Task<IEnumerable<Technology>> GetTechnologiesSelectedByStudentAsync(int studentId);
         IEnumerable<Technology> GetTechnologiesSelectedByStudent(int studentId);
         Task<IEnumerable<WorkDirection>> GetWorkDirectionsSelectedByStudentAsync(int studentId);

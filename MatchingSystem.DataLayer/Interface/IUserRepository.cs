@@ -11,10 +11,10 @@ namespace MatchingSystem.DataLayer.Interface
         User GetUser(string login);
         int GetUserIdByLogin(string login);
         string GetPasswordHashByLogin(string login);
-        IEnumerable<TutorInitDto> GetTutorUsers(List<TutorInitDto> tutors);
+        IEnumerable<TutorInitDto> SetUserIdForTutors(List<TutorInitDto> tutors);
 
-        void SetUser_Role(int userId, int matchingId);
-        List<StudentInitDto> SetNewUsersForStudents(List<StudentInitDto> users);
+        void AssignRoleForUser(int userId, int matchingId);
+        List<StudentInitDto> CreateUsersForStudents(List<StudentInitDto> users);
         IEnumerable<RoleMatching> GetAllRoles(int userId);
         void UpdatePasswordHash(int userId, string newHash);
         void SetLastVisitDate(int userId, string role, int projectId);
