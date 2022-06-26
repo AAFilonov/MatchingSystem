@@ -137,7 +137,7 @@ public class MonitoringService : IMonitoringService
                         {
                             projectId = 11,
                             projectName = "Проект Лагерева 1",
-                            quota = 2,
+                            quota = null,
                             info = "Проект об разработке на C#",
                             availableGroupsNameList = "19-ИВТ-1, 19-ИВТ-2",
                             technologiesNameList = "С#, SQL",
@@ -150,7 +150,7 @@ public class MonitoringService : IMonitoringService
                         {
                             projectId = 12,
                             projectName = "Проект Лагерева 2",
-                            quota = 2,
+                            quota = null,
                             info = "Проект об разработке на C#",
                             availableGroupsNameList = "19-ИВТ-1, 19-ИВТ-2",
                             technologiesNameList = "С#, SQL",

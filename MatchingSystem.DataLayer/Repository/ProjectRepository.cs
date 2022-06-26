@@ -101,7 +101,7 @@ namespace MatchingSystem.DataLayer.Repository
             foreach (var tut in tutors)
             {
                 tut.DefaultProjectId = Connection.ExecuteScalar<int>(
-                    "insert Projects (ProjectName,TutorId,IsClosed,IsDefault,MatchingID,CreateDate) OUTPUT INSERTED.ProjectID VALUES (@ProjectName,@TutorId,@IsClosed,@IsDefault,@MatchingID,GETDATE())"
+                    "insert into Projects (ProjectName,TutorID,IsClosed,IsDefault,MatchingID,CreateDate) OUTPUT INSERTED.ProjectID VALUES (@ProjectName,@TutorId,@IsClosed,@IsDefault,@MatchingID,GETDATE())"
                     , new
                     {
                         ProjectName = "Записаться к преподавателю"
@@ -122,7 +122,7 @@ namespace MatchingSystem.DataLayer.Repository
                 foreach (var tutGroup in tut.groups)
                 {
                     Connection.Execute(
-                        "insert Projects_Groups (ProjectId,GroupId) OUTPUT INSERTED.ProjectId VALUES (@ProjectId,@GroupId)", new
+                        "insert into Projects_Groups (ProjectID,GroupID) OUTPUT INSERTED.ProjectID VALUES (@ProjectId,@GroupId)", new
                         {
                             @ProjectId = tut.DefaultProjectId
                             ,@GroupId = tutGroup.groupId
