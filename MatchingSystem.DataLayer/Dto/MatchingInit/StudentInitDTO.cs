@@ -19,6 +19,8 @@ public class StudentInitDto
     public string firstName { get; set; }
     public string middleName { get; set; }
     public string lastName { get; set; }
+    
+    public string login { get; set; }
     public string password { get; set; }
     public int UserId { get; set; }
     public int StudentId { get; set; }

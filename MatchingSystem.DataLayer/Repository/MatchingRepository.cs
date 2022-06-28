@@ -91,13 +91,11 @@ namespace MatchingSystem.DataLayer.Repository
 
         public int CreateMatching(MatchingInitDto data)
         {
-            var IdInsertedRecord =   Connection.ExecuteScalar<int>("insert into Matching (MatchingName,MatchingTypeID,CreatorUserID) output INSERTED.MatchingID Values(@MatchingName,@MatchingTypeId,@CreatorUserId)"
+            return Connection.ExecuteScalar<int>("insert into Matching (MatchingName,MatchingTypeID,CreatorUserID) output INSERTED.MatchingID Values(@MatchingName,@MatchingTypeId,@CreatorUserId)"
                 ,new {
                     MatchingName = data.name,
                     MatchingTypeId = (data.typeCode=="MG")?2:1,CreatorUserId=2
-                }
-                );
-            return IdInsertedRecord;
+                });
         }
 
         public  int SetNewFirstStageInMatching(int MatchingID)

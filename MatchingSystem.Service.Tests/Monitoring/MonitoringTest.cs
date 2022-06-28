@@ -1,3 +1,4 @@
+using System;
 using MatchingSystem.DataLayer.Entities;
 using MatchingSystem.DataLayer.Interface;
 using MatchingSystem.DataLayer.Repository;
@@ -11,51 +12,29 @@ namespace MatchingSystem.Service.Tests.Monitoring;
 [TestFixture]
 public class MonitoringTest
 {
-    private StatisticsService service;
+    private IMonitoringService monitoringService;
     
     [SetUp]
     public void Setup()
     {
-        IStatisticsRepository repository = Substitute.For<IStatisticsRepository>();
-        var st = new StatisticsMain();
-        st.StatName = "ололол!";
-        repository.GetStatisticsGroups(4).Returns(new StatisticsMain[] { st});
-         service = new StatisticsService(repository);
-    }
-    
-    
-    [Test]
-    public void  testXXX_whenConditionXXX_ThenXXX()
-    {
-        
-        MonitoringService service = new MonitoringService();
+        var connString = "data source=localhost\\SQLEXPRESS;initial catalog=DiplomaMatching;Integrated Security=True;MultipleActiveResultSets=True;";
 
-        var result =  service.getMonitoringData(4);
-        
-        Assert.AreEqual("Все хорошл ", result.ToString());
-        
-    }
-    [Test]
-    public void testStatisic()
-    {
-    
-      
+      //  IStudentRepository studentRepository = Substitute.For<IStatisticsRepository>();
+        IStudentRepository studentRepository = new StudentRepository(connString);
+        IProjectRepository projectRepository = new ProjectRepository(connString);
+        ITutorRepository tutorRepository = new TutorRepository(connString);
+        IGroupRepository groupRepository = new GroupRepository(connString);
 
-        var result =  service.GetStatisticsGroups(4);
-    
-        Assert.AreEqual("Все хорошл ", result.ToString());
-        
+
+        monitoringService = new MonitoringService(studentRepository,tutorRepository,projectRepository,groupRepository);
     }
     
     [Test]
-    public void testStatisicMock()
+    public void testStatisicRealBD()
     {
-        StatisticsRepository repository = new StatisticsRepository("data source=localhost\\SQLEXPRESS;initial catalog=DiplomaMatching;Integrated Security=True;MultipleActiveResultSets=True;");
-        StatisticsService service = new StatisticsService(repository);
-
-        var result =  service.GetStatisticsGroups(4);
-        
-        Assert.AreEqual("Все хорошл ", result.ToString());
+        var result =  monitoringService.getMonitoringData(1);
+        Console.WriteLine(result.ToString());
+        Assert.AreEqual("", result.ToString());
         
     }
 }

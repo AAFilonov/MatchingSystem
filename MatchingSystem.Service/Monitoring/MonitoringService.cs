@@ -29,32 +29,32 @@ public class MonitoringService : IMonitoringService
         this.projectRepository = projectRepository;
         this.groupRepository = groupRepository;
     }
-
+    //слишком много аргументов
     List<StudentMonitoringDto> getMonitoringDataStudents(
         IEnumerable<Group> useGroups
-        ,IEnumerable<DataLayer.Entities.Student> useStuds
-        ,IEnumerable<StudentPreferences> usePrefs
-        ,IEnumerable<Project> useProjs
-        ,IEnumerable<ProjectGroupDTO> projsGroups
+        ,IEnumerable<DataLayer.Entities.Student> students
+        ,IEnumerable<StudentPreferences> studentPreferences
+        ,IEnumerable<Project> projects
+        ,IEnumerable<ProjectGroupDTO> projectGroups
         ,IEnumerable<TutorChoice> tutorsChoices
-        ,IEnumerable<TutorFullDTO> useTuts
+        ,IEnumerable<TutorFullDTO> tutors
         )
     {
-        List<ProjectMonitoringDto> AssignedStudent = new List<ProjectMonitoringDto>();
+        List<ProjectMonitoringDto> assignedStudent = new List<ProjectMonitoringDto>();
         foreach (var tutorChoice in tutorsChoices)
         {
-            foreach (var stud in useStuds.Where(x => x.StudentID == tutorChoice.StudentID))
+            foreach (var stud in students.Where(x => x.StudentID == tutorChoice.StudentID))
             {
-                foreach (var proj in useProjs.Where(x => x.ProjectID == tutorChoice.ProjectID))
+                foreach (var proj in projects.Where(x => x.ProjectID == tutorChoice.ProjectID))
                 {
-                    foreach (var pref in usePrefs.Where(x => x.StudentID == tutorChoice.StudentID && proj.ProjectID == tutorChoice.ProjectID))
+                    foreach (var pref in studentPreferences.Where(x => x.StudentID == tutorChoice.StudentID && proj.ProjectID == tutorChoice.ProjectID))
                     {
                         var tutchoice = tutorsChoices.Where(x => x.StudentID == stud.StudentID
                                                                  &&
                                                                  x.ProjectID == proj.ProjectID
                         );
-                        var tutor = useTuts.Where(x => x.TutorID == proj.TutorID).FirstOrDefault();
-                        AssignedStudent.Add( new ProjectMonitoringDto()
+                        var tutor = tutors.Where(x => x.TutorID == proj.TutorID).FirstOrDefault();
+                        assignedStudent.Add( new ProjectMonitoringDto()
                         {
                             assignmentStudentId = stud.StudentID.Value,
                             projectId = proj.ProjectID.Value,
@@ -75,14 +75,14 @@ public class MonitoringService : IMonitoringService
         var studs = new List<StudentMonitoringDto>();
         foreach (var group in useGroups)
         {
-            foreach (var student in useStuds.Where(x => x.GroupID == group.GroupID))
+            foreach (var student in students.Where(x => x.GroupID == group.GroupID))
             {
                 var studPrefs = new List<ProjectMonitoringDto>();
-                foreach (var pref in usePrefs.Where(x => x.StudentID == student.StudentID))
+                foreach (var pref in studentPreferences.Where(x => x.StudentID == student.StudentID))
                 {
-                    foreach (var proj in useProjs.Where(x => x.ProjectID == pref.ProjectID))
+                    foreach (var proj in projects.Where(x => x.ProjectID == pref.ProjectID))
                     {
-                        var tutor = useTuts.Where(x => x.TutorID == proj.TutorID).FirstOrDefault();
+                        var tutor = tutors.Where(x => x.TutorID == proj.TutorID).FirstOrDefault();
                         var tutchoice = tutorsChoices.Where(x => x.StudentID == pref.StudentID
                                                                  &&
                                                                  x.ProjectID == proj.ProjectID
@@ -106,11 +106,10 @@ public class MonitoringService : IMonitoringService
                 
                 studs.Add(new()
                 {
-                    nameAbbreviation = student.Surname + ". " + student.Name.Substring(0, 1) + ". " +
-                                       student.Patronimic.Substring(0, 1) + ". ",
+                    nameAbbreviation = student.NameAbbreviation,
                     groupName = group.GroupName, orderInTutorPrefs = null,
                     preferences = studPrefs,
-                    assignedProject = AssignedStudent.Where(x=>x.assignmentStudentId == student.StudentID).FirstOrDefault()
+                    assignedProject = assignedStudent.Where(x=>x.assignmentStudentId == student.StudentID).FirstOrDefault()
                 });
             }
         }
@@ -120,13 +119,13 @@ public class MonitoringService : IMonitoringService
     
     public MatchingMonitoringData getMonitoringData(int matchingId)
     {
-        var usePrefs = studentRepository.GetStudentPreferencesByMatching(matchingId);
-        var useStuds = studentRepository.GetStudentsByMatching(matchingId);
-        var useGroups = groupRepository.getGroupsByMatching(matchingId).Result
-           .Where(x=>useStuds.Result.Select(x=>x.GroupID).Contains(x.GroupID));
-        var useProjs = projectRepository.GetProjectsByMatching(matchingId)
-            .Where(x=>usePrefs.Select(x=>x.ProjectID).Contains(x.ProjectID));
-        var useTuts = tutorRepository.GetFullInfoTutorByMatching(matchingId).Where(x=>useProjs.Select(x=>x.TutorID).Contains(x.TutorID));
+        var studentPreferences = studentRepository.GetStudentPreferencesByMatching(matchingId);
+        var students = studentRepository.GetStudentsByMatching(matchingId);
+        var groups = groupRepository.getGroupsByMatching(matchingId)
+           .Where(x=>students.Select(x=>x.GroupID).Contains(x.GroupID));
+        var projects = projectRepository.GetProjectsByMatching(matchingId)
+            .Where(x=>studentPreferences.Select(x=>x.ProjectID).Contains(x.ProjectID));
+        var tutors = tutorRepository.GetFullInfoTutorByMatching(matchingId).Where(x=>projects.Select(x=>x.TutorID).Contains(x.TutorID));
 
         var projsGroups = projectRepository.GetProjectsGroupsBtMatching(matchingId);
 
@@ -135,13 +134,13 @@ public class MonitoringService : IMonitoringService
         var tutorRecord = new List<TutorMonitoringDto>(); 
         
         
-        foreach(var tut in useTuts)
+        foreach(var tutorDto in tutors)
         {
             TutorMonitoringDto projMon = new TutorMonitoringDto()
             {
-                tutorId = tut.TutorID.Value,
-                nameAbbreviation = tut.NameAbbreviation,
-                quota = tut.qty.Value,
+                tutorId = tutorDto.TutorID.Value,
+                nameAbbreviation = tutorDto.NameAbbreviation,
+                quota = tutorDto.Quota.Value,
                 projects = new List<ProjectMonitoringDto>(),
                 waitingList = new List<StudentMonitoringDto>()
                     {
@@ -220,7 +219,7 @@ public class MonitoringService : IMonitoringService
                     }
             };
             
-            foreach (var proj in useProjs.Where(x=>x.TutorID == tut.TutorID))
+            foreach (var proj in projects.Where(x=>x.TutorID == tutorDto.TutorID))
             {
                 projMon.projects.Add(
                     new ProjectMonitoringDto()
@@ -241,544 +240,24 @@ public class MonitoringService : IMonitoringService
             
             tutorRecord.Add(
                 projMon
-                /*new()
-                {
-                    tutorId = tut.TutorID.Value,
-                    nameAbbreviation = tut.NameAbbreviation,
-                    quota = tut.qty.Value,
-                    projects = new()
-                    {
-                        new()
-                        {
-                            projectId = 12,
-                            projectName = "Проект Лагерева 2",
-                            quota = 2,
-                            info = "Проект об разработке на C#",
-                            availableGroupsNameList = "19-ИВТ-1, 19-ИВТ-2",
-                            technologiesNameList = "С#, SQL",
-                            workDirectionsNameList = "Разработка, Базы данных",
-                            tutorId = 1,
-                            orderInStudentPrefs = null,
-                            isActive = null
-                        },
-                    },
-                    waitingList = new List<StudentMonitoringDto>()
-                    {
-                        new()
-                        {
-                            nameAbbreviation = "Иванов И. И",
-                            groupName = "19-ИВТ-1",
-                            assignedProject = null,
-                            orderInTutorPrefs = 1,
-                            preferences = new List<ProjectMonitoringDto>()
-                            {
-                                new()
-                                {
-                                    projectId = 11,
-                                    projectName = "Проект Лагерева 1",
-                                    quota = 2,
-                                    info = "Проект об разработке на C#",
-                                    availableGroupsNameList = "19-ИВТ-1, 19-ИВТ-2",
-                                    technologiesNameList = "С#, SQL",
-                                    workDirectionsNameList = "Разработка, Базы данных",
-                                    tutorId = 1,
-                                    orderInStudentPrefs = 1,
-                                    isActive = false
-                                },
-                                new()
-                                {
-                                    projectId = 13,
-                                    projectName = "Проект Дергачева",
-                                    quota = 2,
-                                    info = "Проект об разработке на C#",
-                                    availableGroupsNameList = "19-ИВТ-1, 19-ИВТ-2",
-                                    technologiesNameList = "С#, SQL",
-                                    workDirectionsNameList = "Разработка, Базы данных",
-                                    tutorId = 2,
-                                    orderInStudentPrefs = 3,
-                                    isActive = true
-                                },
-                            }
-                        },
-                        new()
-                        {
-                            nameAbbreviation = "Петров П. П",
-                            groupName = "19-ИВТ-2",
-                            assignedProject =
-                                new()
-                                {
-                                    projectId = 12,
-                                    projectName = "Проект Подвесовского 1",
-                                    quota = 2,
-                                    info = "Проект об разработке на C#",
-                                    availableGroupsNameList = "19-ИВТ-1, 19-ИВТ-2",
-                                    technologiesNameList = "С#, SQL",
-                                    workDirectionsNameList = "Разработка, Базы данных",
-                                    tutorId = 2,
-                                    orderInStudentPrefs = 3,
-                                    isActive = true
-                                },
-                            orderInTutorPrefs = 2,
-                            preferences = new List<ProjectMonitoringDto>()
-                            {
-                                new()
-                                {
-                                    projectId = 11,
-                                    projectName = "Проект Лагерева 1",
-                                    quota = 2,
-                                    info = "Проект об разработке на C#",
-                                    availableGroupsNameList = "19-ИВТ-1, 19-ИВТ-2",
-                                    technologiesNameList = "С#, SQL",
-                                    workDirectionsNameList = "Разработка, Базы данных",
-                                    tutorId = 1,
-                                    orderInStudentPrefs = 1,
-                                    isActive = false
-                                }
-                            }
-                        }
-                    }
-                }*/
-                );
+            );
         }
         
         
         return new MatchingMonitoringData()
         {
-            studentRecords = getMonitoringDataStudents(useGroups
-                ,useStuds.Result
-                ,usePrefs
-                , useProjs
-                ,projsGroups.Result
+            studentRecords = getMonitoringDataStudents(groups
+                ,students
+                ,studentPreferences
+                , projects
+                ,projsGroups
                 ,tutorsChoices
-                ,useTuts
+                ,tutors
                 ),
-            /*
-            studentRecords = new List<StudentMonitoringDto>()
-            {
-                new()
-                {
-                    nameAbbreviation = "Иванов И. И",
-                    groupName = "19-ИВТ-1",
-                    assignedProject = null,
-                    orderInTutorPrefs = null,
-                    preferences = new List<ProjectMonitoringDto>()
-                    {
-                        new()
-                        {
-                            projectId = 11,
-                            projectName = "Проект Лагерева 1",
-                            quota = 2,
-                            info = "Проект об разработке на C#",
-                            availableGroupsNameList = "19-ИВТ-1, 19-ИВТ-2",
-                            technologiesNameList = "С#, SQL",
-                            workDirectionsNameList = "Разработка, Базы данных",
-                            tutorId = 1,
-                            orderInStudentPrefs = 1,
-                            isActive = false
-                        },
-                        new()
-                        {
-                            projectId = 12,
-                            projectName = "Проект Подвесовского 1",
-                            quota = 2,
-                            info = "Проект об разработке на C#",
-                            availableGroupsNameList = "19-ИВТ-1, 19-ИВТ-2",
-                            technologiesNameList = "С#, SQL",
-                            workDirectionsNameList = "Разработка, Базы данных",
-                            tutorId = 2,
-                            orderInStudentPrefs = 2,
-                            isActive = true
-                        },
-                        new()
-                        {
-                            projectId = 13,
-                            projectName = "Проект Дергачева",
-                            quota = 2,
-                            info = "Проект об разработке на C#",
-                            availableGroupsNameList = "19-ИВТ-1, 19-ИВТ-2",
-                            technologiesNameList = "С#, SQL",
-                            workDirectionsNameList = "Разработка, Базы данных",
-                            tutorId = 2,
-                            orderInStudentPrefs = 3,
-                            isActive = true
-                        },
-                    }
-                },
-                new()
-                {
-                    nameAbbreviation = "Петров П. П",
-                    groupName = "19-ИВТ-2",
-                    assignedProject =
-                        new()
-                        {
-                            projectId = 12,
-                            projectName = "Проект Подвесовского 1",
-                            quota = 2,
-                            info = "Проект об разработке на C#",
-                            availableGroupsNameList = "19-ИВТ-1, 19-ИВТ-2",
-                            technologiesNameList = "С#, SQL",
-                            workDirectionsNameList = "Разработка, Базы данных",
-                            tutorId = 2,
-                            orderInStudentPrefs = 3,
-                            isActive = true
-                        },
-                    orderInTutorPrefs = null,
-                    preferences = new List<ProjectMonitoringDto>()
-                    {
-                        new()
-                        {
-                            projectId = 11,
-                            projectName = "Проект Лагерева 1",
-                            quota = 2,
-                            info = "Проект об разработке на C#",
-                            availableGroupsNameList = "19-ИВТ-1, 19-ИВТ-2",
-                            technologiesNameList = "С#, SQL",
-                            workDirectionsNameList = "Разработка, Базы данных",
-                            tutorId = 1,
-                            orderInStudentPrefs = 1,
-                            isActive = false
-                        },
-                        new()
-                        {
-                            projectId = 12,
-                            projectName = "Проект Подвесовского 1",
-                            quota = 2,
-                            info = "Проект об разработке на C#",
-                            availableGroupsNameList = "19-ИВТ-1, 19-ИВТ-2",
-                            technologiesNameList = "С#, SQL",
-                            workDirectionsNameList = "Разработка, Базы данных",
-                            tutorId = 2,
-                            orderInStudentPrefs = 3,
-                            isActive = true
-                        },
-                        new()
-                        {
-                            projectId = 13,
-                            projectName = "Проект Дергачева",
-                            quota = 2,
-                            info = "Проект об разработке на C#",
-                            availableGroupsNameList = "19-ИВТ-1, 19-ИВТ-2",
-                            technologiesNameList = "С#, SQL",
-                            workDirectionsNameList = "Разработка, Базы данных",
-                            tutorId = 2,
-                            orderInStudentPrefs = 2,
-                            isActive = false
-                        },
-                    }
-                }
-            },
-            */
+           
             tutorRecords = tutorRecord
-            /*
-            tutorRecords = new List<TutorMonitoringDto>()
-            {
-                new()
-                {
-                    tutorId = 1,
-                    nameAbbreviation = "Лагерев Д.Г",
-                    quota = "3",
-                    projects = new()
-                    {
-                        new()
-                        {
-                            projectId = 11,
-                            projectName = "Проект Лагерева 1",
-                            quota = null,
-                            info = "Проект об разработке на C#",
-                            availableGroupsNameList = "19-ИВТ-1, 19-ИВТ-2",
-                            technologiesNameList = "С#, SQL",
-                            workDirectionsNameList = "Разработка, Базы данных",
-                            tutorId = 1,
-                            orderInStudentPrefs = null,
-                            isActive = null
-                        },
-                        new()
-                        {
-                            projectId = 12,
-                            projectName = "Проект Лагерева 2",
-                            quota = null,
-                            info = "Проект об разработке на C#",
-                            availableGroupsNameList = "19-ИВТ-1, 19-ИВТ-2",
-                            technologiesNameList = "С#, SQL",
-                            workDirectionsNameList = "Разработка, Базы данных",
-                            tutorId = 1,
-                            orderInStudentPrefs = null,
-                            isActive = null
-                        },
-                    },
-                    waitingList = new List<StudentMonitoringDto>()
-                    {
-                        new()
-                        {
-                            nameAbbreviation = "Иванов И. И",
-                            groupName = "19-ИВТ-1",
-                            assignedProject = null,
-                            orderInTutorPrefs = 1,
-                            preferences = new List<ProjectMonitoringDto>()
-                            {
-                                new()
-                                {
-                                    projectId = 11,
-                                    projectName = "Проект Лагерева 1",
-                                    quota = 2,
-                                    info = "Проект об разработке на C#",
-                                    availableGroupsNameList = "19-ИВТ-1, 19-ИВТ-2",
-                                    technologiesNameList = "С#, SQL",
-                                    workDirectionsNameList = "Разработка, Базы данных",
-                                    tutorId = 1,
-                                    orderInStudentPrefs = 1,
-                                    isActive = false
-                                },
-                                new()
-                                {
-                                    projectId = 12,
-                                    projectName = "Проект Подвесовского 1",
-                                    quota = 2,
-                                    info = "Проект об разработке на C#",
-                                    availableGroupsNameList = "19-ИВТ-1, 19-ИВТ-2",
-                                    technologiesNameList = "С#, SQL",
-                                    workDirectionsNameList = "Разработка, Базы данных",
-                                    tutorId = 2,
-                                    orderInStudentPrefs = 2,
-                                    isActive = true
-                                },
-                                new()
-                                {
-                                    projectId = 13,
-                                    projectName = "Проект Дергачева",
-                                    quota = 2,
-                                    info = "Проект об разработке на C#",
-                                    availableGroupsNameList = "19-ИВТ-1, 19-ИВТ-2",
-                                    technologiesNameList = "С#, SQL",
-                                    workDirectionsNameList = "Разработка, Базы данных",
-                                    tutorId = 2,
-                                    orderInStudentPrefs = 3,
-                                    isActive = true
-                                },
-                            }
-                        },
-                        new()
-                        {
-                            nameAbbreviation = "Петров П. П",
-                            groupName = "19-ИВТ-2",
-                            assignedProject =
-                                new()
-                                {
-                                    projectId = 12,
-                                    projectName = "Проект Подвесовского 1",
-                                    quota = 2,
-                                    info = "Проект об разработке на C#",
-                                    availableGroupsNameList = "19-ИВТ-1, 19-ИВТ-2",
-                                    technologiesNameList = "С#, SQL",
-                                    workDirectionsNameList = "Разработка, Базы данных",
-                                    tutorId = 2,
-                                    orderInStudentPrefs = 3,
-                                    isActive = true
-                                },
-                            orderInTutorPrefs = 2,
-                            preferences = new List<ProjectMonitoringDto>()
-                            {
-                                new()
-                                {
-                                    projectId = 11,
-                                    projectName = "Проект Лагерева 1",
-                                    quota = 2,
-                                    info = "Проект об разработке на C#",
-                                    availableGroupsNameList = "19-ИВТ-1, 19-ИВТ-2",
-                                    technologiesNameList = "С#, SQL",
-                                    workDirectionsNameList = "Разработка, Базы данных",
-                                    tutorId = 1,
-                                    orderInStudentPrefs = 1,
-                                    isActive = false
-                                },
-                                new()
-                                {
-                                    projectId = 12,
-                                    projectName = "Проект Подвесовского 1",
-                                    quota = 2,
-                                    info = "Проект об разработке на C#",
-                                    availableGroupsNameList = "19-ИВТ-1, 19-ИВТ-2",
-                                    technologiesNameList = "С#, SQL",
-                                    workDirectionsNameList = "Разработка, Базы данных",
-                                    tutorId = 2,
-                                    orderInStudentPrefs = 3,
-                                    isActive = true
-                                },
-                                new()
-                                {
-                                    projectId = 13,
-                                    projectName = "Проект Дергачева",
-                                    quota = 2,
-                                    info = "Проект об разработке на C#",
-                                    availableGroupsNameList = "19-ИВТ-1, 19-ИВТ-2",
-                                    technologiesNameList = "С#, SQL",
-                                    workDirectionsNameList = "Разработка, Базы данных",
-                                    tutorId = 2,
-                                    orderInStudentPrefs = 1,
-                                    isActive = false
-                                },
-                            }
-                        }
-                    }
-                },
-                 new()
-                {
-                    tutorId = 1,
-                    nameAbbreviation = "Лагерев Д.Г",
-                    quota = "3",
-                    projects = new()
-                    {
-                        new()
-                        {
-                            projectId = 11,
-                            projectName = "Проект Лагерева 1",
-                            quota = 2,
-                            info = "Проект об разработке на C#",
-                            availableGroupsNameList = "19-ИВТ-1, 19-ИВТ-2",
-                            technologiesNameList = "С#, SQL",
-                            workDirectionsNameList = "Разработка, Базы данных",
-                            tutorId = 1,
-                            orderInStudentPrefs = null,
-                            isActive = null
-                        },
-                        new()
-                        {
-                            projectId = 12,
-                            projectName = "Проект Лагерева 2",
-                            quota = 2,
-                            info = "Проект об разработке на C#",
-                            availableGroupsNameList = "19-ИВТ-1, 19-ИВТ-2",
-                            technologiesNameList = "С#, SQL",
-                            workDirectionsNameList = "Разработка, Базы данных",
-                            tutorId = 1,
-                            orderInStudentPrefs = null,
-                            isActive = null
-                        },
-                    },
-                    waitingList = new List<StudentMonitoringDto>()
-                    {
-                        new()
-                        {
-                            nameAbbreviation = "Иванов И. И",
-                            groupName = "19-ИВТ-1",
-                            assignedProject = null,
-                            orderInTutorPrefs = 2,
-                            preferences = new List<ProjectMonitoringDto>()
-                            {
-                                new()
-                                {
-                                    projectId = 11,
-                                    projectName = "Проект Лагерева 1",
-                                    quota = 2,
-                                    info = "Проект об разработке на C#",
-                                    availableGroupsNameList = "19-ИВТ-1, 19-ИВТ-2",
-                                    technologiesNameList = "С#, SQL",
-                                    workDirectionsNameList = "Разработка, Базы данных",
-                                    tutorId = 1,
-                                    orderInStudentPrefs = 1,
-                                    isActive = false
-                                },
-                                new()
-                                {
-                                    projectId = 12,
-                                    projectName = "Проект Подвесовского 1",
-                                    quota = 2,
-                                    info = "Проект об разработке на C#",
-                                    availableGroupsNameList = "19-ИВТ-1, 19-ИВТ-2",
-                                    technologiesNameList = "С#, SQL",
-                                    workDirectionsNameList = "Разработка, Базы данных",
-                                    tutorId = 2,
-                                    orderInStudentPrefs = 2,
-                                    isActive = true
-                                },
-                                new()
-                                {
-                                    projectId = 13,
-                                    projectName = "Проект Дергачева",
-                                    quota = 2,
-                                    info = "Проект об разработке на C#",
-                                    availableGroupsNameList = "19-ИВТ-1, 19-ИВТ-2",
-                                    technologiesNameList = "С#, SQL",
-                                    workDirectionsNameList = "Разработка, Базы данных",
-                                    tutorId = 2,
-                                    orderInStudentPrefs = 3,
-                                    isActive = true
-                                },
-                            }
-                        },
-                        new()
-                        {
-                            nameAbbreviation = "Петров П. П",
-                            groupName = "19-ИВТ-2",
-                            assignedProject =
-                                new()
-                                {
-                                    projectId = 12,
-                                    projectName = "Проект Подвесовского 1",
-                                    quota = 2,
-                                    info = "Проект об разработке на C#",
-                                    availableGroupsNameList = "19-ИВТ-1, 19-ИВТ-2",
-                                    technologiesNameList = "С#, SQL",
-                                    workDirectionsNameList = "Разработка, Базы данных",
-                                    tutorId = 2,
-                                    orderInStudentPrefs = 3,
-                                    isActive = true
-                                },
-                            orderInTutorPrefs = 1,
-                            preferences = new List<ProjectMonitoringDto>()
-                            {
-                                new()
-                                {
-                                    projectId = 11,
-                                    projectName = "Проект Лагерева 1",
-                                    quota = 2,
-                                    info = "Проект об разработке на C#",
-                                    availableGroupsNameList = "19-ИВТ-1, 19-ИВТ-2",
-                                    technologiesNameList = "С#, SQL",
-                                    workDirectionsNameList = "Разработка, Базы данных",
-                                    tutorId = 1,
-                                    orderInStudentPrefs = 1,
-                                    isActive = false
-                                },
-                                new()
-                                {
-                                    projectId = 12,
-                                    projectName = "Проект Подвесовского 1",
-                                    quota = 2,
-                                    info = "Проект об разработке на C#",
-                                    availableGroupsNameList = "19-ИВТ-1, 19-ИВТ-2",
-                                    technologiesNameList = "С#, SQL",
-                                    workDirectionsNameList = "Разработка, Базы данных",
-                                    tutorId = 2,
-                                    orderInStudentPrefs = 3,
-                                    isActive = true
-                                },
-                                new()
-                                {
-                                    projectId = 13,
-                                    projectName = "Проект Дергачева",
-                                    quota = 2,
-                                    info = "Проект об разработке на C#",
-                                    availableGroupsNameList = "19-ИВТ-1, 19-ИВТ-2",
-                                    technologiesNameList = "С#, SQL",
-                                    workDirectionsNameList = "Разработка, Базы данных",
-                                    tutorId = 2,
-                                    orderInStudentPrefs = 1,
-                                    isActive = false
-                                },
-                            }
-                        }
-                    }
-                }
-            }
-            */
+          
         };
-
-        //return new MatchingMonitoringData()
-        //{
-        //    studentRecords = getStudentsMonitoringData(matchingId),
-        //    tutorRecords = getTutorsMonitoringData(matchingId),
-        //};
     }
 
     public List<StudentMonitoringDto> getStudentsMonitoringData(int matchingId)

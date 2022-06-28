@@ -18,7 +18,8 @@ public class DocumentsProcessingService : IDocumentsProcessingService
         worksheet.Cells["B1"].Value = "Фамилия";
         worksheet.Cells["C1"].Value = "Имя";
         worksheet.Cells["D1"].Value = "Отчество";
-        worksheet.Cells["E1"].Value = "Пароль";
+        worksheet.Cells["E1"].Value = "Логин";
+        worksheet.Cells["F1"].Value = "Пароль";
 
         for (var index = 0; index < students.Count; index++)
         {
@@ -28,7 +29,8 @@ public class DocumentsProcessingService : IDocumentsProcessingService
             worksheet.Cells["B" + rowIndex].Value = student.firstName;
             worksheet.Cells["C" + rowIndex].Value = student.lastName;
             worksheet.Cells["D" + rowIndex].Value = student.middleName;
-            worksheet.Cells["E" + rowIndex].Value = student.password;
+            worksheet.Cells["E" + rowIndex].Value = student.login;
+            worksheet.Cells["F" + rowIndex].Value = student.password;
         }
 
         return package;

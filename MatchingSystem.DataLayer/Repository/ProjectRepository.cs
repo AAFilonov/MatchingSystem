@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Dapper;
 using MatchingSystem.DataLayer.Base;
 using MatchingSystem.DataLayer.Dto.MatchingInit;
+using MatchingSystem.DataLayer.Dto.MatchingMonitoring;
 using MatchingSystem.DataLayer.Entities;
 using MatchingSystem.DataLayer.Interface;
 using MatchingSystem.DataLayer.IO.Params;
@@ -52,7 +53,7 @@ namespace MatchingSystem.DataLayer.Repository
                 ",TutorID " +
                 "FROM dbo_v.Projects " +
                 "WHERE " +
-                "MatchingId = @MatchingId",
+                "MatchingID = @MatchingId",
                 new {MatchingId = MatchingId}
             );
         }
@@ -175,6 +176,16 @@ namespace MatchingSystem.DataLayer.Repository
                       WorkDirection_CodeList = @params.CommaSeparatedWorkList,
                       Group_IdList = @params.CommaSeparatedGroupList
                   });
+        }
+
+        public IEnumerable<ProjectGroupDTO> GetProjectsGroupsBtMatching(int matchingId)
+        {
+            return Connection.Query<ProjectGroupDTO>(
+                "select pg.ProjectID,pg.GroupID from Projects_Groups pg " +
+                "join Groups g on g.GroupID = pg.GroupID " +
+                "where g.MatchingID = @MatchingID"
+                , new { MatchingID = matchingId }
+            );
         }
 
         public void EditProject(ProjectParams @params)

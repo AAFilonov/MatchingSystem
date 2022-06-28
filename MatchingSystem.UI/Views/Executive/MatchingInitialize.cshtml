@@ -287,9 +287,8 @@ let app = new Vue({
         )
         .then(response =>{         
           this.exportStudents();
-          //window.location.href="../executive/admin"
           DisplayNotification('Запрос на создание распределения отправлен!');
-          
+          window.location.href="../"
         })
         .catch(function(reason){
            DisplayNotification('Ошибка при создании распределения','error' );

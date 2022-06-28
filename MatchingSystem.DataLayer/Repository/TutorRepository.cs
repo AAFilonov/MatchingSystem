@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
+
 using System.Threading.Tasks;
 using Dapper;
 using MatchingSystem.DataLayer.Base;
@@ -10,7 +10,7 @@ using MatchingSystem.DataLayer.Dto.MatchingMonitoring;
 using MatchingSystem.DataLayer.Entities;
 using MatchingSystem.DataLayer.Interface;
 using MatchingSystem.DataLayer.IO.Params;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+
 
 namespace MatchingSystem.DataLayer.Repository
 {
@@ -109,6 +109,24 @@ namespace MatchingSystem.DataLayer.Repository
                 "select TutorID, TutorNameAbbreviation from napp.get_Tutors_ByMatching(@MatchingID)",
                 new { MatchingID = matchingId }
             );
+        }
+
+        public IEnumerable<TutorFullDTO> GetFullInfoTutorByMatching(int matchingId)
+        {
+            return Connection.Query<TutorFullDTO>(
+                "select " +
+                "t.TutorID," +
+                "t.NameAbbreviation," +
+                "t.UserID," +
+                "t.MatchingID," +
+                "t.IsClosed," +
+                "t.LastVisitDate," +
+                "Qty as Quota " +
+                "from dbo_v.Tutors t " +
+                "join CommonQuotas cq on cq.TutorID = t.TutorID " +
+                "where QuotaStateID = 1 AND MatchingID = @MatchingID "
+                , new {@MatchingID = matchingId }
+            ); 
         }
 
         public async Task<IEnumerable<Group>> GetGroupsByTutorAsync(int tutorId)

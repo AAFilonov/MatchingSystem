@@ -20,7 +20,7 @@ public class GroupRepository :ConnectionBase, IGroupRepository
 
     public  IEnumerable<Group> getGroupsByMatching(int matchingId)
     {
-        return  Connection.Query<Group>("select groupID, GroupName from Groups");
+        return  Connection.Query<Group>("select GroupID, GroupName from Groups");
     }
     
     public int CreateGroup(string groupName,int matchingId)

@@ -39,7 +39,8 @@ public class MatchingInitializationService : IMatchingInitializationService
 
     public MatchingInitData createMatching(MatchingInitData data, int creatorUserId)
     {
-        if (data == null) throw new ArgumentNullException(nameof(data));
+        if (data == null) 
+            throw new ArgumentNullException(nameof(data));
 
         try
         {
@@ -61,7 +62,7 @@ public class MatchingInitializationService : IMatchingInitializationService
         //{
 
         //создать Mathching, Stage
-        var MatchingId = matchingRepository.CreateMatching(data.matching).Result;
+        var MatchingId = matchingRepository.CreateMatching(data.matching);
         var StageId = matchingRepository.SetNewFirstStageInMatching(MatchingId);
         //установить ответственным запустившего создание нового распределения
         userRepository.AssignRoleForUser(creatorUserId, MatchingId);

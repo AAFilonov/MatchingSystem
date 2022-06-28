@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using MatchingSystem.DataLayer.Entities;
@@ -183,7 +181,7 @@ namespace MatchingSystem.DataLayer.Repository
             );
         }
 
-        public void CreateUserRoles_Students(List<StudentInitDto> studs,int matchingID)
+        public void CreateUserRoles_Students(List<StudentInitDto> studs,int matchingId)
         {
             foreach (var stud in studs)
             {
@@ -192,7 +190,7 @@ namespace MatchingSystem.DataLayer.Repository
                     {
                         UserID = stud.UserId
                         ,RoleID = 2
-                        ,MatchingID = matchingID
+                        ,MatchingID = matchingId
                         ,StudentID = stud.StudentId
                     });
             }
@@ -317,6 +315,23 @@ namespace MatchingSystem.DataLayer.Repository
             await Connection.ExecuteAsync(
                 "exec napp.del_StudentsPreferences @StudentID", 
                 new {StudentID = studentId}
+            );
+        }
+
+        public IEnumerable<Student> GetStudentsByMatching(int matchingId)
+        {
+            return Connection.Query<Student>(
+                "select distinct " +
+                "[GroupID],"+
+                "[GroupName],"+
+                "[UserID],"+
+                "[MatchingID],"+
+                "NameAbbreviation," +
+                "[Info]," +
+                "[Info2]," +
+                "[WorkDirectionsName_List]," +
+                "[TechnologiesName_List]," +
+                " UserID from dbo_v.Students" 
             );
         }
     }

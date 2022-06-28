@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using MatchingSystem.DataLayer.Dto.MatchingInit;
+using MatchingSystem.DataLayer.Dto.MatchingMonitoring;
 using MatchingSystem.DataLayer.Entities;
 using MatchingSystem.DataLayer.IO.Params;
 
@@ -12,7 +13,6 @@ namespace MatchingSystem.DataLayer.Interface
         AllocatedByStudent GetAllocationByStudent(int studentId);
         Task<Student> GetStudentAsync(int studentId);
         Student GetStudent(int studentId);
-        IEnumerable<Student> GetStudentsByMatching(int matchingId);
         IEnumerable<StudentPreferences> GetStudentPreferencesByMatching(int matchingId);
         IEnumerable<StudentPreferences> GetStudentAssignedToProject(int matchingId);
         IEnumerable<StudentPreferences> GetStudentAvailablePreferencesByMatching(int matchingId);
@@ -30,5 +30,6 @@ namespace MatchingSystem.DataLayer.Interface
         Task SetPreferencesAsync(StudentPreferenceParams inParams);
         void ClearPreferences(int studentId);
         Task ClearPreferencesAsync(int studentId);
+        IEnumerable<Student> GetStudentsByMatching(int matchingId);
     }
 }
