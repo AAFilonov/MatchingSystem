@@ -93,7 +93,7 @@ public class MatchingInitializationController : ControllerBase
 
         if (!tutorGroupsMatchWithStudentGroups)
         {
-            throw new InputDataException("Tutor groups does`t match with student groups!");
+            throw new InputDataException("группы преподавателей не соотвествуют группам заданным для студентов");
         }
 
         var tutors = tutorsParsingService.tryToParseTutorsData(package);
@@ -105,7 +105,7 @@ public class MatchingInitializationController : ControllerBase
             .Where(pair =>pair.Value>0 ).ToList();
         if (dublicatedTutors.Count > 0)
         {
-            throw new InputDataException("There are dublicates in tutors list!");
+            throw new InputDataException("в списке преподавателей присутсвуют дубликаты");
         }
         
         var existing_tutors = tutorRepository.GetAllTutors().ToList();
@@ -114,7 +114,7 @@ public class MatchingInitializationController : ControllerBase
         {
             if (!existing_tutors.Any(tutor => tutor.NameAbbreviation.Equals(tutorDto.nameAbbreviation)))
             {
-                throw new InputDataException("Tutor with name" + tutorDto.nameAbbreviation + " does`t not exist!");
+                throw new InputDataException("преподватель с ФИО " + tutorDto.nameAbbreviation + " не зарегестрирован");
             }
         });
 
