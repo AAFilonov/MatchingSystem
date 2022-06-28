@@ -31,7 +31,6 @@
                             <v-text-field
                                 v-model="tableSearch"
                                 label="Поиск"
-
                                 hide-details>
                             </v-text-field>
                         </v-card-title>
@@ -40,9 +39,9 @@
                        
                         v-if="students"
                         :headers="headers"
-                        :items="students"
-                        :search="tableSearch"
-                        hide-default-footer>
+                        :items="students"   
+                        :items-per-page="2"
+                        :search="tableSearch">
                         <template v-slot:item="{ item }">
                              <tr class="text-center">
                                 <td>

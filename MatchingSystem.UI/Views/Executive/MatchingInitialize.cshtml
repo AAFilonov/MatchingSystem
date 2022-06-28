@@ -233,29 +233,36 @@ let app = new Vue({
           });
      },
      onStudentsFileChange(event){
-          this.studentFile = event.target.files;        
+          this.studentFile = event.target.files[0];  
+          var formData = new FormData();           
+          formData.append("doc", event.target.files[0]);
           axios.post( `${params.basePath}/api/matchingInitialization/upload_students_data`,
-            this.studentFile,{
+            formData,{
               headers: {
                   'Content-Type': 'multipart/form-data'
               }
             }
           )
           .then(response =>this.onStudentsUploadSuccess(response))
-          .catch(error => DisplayNotification('Ошибка при загрузке данных данных: '+ error.response.data,'error' ));
+          .catch(error =>{
+              console.log(error);
+              DisplayNotification('Ошибка при загрузке данных: '+ error.response.data,'error');
+          });
     
      },
      onTutorsFileChange(event){
-               this.tutorsFile = event.target.files;              
+               this.tutorsFile = event.target.files[0];            
+               var formData = new FormData();           
+               formData.append("doc",  this.tutorsFile);
                axios.post( `${params.basePath}/api/matchingInitialization/upload_tutors_data`,
-                 this.tutorsFile,{
+                 formData,{
                    headers: {
                        'Content-Type': 'multipart/form-data'
                    }
                  }
                )
                .then(response => this.onTutorsUploadSuccess(response))
-               .catch(error => DisplayNotification('Ошибка при загрузке данных данных: '+ error.response.data,'error' ));
+               .catch(error => DisplayNotification('Ошибка при загрузке данных: '+ error,'error' ));
           },
      async onStudentsUploadSuccess(response){
          if (response.data) {                       
@@ -287,9 +294,7 @@ let app = new Vue({
         )
         .then(response =>{         
           this.exportStudents();
-          //window.location.href="../executive/admin"
-          DisplayNotification('Запрос на создание распределения отправлен!');
-          
+      
         })
         .catch(function(reason){
            DisplayNotification('Ошибка при создании распределения','error' );
@@ -307,6 +312,9 @@ let app = new Vue({
                 link.download = "students_"+today+".xlsx" ;
                 link.click();
                 URL.revokeObjectURL(link.href);
+                DisplayNotification('Запрос на создание распределения отправлен!');
+                window.location.href="../"
+                          
         });
      },   
   }

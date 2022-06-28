@@ -91,14 +91,12 @@ namespace MatchingSystem.DataLayer.Repository
 
         public async Task<int> CreateMatching(MatchingInitDto data)
         {
-            var IdInsertedRecord = Connection.ExecuteScalarAsync<int>("insert into dbo.Matching (MatchingName,MatchingTypeID,CreatorUserID) output INSERTED.MatchingID Values(@MatchingName,@MatchingTypeId,@CreatorUserId)"
+            return await Connection.ExecuteScalarAsync<int>("insert into Matching (MatchingName,MatchingTypeID,CreatorUserID) output INSERTED.MatchingID Values(@MatchingName,@MatchingTypeId,@CreatorUserId)"
                 ,new {
-                    MatchingName = data.name
-                    ,MatchingTypeId = (data.typeCode=="MG")?2:1
-                    ,CreatorUserId=2
-                }
-                );
-            return await IdInsertedRecord;
+                    MatchingName = data.name,
+                    MatchingTypeId = (data.typeCode=="MG")?2:1,
+                    CreatorUserId=2
+                });
         }
 
         public int SetNewFirstStageInMatching(int MatchingID)

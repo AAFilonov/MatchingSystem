@@ -10,6 +10,8 @@ namespace MatchingSystem.DataLayer.Entities
         public string GroupName { get; set; }
         public string Surname { get; set; }
         public string Name { get; set; }
+        
+        public string NameAbbreviation { get; set; }
         public string Patronimic { get; set; }
         [Display(Name = "О себе")]
         public string Info { get; set; }

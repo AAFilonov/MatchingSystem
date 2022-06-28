@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
+
 using System.Threading.Tasks;
 using Dapper;
 using MatchingSystem.DataLayer.Base;
@@ -10,14 +10,17 @@ using MatchingSystem.DataLayer.Dto.MatchingMonitoring;
 using MatchingSystem.DataLayer.Entities;
 using MatchingSystem.DataLayer.Interface;
 using MatchingSystem.DataLayer.IO.Params;
+using Microsoft.Data.SqlClient;
 
 
 namespace MatchingSystem.DataLayer.Repository
 {
     public class TutorRepository : ConnectionBase, ITutorRepository
     {
+        private string connectionString;
         public TutorRepository(string connectionString) : base(connectionString)
         {
+            this.connectionString = connectionString;
         }
 
         public async Task<bool> GetReadyByTutorAsync(int tutorId)
@@ -73,6 +76,7 @@ namespace MatchingSystem.DataLayer.Repository
                         ,TutorID = tut.TutorId
                     });
             }
+           
         }
         
         public IEnumerable<TutorInitDto> CreateTutors(List<TutorInitDto> tuts,int matchingId)
@@ -80,9 +84,10 @@ namespace MatchingSystem.DataLayer.Repository
             foreach (var tut in tuts)
             {
                 tut.TutorId = Connection.ExecuteScalar<int>(
-                    "insert into Tutors (MatchingID) OUTPUT INSERTED.TutorID VALUES (@MatchingID)", new
+                    "insert into Tutors (MatchingID, IsReadyToStart) OUTPUT INSERTED.TutorID VALUES (@MatchingID, @IsReadyToStart)", new
                     {
-                        MatchingID = matchingId
+                        MatchingID = matchingId,
+                        IsReadyToStart  = false
                     });
             }
             return tuts;
@@ -109,6 +114,24 @@ namespace MatchingSystem.DataLayer.Repository
                 "select TutorID, TutorNameAbbreviation from napp.get_Tutors_ByMatching(@MatchingID)",
                 new { MatchingID = matchingId }
             );
+        }
+
+        public IEnumerable<TutorFullDTO> GetFullInfoTutorByMatching(int matchingId)
+        {
+            return Connection.Query<TutorFullDTO>(
+                "select " +
+                "t.TutorID," +
+                "t.NameAbbreviation," +
+                "t.UserID," +
+                "t.MatchingID," +
+                "t.IsClosed," +
+                "t.LastVisitDate," +
+                "Qty as Quota " +
+                "from dbo_v.Tutors t " +
+                "join CommonQuotas cq on cq.TutorID = t.TutorID " +
+                "where QuotaStateID = 1 AND MatchingID = @MatchingID "
+                , new {@MatchingID = matchingId }
+            ); 
         }
 
         public async Task<IEnumerable<Group>> GetGroupsByTutorAsync(int tutorId)

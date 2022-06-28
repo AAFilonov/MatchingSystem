@@ -10,6 +10,7 @@ public class ProjectMonitoringDto
     public string technologiesNameList { get; set; }
     public string workDirectionsNameList { get; set; }
     public int tutorId { get; set; }
+    public int assignmentStudentId { get; set; }
     //for student
     public int? orderInStudentPrefs { get; set; }
     public bool? isActive { get; set; }
