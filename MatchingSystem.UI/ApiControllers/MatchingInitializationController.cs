@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,15 +19,15 @@ namespace MatchingSystem.UI.ApiControllers;
 [ApiController]
 public class MatchingInitializationController : ControllerBase
 {
+    private readonly IDocumentsProcessingService documentsProcessingService;
+    private readonly ILogger<MatchingInitializationController> logger;
+    private readonly IMatchingInitializationService matchingInitializationService;
+    private readonly IStudentsParsingService studentsParsingService;
+    private readonly ITutorRepository tutorRepository;
     private readonly ITutorService tutorService;
 
     private readonly ITutorsParsingService tutorsParsingService;
-    private readonly IStudentsParsingService studentsParsingService;
-    private readonly IMatchingInitializationService matchingInitializationService;
-    private readonly ILogger<MatchingInitializationController> logger;
-    private readonly IDocumentsProcessingService documentsProcessingService;
-    private readonly ITutorRepository tutorRepository;
-
+    private MatchingInitData buffer; //TODO  костыль для демо
 
     public MatchingInitializationController(ITutorService tutorService,
         ILogger<MatchingInitializationController> logger, IMatchingInitializationService matchingInitializationService,
@@ -58,7 +57,7 @@ public class MatchingInitializationController : ControllerBase
         await data.CopyToAsync(memoryStream);
         var sessionData = HttpContext.Session.Get<SessionData>("Data");
 
-        ExcelPackage package = new ExcelPackage(memoryStream);
+        var package = new ExcelPackage(memoryStream);
         var groups = studentsParsingService.parseStudentGroupData(package);
         var students = studentsParsingService.tryToParseStudentData(package);
 
@@ -84,38 +83,38 @@ public class MatchingInitializationController : ControllerBase
         await data.CopyToAsync(memoryStream);
         var sessionData = HttpContext.Session.Get<SessionData>("Data");
 
-        ExcelPackage package = new ExcelPackage(memoryStream);
+        var package = new ExcelPackage(memoryStream);
         var groups = tutorsParsingService.parseTutorGroupData(package);
-        bool tutorGroupsMatchWithStudentGroups =
-                groups.All(dto => sessionData.matchingInitData.groupRecords.Contains(dto)) &&
-                sessionData.matchingInitData.groupRecords.All(dto => groups.Contains(dto))
-            ;
 
-        if (!tutorGroupsMatchWithStudentGroups)
+
+        var tutorGroupsMatchWithStudentGroups = true;
+        var groupNames = sessionData.matchingInitData.groupRecords.Select(initDto => initDto.name).ToList();
+        tutorGroupsMatchWithStudentGroups = tutorGroupsMatchWithStudentGroups && groupNames.Count.Equals(groups.Count);
+        groups.ForEach(dto =>
         {
-            throw new InputDataException("Tutor groups does`t match with student groups!");
-        }
+            tutorGroupsMatchWithStudentGroups =
+                tutorGroupsMatchWithStudentGroups && groupNames.Any(name => name.Equals(dto.name));
+            
+            if (!tutorGroupsMatchWithStudentGroups)
+                throw new InputDataException("группы преподавателей не соотвествуют группам заданным для студентов: '" +
+                                             dto.name + "'");
+        });
 
         var tutors = tutorsParsingService.tryToParseTutorsData(package);
-        
-      
+
+
         var dublicatedTutors = tutors.GroupBy(x => x.nameAbbreviation)
             .Where(g => g.Count() > 1)
             .ToDictionary(x => x.Key, y => y.Count())
-            .Where(pair =>pair.Value>0 ).ToList();
-        if (dublicatedTutors.Count > 0)
-        {
-            throw new InputDataException("There are dublicates in tutors list!");
-        }
-        
+            .Where(pair => pair.Value > 0).ToList();
+        if (dublicatedTutors.Count > 0) throw new InputDataException("в списке преподавателей присутсвуют дубликаты");
+
         var existing_tutors = tutorRepository.GetAllTutors().ToList();
 
         tutors.ToList().ForEach(tutorDto =>
         {
             if (!existing_tutors.Any(tutor => tutor.NameAbbreviation.Equals(tutorDto.nameAbbreviation)))
-            {
-                throw new InputDataException("Tutor with name" + tutorDto.nameAbbreviation + " does`t not exist!");
-            }
+                throw new InputDataException("преподватель с ФИО " + tutorDto.nameAbbreviation + " не зарегестрирован");
         });
 
         sessionData.matchingInitData.tutorRecords = tutors;
@@ -139,7 +138,9 @@ public class MatchingInitializationController : ControllerBase
 
         var updatedData =
             matchingInitializationService.createMatching(currentMatchingInitData, sessionData.User.UserId);
-        HttpContext.Session.Set("Data", updatedData);
+        sessionData.matchingInitData = updatedData;
+        HttpContext.Session.Set("Data", sessionData);
+
         return Ok();
     }
 
@@ -150,9 +151,10 @@ public class MatchingInitializationController : ControllerBase
     {
         var sessionData = HttpContext.Session.Get<SessionData>("Data");
         var data = sessionData.matchingInitData;
+        //var data = buffer;
 
 
-        List<StudentInitDto> students = data.studentRecords;
+        var students = data.studentRecords;
         var package = documentsProcessingService.formStudentDataReport(students);
         return File(package.GetAsByteArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             "Reports.xlsx");

@@ -16,7 +16,7 @@ public class StudentsParsingService : IStudentsParsingService
         }
         catch (System.Exception e)
         {
-            throw new InputDataException("Parsing error: invalid table format", e);
+            throw new InputDataException("Ошибка парсинга: неверный формат данных", e);
         }
     }
 
@@ -31,6 +31,11 @@ public class StudentsParsingService : IStudentsParsingService
             var rowCount = worksheet.Dimension.End.Row;
             for (var row = 1; row <= rowCount; row++)
             {
+                if(((string)worksheet.Cells["A" + row].Value).Equals(""))
+                    throw new InputDataException("Ошибка парсинга: Имя не заполненно в ряду"+row);
+                if(((string)worksheet.Cells["B" + row].Value).Equals(""))
+                    throw new InputDataException("Ошибка парсинга: Фамилия не заполненно в ряду "+row);
+                
                 StudentInitDto initDto = new StudentInitDto
                 {
                     groupName = groupName,
@@ -50,6 +55,6 @@ public class StudentsParsingService : IStudentsParsingService
     {
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         return package.Workbook.Worksheets
-            .Select(worksheet => new GroupInitDto { name = worksheet.Name, value = false }).ToList();
+            .Select(worksheet => new GroupInitDto { name = worksheet.Name.Trim(), value = false }).ToList();
     }
 }

@@ -1,3 +1,3 @@
 ﻿var params = {
-    basePath: ''
+    basePath: 'https://localhost:5001'
 }

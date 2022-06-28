@@ -17,6 +17,11 @@ public class GroupRepository :ConnectionBase, IGroupRepository
     public GroupRepository(string connectionString) : base(connectionString)
     {
     }
+
+    public  IEnumerable<Group> getGroupsByMatching(int matchingId)
+    {
+        return  Connection.Query<Group>("select GroupID, GroupName from Groups");
+    }
     
     public int CreateGroup(string groupName,int matchingId)
     {
