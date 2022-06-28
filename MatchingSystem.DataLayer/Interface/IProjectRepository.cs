@@ -2,6 +2,7 @@
 using System.Data;
 using System.Threading.Tasks;
 using MatchingSystem.DataLayer.Dto.MatchingInit;
+using MatchingSystem.DataLayer.Dto.MatchingMonitoring;
 using MatchingSystem.DataLayer.Entities;
 using MatchingSystem.DataLayer.IO.Params;
 using MatchingSystem.DataLayer.Repository;
@@ -15,6 +16,7 @@ namespace MatchingSystem.DataLayer.Interface
         void SetDefaultProjects_Groups(List<TutorInitDto> tuts);
         void CreateProject(ProjectParams @params);
         Task EditProjectAsync(ProjectParams @params);
+        Task<IEnumerable<ProjectGroupDTO>> GetProjectsGroupsBtMatching(int studentId);
         void EditProject(ProjectParams @params);
         Task DeleteProjectAsync(int projectId);
         void DeleteProject(int projectId);

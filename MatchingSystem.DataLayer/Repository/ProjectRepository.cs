@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Dapper;
 using MatchingSystem.DataLayer.Base;
 using MatchingSystem.DataLayer.Dto.MatchingInit;
+using MatchingSystem.DataLayer.Dto.MatchingMonitoring;
 using MatchingSystem.DataLayer.Entities;
 using MatchingSystem.DataLayer.Interface;
 using MatchingSystem.DataLayer.IO.Params;
@@ -26,6 +27,15 @@ namespace MatchingSystem.DataLayer.Repository
             );
         }
 
+        public async Task<IEnumerable<ProjectGroupDTO>> GetProjectsGroupsBtMatching(int matchingId)
+        {
+            return await Connection.QueryAsync<ProjectGroupDTO>(
+                "select pg.ProjectID,pg.GroupID from Projects_Groups pg " +
+                    "join Groups g on g.GroupID = pg.GroupID " +
+                    "where g.MatchingID = @MatchingID"
+                ,new {MatchingID = matchingId}
+                );
+        }
         public IEnumerable<Project> GetProjectsByTutor(int tutorId)
         {
             return Connection.Query<Project>(
@@ -34,6 +44,7 @@ namespace MatchingSystem.DataLayer.Repository
             );
         }
 
+        
         public IEnumerable<Project> GetProjectsByMatching(int MatchingId)
         {
             return Connection.Query<Project>(
@@ -42,11 +53,14 @@ namespace MatchingSystem.DataLayer.Repository
                 ",ProjectName " +
                 ",Info " +
                 ",IsClosed " +
-                ",ProjectQuotaQty " +
+                ",Qty " +
+                ",WorkDirectionsName_List " +
+                ",TechnologiesName_List " +
+                ",AvailableGroupsName_List " +
                 ",null,null,null " +
                 ",IsDefault " +
                 ",TutorID " +
-                "FROM Projects " +
+                "FROM dbo_v.Projects " +
                 "WHERE " +
                 "MatchingId = @MatchingId",
                 new {MatchingId = MatchingId}

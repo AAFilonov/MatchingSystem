@@ -17,6 +17,11 @@ public class GroupRepository :ConnectionBase, IGroupRepository
     public GroupRepository(string connectionString) : base(connectionString)
     {
     }
+
+    public async Task<IEnumerable<Group>> getGroupsByMatching(int matchingId)
+    {
+        return await Connection.QueryAsync<Group>("select groupID, GroupName from Groups");
+    }
     
     public async Task<int> SetNewGroup(string groupName,int matchingId)
     {

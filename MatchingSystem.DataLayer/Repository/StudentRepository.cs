@@ -99,6 +99,15 @@ namespace MatchingSystem.DataLayer.Repository
             return result;
         }
         
+        public async Task<IEnumerable<Student>> GetStudentsByMatching(int matchingId)
+        {
+            return await Connection.QueryAsync<Student>(
+                "select StudentID,GroupID,GroupName,Surname,Name,Patronimic,Info,Info2,WorkDirectionsName_List,TechnologiesName_List from dbo_v.Students " +
+                "where MatchingId = @MatchingId "
+                , new { @MatchingId = matchingId }
+            );
+        }
+        
         public IEnumerable<StudentPreferences> GetStudentAssignedToProject(int matchingId)
         {
             var result = Connection.Query<StudentPreferences>(

@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using MatchingSystem.DataLayer.Base;
+using MatchingSystem.DataLayer.Dto;
 using MatchingSystem.DataLayer.Dto.MatchingInit;
 using MatchingSystem.DataLayer.Dto.MatchingMonitoring;
 using MatchingSystem.DataLayer.Entities;
@@ -40,6 +42,16 @@ namespace MatchingSystem.DataLayer.Repository
             return await Connection.ExecuteScalarAsync<int>(
                 "select napp.get_TutorID(@UserID, @MatchingID)",
                 new { UserID = userId, MatchingID = matchingId }
+            );
+        }
+        
+        public IEnumerable<TutorFullDTO> GetFullInfoTutorByMatching(int matchingId)
+        {
+            return Connection.Query<TutorFullDTO>(
+                "select tut.TutorID,tut.NameAbbreviation,tut.UserID,TUT.MatchingID,TUT.IsClosed, tut.LastVisitDate,Qty from dbo_v.Tutors tut " +
+            "join CommonQuotas cq on cq.TutorID = tut.TutorID " +
+            "where QuotaStateID = 1 AND MatchingID = @MatchingID "
+                , new {@MatchingID = matchingId }
             );
         }
 
@@ -91,14 +103,13 @@ namespace MatchingSystem.DataLayer.Repository
         {
             foreach (var tut in tuts)
             {
-                Connection.ExecuteAsync("INSERT CommonQuotas (TutorID,Qty,CreateDate,QuotaStateId,QuotaStateId,StageId) " +
-                                        "VALUES(@TutorID,@Qty,@CreateDate,@QuotaStateId,@StageId)"
+
+                Connection.Execute("INSERT INTO CommonQuotas(TutorID,Qty,CreateDate,QuotaStateId,StageId) VALUES(@TutorID,@Qty,getdate(),1,@StageId)"
                     , new { 
                         TutorID = tut.TutorId
-                        ,Qty = tut.quota
-                        ,CreateDate = "GETDATE()"
-                        ,QuotaStateId = 1
-                        ,StageId = stageId
+                        ,@Qty = tut.quota
+                        ,@StageId = stageId
+
                     });   
             }
         }
