@@ -287,8 +287,7 @@ let app = new Vue({
         )
         .then(response =>{         
           this.exportStudents();
-          DisplayNotification('Запрос на создание распределения отправлен!');
-          window.location.href="../"
+      
         })
         .catch(function(reason){
            DisplayNotification('Ошибка при создании распределения','error' );
@@ -306,6 +305,9 @@ let app = new Vue({
                 link.download = "students_"+today+".xlsx" ;
                 link.click();
                 URL.revokeObjectURL(link.href);
+                DisplayNotification('Запрос на создание распределения отправлен!');
+                window.location.href="../"
+                          
         });
      },   
   }

@@ -22,6 +22,7 @@ public class StudentInitDto
     
     public string login { get; set; }
     public string password { get; set; }
+    public string passwordHash { get; set; }
     public int UserId { get; set; }
     public int StudentId { get; set; }
     public int GroupId { get; set; }

@@ -28,7 +28,7 @@ public class MatchingInitializationController : ControllerBase
     private readonly ILogger<MatchingInitializationController> logger;
     private readonly IDocumentsProcessingService documentsProcessingService;
     private readonly ITutorRepository tutorRepository;
-
+    private MatchingInitData buffer; //TODO  костыль для демо
 
     public MatchingInitializationController(ITutorService tutorService,
         ILogger<MatchingInitializationController> logger, IMatchingInitializationService matchingInitializationService,
@@ -139,7 +139,9 @@ public class MatchingInitializationController : ControllerBase
 
         var updatedData =
             matchingInitializationService.createMatching(currentMatchingInitData, sessionData.User.UserId);
-        HttpContext.Session.Set("Data", updatedData);
+        sessionData.matchingInitData = updatedData;
+        HttpContext.Session.Set("Data", sessionData);
+       
         return Ok();
     }
 
@@ -148,8 +150,9 @@ public class MatchingInitializationController : ControllerBase
     [HttpGet]
     public FileResult getStudentDataReport()
     {
-        var sessionData = HttpContext.Session.Get<SessionData>("Data");
-        var data = sessionData.matchingInitData;
+       var sessionData = HttpContext.Session.Get<SessionData>("Data");
+       var data = sessionData.matchingInitData;
+        //var data = buffer;
 
 
         List<StudentInitDto> students = data.studentRecords;
