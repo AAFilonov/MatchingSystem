@@ -86,11 +86,17 @@ public class MatchingInitializationController : ControllerBase
 
         ExcelPackage package = new ExcelPackage(memoryStream);
         var groups = tutorsParsingService.parseTutorGroupData(package);
-        bool tutorGroupsMatchWithStudentGroups =
-                groups.All(dto => sessionData.matchingInitData.groupRecords.Contains(dto)) &&
-                sessionData.matchingInitData.groupRecords.All(dto => groups.Contains(dto))
-            ;
 
+
+        bool tutorGroupsMatchWithStudentGroups = true;
+        var groupNames = sessionData.matchingInitData.groupRecords.Select(initDto => initDto.name).ToList();
+        tutorGroupsMatchWithStudentGroups = tutorGroupsMatchWithStudentGroups && groupNames.Count.Equals(groups.Count);
+        groups.ForEach(dto =>
+        {
+            tutorGroupsMatchWithStudentGroups = tutorGroupsMatchWithStudentGroups && groupNames.Any(name => name.Equals(dto.name));
+        } );
+       
+    
         if (!tutorGroupsMatchWithStudentGroups)
         {
             throw new InputDataException("группы преподавателей не соотвествуют группам заданным для студентов");

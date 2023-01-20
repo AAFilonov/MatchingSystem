@@ -32,9 +32,9 @@ public class StudentsParsingService : IStudentsParsingService
             for (var row = 1; row <= rowCount; row++)
             {
                 if(((string)worksheet.Cells["A" + row].Value).Equals(""))
-                    throw new InputDataException("Ошибка парсинга: Имя не заполненна в ряду"+row);
+                    throw new InputDataException("Ошибка парсинга: Имя не заполненно в ряду"+row);
                 if(((string)worksheet.Cells["B" + row].Value).Equals(""))
-                    throw new InputDataException("Ошибка парсинга: Фамилия не заполненна в ряду "+row);
+                    throw new InputDataException("Ошибка парсинга: Фамилия не заполненно в ряду "+row);
                 
                 StudentInitDto initDto = new StudentInitDto
                 {
@@ -55,6 +55,6 @@ public class StudentsParsingService : IStudentsParsingService
     {
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         return package.Workbook.Worksheets
-            .Select(worksheet => new GroupInitDto { name = worksheet.Name, value = false }).ToList();
+            .Select(worksheet => new GroupInitDto { name = worksheet.Name.Trim(), value = false }).ToList();
     }
 }

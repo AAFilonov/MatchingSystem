@@ -49,8 +49,7 @@ public class MatchingInitializationService : IMatchingInitializationService
             throw new InputDataException("Unknown matching creation error", e);
         }
     }
-
-    //метод должен быть тразакционным
+    //TODO создать матчинг 
     private MatchingInitData TryCreateMatching(MatchingInitData data, int creatorUserId)
     {
         //просетить userId преподавателей по NameAbbreviation
@@ -126,7 +125,7 @@ public class MatchingInitializationService : IMatchingInitializationService
 
         return data;
     }
-
+    
     private List<StudentInitDto> ctreateUsersForStudents(MatchingInitData data)
     {
         var pass = "$s2$16384$8$1$DJBTMOcK+VGXFk8BTUvWYNr7PZE4Cx0l2OdvbWA4/TA=$R7TZahOx+lmeP+B8FiLe6IQzQJ/mSVYQa+7M57kvcOs=";

@@ -233,9 +233,11 @@ let app = new Vue({
           });
      },
      onStudentsFileChange(event){
-          this.studentFile = event.target.files;        
+          this.studentFile = event.target.files[0];  
+          var formData = new FormData();           
+          formData.append("doc", event.target.files[0]);
           axios.post( `${params.basePath}/api/matchingInitialization/upload_students_data`,
-            this.studentFile,{
+            formData,{
               headers: {
                   'Content-Type': 'multipart/form-data'
               }
@@ -246,9 +248,11 @@ let app = new Vue({
     
      },
      onTutorsFileChange(event){
-               this.tutorsFile = event.target.files;              
+               this.tutorsFile = event.target.files[0];            
+               var formData = new FormData();           
+               formData.append("doc",  this.tutorsFile);
                axios.post( `${params.basePath}/api/matchingInitialization/upload_tutors_data`,
-                 this.tutorsFile,{
+                 formData,{
                    headers: {
                        'Content-Type': 'multipart/form-data'
                    }
