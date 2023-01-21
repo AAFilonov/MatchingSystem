@@ -101,7 +101,7 @@ namespace MatchingSystem.DataLayer.Repository
                   });
         }
 
-        public IEnumerable<TutorInitDto> SetDefaultProjectsForTutors(List<TutorInitDto> tutors,int matchingId)
+        public IEnumerable<TutorInitDto> CreateDefaultProjectsForTutors(List<TutorInitDto> tutors,int matchingId)
         {
             foreach (var tut in tutors)
             {
@@ -134,6 +134,21 @@ namespace MatchingSystem.DataLayer.Repository
                         });
                 }
             }
+        }
+        public void CreateDefaultTutorsProjects(List<TutorInitDto> tuts)
+        {
+            foreach (var tutor in tuts)
+            {
+                tutor.DefaultProjectId = Connection.Execute(
+                    "insert into Projects (TutorID, ProjectName,IsDefault) OUTPUT INSERTED.ProjectID VALUES (@TutorID, @ProjectName, @IsDefault)", new
+                    { 
+                        @TutorID = tutor.TutorId,
+                        @ProjectName = "Записаться к преподавателю",
+                        @IsDefault = true
+                    });
+                
+            }
+       
         }
 
         public void CreateProject(ProjectParams @params)

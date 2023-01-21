@@ -10,14 +10,17 @@ using MatchingSystem.DataLayer.Dto.MatchingMonitoring;
 using MatchingSystem.DataLayer.Entities;
 using MatchingSystem.DataLayer.Interface;
 using MatchingSystem.DataLayer.IO.Params;
+using Microsoft.Data.SqlClient;
 
 
 namespace MatchingSystem.DataLayer.Repository
 {
     public class TutorRepository : ConnectionBase, ITutorRepository
     {
+        private string connectionString;
         public TutorRepository(string connectionString) : base(connectionString)
         {
+            this.connectionString = connectionString;
         }
 
         public async Task<bool> GetReadyByTutorAsync(int tutorId)
@@ -73,6 +76,7 @@ namespace MatchingSystem.DataLayer.Repository
                         ,TutorID = tut.TutorId
                     });
             }
+           
         }
         
         public IEnumerable<TutorInitDto> CreateTutors(List<TutorInitDto> tuts,int matchingId)
@@ -80,9 +84,10 @@ namespace MatchingSystem.DataLayer.Repository
             foreach (var tut in tuts)
             {
                 tut.TutorId = Connection.ExecuteScalar<int>(
-                    "insert into Tutors (MatchingID) OUTPUT INSERTED.TutorID VALUES (@MatchingID)", new
+                    "insert into Tutors (MatchingID, IsReadyToStart) OUTPUT INSERTED.TutorID VALUES (@MatchingID, @IsReadyToStart)", new
                     {
-                        MatchingID = matchingId
+                        MatchingID = matchingId,
+                        IsReadyToStart  = false
                     });
             }
             return tuts;
