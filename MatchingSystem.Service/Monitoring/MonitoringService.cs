@@ -1,5 +1,10 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using MatchingSystem.DataLayer.Dto.MatchingMonitoring;
+using MatchingSystem.DataLayer.Entities;
+using MatchingSystem.DataLayer.Interface;
+
 
 namespace MatchingSystem.Service.Monitoring;
 
@@ -111,6 +116,8 @@ public class MonitoringService : IMonitoringService
     
     public MatchingMonitoringData getMonitoringData(int matchingId)
     {
+        throw new NotImplementedException("Функционал мониторинга в разработке");
+        /*
         var studentPreferences = studentRepository.GetStudentPreferencesByMatching(matchingId);
         var students = studentRepository.GetStudentsByMatching(matchingId);
         var groups = groupRepository.getGroupsByMatching(matchingId)
@@ -119,7 +126,7 @@ public class MonitoringService : IMonitoringService
             .Where(x=>studentPreferences.Select(x=>x.ProjectID).Contains(x.ProjectID));
         var tutors = tutorRepository.GetFullInfoTutorByMatching(matchingId).Where(x=>projects.Select(x=>x.TutorID).Contains(x.TutorID));
 
-        var projsGroups = projectRepository.GetProjectsGroupsBtMatching(matchingId);
+        var projsGroups = projectRepository.GetProjectsGroupsByMatching(matchingId);
 
         var tutorsChoices = tutorRepository.getChoicesByMatchingCurrentStage(matchingId);
 
@@ -249,7 +256,7 @@ public class MonitoringService : IMonitoringService
            
             tutorRecords = tutorRecord
           
-        };
+        };  */
     }
 
     public List<StudentMonitoringDto> getStudentsMonitoringData(int matchingId)

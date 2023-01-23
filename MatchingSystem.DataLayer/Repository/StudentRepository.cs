@@ -204,7 +204,7 @@ namespace MatchingSystem.DataLayer.Repository
                     "insert into Students (GroupID,MatchingID) OUTPUT INSERTED.StudentID VALUES (@GroupID,@MatchingID)", new
                     {
                         GroupID = stud.GroupId,
-                        MatchingID = matchingId
+                        MatchingID = matchingId,
                     });
             }
 

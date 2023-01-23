@@ -27,4 +27,9 @@ public class UserService : IUserService
 
         return model;
     }
+
+    public IEnumerable<DataLayer.Entities.User> getStudentUsersByMatching(int matchingId)
+    {
+        return userRepository.getStudentUsersByMatching(matchingId);
+    }
 }

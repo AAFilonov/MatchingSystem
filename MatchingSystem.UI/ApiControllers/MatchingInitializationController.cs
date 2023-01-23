@@ -7,6 +7,7 @@ using MatchingSystem.Service.DocumentsProcessing;
 using MatchingSystem.Service.Exception;
 using MatchingSystem.Service.MatchingInitialization;
 using MatchingSystem.Service.Tutor;
+using MatchingSystem.Service.User;
 using MatchingSystem.UI.Helpers;
 using MatchingSystem.UI.Services;
 using Microsoft.AspNetCore.Http;
@@ -25,6 +26,7 @@ public class MatchingInitializationController : ControllerBase
     private readonly IStudentsParsingService studentsParsingService;
     private readonly ITutorRepository tutorRepository;
     private readonly ITutorService tutorService;
+    private readonly IUserService userService;
 
     private readonly ITutorsParsingService tutorsParsingService;
     private MatchingInitData buffer; //TODO  костыль для демо
@@ -32,7 +34,10 @@ public class MatchingInitializationController : ControllerBase
     public MatchingInitializationController(ITutorService tutorService,
         ILogger<MatchingInitializationController> logger, IMatchingInitializationService matchingInitializationService,
         ITutorsParsingService tutorsParsingService, IStudentsParsingService studentsParsingService,
-        IDocumentsProcessingService documentsProcessingService, ITutorRepository tutorRepository)
+        IDocumentsProcessingService documentsProcessingService, 
+        ITutorRepository tutorRepository,
+        IUserService userService
+    )
     {
         this.tutorService = tutorService;
         this.logger = logger;
@@ -41,6 +46,7 @@ public class MatchingInitializationController : ControllerBase
         this.studentsParsingService = studentsParsingService;
         this.documentsProcessingService = documentsProcessingService;
         this.tutorRepository = tutorRepository;
+        this.userService = userService;
     }
 
 
@@ -153,7 +159,9 @@ public class MatchingInitializationController : ControllerBase
         var data = sessionData.matchingInitData;
         //var data = buffer;
 
-
+        var matchingId = sessionData.SelectedMatching;
+        userService.getStudentUsersByMatching(matchingId); 
+        
         var students = data.studentRecords;
         var package = documentsProcessingService.formStudentDataReport(students);
         return File(package.GetAsByteArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",

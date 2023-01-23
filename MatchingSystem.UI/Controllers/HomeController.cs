@@ -11,6 +11,7 @@ using MatchingSystem.DataLayer.Interface;
 using MatchingSystem.UI.Helpers;
 using MatchingSystem.UI.Services;
 using MatchingSystem.UI.ViewModels;
+using Microsoft.Extensions.Logging;
 
 namespace MatchingSystem.UI.Controllers
 {
@@ -20,49 +21,63 @@ namespace MatchingSystem.UI.Controllers
         private MatchingSystem.Data.Feature.User.IUserRepository _userRepository;
         //private MatchingSystem.Data.Feature.Matching.IMatchingRepository _matchingRepository;
         private readonly IMatchingRepository matchingRepository;
+        private readonly ILogger<HomeController> logger;
 
-        public HomeController(IUserRepository userRepository, IMatchingRepository matchingRepository, Data.Feature.User.IUserRepository userRepository2, Data.Feature.Matching.IMatchingRepository matchingRepository1)
+        public HomeController(IUserRepository userRepository, IMatchingRepository matchingRepository, Data.Feature.User.IUserRepository userRepository2, Data.Feature.Matching.IMatchingRepository matchingRepository1, ILogger<HomeController> logger)
         {
             this.userRepository = userRepository;
            this.matchingRepository = matchingRepository;
             _userRepository = userRepository2;
-          //  _matchingRepository = matchingRepository1;
+            this.logger = logger;
+            //  _matchingRepository = matchingRepository1;
         }
 
         [HttpGet]
         public IActionResult Login()
         {
             SessionData data = new SessionData();
-
-            if (HttpContext.User.Identity.IsAuthenticated)
+            try
             {
-                var user = _userRepository.findByLogin(HttpContext.User.Identity.Name);
-               
-
-                data.RolesMatchings = userRepository.GetAllRoles(user.UserId);
-
-                data.User = user;
-                data.CountRoles = data.RolesMatchings.Count();
+                if (HttpContext.User.Identity.IsAuthenticated)
+                {
+                    var user = _userRepository.findByLogin(HttpContext.User.Identity.Name);
 
 
-                var selectedMatchingId = Convert.ToInt32(HttpContext.Request.Cookies["selectedMatching"]);
-                data.SelectedMatching = selectedMatchingId;
+                    data.RolesMatchings = userRepository.GetAllRoles(user.UserId);
 
-               // data.MatchingTypeCode = _matchingRepository.findById(selectedMatchingId).MatchingType.MatchingTypeCode;
-                data.MatchingTypeCode =  matchingRepository.GetMatchings().First(matching => matching.MatchingID == selectedMatchingId)
-                    .MatchingTypeCode;
-                string selectedRole = HttpContext.Request.Cookies["selectedRole"];
-                data.SelectedRole = selectedRole;
+                    data.User = user;
+                    data.CountRoles = data.RolesMatchings.Count();
 
-                data.CurrentStage = matchingRepository.GetCurrentStage(data.SelectedMatching);
 
-                userRepository.SetLastVisitDate(user.UserId, selectedRole, System.Convert.ToInt32(selectedMatchingId));
+                    var selectedMatchingId = Convert.ToInt32(HttpContext.Request.Cookies["selectedMatching"]);
 
-                HttpContext.Session.Set<SessionData>("Data", data);
+                    if (matchingRepository.GetMatchings()
+                        .Any(matching => matching.MatchingID.Equals(selectedMatchingId)))
+                    {
+                        data.SelectedMatching = selectedMatchingId;
+                        // data.MatchingTypeCode = _matchingRepository.findById(selectedMatchingId).MatchingType.MatchingTypeCode;
+                        data.MatchingTypeCode = matchingRepository.GetMatchings()
+                            .First(matching => matching.MatchingID == selectedMatchingId)
+                            .MatchingTypeCode;
+                        string selectedRole = HttpContext.Request.Cookies["selectedRole"];
+                        data.SelectedRole = selectedRole;
 
-                return RedirectToLk(selectedRole);
+                        data.CurrentStage = matchingRepository.GetCurrentStage(data.SelectedMatching);
+
+                        userRepository.SetLastVisitDate(user.UserId, selectedRole,
+                            System.Convert.ToInt32(selectedMatchingId));
+
+                        HttpContext.Session.Set<SessionData>("Data", data);
+                        return RedirectToLk(selectedRole);
+
+                    }
+                }
             }
-
+            catch  (Exception e)
+            {
+                logger.Log(LogLevel.Debug,e.ToString());
+            }
+            
             AuthViewModel userVm = new AuthViewModel();
             return View(userVm);
         }

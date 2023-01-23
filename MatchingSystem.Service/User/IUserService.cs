@@ -7,4 +7,6 @@ public interface IUserService
     public IEnumerable<Matching> GetMatchingsForUser(int userId);
 
     public IEnumerable<Role> GetRolesForUser(int matchingId, int userId);
+
+    public IEnumerable<DataLayer.Entities.User> getStudentUsersByMatching(int matchingId);
 }

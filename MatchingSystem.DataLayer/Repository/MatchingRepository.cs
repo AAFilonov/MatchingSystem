@@ -89,9 +89,9 @@ namespace MatchingSystem.DataLayer.Repository
             return Connection.Query<MatchingInfo>("select * from napp.get_FinishedMatchings()");
         }
 
-        public async Task<int> CreateMatching(MatchingInitDto data)
+        public  int CreateMatching(MatchingInitDto data)
         {
-            return await Connection.ExecuteScalarAsync<int>("insert into Matching (MatchingName,MatchingTypeID,CreatorUserID) output INSERTED.MatchingID Values(@MatchingName,@MatchingTypeId,@CreatorUserId)"
+            return Connection.ExecuteScalar<int>("insert into Matching (MatchingName,MatchingTypeID,CreatorUserID) output INSERTED.MatchingID Values(@MatchingName,@MatchingTypeId,@CreatorUserId)"
                 ,new {
                     MatchingName = data.name,
                     MatchingTypeId = (data.typeCode=="MG")?2:1,

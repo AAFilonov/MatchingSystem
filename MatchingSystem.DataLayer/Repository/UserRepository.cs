@@ -67,7 +67,7 @@ namespace MatchingSystem.DataLayer.Repository
             foreach (var user in users)
             {
                 user.UserId =Connection.ExecuteScalar<int>(
-                    "insert into Users (Login,PasswordHash,Name,Surname,Patronimic) OUTPUT INSERTED.UserID Values(@Login,@Password,@Name,@Surname,@Patronimic)",
+                    "insert into Users (Login,PasswordHash,Name,Surname,Patronimic, UserBK) OUTPUT INSERTED.UserID Values(@Login,@Password,@Name,@Surname,@Patronimic,@UserBK)",
                     new
                     {
                         Name = user.firstName
@@ -75,9 +75,21 @@ namespace MatchingSystem.DataLayer.Repository
                         ,Patronimic = user.middleName
                         ,Password = user.passwordHash
                         ,Login = user.login
+                        ,UserBK = user.userBK
+                        
                     });
             }
-
+            foreach (var user in users)
+            {
+                user.UserId =Connection.ExecuteScalar<int>(
+                    "update Users set UserBK = userBK where UserID = @UserId",
+                    new
+                    { 
+                        UserID = user.UserId,
+                        UserBK = user.userBK
+                    });
+            }
+            
             return users;
         }
         public string GetPasswordHashByLogin(string login)
@@ -143,6 +155,11 @@ namespace MatchingSystem.DataLayer.Repository
                     "exec napp.upd_CommonQuota_Request_ReadNotifications @UserID, @MatchingID, @TutorID",
                     new {UserID = userId, MatchingID = matchingId, TutorID = tutorId});
             }
+        }
+
+        public IEnumerable<User> getStudentUsersByMatching(int matchingId)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task ReadNotificationsAsync(int userId, int matchingId, int tutorId )
