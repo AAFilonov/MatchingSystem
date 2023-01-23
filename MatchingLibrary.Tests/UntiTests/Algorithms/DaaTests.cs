@@ -136,7 +136,10 @@ public class DaaTests
         [Test]
         public void WhenEveryoneGetFirstDesired()
         {
-           
+                //TODO править нейминг
+                //TODO вынести либу в отдельный проект
+                //TODO  подумать над классами распределяемых
+                
             List<SimpleAllocated> men = new List<SimpleAllocated>()
                 { new("a"), new("b"), new("c") };
             List<SimpleAllocated> women = new List<SimpleAllocated>()
@@ -162,7 +165,7 @@ public class DaaTests
             Assert.AreEqual("pair: [a:A],pair: [b:B],pair: [c:C],", resultString);
         
         }
-
+        
         [Test]
         public void WhenSomeStaySingle()
         {

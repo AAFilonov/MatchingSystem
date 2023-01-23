@@ -11,9 +11,10 @@ namespace MatchingSystem.DataLayer.Interface
     public interface IProjectRepository
     {
         Task CreateProjectAsync(ProjectParams @params);
-        IEnumerable<TutorInitDto> SetDefaultProjectsForTutors(List<TutorInitDto> tutors, int matchingId);
+        IEnumerable<TutorInitDto> CreateDefaultProjectsForTutors(List<TutorInitDto> tutors, int matchingId);
         void SetDefaultProjects_Groups(List<TutorInitDto> tuts);
         void CreateProject(ProjectParams @params);
+        void CreateDefaultTutorsProjects(List<TutorInitDto> tuts);
         Task EditProjectAsync(ProjectParams @params);
         void EditProject(ProjectParams @params);
         Task DeleteProjectAsync(int projectId);

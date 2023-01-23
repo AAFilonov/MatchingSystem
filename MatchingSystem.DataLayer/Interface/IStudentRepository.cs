@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using MatchingSystem.DataLayer.Dto.MatchingInit;
+using MatchingSystem.DataLayer.Dto.MatchingMonitoring;
 using MatchingSystem.DataLayer.Entities;
 using MatchingSystem.DataLayer.IO.Params;
 
@@ -29,5 +30,6 @@ namespace MatchingSystem.DataLayer.Interface
         Task SetPreferencesAsync(StudentPreferenceParams inParams);
         void ClearPreferences(int studentId);
         Task ClearPreferencesAsync(int studentId);
+        IEnumerable<Student> GetStudentsByMatching(int matchingId);
     }
 }

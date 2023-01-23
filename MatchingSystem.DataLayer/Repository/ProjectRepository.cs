@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Dapper;
 using MatchingSystem.DataLayer.Base;
 using MatchingSystem.DataLayer.Dto.MatchingInit;
+using MatchingSystem.DataLayer.Dto.MatchingMonitoring;
 using MatchingSystem.DataLayer.Entities;
 using MatchingSystem.DataLayer.Interface;
 using MatchingSystem.DataLayer.IO.Params;
@@ -48,7 +49,7 @@ namespace MatchingSystem.DataLayer.Repository
                 ",TutorID " +
                 "FROM Projects " +
                 "WHERE " +
-                "MatchingId = @MatchingId",
+                "MatchingID = @MatchingId",
                 new {MatchingId = MatchingId}
             );
         }
@@ -96,7 +97,7 @@ namespace MatchingSystem.DataLayer.Repository
                   });
         }
 
-        public IEnumerable<TutorInitDto> SetDefaultProjectsForTutors(List<TutorInitDto> tutors,int matchingId)
+        public IEnumerable<TutorInitDto> CreateDefaultProjectsForTutors(List<TutorInitDto> tutors,int matchingId)
         {
             foreach (var tut in tutors)
             {
@@ -129,6 +130,21 @@ namespace MatchingSystem.DataLayer.Repository
                         });
                 }
             }
+        }
+        public void CreateDefaultTutorsProjects(List<TutorInitDto> tuts)
+        {
+            foreach (var tutor in tuts)
+            {
+                tutor.DefaultProjectId = Connection.Execute(
+                    "insert into Projects (TutorID, ProjectName,IsDefault) OUTPUT INSERTED.ProjectID VALUES (@TutorID, @ProjectName, @IsDefault)", new
+                    { 
+                        @TutorID = tutor.TutorId,
+                        @ProjectName = "Записаться к преподавателю",
+                        @IsDefault = true
+                    });
+                
+            }
+       
         }
 
         public void CreateProject(ProjectParams @params)
@@ -171,6 +187,16 @@ namespace MatchingSystem.DataLayer.Repository
                       WorkDirection_CodeList = @params.CommaSeparatedWorkList,
                       Group_IdList = @params.CommaSeparatedGroupList
                   });
+        }
+
+        public IEnumerable<ProjectGroupDTO> GetProjectsGroupsBtMatching(int matchingId)
+        {
+            return Connection.Query<ProjectGroupDTO>(
+                "select pg.ProjectID,pg.GroupID from Projects_Groups pg " +
+                "join Groups g on g.GroupID = pg.GroupID " +
+                "where g.MatchingID = @MatchingID"
+                , new { MatchingID = matchingId }
+            );
         }
 
         public void EditProject(ProjectParams @params)

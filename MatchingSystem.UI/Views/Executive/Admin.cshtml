@@ -96,7 +96,7 @@ function getCurrentDate (){
     var yyyy = today.getFullYear();
     
     return hours+'_'+ minutes+'_'+mm + '_' + dd + '_' + yyyy;
-};
+}
        Vue.prototype.$appName = 'MatchingApp';
        let app = new Vue({
            el: '#app',
@@ -138,18 +138,18 @@ function getCurrentDate (){
                    else DisplayNotification((await response.json()).detail, 'error');
                },
                exportStudents(){
-                 axios.get(`${params.basePath}/api/report/student_data_report`,{ responseType: 'blob'})                                                                                          
-                        .then(response => {
-                            this.matchingData =  response.data; 
-                            console.log(response.data);
-                            const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }) ;
-                            const link = document.createElement('a') ;
-                            link.href = URL.createObjectURL(blob) ;
-                            var today = getCurrentDate();
-                            link.download = "students_"+today+".xlsx" ;
-                            link.click();
-                            URL.revokeObjectURL(link.href);
-                 });
+                 axios.get(`${params.basePath}/api/matchingInitialization/student_data_report`,{ responseType: 'blob'})                                                                      
+                            .then(response => {
+                                this.matchingData =  response.data; 
+                                console.log(response.data);
+                                const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }) ;
+                                const link = document.createElement('a') ;
+                                link.href = URL.createObjectURL(blob) ;
+                                var today = getCurrentDate();
+                                link.download = "students_"+today+".xlsx" ;
+                                link.click();
+                                URL.revokeObjectURL(link.href);
+                        });
                      
                }
            },

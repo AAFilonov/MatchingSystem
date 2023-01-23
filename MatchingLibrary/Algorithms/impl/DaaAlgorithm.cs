@@ -9,6 +9,14 @@ public class DAAAlgorithm<M, W> : IOneToOneAllocationAlgorithm<M, W>
     where M : class
     where W : class
 {
+    public ISmpAllocation<M, W> solve(ISmpAllocation<M, W> allocation)
+    {
+        while (!isFinal(allocation))
+        {
+            computeIteration(allocation);
+        }
+        return allocation;
+    }
     public void computeIteration(ISmpAllocation<M, W> allocation)
     {
         foreach (var freeMan in allocation.getMList())
