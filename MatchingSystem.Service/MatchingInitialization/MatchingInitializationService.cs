@@ -132,14 +132,18 @@ public class MatchingInitializationService : IMatchingInitializationService
 
     private List<StudentInitDto> ctreateUsersForStudents(MatchingInitData data)
     {
-        var pass =
-            "$s2$16384$8$1$DJBTMOcK+VGXFk8BTUvWYNr7PZE4Cx0l2OdvbWA4/TA=$R7TZahOx+lmeP+B8FiLe6IQzQJ/mSVYQa+7M57kvcOs=";
         foreach (var dto in data.studentRecords)
         {
             dto.login = Transliterate(dto.lastName + dto.firstName.Substring(0, 1) +
                                       (dto.middleName != null ? dto.middleName.Substring(0, 1) : ""));
+            if (userRepository.GetUser(dto.login) != null)
+            {
+                dto.login += "2023";
+            }
 
+            dto.userBK = dto.UserId; 
             dto.password = CreatePassword(6);
+            
             var encoder = new ScryptEncoder();
 
             dto.passwordHash = encoder.Encode(dto.password);

@@ -26,5 +26,6 @@ public class StudentInitDto
     public int UserId { get; set; }
     public int StudentId { get; set; }
     public int GroupId { get; set; }
+    public int userBK { get; set; }
 }
 

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 
 using System.Threading.Tasks;
@@ -10,7 +9,6 @@ using MatchingSystem.DataLayer.Dto.MatchingMonitoring;
 using MatchingSystem.DataLayer.Entities;
 using MatchingSystem.DataLayer.Interface;
 using MatchingSystem.DataLayer.IO.Params;
-using Microsoft.Data.SqlClient;
 
 
 namespace MatchingSystem.DataLayer.Repository

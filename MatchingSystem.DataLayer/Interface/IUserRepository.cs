@@ -19,5 +19,6 @@ namespace MatchingSystem.DataLayer.Interface
         void UpdatePasswordHash(int userId, string newHash);
         void SetLastVisitDate(int userId, string role, int projectId);
         void ReadNotifications(int userId, int matchingId, int tutorId = default);
+        IEnumerable<User> getStudentUsersByMatching(int matchingId);
     }
 }
