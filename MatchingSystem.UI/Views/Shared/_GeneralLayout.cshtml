@@ -56,9 +56,10 @@
                     @rolesMatchings.Find(x => x.RoleName == data.SelectedRole)?.RoleName_ru
                 </h4>
                 <div class="dropdown-menu" aria-labelledby="fio">
+                       <a href="@Url.Action("logout", "home")" class="dropdown-item">Выход</a>
                     @* ReSharper disable once Mvc.ActionNotResolved *@
                     <a href="@Url.Action("index")" class="dropdown-item">Учетная запись</a>
-                    <a href="@Url.Action("logout", "home")" class="dropdown-item">Выход</a>
+                    <!--TODO не работает пункт меню номер 2 - нужно переписать С# на JS-->
                 </div>
             </div>
         </div>
