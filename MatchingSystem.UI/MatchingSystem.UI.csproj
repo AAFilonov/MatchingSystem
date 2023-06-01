@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <Configurations>Debug;Production</Configurations>
+    <Configurations>Debug;Production;Release</Configurations>
     <AssemblyName>MatchingSystem.UI</AssemblyName>
     <RootNamespace>MatchingSystem.UI</RootNamespace>
     <UserSecretsId>878e82ca-8c10-40d9-9298-92cbb8dfab0b</UserSecretsId>
