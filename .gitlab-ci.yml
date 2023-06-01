@@ -60,7 +60,7 @@ unit-test-job_emulation:   # This job runs in the test stage.
      - build_job
 
 pre_deploy_job:
-  stage: pre-deploy
+  stage: pre_deploy
   only:
     - tags
   script:
@@ -77,15 +77,14 @@ deploy_job:
     - tags
   script:
     - echo "Deploying application..."
-    - echo "Application successfully deployed."
-
     - "dotnet publish -o  $env:EXE_DEPLOY_FOLDER" -c Release'
+    - echo "Application successfully deployed."
   dependencies:
     - pre_deploy_job
   environment: production
   
 post_deploy_job:
-  stage: post-deploy
+  stage: post_deploy
   only:
     - tags
   script:
