@@ -89,7 +89,7 @@ post_deploy_job:
   only: # для каких сущностей требуется выполнять задачу
     - branches
   script:
-    - '"$env:EXE_DEPLOY_FOLDER"\"$env:EXE_RELEASE_FILENAME"'
+    - "$env:EXE_DEPLOY_FOLDER/$env:EXE_RELEASE_FILENAME"
   dependencies:
     - deploy_job
   environment: production  
