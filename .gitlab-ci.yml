@@ -22,7 +22,8 @@ variables:
   # Тут куча путей до утилит, которые просто обязаны лежать там, где ожидается
   NUGET_PATH: 'D:\DiplomaCICD\Tools\nuget.exe'
   MSBUILD_PATH: 'C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin'
- # XUNIT_PATH: 'C:\Tools\xunit.runner.console.2.3.1\xunit.console.exe'
+  MSBuildSDKsPath: 'C:\Program Files\dotnet\sdk\6.0.408'
+  # XUNIT_PATH: 'C:\Tools\xunit.runner.console.2.3.1\xunit.console.exe'
  # TESTS_OUTPUT_FOLDER_PATH: 'D:\DiplomaCICD\Output\tests\bin\Release\'
 
 
