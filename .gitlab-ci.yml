@@ -49,7 +49,7 @@ build_job:
   artifacts: # где по завершении задачи будут результаты, которые надо сохранить в gitlab (т.н. артефакты) и которые можно будет передать другим задачам по цепочке
     expire_in: 2 days # сколько хранить артефакты
     paths: # список путей, по которым находятся файлы для сохранения
-      - "'./bin'"  # saving exe to copy to deploy folder
+      - './bin'  # saving exe to copy to deploy folder
 
 test_job:   # This job runs in the test stage.
   stage: test    # It only starts when the job in the build stage completes successfully.
