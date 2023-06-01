@@ -45,7 +45,7 @@ build_job:
   script:
     - '& dotnet restore'
     - "& dotnet build --configuration Release -o './bin'"
-    - "& dotnet publish -o D:\DiplomaMatching\bin -c Release"
+    - "& dotnet publish -o 'D:/DiplomaMatching/bin' --configuration Release"
   artifacts:  
     expire_in: 2 days 
     paths:
