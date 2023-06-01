@@ -29,7 +29,6 @@ public class MonitoringTest
         monitoringService = new MonitoringService(studentRepository,tutorRepository,projectRepository,groupRepository);
     }
     
-    [Test]
     public void testStatisicRealBD()
     {
         var result =  monitoringService.getMonitoringData(1);

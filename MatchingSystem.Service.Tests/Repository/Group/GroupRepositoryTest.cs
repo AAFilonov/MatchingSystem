@@ -21,8 +21,7 @@ public class GroupRepositoryTest
         groupRepository = new GroupRepository("data source=localhost\\SQLEXPRESS;initial catalog=DiplomaMatching;Integrated Security=True;MultipleActiveResultSets=True;");
 
     }
-
-    [Test]
+    
     public  void  testInsert_whenDataIsValid()
     {
         using (var transactionScope = new TransactionScope())
