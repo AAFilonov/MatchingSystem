@@ -48,8 +48,8 @@ build_job:
   script: # код шага
     - '& Get-ChildItem Env:'
     - '& dotnet restore'
-    - '& dotnet msbuild'
-   # - '& dotnet build --configuration Release' 
+  #  - '& dotnet msbuild'
+    - '& dotnet build --configuration Release -o ./bin ' 
   #  - '& "$env:MSBUILD_PATH" /p:Configuration=Release /m:$env:MSBUILD_CONCURRENCY /nr:false /clp:ErrorsOnly' # сборка; ключ clp:ErrorsOnlyоставляет только вывод ошибок; ключ nr:false завершает инстансы msbuild 
   artifacts: # где по завершении задачи будут результаты, которые надо сохранить в gitlab (т.н. артефакты) и которые можно будет передать другим задачам по цепочке
     expire_in: 2 days # сколько хранить артефакты
