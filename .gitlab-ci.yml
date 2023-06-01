@@ -21,7 +21,7 @@ variables:
   MSBUILD_CONCURRENCY: 4
   # Тут куча путей до утилит, которые просто обязаны лежать там, где ожидается
   NUGET_PATH: 'D:\DiplomaCICD\Tools\nuget.exe'
-  MSBUILD_PATH: 'D:\Windows\Microsoft.NET\assembly\GAC_32\MSBuild\v4.0_4.0.0.0__b03f5f7f11d50a3a'
+  MSBUILD_PATH: 'C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin'
  # XUNIT_PATH: 'C:\Tools\xunit.runner.console.2.3.1\xunit.console.exe'
  # TESTS_OUTPUT_FOLDER_PATH: 'D:\DiplomaCICD\Output\tests\bin\Release\'
 
