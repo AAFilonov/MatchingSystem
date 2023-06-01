@@ -9,7 +9,7 @@ public class ServiceTestExample
     public void testInsert_whenDataIsValid()
     {
         var expected = "everything is ok";
-        var actual = "everything" + " is" + "not" + " ok";
+        var actual = "everything" + " is" + "not very much" + " ok";
 
         Assert.AreEqual(expected, actual);
     }
