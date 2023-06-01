@@ -57,8 +57,8 @@ test_job:   # This job runs in the test stage.
     - branches
   script:
     - echo "Running unit tests... This will take about 60 seconds."
-    - sleep 60
-    - echo "Code coverage is 90%"
+  #    - sleep 60
+ #   - echo "Code coverage is 90%"
    # - '& "$env:XUNIT_PATH" "$env:TESTS_OUTPUT_FOLDER_PATH\CiCdExample.Tests.dll"'
   dependencies: # указание, что для запуска этой задачи требуется успешно завершенная задача build_job
      - build_job
