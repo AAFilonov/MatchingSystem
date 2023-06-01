@@ -22,7 +22,7 @@ variables:
   # Тут куча путей до утилит, которые просто обязаны лежать там, где ожидается
   MSBuildSDKsPath: 'C:\Program Files\dotnet\sdk\6.0.408\Sdks'
   # XUNIT_PATH: 'C:\Tools\xunit.runner.console.2.3.1\xunit.console.exe'
-  EXE_RELEASE_FOLDER: 'YourApp\bin\Release'
+  EXE_RELEASE_FOLDER: 'MatchingSystem.UI\bin\Release\net6.0'
   TEST_FOLDER: 'Tests\bin\Release'
   DEPLOY_FOLDER: 'P:\Projects\YourApp\Builds'
   NUNIT_PATH: 'C:\Program Files (x86)\NUnit.org\nunit-console\nunit3-console.exe'
