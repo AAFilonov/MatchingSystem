@@ -23,8 +23,9 @@ variables:
   MSBuildSDKsPath: 'C:\Program Files\dotnet\sdk\6.0.408\Sdks'
   # XUNIT_PATH: 'C:\Tools\xunit.runner.console.2.3.1\xunit.console.exe'
   EXE_RELEASE_FOLDER: '.\bin'
+  EXE_RELEASE_FILENAME: 'MatchingSystem.UI.exe'
   TEST_FOLDER: 'Tests\bin\Release'
-  DEPLOY_FOLDER: 'D:\DiplomaMatching'
+  DEPLOY_FOLDER: 'D:\DiplomaMatching\bin'
   NUNIT_PATH: 'C:\Program Files (x86)\NUnit.org\nunit-console\nunit3-console.exe'
 
 stages:          # List of stages for jobs, and their order of execution
@@ -32,17 +33,13 @@ stages:          # List of stages for jobs, and their order of execution
   - test
   - deploy
 
-build-job_emulatuion:       # This job runs in the build stage, which runs first.
-  stage: build
-  script:
-    - echo "Compiling the code..."
-    - echo "Compile complete."
-
 build_job:
   stage: build # указание, что задача принадлежит этапу build
   # tags: windows # если тут указать тэг, задача будет выполняться только на Runner-е с указанным тэгом 
   only: # для каких сущностей требуется выполнять задачу
     - branches
+  before_script:
+    - CHCP 65001
   script: # код шага
     - '& dotnet restore'
     - '& dotnet build --configuration Release -o "$env:EXE_RELEASE_FOLDER"' 
@@ -62,6 +59,18 @@ unit-test-job_emulation:   # This job runs in the test stage.
   dependencies: # указание, что для запуска этой задачи требуется успешно завершенная задача build_job
      - build_job
 
+pre_deploy_job:
+  stage: pre-deploy
+  only:
+    - tags
+  script:
+    - '(Get-WmiObject Win32_Process | Where-Object { $_.Path.StartsWith("$env:EXE_RELEASE_FOLDER\") }).Terminate()'
+  dependencies:
+    - build_job
+    - test_job
+  environment: production
+  
+#возможно стоит иметь две папки деплоя
 deploy_job:
   stage: deploy
   only:
@@ -70,10 +79,21 @@ deploy_job:
     - echo "Deploying application..."
     - echo "Application successfully deployed."
 
-    - 'xcopy /y ".\$env:EXE_RELEASE_FOLDER\" "$env:EXE_DEPLOY_FOLDER"'
+    - "dotnet publish -o  $env:EXE_DEPLOY_FOLDER" -c Release'
   dependencies:
-    - build_job
-    - test_job
+    - pre_deploy_job
   environment: production
+  
+post_deploy_job:
+  stage: post-deploy
+  only:
+    - tags
+  script:
+    - '$env:EXE_RELEASE_FOLDER\$env:EXE_RELEASE_FILENAME'
+  dependencies:
+    - deploy_job
+  environment: production  
+  
+
 
 
