@@ -22,12 +22,10 @@ variables:
   # Тут куча путей до утилит, которые просто обязаны лежать там, где ожидается
   MSBuildSDKsPath: 'C:\Program Files\dotnet\sdk\6.0.408\Sdks'
   # XUNIT_PATH: 'C:\Tools\xunit.runner.console.2.3.1\xunit.console.exe'
-  EXE_RELEASE_FOLDER: 'MatchingSystem.UI\bin\Release\net6.0'
+  EXE_RELEASE_FOLDER: '.\bin'
   TEST_FOLDER: 'Tests\bin\Release'
-  DEPLOY_FOLDER: 'P:\Projects\YourApp\Builds'
+  DEPLOY_FOLDER: 'D:\DiplomaMatching'
   NUNIT_PATH: 'C:\Program Files (x86)\NUnit.org\nunit-console\nunit3-console.exe'
-
-
 
 stages:          # List of stages for jobs, and their order of execution
   - build
@@ -46,36 +44,36 @@ build_job:
   only: # для каких сущностей требуется выполнять задачу
     - branches
   script: # код шага
-    - '& Get-ChildItem Env:'
     - '& dotnet restore'
-  #  - '& dotnet msbuild'
-    - '& dotnet build --configuration Release -o ./bin ' 
+    - '& dotnet build --configuration Release -o "$env:EXE_RELEASE_FOLDER"' 
   #  - '& "$env:MSBUILD_PATH" /p:Configuration=Release /m:$env:MSBUILD_CONCURRENCY /nr:false /clp:ErrorsOnly' # сборка; ключ clp:ErrorsOnlyоставляет только вывод ошибок; ключ nr:false завершает инстансы msbuild 
   artifacts: # где по завершении задачи будут результаты, которые надо сохранить в gitlab (т.н. артефакты) и которые можно будет передать другим задачам по цепочке
     expire_in: 2 days # сколько хранить артефакты
     paths: # список путей, по которым находятся файлы для сохранения
-      - './bin'  # saving exe to copy to deploy folder
+      - '"$env:EXE_RELEASE_FOLDER" '  # saving exe to copy to deploy folder
 
-
-
-
-unit-test-job:   # This job runs in the test stage.
+unit-test-job_emulation:   # This job runs in the test stage.
   stage: test    # It only starts when the job in the build stage completes successfully.
   script:
     - echo "Running unit tests... This will take about 60 seconds."
     - sleep 60
     - echo "Code coverage is 90%"
+   # - '& "$env:XUNIT_PATH" "$env:TESTS_OUTPUT_FOLDER_PATH\CiCdExample.Tests.dll"'
+  dependencies: # указание, что для запуска этой задачи требуется успешно завершенная задача build_job
+     - build_job
 
-lint-test-job:   # This job also runs in the test stage.
-  stage: test    # It can run at the same time as unit-test-job (in parallel).
-  script:
-    - echo "Linting code... This will take about 10 seconds."
-    - sleep 10
-    - echo "No lint issues found."
-
-deploy-job:      # This job runs in the deploy stage.
-  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
-  environment: production
+deploy_job:
+  stage: deploy
+  only:
+    - tags
   script:
     - echo "Deploying application..."
     - echo "Application successfully deployed."
+
+    - 'xcopy /y ".\$env:EXE_RELEASE_FOLDER\" "$env:EXE_DEPLOY_FOLDER"'
+  dependencies:
+    - build_job
+    - test_job
+  environment: production
+
+
