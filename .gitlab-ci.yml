@@ -66,7 +66,7 @@ test_job:   # This job runs in the test stage.
 pre_deploy_job:
   stage: pre_deploy
   script:
-    - '(Get-WmiObject Win32_Process | Where-Object { $_.Path.StartsWith("$env:EXE_RELEASE_FOLDER\") }).Terminate()'
+    - 'taskkill /F /IM MatchingSystem.UI.exe || VER>NUL'
   dependencies:
     - build_job
     - test_job
