@@ -40,7 +40,7 @@ build_job:
   only: # для каких сущностей требуется выполнять задачу
     - branches
   before_script:
-    - CHCP 65001
+  #  - CHCP 65001
   script:
     - '& dotnet restore'
     - "& dotnet build --configuration Release -o './bin'"
@@ -55,7 +55,7 @@ test_job:   # This job runs in the test stage.
   only: # для каких сущностей требуется выполнять задачу
     - branches
   script:
-    - echo "Running unit tests... This will take about 60 seconds."
+    - echo "TODO прогон тестов"
   #    - sleep 60
  #   - echo "Code coverage is 90%"
    # - '& "$env:XUNIT_PATH" "$env:TESTS_OUTPUT_FOLDER_PATH\CiCdExample.Tests.dll"'
@@ -69,7 +69,7 @@ deploy_job:
     - branches
   script:
    ## - 'dotnet publish -o "$env:EXE_DEPLOY_FOLDER" -c Release'
-    - echo "Application successfully deployed."
+    - echo "TODO dotnet publish в правильную папку"
   dependencies:
   environment: production
   
@@ -78,8 +78,7 @@ post_deploy_job:
   only: # для каких сущностей требуется выполнять задачу
     - branches
   script:
-    - echo 'TODO когда нибудь сделать запуск приложения'
-    #- "$env:EXE_DEPLOY_FOLDER/$env:EXE_RELEASE_FILENAME"
+    - echo "TODO рестарт приложения через IIS"
   dependencies:
     - deploy_job
   environment: production  
