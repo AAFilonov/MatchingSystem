@@ -20,13 +20,13 @@ variables:
   # Максимальное количество параллельно собираемых проектов при сборке решения; зависит от количества ядер ПК, выбранного для сборки
   MSBUILD_CONCURRENCY: 4
   # Тут куча путей до утилит, которые просто обязаны лежать там, где ожидается
-  MSBuildSDKsPath: 'C:\Program Files\dotnet\sdk\6.0.408\Sdks'
-  # XUNIT_PATH: 'C:\Tools\xunit.runner.console.2.3.1\xunit.console.exe'
-  EXE_RELEASE_FOLDER: '.\bin'
-  EXE_RELEASE_FILENAME: 'MatchingSystem.UI.exe'
-  TEST_FOLDER: 'Tests\bin\Release'
-  DEPLOY_FOLDER: 'D:\DiplomaMatching\bin'
-  NUNIT_PATH: 'C:\Program Files (x86)\NUnit.org\nunit-console\nunit3-console.exe'
+  MSBuildSDKsPath: "C:\Program Files\dotnet\sdk\6.0.408\Sdks"
+  # XUNIT_PATH: "C:\Tools\xunit.runner.console.2.3.1\xunit.console.exe"
+  EXE_RELEASE_FOLDER: ".\bin"
+  EXE_RELEASE_FILENAME: "MatchingSystem.UI.exe"
+  TEST_FOLDER: "Tests\bin\Release"
+  DEPLOY_FOLDER: "D:\DiplomaMatching\bin"
+  NUNIT_PATH: "C:\Program Files (x86)\NUnit.org\nunit-console\nunit3-console.exe"
 
 stages:          # List of stages for jobs, and their order of execution
   - build
