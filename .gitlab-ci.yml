@@ -31,7 +31,6 @@ variables:
 stages:          # List of stages for jobs, and their order of execution
   - build
   - test
-  - pre_deploy
   - deploy
   - post_deploy
 
@@ -63,15 +62,6 @@ test_job:   # This job runs in the test stage.
   dependencies: # указание, что для запуска этой задачи требуется успешно завершенная задача build_job
      - build_job
 
-pre_deploy_job:
-  stage: pre_deploy
-  script:
-    - '(taskkill /F /IM MatchingSystem.UI.exe) -or (echo "MatchingSystem.UI.exe not running...")'
-  dependencies:
-    - build_job
-    - test_job
-  environment: production
-  
 #возможно стоит иметь две папки деплоя
 deploy_job:
   stage: deploy
@@ -81,7 +71,6 @@ deploy_job:
    ## - 'dotnet publish -o "$env:EXE_DEPLOY_FOLDER" -c Release'
     - echo "Application successfully deployed."
   dependencies:
-    - pre_deploy_job
   environment: production
   
 post_deploy_job:
