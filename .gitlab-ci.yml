@@ -19,12 +19,12 @@
 variables:
   # Максимальное количество параллельно собираемых проектов при сборке решения; зависит от количества ядер ПК, выбранного для сборки
   MSBUILD_CONCURRENCY: "4"
-  # Тут куча путей до утилит, которые просто обязаны лежать там, где ожидается
   MSBuildSDKsPath: "C:\\Program Files\\dotnet\\sdk\\6.0.405\\Sdks"
-  # XUNIT_PATH: "C:\\Tools\\xunit.runner.console.2.3.1\\xunit.console.exe"
-  EXE_RELEASE_FOLDER: ".\\bin"
-  EXE_RELEASE_FILENAME: "MatchingSystem.UI.exe"
-  TEST_FOLDER: "Tests\\bin\\Release"
+  
+  EXE_RELEASE_FOLDER: "C:\\WebFarm\\projects.iipo.tu-bryansk.ru\\diplom-matching"
+  EXE_RELEASE_FILENAME: "DiplomaUI.exe"
+  TEST_FOLDER: ".\\bin\\Test"
+  TMP_FOLDER: ".\\bin\\Release" 
   DEPLOY_FOLDER: "C:\\GitLabUtils\\DiplomaMathcing"
   NUNIT_PATH: "C:\\Program Files (x86)\\NUnit.org\\nunit-console\\nunit3-console.exe"
 
@@ -43,12 +43,13 @@ build_job:
   #  - CHCP 65001
   script:
     - '& dotnet restore'
-    - "& dotnet build --configuration Release -o './bin'"
-    - "& dotnet publish -o 'D:/DiplomaMatching/bin' --configuration Release"
+    - "& dotnet build --configuration Release -o '$env:EXE_TMP_FOLDER'"
   artifacts:  
-    expire_in: 2 days 
-    paths:
-      - './bin'  
+    expire_in: 2 days # сколько хранить артефакты
+    paths: # список путей, по которым находятся файлы для сохранения
+      - '$env:EXE_TMP_FOLDER\\$env:EXE_RELEASE_FILENAME'  # saving exe to copy to deploy folder
+      - '$env:TEST_FOLDER'  # saving entire Test project so NUnit can run tests
+
 
 test_job:   # This job runs in the test stage.
   stage: test    # It only starts when the job in the build stage completes successfully.
@@ -69,6 +70,7 @@ deploy_job:
     - branches
   script:
    ## - 'dotnet publish -o "$env:EXE_DEPLOY_FOLDER" -c Release'
+     #  - "& dotnet publish -o 'C:\WebFarm\projects.iipo.tu-bryansk.ru\diplom-matching' --configuration Release" - деплой
     - echo "TODO dotnet publish в правильную папку"
   dependencies:
   environment: production
