@@ -23,10 +23,7 @@ variables:
   
   EXE_RELEASE_FOLDER: "C:\\WebFarm\\projects.iipo.tu-bryansk.ru\\diplom-matching"
   EXE_RELEASE_FILENAME: "DiplomaUI.exe"
-  TEST_FOLDER: ".\\Out\\Test"
   TMP_FOLDER: ".\\Out\\Release" 
-  DEPLOY_FOLDER: "C:\\GitLabUtils\\DiplomaMathcing"
-  NUNIT_PATH: "C:\\Program Files (x86)\\NUnit.org\\nunit-console\\nunit3-console.exe"
 
 stages:          # List of stages for jobs, and their order of execution
   - build
@@ -35,9 +32,8 @@ stages:          # List of stages for jobs, and their order of execution
   - post_deploy
 
 build_job:
-  stage: build # указание, что задача принадлежит этапу build
-  # tags: windows # если тут указать тэг, задача будет выполняться только на Runner-е с указанным тэгом 
-  only: # для каких сущностей требуется выполнять задачу
+  stage: build
+  only:
     - branches
   before_script:
    - CHCP 65001
@@ -62,24 +58,24 @@ test_job:   # This job runs in the test stage.
   dependencies: # указание, что для запуска этой задачи требуется успешно завершенная задача build_job
      - build_job
 
-#возможно стоит иметь две папки деплоя
 deploy_job:
   stage: deploy
-  only: # для каких сущностей требуется выполнять задачу
+  only:
     - production
+  before_script:
+   - CHCP 65001
   script:
-   ## - 'dotnet publish -o "$env:EXE_DEPLOY_FOLDER" -c Release'
-     #  - "& dotnet publish -o 'C:\WebFarm\projects.iipo.tu-bryansk.ru\diplom-matching' --configuration Release" - деплой
-    - echo "TODO dotnet publish в правильную папку"
+    "& dotnet publish -o 'C:\WebFarm\projects.iipo.tu-bryansk.ru\diplom-matching' --configuration Release" #- деплой EXE_RELEASE_FOLDER
   dependencies:
   environment: production
   
 post_deploy_job:
   stage: post_deploy
-  only: # для каких сущностей требуется выполнять задачу
+  only:
     - production
   script:
-    - echo "TODO рестарт приложения через IIS"
+    - C:\Windows\System32\inetsrv\appcmd stop site "projects.iipo.tu-bryansk.ru"
+    - C:\Windows\System32\inetsrv\appcmd start site "projects.iipo.tu-bryansk.ru"
   dependencies:
     - deploy_job
   environment: production  
