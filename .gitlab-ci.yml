@@ -56,10 +56,8 @@ test_job:   # This job runs in the test stage.
   only: # для каких сущностей требуется выполнять задачу
     - branches
   script:
-    - echo "TODO прогон тестов"
-  #    - sleep 60
- #   - echo "Code coverage is 90%"
-   # - '& "$env:XUNIT_PATH" "$env:TESTS_OUTPUT_FOLDER_PATH\CiCdExample.Tests.dll"'
+    - echo "Running tests..."
+    - 'C:\Program Files (x86)\NUnit.org\nunit-console\nunit3-console.exe' 'MatchingLibrary.Tests.dll' 
   dependencies: # указание, что для запуска этой задачи требуется успешно завершенная задача build_job
      - build_job
 
