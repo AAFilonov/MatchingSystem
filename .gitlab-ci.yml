@@ -48,7 +48,6 @@ build_job:
     expire_in: 2 days # сколько хранить артефакты
     paths: # список путей, по которым находятся файлы для сохранения
       - '.\Out\Release'  # saving exe to copy to deploy folder
-      - '.\Out\Test'  # saving entire Test project so NUnit can run tests
 
 
 test_job:   # This job runs in the test stage.
