@@ -74,8 +74,8 @@ post_deploy_job:
   only:
     - production
   script:
-    - C:\Windows\System32\inetsrv\appcmd stop site "projects.iipo.tu-bryansk.ru"
-    - C:\Windows\System32\inetsrv\appcmd start site "projects.iipo.tu-bryansk.ru"
+    - "& C:\Windows\System32\inetsrv\appcmd stop site 'projects.iipo.tu-bryansk.ru'"
+    - "& C:\Windows\System32\inetsrv\appcmd start site 'projects.iipo.tu-bryansk.ru'"
   dependencies:
     - deploy_job
   environment: production  
