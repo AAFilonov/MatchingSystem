@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 
 namespace MatchingSystem.Service.Tests;
 
@@ -6,10 +6,10 @@ namespace MatchingSystem.Service.Tests;
 public class ServiceTestExample
 {
     [Test]
-    public void testInsert_whenDataIsValid()
+    public void checkTestCiCD()// пример теста
     {
         var expected = "everything is ok";
-        var actual = "everything" + " is" + "not very much" + " ok";
+        var actual = "everything is ok";
 
         Assert.AreEqual(expected, actual);
     }
