@@ -57,7 +57,8 @@ test_job:   # This job runs in the test stage.
     - branches
   script:
     - echo "Running tests..."
-    - '& "C:\Program Files (x86)\NUnit.org\nunit-console\nunit3-console.exe" "MatchingLibrary.Tests.dll" '
+    - dotnet test
+    #- '& "C:\Program Files (x86)\NUnit.org\nunit-console\nunit3-console.exe" "MatchingLibrary.Tests.dll" '
   dependencies: # указание, что для запуска этой задачи требуется успешно завершенная задача build_job
      - build_job
 
