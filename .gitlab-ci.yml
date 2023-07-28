@@ -66,7 +66,7 @@ test_job:   # This job runs in the test stage.
 deploy_job:
   stage: deploy
   only: # для каких сущностей требуется выполнять задачу
-    - branches
+    - production
   script:
    ## - 'dotnet publish -o "$env:EXE_DEPLOY_FOLDER" -c Release'
      #  - "& dotnet publish -o 'C:\WebFarm\projects.iipo.tu-bryansk.ru\diplom-matching' --configuration Release" - деплой
@@ -77,7 +77,7 @@ deploy_job:
 post_deploy_job:
   stage: post_deploy
   only: # для каких сущностей требуется выполнять задачу
-    - branches
+    - production
   script:
     - echo "TODO рестарт приложения через IIS"
   dependencies:
