@@ -44,7 +44,7 @@ build_job:
   script:
     - CHCP 65001
     - dotnet restore
-    - dotnet build --configuration Release -o '$EXE_TMP_FOLDER'
+    - dotnet build --configuration Release -o "$EXE_TMP_FOLDER"
   artifacts:  
     expire_in: 2 days # сколько хранить артефакты
     paths: # список путей, по которым находятся файлы для сохранения
