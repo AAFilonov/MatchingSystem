@@ -65,7 +65,7 @@ deploy_job:
   before_script:
    - CHCP 65001
   script:
-    "& dotnet publish -o 'C:\WebFarm\projects.iipo.tu-bryansk.ru\diplom-matching' --configuration Release" #- деплой EXE_RELEASE_FOLDER
+    "& dotnet publish -o 'C:\\WebFarm\projects.iipo.tu-bryansk.ru\\diplom-matching' --configuration Release" #- деплой EXE_RELEASE_FOLDER
   dependencies:
   environment: production
   
@@ -74,8 +74,8 @@ post_deploy_job:
   only:
     - production
   script:
-    - "& C:\Windows\System32\inetsrv\appcmd stop site 'projects.iipo.tu-bryansk.ru'"
-    - "& C:\Windows\System32\inetsrv\appcmd start site 'projects.iipo.tu-bryansk.ru'"
+    - "& C:\\Windows\\System32\\inetsrv\\appcmd stop site 'projects.iipo.tu-bryansk.ru'"
+    - "& C:\\Windows\\System32\\inetsrv\\appcmd start site 'projects.iipo.tu-bryansk.ru'"
   dependencies:
     - deploy_job
   environment: production  
