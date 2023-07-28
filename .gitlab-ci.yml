@@ -65,7 +65,7 @@ deploy_job:
   before_script:
    - CHCP 65001
   script:
-    "& dotnet publish -o 'C:\\WebFarm\projects.iipo.tu-bryansk.ru\\diplom-matching' --configuration Release" #- деплой EXE_RELEASE_FOLDER
+    - "& dotnet publish -o 'C:\\WebFar\\projects.iipo.tu-bryansk.ru\\diplom-matching' --configuration Release" #- деплой EXE_RELEASE_FOLDER
   dependencies:
   environment: production
   
