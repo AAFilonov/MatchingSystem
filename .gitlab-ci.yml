@@ -23,8 +23,8 @@ variables:
   
   EXE_RELEASE_FOLDER: "C:\\WebFarm\\projects.iipo.tu-bryansk.ru\\diplom-matching"
   EXE_RELEASE_FILENAME: "DiplomaUI.exe"
-  TEST_FOLDER: ".\\bin\\Test"
-  TMP_FOLDER: ".\\bin\\Release" 
+  TEST_FOLDER: ".\\Out\\Test"
+  TMP_FOLDER: ".\\Out\\Release" 
   DEPLOY_FOLDER: "C:\\GitLabUtils\\DiplomaMathcing"
   NUNIT_PATH: "C:\\Program Files (x86)\\NUnit.org\\nunit-console\\nunit3-console.exe"
 
@@ -44,7 +44,7 @@ build_job:
   script:
     - CHCP 65001
     - dotnet restore
-    - dotnet build --configuration Release -o $EXE_TMP_FOLDER
+    - dotnet build --configuration Release -o ".\\Out\\Release" #TMP_FOLDER: 
   artifacts:  
     expire_in: 2 days # сколько хранить артефакты
     paths: # список путей, по которым находятся файлы для сохранения
