@@ -40,7 +40,7 @@ build_job:
   only: # для каких сущностей требуется выполнять задачу
     - branches
   before_script:
-  #  - CHCP 65001
+    - CHCP 65001
   script:
     - '& dotnet restore'
     - "& dotnet build --configuration Release -o '$env:EXE_TMP_FOLDER'"
