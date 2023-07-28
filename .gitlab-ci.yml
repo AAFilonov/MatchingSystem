@@ -54,7 +54,7 @@ test_job:   # This job runs in the test stage.
   stage: test    # It only starts when the job in the build stage completes successfully.
   only: # для каких сущностей требуется выполнять задачу
     - branches
-before_script:
+  before_script:
    - CHCP 65001
   script:
     - echo "Running tests..."
