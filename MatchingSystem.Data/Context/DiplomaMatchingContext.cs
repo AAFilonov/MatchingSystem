@@ -7,21 +7,10 @@ namespace MatchingSystem.Data;
 
 public partial class DiplomaMatchingContext :DbContext
 {      
-    protected readonly string _connectionString = "data source=localhost\\SQLEXPRESS;initial catalog=DiplomaMatching;Integrated Security=True;MultipleActiveResultSets=True";
-   
-    public DiplomaMatchingContext( )
-    {
-      
-    }
-    public DiplomaMatchingContext( string connectionString)
-    {
-        _connectionString = connectionString;
-    }
 
-    public DiplomaMatchingContext(DbContextOptions<DiplomaMatchingContext> options, string connectionString)
+    public DiplomaMatchingContext(DbContextOptions<DiplomaMatchingContext> options)
         : base(options)
     {
-        _connectionString = connectionString;
     }
 
     public virtual DbSet<ActiveCommonQuota> ActiveCommonQuotas { get; set; } = null!;
@@ -60,15 +49,7 @@ public partial class DiplomaMatchingContext :DbContext
     public virtual DbSet<UsersRole> UsersRoles { get; set; } = null!;
     public virtual DbSet<VersionInfo> VersionInfos { get; set; } = null!;
     public virtual DbSet<WorkDirection> WorkDirections { get; set; } = null!;
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        if (!optionsBuilder.IsConfigured)
-        {
-            optionsBuilder.UseSqlServer(_connectionString);
-        }
-    }
-
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<ActiveCommonQuota>(entity =>

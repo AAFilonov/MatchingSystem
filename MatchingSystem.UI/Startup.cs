@@ -53,6 +53,17 @@ namespace MatchingSystem.UI
                 .AddControllersWithViews()
                 .AddRazorRuntimeCompilation();
 
+            var optionsBuilder = new DbContextOptionsBuilder<DiplomaMatchingContext>();
+            optionsBuilder.UseSqlServer(connectionString);
+
+            var dbContext = new DiplomaMatchingContext(optionsBuilder.Options);
+            services.AddSingleton<DbContext, DiplomaMatchingContext>(options => dbContext);
+            services.AddSingleton<Data.Feature.User.IUserRepository, Data.Feature.User.UserRepository>();
+            services
+                .AddSingleton<Data.Feature.Matching.IMatchingRepository, Data.Feature.Matching.MatchingRepository>();
+
+
+            
             services.AddTransient<IStudentRepository, StudentRepository>(options =>
                 new StudentRepository(connectionString));
 
@@ -79,11 +90,9 @@ namespace MatchingSystem.UI
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options => options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Home/Login"));
-            services.AddSingleton<DbContext, DiplomaMatchingContext>(options => new DiplomaMatchingContext(connectionString));
-            services.AddSingleton<MatchingSystem.Data.Feature.User.IUserRepository, MatchingSystem.Data.Feature.User.UserRepository>();
-            services.AddSingleton<MatchingSystem.Data.Feature.Matching.IMatchingRepository, MatchingSystem.Data.Feature.Matching.MatchingRepository>();
             
-
+            
+      
 
             //--Services
             services.AddSingleton<INotificationService, NotificationService>();

@@ -92,10 +92,20 @@ namespace MatchingSystem.UI.Controllers
 
             SessionData data = new SessionData();
             Data.Model.User user = null;
-            
-           
-            user = _userRepository.findByLogin(auth.Login);
 
+            try
+            {
+                user = _userRepository.findByLogin(auth.Login);
+
+            }
+            catch (Exception e)
+            {
+                logger.Log(LogLevel.Error, "Error during login process: " + e.Message, e);
+                logger.Log(LogLevel.Error, e.StackTrace);
+                ModelState.AddModelError("login", "Произошла ошибка");
+                return View();
+            }
+          
             if (user == null)
             {
                 ModelState.AddModelError("login", "Неверный логин");
