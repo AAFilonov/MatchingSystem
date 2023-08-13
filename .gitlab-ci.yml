@@ -39,8 +39,8 @@ build_job:
     - CHCP 65001
   script:
     - dotnet restore
-    - dotnet build --configuration Release -o "C:\\GitLabUtils\\build" #TMP_FOLDER: 
-    - dotnet publish --configuration Release -o C:\\GitLabUtils\\release 
+    - dotnet build --configuration Release --runtime portable -o "C:\\GitLabUtils\\build" #TMP_FOLDER: 
+    - dotnet publish --configuration Release --runtime portable -o "C:\\GitLabUtils\\release" 
   artifacts:
     expire_in: 2 days 
     paths:
