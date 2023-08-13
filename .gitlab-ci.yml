@@ -40,7 +40,7 @@ build_job:
   script:
     - dotnet restore
     - dotnet build --configuration Release -o "C:\\GitLabUtils\\build" #TMP_FOLDER: 
-    - dotnet publish -o C:\\GitLabUtils\\release --configuration Release" 
+    - dotnet publish --configuration Release -o C:\\GitLabUtils\\release 
   artifacts:
     expire_in: 2 days 
     paths:
