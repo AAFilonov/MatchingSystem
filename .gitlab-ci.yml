@@ -61,7 +61,7 @@ test_job: # This job runs in the test stage.
 
 
 publish_job:
-  stage: deploy
+  stage: publish
   only:
     - production
   before_script:
