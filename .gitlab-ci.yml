@@ -29,7 +29,6 @@ stages:          # List of stages for jobs, and their order of execution
   - build
   - test
   - deploy
-  - post_deploy
 
 build_job:
   stage: build
@@ -65,22 +64,11 @@ deploy_job:
   before_script:
    - CHCP 65001
   script:
-    - "& dotnet publish -o '.\\Out\\Deploy' --configuration Release" #- деплой EXE_RELEASE_FOLDER
+    - "& dotnet publish -o C:\\GitLabUtils\\release' --configuration Release" #- деплой EXE_RELEASE_FOLDER
+    - "& C:\\GitLabUtils\\deployDiploma.bat"
   dependencies:
   environment: production
   artifacts:  
     expire_in: 2 days # сколько хранить артефакты
     paths: # список путей, по которым находятся файлы для сохранения
       - '.\\Out\\Deploy'  # saving exe to copy to deploy folder
-
-  
-post_deploy_job:
-  stage: post_deploy
-  only:
-    - production
-  script:
-  #  - "& C:\\Windows\\System32\\inetsrv\\appcmd stop site 'projects.iipo.tu-bryansk.ru'"
-   # - "& C:\\Windows\\System32\\inetsrv\\appcmd start site 'projects.iipo.tu-bryansk.ru'"
-  dependencies:
-    - deploy_job
-  environment: production  
