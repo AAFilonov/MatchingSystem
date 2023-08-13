@@ -25,7 +25,7 @@ variables:
   EXE_RELEASE_FILENAME: "DiplomaUI.exe"
   TMP_FOLDER: ".\\Out\\Release"
 
-stages: # List of stages for jobs, and their order of execution
+stages: 
   - build
   - test
   - publish
@@ -39,24 +39,24 @@ build_job:
     - CHCP 65001
   script:
     - dotnet restore
-    - dotnet build --configuration Release -r win-x64 -o "C:\\GitLabUtils\\build" #TMP_FOLDER: 
-    - dotnet publish --configuration Release -r win-x64 -o "C:\\GitLabUtils\\release" 
+    - dotnet build --configuration Release -o "C:\\GitLabUtils\\build" 
+    - dotnet publish --configuration Release -o "C:\\GitLabUtils\\release" 
   artifacts:
     expire_in: 2 days 
     paths:
-      - '.\\Build'  # saving exe to copy to deploy folder
+      - '.\\Build' 
 
 
-test_job: # This job runs in the test stage.
-  stage: test    # It only starts when the job in the build stage completes successfully.
-  only: # для каких сущностей требуется выполнять задачу
+test_job: 
+  stage: test   
+  only: 
     - branches
   before_script:
     - CHCP 65001
   script:
     - echo "Running tests..."
     - dotnet test
-  dependencies: # указание, что для запуска этой задачи требуется успешно завершенная задача build_job
+  dependencies: 
     - build_job
 
 
@@ -67,14 +67,14 @@ publish_job:
   before_script:
     - CHCP 65001
   script:
-    -dotnet publish -o C:\\GitLabUtils\\publish --configuration Release #- деплой EXE_RELEASE_FOLDER
+    -dotnet publish -o C:\\GitLabUtils\\publish --configuration Release
   dependencies:
     - test_job
   environment: production
   artifacts:
     expire_in: 2 days 
     paths: 
-      - '.\\Publis'  
+      - '.\\Publish'  
 
 deploy_job:
   stage: deploy
