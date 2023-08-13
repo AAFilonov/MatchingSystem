@@ -64,7 +64,7 @@ deploy_job:
   before_script:
    - CHCP 65001
   script:
-    - "& dotnet publish -o C:\\GitLabUtils\\release' --configuration Release" #- деплой EXE_RELEASE_FOLDER
+    - "& dotnet publish -o C:\\GitLabUtils\\release --configuration Release" #- деплой EXE_RELEASE_FOLDER
     - "& C:\\GitLabUtils\\deployDiploma.bat"
   dependencies:
   environment: production
