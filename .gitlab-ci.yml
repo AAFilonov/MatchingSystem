@@ -38,11 +38,11 @@ build_job:
    - CHCP 65001
   script:
     - dotnet restore
-    - dotnet build --configuration Release -o ".\Out\Release" #TMP_FOLDER: 
+    - dotnet build --configuration Release -o "C:\\GitLabUtils\\build" #TMP_FOLDER: 
   artifacts:  
     expire_in: 2 days # сколько хранить артефакты
     paths: # список путей, по которым находятся файлы для сохранения
-      - '.\\Out\\Release'  # saving exe to copy to deploy folder
+      - '.\\Release'  # saving exe to copy to deploy folder
 
 
 test_job:   # This job runs in the test stage.
@@ -67,8 +67,9 @@ deploy_job:
     - "& dotnet publish -o C:\\GitLabUtils\\release --configuration Release" #- деплой EXE_RELEASE_FOLDER
     - "& C:\\GitLabUtils\\deployDiploma.bat"
   dependencies:
+     - test_job
   environment: production
   artifacts:  
     expire_in: 2 days # сколько хранить артефакты
     paths: # список путей, по которым находятся файлы для сохранения
-      - '.\\Out\\Deploy'  # saving exe to copy to deploy folder
+      - 'C:\\GitLabUtils\\publish'  # saving exe to copy to deploy folder
