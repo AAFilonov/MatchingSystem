@@ -23,11 +23,12 @@ variables:
   
   EXE_RELEASE_FOLDER: "C:\\WebFarm\\projects.iipo.tu-bryansk.ru\\diplom-matching"
   EXE_RELEASE_FILENAME: "DiplomaUI.exe"
-  TMP_FOLDER: ".\\Out\\Release" 
+  TMP_FOLDER: ".\\Out\\Release"
 
-stages:          # List of stages for jobs, and their order of execution
+stages: # List of stages for jobs, and their order of execution
   - build
   - test
+  - publish
   - deploy
 
 build_job:
@@ -35,41 +36,54 @@ build_job:
   only:
     - branches
   before_script:
-   - CHCP 65001
+    - CHCP 65001
   script:
     - dotnet restore
     - dotnet build --configuration Release -o "C:\\GitLabUtils\\build" #TMP_FOLDER: 
-  artifacts:  
-    expire_in: 2 days # сколько хранить артефакты
-    paths: # список путей, по которым находятся файлы для сохранения
-      - '.\\Release'  # saving exe to copy to deploy folder
+    - dotnet publish -o C:\\GitLabUtils\\release --configuration Release" 
+  artifacts:
+    expire_in: 2 days 
+    paths:
+      - '.\\Build'  # saving exe to copy to deploy folder
 
 
-test_job:   # This job runs in the test stage.
+test_job: # This job runs in the test stage.
   stage: test    # It only starts when the job in the build stage completes successfully.
   only: # для каких сущностей требуется выполнять задачу
     - branches
   before_script:
-   - CHCP 65001
+    - CHCP 65001
   script:
     - echo "Running tests..."
     - dotnet test
   dependencies: # указание, что для запуска этой задачи требуется успешно завершенная задача build_job
-     - build_job
+    - build_job
+
+
+publish_job:
+  stage: deploy
+  only:
+    - production
+  before_script:
+    - CHCP 65001
+  script:
+    -dotnet publish -o C:\\GitLabUtils\\publish --configuration Release #- деплой EXE_RELEASE_FOLDER
+  dependencies:
+    - test_job
+  environment: production
+  artifacts:
+    expire_in: 2 days 
+    paths: 
+      - '.\\Publis'  
 
 deploy_job:
   stage: deploy
   only:
     - production
   before_script:
-   - CHCP 65001
+    - CHCP 65001
   script:
-    - "& dotnet publish -o C:\\GitLabUtils\\release --configuration Release" #- деплой EXE_RELEASE_FOLDER
     - "& C:\\GitLabUtils\\deployDiploma.bat"
   dependencies:
-     - test_job
+    - publish_job
   environment: production
-  artifacts:  
-    expire_in: 2 days # сколько хранить артефакты
-    paths: # список путей, по которым находятся файлы для сохранения
-      - 'C:\\GitLabUtils\\publish'  # saving exe to copy to deploy folder
