@@ -67,14 +67,10 @@ publish_job:
   before_script:
     - CHCP 65001
   script:
-    -dotnet publish -o C:\\GitLabUtils\\publish --configuration Release
+    #-dotnet publish -o C:\\GitLabUtils\\publish --configuration Release
   dependencies:
     - test_job
   environment: production
-  artifacts:
-    expire_in: 2 days 
-    paths: 
-      - '.\\Publish'  
 
 deploy_job:
   stage: deploy
