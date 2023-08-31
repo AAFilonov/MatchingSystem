@@ -19,7 +19,7 @@
 variables:
   # Максимальное количество параллельно собираемых проектов при сборке решения; зависит от количества ядер ПК, выбранного для сборки
   MSBUILD_CONCURRENCY: "4"
-  MSBuildSDKsPath: "C:\\Program Files\\dotnet\\sdk\\6.0.405\\Sdks"
+  MSBuildSDKsPath: "C:\\Program Files\\dotnet\\sdk\\6.0.408\\Sdks"
   
   EXE_RELEASE_FOLDER: "C:\\WebFarm\\projects.iipo.tu-bryansk.ru\\diplom-matching"
   EXE_RELEASE_FILENAME: "DiplomaUI.exe"
