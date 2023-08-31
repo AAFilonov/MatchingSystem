@@ -1,34 +1,23 @@
-# This file is a template, and might need editing before it works on your project.
-# This is a sample GitLab CI/CD configuration file that should run without any modifications.
-# It demonstrates a basic 3 stage CI/CD pipeline. Instead of real tests or scripts,
-# it uses echo commands to simulate the pipeline execution.
-#
-# A pipeline is composed of independent jobs that run scripts, grouped into stages.
-# Stages run in sequential order, but jobs within stages run in parallel.
-#
-# For more information, see: https://docs.gitlab.com/ee/ci/yaml/index.html#stages
-#
-# You can copy and paste this template into a new `.gitlab-ci.yml` file.
-# You should not add this template to an existing `.gitlab-ci.yml` file by using the `include:` keyword.
-#
-# To contribute improvements to CI/CD templates, please follow the Development guide at:
-# https://docs.gitlab.com/ee/development/cicd/templates.html
-# This specific template is located at:
+# CI/CD конфигурация проекта
+# Основано на шаблоне
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Getting-Started.gitlab-ci.yml
 
+# TODO - добиться подстановки переменных среды в джобах, сейчас по какой-то причине они не подставляются
+# TODO - копия скриптов деплоя сохранена в ./deploy_scripts. Было бы неплохо перед запуском их обновлять
+# TODO было бы круто вынести создание всех переменных среды используемых в скриптах в отдельный файл
 variables:
   # Максимальное количество параллельно собираемых проектов при сборке решения; зависит от количества ядер ПК, выбранного для сборки
+  # являются переменными среды и явно в вызовы не передаются, однако должны быть проинициализирвоанными
   MSBUILD_CONCURRENCY: "4"
   MSBuildSDKsPath: "C:\\Program Files\\dotnet\\sdk\\6.0.408\\Sdks"
-  
-  EXE_RELEASE_FOLDER: "C:\\WebFarm\\projects.iipo.tu-bryansk.ru\\diplom-matching"
-  EXE_RELEASE_FILENAME: "DiplomaUI.exe"
-  TMP_FOLDER: ".\\Out\\Release"
 
+  TMP_BUILD_FOLDER: "C:\\GitLabUtils\\build"                #бинарники собираемые для прогона тестов
+  TMP_RELEASE_FOLDER: "C:\\GitLabUtils\\release"            #бинарники собираемые для деплоя
+  DEPLOY_SCRIPT_PATH: "C:\\GitLabUtils\\deployDiploma.bat"  #скрипт вызываемый на продовой машине - выполняет подмену папок, подстановку строки подключения в конфиг и рестарт сервера
+  
 stages: 
   - build
   - test
-  - publish
   - deploy
 
 build_job:
@@ -36,11 +25,11 @@ build_job:
   only:
     - branches
   before_script:
-    - CHCP 65001
+    - CHCP 65001 #смена кодировки консоли для корректного отображения текста ошибок
   script:
     - dotnet restore
-    - dotnet build --configuration Release -o "C:\\GitLabUtils\\build" 
-    - dotnet publish --configuration Release -o "C:\\GitLabUtils\\release" 
+    - dotnet build --configuration Release -o "C:\\GitLabUtils\\build"      #TMP_BUILD_FOLDER
+    - dotnet publish --configuration Release -o "C:\\GitLabUtils\\release"  #TMP_RELEASE_FOLDER
   artifacts:
     expire_in: 2 days 
     paths:
@@ -52,34 +41,19 @@ test_job:
   only: 
     - branches
   before_script:
-    - CHCP 65001
+    - CHCP 65001 #смена кодировки консоли для корректного отображения текста ошибок
   script:
     - echo "Running tests..."
     - dotnet test
   dependencies: 
     - build_job
 
-
-publish_job:
-  stage: publish
-  only:
-    - production
-  before_script:
-    - CHCP 65001
-  script:
-    #-dotnet publish -o C:\\GitLabUtils\\publish --configuration Release
-  dependencies:
-    - test_job
-  environment: production
-
 deploy_job:
   stage: deploy
   only:
     - production
   before_script:
-    - CHCP 65001
+    - CHCP 65001 #смена кодировки консоли для корректного отображения текста ошибок
   script:
-    - "& C:\\GitLabUtils\\deployDiploma.bat"
-  dependencies:
-    - publish_job
+    - "& C:\\GitLabUtils\\deployDiploma.bat" #DEPLOY_SCRIPT_PATH
   environment: production
