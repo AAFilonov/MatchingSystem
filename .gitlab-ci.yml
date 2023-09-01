@@ -75,4 +75,6 @@ deploy_job:
     - CHCP 65001 #смена кодировки консоли для корректного отображения текста ошибок
   script:
     - "& C:\\GitLabUtils\\deployDiploma.bat" #DEPLOY_SCRIPT_PATH
+  dependencies:
+    - publish_job
   environment: production
