@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace MatchingSystem.Data.Model;
+namespace MatchingSystem.DataLayer.Model;
 
-public partial class UsersFullInfo
+public class UsersFullInfo
 {
     public int UserId { get; set; }
     public string? Surname { get; set; }

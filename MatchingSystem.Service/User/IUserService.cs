@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using MatchingSystem.DataLayer.Entities;
+using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.Service.User;
 public interface IUserService
@@ -8,5 +8,5 @@ public interface IUserService
 
     public IEnumerable<Role> GetRolesForUser(int matchingId, int userId);
 
-    public IEnumerable<DataLayer.Entities.User> getStudentUsersByMatching(int matchingId);
+    public IEnumerable<DataLayer.OldEntities.User> getStudentUsersByMatching(int matchingId);
 }

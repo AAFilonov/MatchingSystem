@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using MatchingSystem.DataLayer.Dto;
-using MatchingSystem.DataLayer.Entities;
-using MatchingSystem.DataLayer.Interface;
-using MatchingSystem.DataLayer.IO.Params;
+using MatchingSystem.DataLayer.Dto.IO.Params;
+using MatchingSystem.DataLayer.Feature.Interface;
+using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.Service.Executive;
 

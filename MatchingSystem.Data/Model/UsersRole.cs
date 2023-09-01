@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
+using MatchingSystem.Data.Model;
 
-namespace MatchingSystem.Data.Model;
-public partial class UsersRole
+namespace MatchingSystem.DataLayer.Model;
+public class UsersRole
 {
     public int UserRoleId { get; set; }
     public int UserId { get; set; }

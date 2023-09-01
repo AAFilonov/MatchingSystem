@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using MatchingSystem.DataLayer.Dto;
-using MatchingSystem.DataLayer.Entities;
-using MatchingSystem.DataLayer.Interface;
-using MatchingSystem.DataLayer.IO.Params;
+using MatchingSystem.DataLayer.Dto.IO.Params;
+using MatchingSystem.DataLayer.Feature.Interface;
+using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.Service.Student;
 
@@ -67,7 +67,7 @@ public class StudentService : IStudentService
         }
     }
 
-    public MatchingSystem.DataLayer.Entities.Student GetStudentInfo(int? studentId)
+    public DataLayer.OldEntities.Student GetStudentInfo(int? studentId)
     {
         var student = studentRepository.GetStudent(studentId.Value);
 

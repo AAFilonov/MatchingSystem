@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using MatchingSystem.DataLayer.Entities;
-using MatchingSystem.DataLayer.Interface;
+using MatchingSystem.DataLayer.Feature.Interface;
+using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.Service.User;
 public class UserService : IUserService
@@ -28,7 +28,7 @@ public class UserService : IUserService
         return model;
     }
 
-    public IEnumerable<DataLayer.Entities.User> getStudentUsersByMatching(int matchingId)
+    public IEnumerable<DataLayer.OldEntities.User> getStudentUsersByMatching(int matchingId)
     {
         return userRepository.getStudentUsersByMatching(matchingId);
     }

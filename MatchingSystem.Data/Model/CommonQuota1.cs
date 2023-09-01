@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace MatchingSystem.Data.Model;
+namespace MatchingSystem.DataLayer.Model;
 
-public partial class CommonQuota1
+public class CommonQuota1
 {
     public int? MatchingId { get; set; }
     public int TutorId { get; set; }

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using MatchingSystem.DataLayer.Entities;
-using MatchingSystem.DataLayer.Interface;
+using MatchingSystem.DataLayer.Feature.Interface;
+using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.Service.Statistics;
 public class StatisticsService : IStatisticsService

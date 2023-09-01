@@ -2,8 +2,8 @@
 using System.Linq;
 using MatchingSystem.DataLayer.Dto;
 using MatchingSystem.DataLayer.Dto.MatchingInit;
-using MatchingSystem.DataLayer.Entities;
-using MatchingSystem.DataLayer.Interface;
+using MatchingSystem.DataLayer.Feature.Interface;
+using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.Service.Tutor;
 
@@ -65,7 +65,7 @@ public class TutorService : ITutorService
 
         return tutorDtos;
     }
-    private TutorInitDto construct(DataLayer.Entities.Tutor tutor)
+    private TutorInitDto construct(DataLayer.OldEntities.Tutor tutor)
     {
         TutorInitDto initDto = new TutorInitDto();
         initDto.UserId = tutor.TutorID;

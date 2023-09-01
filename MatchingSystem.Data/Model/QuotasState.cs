@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace MatchingSystem.Data.Model;
+namespace MatchingSystem.DataLayer.Model;
 
-public partial class QuotasState
+public class QuotasState
 {
     public QuotasState()
     {

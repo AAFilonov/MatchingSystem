@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace MatchingSystem.Data.Model;
+namespace MatchingSystem.DataLayer.Model;
 
-public partial class Student1
+public class Student1
 {
     public int StudentId { get; set; }
     public int GroupId { get; set; }

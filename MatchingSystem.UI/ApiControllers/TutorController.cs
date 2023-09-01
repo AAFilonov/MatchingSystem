@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using MatchingSystem.DataLayer.Entities;
-using MatchingSystem.DataLayer.Interface;
+using MatchingSystem.DataLayer.Feature.Interface;
+using MatchingSystem.DataLayer.OldEntities;
 using MatchingSystem.Service.Follow;
 using Microsoft.AspNetCore.Mvc;
 using MatchingSystem.Service.Tutor;

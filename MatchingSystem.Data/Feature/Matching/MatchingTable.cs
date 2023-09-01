@@ -1,11 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace MatchingSystem.Data.Feature.Matching;
+namespace MatchingSystem.DataLayer.Feature.Matching;
 
-public class MatchingTable : IEntityTypeConfiguration<Model.Matching>
+public class MatchingTable : IEntityTypeConfiguration<Data.Model.Matching>
 {
-    public void Configure(EntityTypeBuilder<Model.Matching> builder)
+    public void Configure(EntityTypeBuilder<Data.Model.Matching> builder)
     {
         builder.ToTable("Matching");
         builder.Property(e => e.MatchingId).HasColumnName("MatchingID");

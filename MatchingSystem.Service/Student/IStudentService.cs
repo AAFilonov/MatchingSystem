@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using MatchingSystem.DataLayer.Dto;
-using MatchingSystem.DataLayer.Entities;
-using MatchingSystem.DataLayer.IO.Params;
+using MatchingSystem.DataLayer.Dto.IO.Params;
+using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.Service.Student;
 
@@ -15,6 +15,6 @@ public interface IStudentService
 
     public void SetPreferences(int studentId, string selectedList);
 
-    public MatchingSystem.DataLayer.Entities.Student GetStudentInfo(int? studentId);
+    public DataLayer.OldEntities.Student GetStudentInfo(int? studentId);
     public AllocatedByStudent GetAllocatedProject(int? studentId);
 }

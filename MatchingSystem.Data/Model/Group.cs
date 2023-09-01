@@ -1,6 +1,9 @@
-﻿namespace MatchingSystem.Data.Model;
+﻿using System.Collections.Generic;
+using MatchingSystem.Data.Model;
 
-public partial class Group
+namespace MatchingSystem.DataLayer.Model;
+
+public class Group
 {
     public Group()
     {

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace MatchingSystem.DataLayer.Model;
 
-namespace MatchingSystem.Data.Model;
-
-public partial class Project1
+public class Project1
 {
     public int TutorId { get; set; }
     public int UserId { get; set; }

@@ -1,4 +1,4 @@
-﻿namespace MatchingSystem.Data.Feature.Matching;
+﻿namespace MatchingSystem.DataLayer.Feature.Matching;
 #nullable enable
 public class MatchingDto
 {

@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using MatchingSystem.DataLayer.Entities;
 using MatchingSystem.Data.Model;
 using MatchingSystem.DataLayer.Dto;
 using MatchingSystem.DataLayer.Dto.MatchingInit;
-using Stage = MatchingSystem.DataLayer.Entities.Stage;
-using Tutor = MatchingSystem.DataLayer.Entities.Tutor;
+using MatchingSystem.DataLayer.OldEntities;
+using Stage = MatchingSystem.DataLayer.OldEntities.Stage;
+using Tutor = MatchingSystem.DataLayer.OldEntities.Tutor;
 using User = MatchingSystem.Data.Model.User;
 
 namespace MatchingSystem.UI.Helpers

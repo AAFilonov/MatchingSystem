@@ -2,7 +2,7 @@ using MatchingSystem.Data.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace MatchingSystem.Data.Feature.Matching;
+namespace MatchingSystem.DataLayer.Feature.Matching;
 
 public class MatchingTypeTable : IEntityTypeConfiguration<MatchingType>
 {

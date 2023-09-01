@@ -3,11 +3,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Security.Claims;
+using MatchingSystem.DataLayer.Feature.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Scrypt;
-using MatchingSystem.DataLayer.Interface;
 using MatchingSystem.UI.Helpers;
 using MatchingSystem.UI.Services;
 using MatchingSystem.UI.ViewModels;
@@ -18,12 +18,12 @@ namespace MatchingSystem.UI.Controllers
     public class HomeController : Controller
     {
         private readonly IUserRepository userRepository;
-        private MatchingSystem.Data.Feature.User.IUserRepository _userRepository;
+        private DataLayer.Feature.User.IUserRepository _userRepository;
         //private MatchingSystem.Data.Feature.Matching.IMatchingRepository _matchingRepository;
         private readonly IMatchingRepository matchingRepository;
         private readonly ILogger<HomeController> logger;
 
-        public HomeController(IUserRepository userRepository, IMatchingRepository matchingRepository, Data.Feature.User.IUserRepository userRepository2, Data.Feature.Matching.IMatchingRepository matchingRepository1, ILogger<HomeController> logger)
+        public HomeController(IUserRepository userRepository, IMatchingRepository matchingRepository, DataLayer.Feature.User.IUserRepository userRepository2, DataLayer.Feature.Matching.IMatchingRepository matchingRepository1, ILogger<HomeController> logger)
         {
             this.userRepository = userRepository;
            this.matchingRepository = matchingRepository;
@@ -40,7 +40,7 @@ namespace MatchingSystem.UI.Controllers
             {
                 if (HttpContext.User.Identity.IsAuthenticated)
                 {
-                    var user = _userRepository.findByLogin(HttpContext.User.Identity.Name);
+                    var user = _userRepository.FindByLogin(HttpContext.User.Identity.Name);
 
 
                     data.RolesMatchings = userRepository.GetAllRoles(user.UserId);
@@ -95,7 +95,7 @@ namespace MatchingSystem.UI.Controllers
 
             try
             {
-                user = _userRepository.findByLogin(auth.Login);
+                user = _userRepository.FindByLogin(auth.Login);
 
             }
             catch (Exception e)

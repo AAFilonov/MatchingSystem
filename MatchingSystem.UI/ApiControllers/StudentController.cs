@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Linq;
-using MatchingSystem.DataLayer.Interface;
-using MatchingSystem.DataLayer.IO.Params;
 using MatchingSystem.DataLayer.Dto;
+using MatchingSystem.DataLayer.Dto.IO.Params;
 using MatchingSystem.Service.Follow;
 using MatchingSystem.Service.Student;
 using MatchingSystem.UI.Helpers;

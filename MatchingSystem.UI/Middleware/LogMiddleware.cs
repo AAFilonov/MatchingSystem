@@ -2,8 +2,6 @@
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using MatchingSystem.DataLayer.Interface;
-using MatchingSystem.DataLayer.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;

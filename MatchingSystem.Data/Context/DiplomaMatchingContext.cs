@@ -1,9 +1,10 @@
-﻿using MatchingSystem.Data.Feature.Matching;
-using MatchingSystem.Data.Feature.User;
-using MatchingSystem.Data.Model;
+﻿using MatchingSystem.Data.Model;
+using MatchingSystem.DataLayer.Feature.Matching;
+using MatchingSystem.DataLayer.Feature.User;
+using MatchingSystem.DataLayer.Model;
 using Microsoft.EntityFrameworkCore;
 
-namespace MatchingSystem.Data;
+namespace MatchingSystem.DataLayer.Context;
 
 public partial class DiplomaMatchingContext :DbContext
 {      
@@ -41,7 +42,7 @@ public partial class DiplomaMatchingContext :DbContext
     public virtual DbSet<StudentsWorkDirection> StudentsWorkDirections { get; set; } = null!;
     public virtual DbSet<Technology> Technologies { get; set; } = null!;
     public virtual DbSet<Tutor> Tutors { get; set; } = null!;
-    public virtual DbSet<Tutor1> Tutors1 { get; set; } = null!;
+    public virtual DbSet<TutorViewDto> Tutors1 { get; set; } = null!;
     public virtual DbSet<TutorsChoice> TutorsChoices { get; set; } = null!;
     public virtual DbSet<TutorsGroup> TutorsGroups { get; set; } = null!;
     public virtual DbSet<User> Users { get; set; } = null!;
@@ -686,7 +687,7 @@ public partial class DiplomaMatchingContext :DbContext
             entity.Property(e => e.TutorBk).HasColumnName("TutorBK");
         });
 
-        modelBuilder.Entity<Tutor1>(entity =>
+        modelBuilder.Entity<TutorViewDto>(entity =>
         {
             entity.HasNoKey();
 

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using MatchingSystem.Data.Model;
 
-namespace MatchingSystem.Data.Model;
+namespace MatchingSystem.DataLayer.Model;
 
-public partial class Stage
+public class Stage
 {
     public Stage()
     {

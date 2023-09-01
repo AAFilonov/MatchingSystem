@@ -1,4 +1,4 @@
-﻿using MatchingSystem.DataLayer.Interface;
+﻿using MatchingSystem.DataLayer.Feature.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
