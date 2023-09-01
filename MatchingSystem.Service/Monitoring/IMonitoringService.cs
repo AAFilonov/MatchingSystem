@@ -7,5 +7,5 @@ public interface IMonitoringService
 {
     MatchingMonitoringData getMonitoringData(int matchingId);
     List<StudentMonitoringDto> getStudentsMonitoringData(int matchingId);
-    List<TutorMonitoringDto>  getTutorsMonitoringData(int matchingId);
+    List<TutorMonitoringDto> getTutorsMonitoringData(int matchingId);
 }

@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using MatchingSystem.DataLayer.Dto;
 using MatchingSystem.DataLayer.Dto.IO.Params;
-using MatchingSystem.DataLayer.Feature.Interface;
+using MatchingSystem.DataLayer.Feature._Interface;
 using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.Service.Student;
 
 public class StudentService : IStudentService
 {
-    private readonly IStudentRepository studentRepository;
     private readonly IProjectRepository projectRepository;
+    private readonly IStudentRepository studentRepository;
 
     public StudentService(
         IStudentRepository studentRepository,
@@ -24,15 +24,15 @@ public class StudentService : IStudentService
 
     public StudentInfoDto getStudentInfo(int studentId)
     {
-            var student = studentRepository.GetStudent(studentId);
-            var model = new StudentInfoDto()
-            {
-                Technologies = studentRepository.GetTechnologiesSelectedByStudent(studentId),
-                WorkDirections = studentRepository.GetWorkDirectionsSelectedByStudent(studentId),
-                Info = student.Info,
-                Info2 = student.Info2
-            };
-            return model;
+        var student = studentRepository.GetStudent(studentId);
+        var model = new StudentInfoDto
+        {
+            Technologies = studentRepository.GetTechnologiesSelectedByStudent(studentId),
+            WorkDirections = studentRepository.GetWorkDirectionsSelectedByStudent(studentId),
+            Info = student.Info,
+            Info2 = student.Info2
+        };
+        return model;
     }
 
     public void EditProfile(EditProfileParams editParams)
@@ -47,18 +47,18 @@ public class StudentService : IStudentService
         return model.OrderBy(x => x.OrderNumber);
     }
 
-    public void SetPreferences(int studentId,string selectedList)
+    public void SetPreferences(int studentId, string selectedList)
     {
         var temp = selectedList.Split(',');
         var selectedIds = new int[temp.Length];
 
-        
+
         studentRepository.ClearPreferences(studentId);
 
         for (var i = 0; i < temp.Length; i++)
         {
             selectedIds[i] = Convert.ToInt32(temp[i]);
-            studentRepository.SetPreferences(new StudentPreferenceParams()
+            studentRepository.SetPreferences(new StudentPreferenceParams
             {
                 StudentId = studentId,
                 Order = i + 1,

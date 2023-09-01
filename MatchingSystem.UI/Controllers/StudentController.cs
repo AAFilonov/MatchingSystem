@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using MatchingSystem.DataLayer;
-using MatchingSystem.DataLayer.Feature.Interface;
+using MatchingSystem.DataLayer.Feature._Interface;
+using MatchingSystem.DataLayer.Feature.Matching.service;
 using MatchingSystem.DataLayer.OldEntities;
 using MatchingSystem.UI.Helpers;
 using MatchingSystem.UI.Services;
@@ -23,14 +24,14 @@ namespace MatchingSystem.UI.Controllers
         {
             base.OnActionExecuting(ctx);
             data ??= HttpContext.Session.Get<SessionData>("Data");
-            var studentId = studentRepository.GetStudentId(data.User.UserId, data.SelectedMatching);
+            var studentId = studentRepository.GetStudentId(data.UserDto.UserId, data.SelectedMatching);
             student = studentRepository.GetStudent(studentId);
         }
 
         public override void OnActionExecuted(ActionExecutedContext ctx)
         {
             base.OnActionExecuted(ctx);
-            data.CurrentStage = matchingRepository.GetCurrentStage(data.SelectedMatching);
+            data.CurrentStage = matchingRepository.GetCurrentStageDto(data.SelectedMatching);
             HttpContext.Session.Set<SessionData>("Data", data);
         }
 
@@ -43,7 +44,7 @@ namespace MatchingSystem.UI.Controllers
 
         public IActionResult Index()
         {
-            return View("~/Views/General/Index.cshtml", data.User);
+            return View("~/Views/General/Index.cshtml", data.UserDto);
         }
 
         public IActionResult Profile()

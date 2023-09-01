@@ -3,24 +3,25 @@ using System.Linq;
 using MatchingSystem.Constants;
 using MatchingSystem.DataLayer.Dto;
 using MatchingSystem.DataLayer.Dto.IO.Params;
-using MatchingSystem.DataLayer.Feature.Interface;
+using MatchingSystem.DataLayer.Feature._Interface;
+using MatchingSystem.DataLayer.Feature.Matching.service;
 using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.Service.Projects;
+
 public class ProjectsService : IProjectsService
 {
-
     private readonly IDictionaryRepository dictionaryRepository;
-    private readonly ITutorRepository tutorRepository;
     private readonly IMatchingRepository matchingRepository;
     private readonly IProjectRepository projectRepository;
+    private readonly ITutorRepository tutorRepository;
 
     public ProjectsService(
         IDictionaryRepository dictionaryRepository,
         ITutorRepository tutorRepository,
         IMatchingRepository matchingRepository,
         IProjectRepository projectRepository
-        )
+    )
     {
         this.dictionaryRepository = dictionaryRepository;
         this.tutorRepository = tutorRepository;
@@ -28,12 +29,12 @@ public class ProjectsService : IProjectsService
         this.projectRepository = projectRepository;
     }
 
-    public bool AddTutorProject( ProjectRequest project)
+    public bool AddTutorProject(ProjectRequest project)
     {
-        projectRepository.CreateProject(new ProjectParams()
+        projectRepository.CreateProject(new ProjectParams
         {
             Info = project.Info,
-            Quota = (project.Quota == "Не важно") ? null : project.Quota,
+            Quota = project.Quota == "Не важно" ? null : project.Quota,
             TutorId = project.TutorId,
             ProjectName = project.Name,
             CommaSeparatedTechList = string.Join(',', project.TechnologyList ?? new[] { string.Empty }),
@@ -45,11 +46,10 @@ public class ProjectsService : IProjectsService
 
     public void EditProject(ProjectRequest project)
     {
-        
-        projectRepository.EditProject(new ProjectParams()
+        projectRepository.EditProject(new ProjectParams
         {
             Info = project.Info,
-            Quota = (project.Quota == "Не важно") ? null : project.Quota,
+            Quota = project.Quota == "Не важно" ? null : project.Quota,
             TutorId = project.TutorId,
             ProjectName = project.Name,
             CommaSeparatedTechList = string.Join(',', project.TechnologyList ?? new[] { string.Empty }),
@@ -83,9 +83,9 @@ public class ProjectsService : IProjectsService
         return model;
     }
 
-    public void EditQuota(int projectId,int quota,int tutorId,int matchingId)
+    public void EditQuota(int projectId, int quota, int tutorId, int matchingId)
     {
-        var currentStageCode = matchingRepository.GetCurrentStage(matchingId).StageTypeCode;
+        var currentStageCode = matchingRepository.GetCurrentStageDto(matchingId).StageTypeCode;
 
         switch (currentStageCode)
         {

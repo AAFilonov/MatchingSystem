@@ -20,6 +20,13 @@ public class StudentsParsingService : IStudentsParsingService
         }
     }
 
+    public List<GroupInitDto> parseStudentGroupData(ExcelPackage package)
+    {
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        return package.Workbook.Worksheets
+            .Select(worksheet => new GroupInitDto { name = worksheet.Name.Trim(), value = false }).ToList();
+    }
+
     private List<StudentInitDto> parseStudents(ExcelPackage package)
     {
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -31,12 +38,12 @@ public class StudentsParsingService : IStudentsParsingService
             var rowCount = worksheet.Dimension.End.Row;
             for (var row = 1; row <= rowCount; row++)
             {
-                if(((string)worksheet.Cells["A" + row].Value).Equals(""))
-                    throw new InputDataException("Ошибка парсинга: Имя не заполненно в ряду"+row);
-                if(((string)worksheet.Cells["B" + row].Value).Equals(""))
-                    throw new InputDataException("Ошибка парсинга: Фамилия не заполненно в ряду "+row);
-                
-                StudentInitDto initDto = new StudentInitDto
+                if (((string)worksheet.Cells["A" + row].Value).Equals(""))
+                    throw new InputDataException("Ошибка парсинга: Имя не заполненно в ряду" + row);
+                if (((string)worksheet.Cells["B" + row].Value).Equals(""))
+                    throw new InputDataException("Ошибка парсинга: Фамилия не заполненно в ряду " + row);
+
+                var initDto = new StudentInitDto
                 {
                     groupName = groupName,
                     lastName = (string)worksheet.Cells["A" + row].Value,
@@ -49,12 +56,5 @@ public class StudentsParsingService : IStudentsParsingService
         }
 
         return dtos;
-    }
-
-    public List<GroupInitDto> parseStudentGroupData(ExcelPackage package)
-    {
-        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-        return package.Workbook.Worksheets
-            .Select(worksheet => new GroupInitDto { name = worksheet.Name.Trim(), value = false }).ToList();
     }
 }

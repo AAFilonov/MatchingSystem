@@ -1,16 +1,16 @@
 using System.Collections.Generic;
-using MatchingSystem.DataLayer.Feature.Interface;
-using IUserRepository = MatchingSystem.DataLayer.Feature.Interface.IUserRepository;
+using MatchingSystem.DataLayer.Feature._Interface;
 
 namespace MatchingSystem.Service.Notification;
 
-public class NotificationService  : INotificationService
+public class NotificationService : INotificationService
 {
-    private readonly ITutorRepository tutorRepository;
     private readonly IExecutiveRepository executiveRepository;
+    private readonly ITutorRepository tutorRepository;
     private readonly IUserRepository userRepository;
 
-    public NotificationService(ITutorRepository tutorRepository, IExecutiveRepository executiveRepository, IUserRepository userRepository)
+    public NotificationService(ITutorRepository tutorRepository, IExecutiveRepository executiveRepository,
+        IUserRepository userRepository)
     {
         this.tutorRepository = tutorRepository;
         this.executiveRepository = executiveRepository;

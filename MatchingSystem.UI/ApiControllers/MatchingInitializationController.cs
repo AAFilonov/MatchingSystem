@@ -2,7 +2,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using MatchingSystem.DataLayer.Dto.MatchingInit;
-using MatchingSystem.DataLayer.Feature.Interface;
+using MatchingSystem.DataLayer.Feature._Interface;
 using MatchingSystem.Service.DocumentsProcessing;
 using MatchingSystem.Service.Exception;
 using MatchingSystem.Service.MatchingInitialization;
@@ -143,7 +143,7 @@ public class MatchingInitializationController : ControllerBase
         currentMatchingInitData.matching = data.matching;
 
         var updatedData =
-            matchingInitializationService.createMatching(currentMatchingInitData, sessionData.User.UserId);
+            matchingInitializationService.createMatching(currentMatchingInitData, sessionData.UserDto.UserId);
         sessionData.matchingInitData = updatedData;
         HttpContext.Session.Set("Data", sessionData);
 

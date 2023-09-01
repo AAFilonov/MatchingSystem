@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using MatchingSystem.Data.Model;
 using MatchingSystem.DataLayer.Dto.MatchingInit;
 using MatchingSystem.DataLayer.Dto.MatchingMonitoring;
 using MatchingSystem.Service.DocumentsProcessing;

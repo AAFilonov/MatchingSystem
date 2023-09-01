@@ -2,118 +2,30 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MatchingSystem.DataLayer.Dto.MatchingMonitoring;
-using MatchingSystem.DataLayer.Feature.Interface;
+using MatchingSystem.DataLayer.Feature._Interface;
 using MatchingSystem.DataLayer.OldEntities;
-
 
 namespace MatchingSystem.Service.Monitoring;
 
 public class MonitoringService : IMonitoringService
 {
+    private readonly IGroupRepository groupRepository;
+    private readonly IProjectRepository projectRepository;
     private readonly IStudentRepository studentRepository;
     private readonly ITutorRepository tutorRepository;
-    private readonly IProjectRepository projectRepository;
-    private readonly IGroupRepository groupRepository;
 
     public MonitoringService(IStudentRepository studentRepository
-                            ,ITutorRepository tutorRepository
-                            ,IProjectRepository projectRepository
-                            ,IGroupRepository groupRepository
-                            )
+        , ITutorRepository tutorRepository
+        , IProjectRepository projectRepository
+        , IGroupRepository groupRepository
+    )
     {
         this.studentRepository = studentRepository;
         this.tutorRepository = tutorRepository;
         this.projectRepository = projectRepository;
         this.groupRepository = groupRepository;
     }
-    //слишком много аргументов
-    List<StudentMonitoringDto> getMonitoringDataStudents(
-        IEnumerable<Group> useGroups
-        ,IEnumerable<DataLayer.OldEntities.Student> students
-        ,IEnumerable<StudentPreferences> studentPreferences
-        ,IEnumerable<Project> projects
-        ,IEnumerable<ProjectGroupDTO> projectGroups
-        ,IEnumerable<TutorChoice> tutorsChoices
-        ,IEnumerable<TutorFullDTO> tutors
-        )
-    {
-        List<ProjectMonitoringDto> assignedStudent = new List<ProjectMonitoringDto>();
-        foreach (var tutorChoice in tutorsChoices)
-        {
-            foreach (var stud in students.Where(x => x.StudentID == tutorChoice.StudentID))
-            {
-                foreach (var proj in projects.Where(x => x.ProjectID == tutorChoice.ProjectID))
-                {
-                    foreach (var pref in studentPreferences.Where(x => x.StudentID == tutorChoice.StudentID && proj.ProjectID == tutorChoice.ProjectID))
-                    {
-                        var tutchoice = tutorsChoices.Where(x => x.StudentID == stud.StudentID
-                                                                 &&
-                                                                 x.ProjectID == proj.ProjectID
-                        );
-                        var tutor = tutors.Where(x => x.TutorID == proj.TutorID).FirstOrDefault();
-                        assignedStudent.Add( new ProjectMonitoringDto()
-                        {
-                            assignmentStudentId = stud.StudentID.Value,
-                            projectId = proj.ProjectID.Value,
-                            projectName = tutor.NameAbbreviation +" : " + proj.ProjectName,
-                            quota = ((proj.Qty == null) ? null : proj.Qty.Value),
-                            info = proj.Info,
-                            availableGroupsNameList = proj.AvailableGroupsName_List,
-                            technologiesNameList = proj.TechnologiesName_List,
-                            workDirectionsNameList = proj.WorkDirectionsName_List,
-                            tutorId = proj.TutorID.Value,
-                            orderInStudentPrefs = pref.OrderNumber,
-                            isActive = ((tutchoice.Count()==0 || !(tutchoice.Select(x=>x.IsInQuota).Contains(true)))? false:true)
-                        });
-                    }
-                }
-            }
-        }
-        var studs = new List<StudentMonitoringDto>();
-        foreach (var group in useGroups)
-        {
-            foreach (var student in students.Where(x => x.GroupID == group.GroupID))
-            {
-                var studPrefs = new List<ProjectMonitoringDto>();
-                foreach (var pref in studentPreferences.Where(x => x.StudentID == student.StudentID))
-                {
-                    foreach (var proj in projects.Where(x => x.ProjectID == pref.ProjectID))
-                    {
-                        var tutor = tutors.Where(x => x.TutorID == proj.TutorID).FirstOrDefault();
-                        var tutchoice = tutorsChoices.Where(x => x.StudentID == pref.StudentID
-                                                                 &&
-                                                                 x.ProjectID == proj.ProjectID
-                        );
-                        studPrefs.Add(
-                            new ProjectMonitoringDto()
-                            {
-                                projectId = proj.ProjectID.Value,
-                                projectName = tutor.NameAbbreviation +" : "+ proj.ProjectName,
-                                quota = ((proj.Qty == null) ? null : proj.Qty.Value),
-                                info = proj.Info,
-                                availableGroupsNameList = proj.AvailableGroupsName_List,
-                                technologiesNameList = proj.TechnologiesName_List,
-                                workDirectionsNameList = proj.WorkDirectionsName_List,
-                                tutorId = proj.TutorID.Value,
-                                orderInStudentPrefs = pref.OrderNumber,
-                                isActive = ((tutchoice.Count()==0 || !(tutchoice.Select(x=>x.IsInQuota).Contains(true)))? false:true)  
-                            });
-                    }
-                }
-                
-                studs.Add(new()
-                {
-                    nameAbbreviation = student.NameAbbreviation,
-                    groupName = group.GroupName, orderInTutorPrefs = null,
-                    preferences = studPrefs,
-                    assignedProject = assignedStudent.Where(x=>x.assignmentStudentId == student.StudentID).FirstOrDefault()
-                });
-            }
-        }
 
-        return studs;
-    }
-    
     public MatchingMonitoringData getMonitoringData(int matchingId)
     {
         throw new NotImplementedException("Функционал мониторинга в разработке");
@@ -261,11 +173,94 @@ public class MonitoringService : IMonitoringService
 
     public List<StudentMonitoringDto> getStudentsMonitoringData(int matchingId)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public List<TutorMonitoringDto> getTutorsMonitoringData(int matchingId)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
+    }
+
+    //слишком много аргументов
+    private List<StudentMonitoringDto> getMonitoringDataStudents(
+        IEnumerable<Group> useGroups
+        , IEnumerable<DataLayer.OldEntities.Student> students
+        , IEnumerable<StudentPreferences> studentPreferences
+        , IEnumerable<Project> projects
+        , IEnumerable<ProjectGroupDTO> projectGroups
+        , IEnumerable<TutorChoice> tutorsChoices
+        , IEnumerable<TutorFullDTO> tutors
+    )
+    {
+        var assignedStudent = new List<ProjectMonitoringDto>();
+        foreach (var tutorChoice in tutorsChoices)
+        foreach (var stud in students.Where(x => x.StudentID == tutorChoice.StudentID))
+        foreach (var proj in projects.Where(x => x.ProjectID == tutorChoice.ProjectID))
+        foreach (var pref in studentPreferences.Where(x =>
+                     x.StudentID == tutorChoice.StudentID && proj.ProjectID == tutorChoice.ProjectID))
+        {
+            var tutchoice = tutorsChoices.Where(x => x.StudentID == stud.StudentID
+                                                     &&
+                                                     x.ProjectID == proj.ProjectID
+            );
+            var tutor = tutors.Where(x => x.TutorID == proj.TutorID).FirstOrDefault();
+            assignedStudent.Add(new ProjectMonitoringDto
+            {
+                assignmentStudentId = stud.StudentID.Value,
+                projectId = proj.ProjectID.Value,
+                projectName = tutor.NameAbbreviation + " : " + proj.ProjectName,
+                quota = proj.Qty == null ? null : proj.Qty.Value,
+                info = proj.Info,
+                availableGroupsNameList = proj.AvailableGroupsName_List,
+                technologiesNameList = proj.TechnologiesName_List,
+                workDirectionsNameList = proj.WorkDirectionsName_List,
+                tutorId = proj.TutorID.Value,
+                orderInStudentPrefs = pref.OrderNumber,
+                isActive = tutchoice.Count() == 0 || !tutchoice.Select(x => x.IsInQuota).Contains(true) ? false : true
+            });
+        }
+
+        var studs = new List<StudentMonitoringDto>();
+        foreach (var group in useGroups)
+        foreach (var student in students.Where(x => x.GroupID == group.GroupID))
+        {
+            var studPrefs = new List<ProjectMonitoringDto>();
+            foreach (var pref in studentPreferences.Where(x => x.StudentID == student.StudentID))
+            foreach (var proj in projects.Where(x => x.ProjectID == pref.ProjectID))
+            {
+                var tutor = tutors.Where(x => x.TutorID == proj.TutorID).FirstOrDefault();
+                var tutchoice = tutorsChoices.Where(x => x.StudentID == pref.StudentID
+                                                         &&
+                                                         x.ProjectID == proj.ProjectID
+                );
+                studPrefs.Add(
+                    new ProjectMonitoringDto
+                    {
+                        projectId = proj.ProjectID.Value,
+                        projectName = tutor.NameAbbreviation + " : " + proj.ProjectName,
+                        quota = proj.Qty == null ? null : proj.Qty.Value,
+                        info = proj.Info,
+                        availableGroupsNameList = proj.AvailableGroupsName_List,
+                        technologiesNameList = proj.TechnologiesName_List,
+                        workDirectionsNameList = proj.WorkDirectionsName_List,
+                        tutorId = proj.TutorID.Value,
+                        orderInStudentPrefs = pref.OrderNumber,
+                        isActive = tutchoice.Count() == 0 || !tutchoice.Select(x => x.IsInQuota).Contains(true)
+                            ? false
+                            : true
+                    });
+            }
+
+            studs.Add(new StudentMonitoringDto
+            {
+                nameAbbreviation = student.NameAbbreviation,
+                groupName = group.GroupName, orderInTutorPrefs = null,
+                preferences = studPrefs,
+                assignedProject = assignedStudent.Where(x => x.assignmentStudentId == student.StudentID)
+                    .FirstOrDefault()
+            });
+        }
+
+        return studs;
     }
 }

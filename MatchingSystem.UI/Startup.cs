@@ -1,8 +1,10 @@
 ﻿using System;
 using MatchingSystem.Data;
 using MatchingSystem.DataLayer.Context;
-using MatchingSystem.DataLayer.Feature.Interface;
-using MatchingSystem.DataLayer.Feature.Repository;
+using MatchingSystem.DataLayer.Feature._Interface;
+using MatchingSystem.DataLayer.Feature._Repository;
+using MatchingSystem.DataLayer.Feature.Matching;
+using MatchingSystem.DataLayer.Feature.Matching.service;
 using MatchingSystem.Service;
 using MatchingSystem.Service.Allocation;
 using MatchingSystem.Service.DocumentsProcessing;
@@ -55,38 +57,42 @@ namespace MatchingSystem.UI
 
             var optionsBuilder = new DbContextOptionsBuilder<DiplomaMatchingContext>();
             optionsBuilder.UseSqlServer(connectionString);
+            optionsBuilder.UseLazyLoadingProxies();
 
             var dbContext = new DiplomaMatchingContext(optionsBuilder.Options);
-            services.AddSingleton<DbContext, DiplomaMatchingContext>(options => dbContext);
-            services.AddSingleton<DataLayer.Feature.User.IUserRepository, DataLayer.Feature.User.UserRepository>();
+            services.AddSingleton<DbContext, DiplomaMatchingContext>(_ => dbContext);
+            services.AddSingleton<DataLayer.Feature.User.IUserRepository, DataLayer.Feature.User.service.UserRepository>();
             services
-                .AddSingleton<DataLayer.Feature.Matching.IMatchingRepository, DataLayer.Feature.Matching.MatchingRepository>();
+                .AddSingleton<IMatchingRepository, MatchingRepository>();
 
 
             
-            services.AddTransient<IStudentRepository, StudentRepository>(options =>
+            services.AddTransient<IStudentRepository, StudentRepository>(_ =>
                 new StudentRepository(connectionString));
 
-            services.AddTransient<IDictionaryRepository, DictionaryRepository>(options =>
+            services.AddTransient<IDictionaryRepository, DictionaryRepository>(_ =>
                 new DictionaryRepository(connectionString));
 
-            services.AddTransient<ITutorRepository, TutorRepository>(options =>
+            services.AddTransient<ITutorRepository, TutorRepository>(_ =>
                 new TutorRepository(connectionString));
 
-            services.AddTransient<IProjectRepository, ProjectRepository>(options =>
+            services.AddTransient<IProjectRepository, ProjectRepository>(_ =>
                 new ProjectRepository(connectionString));
-            services.AddTransient<IGroupRepository, GroupRepository>(options =>
+            services.AddTransient<IGroupRepository, GroupRepository>(_ =>
                 new GroupRepository(connectionString));
-            services.AddTransient<IUserRepository, UserRepository>(options =>
+            services.AddTransient<IUserRepository, UserRepository>(_ =>
                 new UserRepository(connectionString));
 
-            services.AddTransient<IMatchingRepository, MatchingRepository>(options =>
-                new MatchingRepository(connectionString));
+           // services.AddTransient<IMatchingRepository, MatchingRepository>(options =>
+           //     new MatchingRepository());
+        
 
-            services.AddTransient<IExecutiveRepository, ExecutiveRepository>(options =>
+            services.AddTransient<IExecutiveRepository, ExecutiveRepository>(_ =>
                 new ExecutiveRepository(connectionString));
-            services.AddSingleton<IStatisticsRepository, StatisticsRepository>(options =>
+            services.AddSingleton<IStatisticsRepository, StatisticsRepository>(_ =>
                 new StatisticsRepository(connectionString));
+            services.AddSingleton<IMatchingRepository, MatchingRepository>(_ =>
+                new MatchingRepository(dbContext));
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options => options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Home/Login"));
@@ -111,9 +117,10 @@ namespace MatchingSystem.UI
             services.AddSingleton<IMonitoringService, MonitoringService>();            
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<IStageTransitionService, StageTransitionService>();
+            services.AddSingleton<IMatchingService, MatchingService>();
+    
             //--Services
-
-
+            
 
             services.AddSession(options =>
             {

@@ -1,4 +1,4 @@
-﻿using MatchingSystem.DataLayer.Feature.Interface;
+﻿using MatchingSystem.DataLayer.Feature._Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Scrypt;
@@ -34,7 +34,7 @@ namespace MatchingSystem.UI.Controllers
             var encoder = new ScryptEncoder();
             var passwordHash = encoder.Encode(newPassword);
             
-            userRepository.UpdatePasswordHash(data.User.UserId, passwordHash);
+            userRepository.UpdatePasswordHash(data.UserDto.UserId, passwordHash);
 
             return RedirectToAction("login", "Home");
         }
@@ -48,7 +48,7 @@ namespace MatchingSystem.UI.Controllers
 
             HttpContext.Session.Set<SessionData>("Data", data);
 
-            userRepository.SetLastVisitDate(data.User.UserId, data.SelectedRole, data.SelectedMatching);
+            userRepository.SetLastVisitDate(data.UserDto.UserId, data.SelectedRole, data.SelectedMatching);
 
             return roleName switch
             {

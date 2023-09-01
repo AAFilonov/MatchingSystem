@@ -6,12 +6,11 @@ public class InputDataException : System.Exception
     {
     }
 
-    public  InputDataException()
+    public InputDataException()
     {
     }
 
     public InputDataException(string msg, System.Exception e) : base(msg, e)
     {
-      
     }
 }
