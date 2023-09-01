@@ -18,6 +18,7 @@ variables:
 stages: 
   - build
   - test
+  - publish
   - deploy
 
 build_job:
@@ -29,7 +30,7 @@ build_job:
   script:
     - dotnet restore
     - dotnet build --configuration Release -o "C:\\GitLabUtils\\build"      #TMP_BUILD_FOLDER
-    - dotnet publish --configuration Release -o "C:\\GitLabUtils\\release"  #TMP_RELEASE_FOLDER
+   # - dotnet publish --configuration Release -o "C:\\GitLabUtils\\release"  #TMP_RELEASE_FOLDER
   artifacts:
     expire_in: 2 days 
     paths:
@@ -47,6 +48,24 @@ test_job:
     - dotnet test
   dependencies: 
     - build_job
+
+publish_job:
+  stage: deploy
+  only:
+    - production
+  before_script:
+    - CHCP 65001
+  script:
+    - echo %CD%
+    - dir
+    - dotnet publish --configuration Release -o "C:\\GitLabUtils\\release"  #TMP_RELEASE_FOLDER
+  dependencies:
+    - test_job
+  environment: production
+  artifacts:
+    expire_in: 2 days
+    paths:
+      - '.\\Publish'
 
 deploy_job:
   stage: deploy
