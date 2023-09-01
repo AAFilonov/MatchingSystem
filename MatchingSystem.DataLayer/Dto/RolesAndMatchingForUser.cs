@@ -6,5 +6,5 @@ namespace MatchingSystem.DataLayer.Dto;
 public class RolesAndMatchingForUser
 {
     public List<MatchingDto> Matchings { get; set; }
-    public List<Role> Roles { get; set; }
+    public List<RoleDto> Roles { get; set; }
 }

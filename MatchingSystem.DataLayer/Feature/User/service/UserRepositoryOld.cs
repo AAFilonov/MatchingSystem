@@ -4,21 +4,19 @@ using System.Threading.Tasks;
 using Dapper;
 using MatchingSystem.DataLayer.Context;
 using MatchingSystem.DataLayer.Dto.MatchingInit;
-using MatchingSystem.DataLayer.Feature.User;
 using MatchingSystem.DataLayer.OldEntities;
-using IUserRepository = MatchingSystem.DataLayer.Feature._Interface.IUserRepository;
 
-namespace MatchingSystem.DataLayer.Feature._Repository
+namespace MatchingSystem.DataLayer.Feature.User.service
 {
-    public class UserRepository : ConnectionBase, IUserRepository
+    public class UserRepositoryOld : ConnectionBase, IUserRepositoryOld
     {
-        public UserRepository(string connectionString) : base(connectionString)
+        public UserRepositoryOld(string connectionString) : base(connectionString)
         {
         }
         
       
 
-        public IEnumerable<RoleMatching> GetAllRoles(int userId)
+        public IEnumerable<RoleMatching> GetRolesForUser(int userId)
         {
             return Connection.Query<RoleMatching>("select * from napp.get_UserRolesMatchings(@UserID, null)",
                 new { UserID = userId });
@@ -31,7 +29,7 @@ namespace MatchingSystem.DataLayer.Feature._Repository
           
         }
         
-        public  IEnumerable<TutorInitDto> SetUserIdForTutors(List<TutorInitDto> tutors)
+        public  IEnumerable<TutorInitDto> saveTutors(List<TutorInitDto> tutors)
         {
             foreach (var tutor in tutors)
             {
@@ -63,7 +61,7 @@ namespace MatchingSystem.DataLayer.Feature._Repository
         }
 
 
-        public List<StudentInitDto> CreateUsersForStudents(List<StudentInitDto> users)
+        public List<StudentInitDto> saveStudents(List<StudentInitDto> users)
         {
             foreach (var user in users)
             {
@@ -106,15 +104,15 @@ namespace MatchingSystem.DataLayer.Feature._Repository
         }
 
 
-        public IEnumerable<Role> GetRolesForUserAndMatching(int userId, int matchingId)
+        public IEnumerable<RoleDto> GetRolesForUserAndMatching(int userId, int matchingId)
         {
-            return Connection.Query<Role>("select * from napp.get_UserRoles_ByMatching (@UserID,@MatchingID)",
+            return Connection.Query<RoleDto>("select * from napp.get_UserRoles_ByMatching (@UserID,@MatchingID)",
                 new { UserID = userId, MatchingID= matchingId });
         }
 
-        public async Task<IEnumerable<Role>> GetRolesForUserAndMatchingAsync(int userId, int matchingId)
+        public async Task<IEnumerable<RoleDto>> GetRolesForUserAndMatchingAsync(int userId, int matchingId)
         {
-           return await Connection.QueryAsync<Role>("select * from napp.get_UserRoles_ByMatching (@UserID,@MatchingID)",
+           return await Connection.QueryAsync<RoleDto>("select * from napp.get_UserRoles_ByMatching (@UserID,@MatchingID)",
                 new { UserID = userId, MatchingID = matchingId });
         }
 

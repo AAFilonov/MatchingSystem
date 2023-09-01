@@ -1,4 +1,5 @@
 ﻿using MatchingSystem.DataLayer.Feature.Matching;
+using MatchingSystem.DataLayer.Feature.Role;
 using MatchingSystem.DataLayer.Feature.Stage;
 using MatchingSystem.DataLayer.Feature.User;
 using MatchingSystem.DataLayer.Model;

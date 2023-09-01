@@ -3,11 +3,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using MatchingSystem.DataLayer.Dto.MatchingInit;
 using MatchingSystem.DataLayer.Feature._Interface;
+using MatchingSystem.DataLayer.Feature.User.service;
 using MatchingSystem.Service.DocumentsProcessing;
 using MatchingSystem.Service.Exception;
 using MatchingSystem.Service.MatchingInitialization;
 using MatchingSystem.Service.Tutor;
-using MatchingSystem.Service.User;
 using MatchingSystem.UI.Helpers;
 using MatchingSystem.UI.Services;
 using Microsoft.AspNetCore.Http;
@@ -26,27 +26,21 @@ public class MatchingInitializationController : ControllerBase
     private readonly IStudentsParsingService studentsParsingService;
     private readonly ITutorRepository tutorRepository;
     private readonly ITutorService tutorService;
-    private readonly IUserService userService;
+    private readonly IUserRepository userRepository;
 
     private readonly ITutorsParsingService tutorsParsingService;
     private MatchingInitData buffer; //TODO  костыль для демо
 
-    public MatchingInitializationController(ITutorService tutorService,
-        ILogger<MatchingInitializationController> logger, IMatchingInitializationService matchingInitializationService,
-        ITutorsParsingService tutorsParsingService, IStudentsParsingService studentsParsingService,
-        IDocumentsProcessingService documentsProcessingService, 
-        ITutorRepository tutorRepository,
-        IUserService userService
-    )
+    public MatchingInitializationController(IDocumentsProcessingService documentsProcessingService, IMatchingInitializationService matchingInitializationService, ILogger<MatchingInitializationController> logger, IStudentsParsingService studentsParsingService, ITutorRepository tutorRepository, ITutorService tutorService, IUserRepository userRepository, ITutorsParsingService tutorsParsingService)
     {
-        this.tutorService = tutorService;
-        this.logger = logger;
-        this.matchingInitializationService = matchingInitializationService;
-        this.tutorsParsingService = tutorsParsingService;
-        this.studentsParsingService = studentsParsingService;
         this.documentsProcessingService = documentsProcessingService;
+        this.matchingInitializationService = matchingInitializationService;
+        this.logger = logger;
+        this.studentsParsingService = studentsParsingService;
         this.tutorRepository = tutorRepository;
-        this.userService = userService;
+        this.tutorService = tutorService;
+        this.userRepository = userRepository;
+        this.tutorsParsingService = tutorsParsingService;
     }
 
 
@@ -160,7 +154,7 @@ public class MatchingInitializationController : ControllerBase
         //var data = buffer;
 
         var matchingId = sessionData.SelectedMatching;
-        userService.getStudentUsersByMatching(matchingId); 
+        userRepository.GetStudentUsersByMatching(matchingId); 
         
         var students = data.studentRecords;
         var package = documentsProcessingService.formStudentDataReport(students);

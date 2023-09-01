@@ -1,4 +1,5 @@
 ﻿using MatchingSystem.DataLayer.Feature._Interface;
+using MatchingSystem.DataLayer.Feature.User.service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Scrypt;
@@ -18,6 +19,7 @@ namespace MatchingSystem.UI.Controllers
         {
             this.userRepository = userRepository;
         }
+
 
         public override void OnActionExecuting(ActionExecutingContext ctx)
         {

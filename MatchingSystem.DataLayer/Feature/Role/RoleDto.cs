@@ -1,7 +1,7 @@
 ﻿namespace MatchingSystem.DataLayer.OldEntities
 {
     #nullable enable
-    public class Role
+    public class RoleDto
     {
         public int? RoleCode { get; set; }
         public string? RoleName { get; set; }

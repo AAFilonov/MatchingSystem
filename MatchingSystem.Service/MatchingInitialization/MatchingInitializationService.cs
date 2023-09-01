@@ -6,6 +6,8 @@ using System.Transactions;
 using MatchingSystem.DataLayer.Dto.MatchingInit;
 using MatchingSystem.DataLayer.Feature._Interface;
 using MatchingSystem.DataLayer.Feature.Matching.service;
+using MatchingSystem.DataLayer.Feature.Role.service;
+using MatchingSystem.DataLayer.Feature.User.service;
 using MatchingSystem.Service.Exception;
 using Scrypt;
 
@@ -14,27 +16,31 @@ namespace MatchingSystem.Service.MatchingInitialization;
 public class MatchingInitializationService : IMatchingInitializationService
 {
     private readonly IGroupRepository groupRepository;
-    private readonly IMatchingRepository matchingRepository;
     private readonly IMatchingService matchingService;
     private readonly IProjectRepository projectRepository;
     private readonly IStudentRepository studentRepository;
     private readonly ITutorRepository tutorRepository;
+    //private readonly IUserRepositoryOld userRepositoryOld;
     private readonly IUserRepository userRepository;
+    private readonly IRoleRepository roleRepository;
+    private readonly IRoleService roleService;
 
-    public MatchingInitializationService(IMatchingRepository matchingRepository
-        , IUserRepository userRepository
-        , IStudentRepository studentRepository
+    public MatchingInitializationService(
+        IStudentRepository studentRepository
         , IGroupRepository groupRepository
         , ITutorRepository tutorRepository
         , IProjectRepository projectRepository
-    )
+        , IMatchingService matchingService, IUserRepository userRepository, IRoleRepository roleRepository, IRoleService roleService)
     {
-        this.matchingRepository = matchingRepository;
-        this.userRepository = userRepository;
+        
         this.studentRepository = studentRepository;
         this.groupRepository = groupRepository;
         this.tutorRepository = tutorRepository;
         this.projectRepository = projectRepository;
+        this.matchingService = matchingService;
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.roleService = roleService;
     }
 
     public MatchingInitData createMatching(MatchingInitData data, int creatorUserId)
@@ -73,7 +79,7 @@ public class MatchingInitializationService : IMatchingInitializationService
         //создать Mathching, Stage
         var MatchingId = matchingService.CreateMatching(data.matching);
         var StageId = matchingService.SetNewFirstStageInMatching(MatchingId);
-        userRepository.AssignRoleForUser(creatorUserId, MatchingId);
+        roleService.AssignRoleForUser(creatorUserId, MatchingId);
 
         //создать группы на базе, получить id записей
         foreach (var group in data.groupRecords) group.groupId = groupRepository.CreateGroup(group.name, MatchingId);
@@ -138,7 +144,7 @@ public class MatchingInitializationService : IMatchingInitializationService
         {
             dto.login = Transliterate(dto.lastName + dto.firstName.Substring(0, 1) +
                                       (dto.middleName != null ? dto.middleName.Substring(0, 1) : ""));
-            if (userRepository.GetUser(dto.login) != null) dto.login += "2023";
+            if (userRepository.GetByLogin(dto.login) != null) dto.login += "2023";
 
             dto.userBK = dto.UserId;
             dto.password = CreatePassword(6);
@@ -148,7 +154,7 @@ public class MatchingInitializationService : IMatchingInitializationService
             dto.passwordHash = encoder.Encode(dto.password);
         }
 
-        return userRepository.CreateUsersForStudents(data.studentRecords).ToList();
+        return userRepository.SaveStudents(data.studentRecords).ToList();
     }
 
     public static string Transliterate(string str)

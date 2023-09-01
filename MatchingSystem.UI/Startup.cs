@@ -1,11 +1,10 @@
 ﻿using System;
-using MatchingSystem.Data;
 using MatchingSystem.DataLayer.Context;
 using MatchingSystem.DataLayer.Feature._Interface;
 using MatchingSystem.DataLayer.Feature._Repository;
-using MatchingSystem.DataLayer.Feature.Matching;
 using MatchingSystem.DataLayer.Feature.Matching.service;
-using MatchingSystem.Service;
+using MatchingSystem.DataLayer.Feature.Role.service;
+using MatchingSystem.DataLayer.Feature.User.service;
 using MatchingSystem.Service.Allocation;
 using MatchingSystem.Service.DocumentsProcessing;
 using MatchingSystem.Service.Executive;
@@ -18,7 +17,6 @@ using MatchingSystem.Service.Quotas;
 using MatchingSystem.Service.Statistics;
 using MatchingSystem.Service.Student;
 using MatchingSystem.Service.Tutor;
-using MatchingSystem.Service.User;
 using MatchingSystem.UI.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,7 +24,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace MatchingSystem.UI
 {
@@ -61,7 +58,6 @@ namespace MatchingSystem.UI
 
             var dbContext = new DiplomaMatchingContext(optionsBuilder.Options);
             services.AddSingleton<DbContext, DiplomaMatchingContext>(_ => dbContext);
-            services.AddSingleton<DataLayer.Feature.User.IUserRepository, DataLayer.Feature.User.service.UserRepository>();
             services
                 .AddSingleton<IMatchingRepository, MatchingRepository>();
 
@@ -80,8 +76,8 @@ namespace MatchingSystem.UI
                 new ProjectRepository(connectionString));
             services.AddTransient<IGroupRepository, GroupRepository>(_ =>
                 new GroupRepository(connectionString));
-            services.AddTransient<IUserRepository, UserRepository>(_ =>
-                new UserRepository(connectionString));
+            services.AddTransient<IUserRepositoryOld, UserRepositoryOld>(_ =>
+                new UserRepositoryOld(connectionString));
 
            // services.AddTransient<IMatchingRepository, MatchingRepository>(options =>
            //     new MatchingRepository());
@@ -109,13 +105,13 @@ namespace MatchingSystem.UI
             services.AddSingleton<IStudentService, StudentService>();
             services.AddSingleton<IQuotasService, QuotasService>();
             services.AddSingleton<ITutorService, TutorService>();
-            services.AddSingleton<IUserService, UserService>();            
+            services.AddSingleton<IUserRepository, IUserRepository>();            
+            services.AddSingleton<IRoleRepository, RoleRepository>();
             services.AddSingleton<ITutorsParsingService, TutorParsingService>();            
             services.AddSingleton<IStudentsParsingService, StudentsParsingService>();            
             services.AddSingleton<IDocumentsProcessingService, DocumentsProcessingService>();            
             services.AddSingleton<IMatchingInitializationService, MatchingInitializationService>();            
-            services.AddSingleton<IMonitoringService, MonitoringService>();            
-            services.AddSingleton<IUserService, UserService>();
+            services.AddSingleton<IMonitoringService, MonitoringService>();
             services.AddSingleton<IStageTransitionService, StageTransitionService>();
             services.AddSingleton<IMatchingService, MatchingService>();
     

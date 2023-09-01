@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
         <RootNamespace>MatchingSystem.DataLayer</RootNamespace>
-        <Nullable>disable</Nullable>
+        <Nullable>enable</Nullable>
         <Configurations>Debug;Release</Configurations>
         <Platforms>AnyCPU</Platforms>
         <PackageId>MatchingSystem.DataLayer</PackageId>
@@ -26,6 +26,11 @@
 
     <ItemGroup>
         <Compile Remove="Interface\IGroupRepositoryd.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Feature\Notifications" />
+      <Folder Include="Feature\UserRole" />
     </ItemGroup>
 
 </Project>
