@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using MatchingSystem.DataLayer.Entities;
-using MatchingSystem.DataLayer.Interface;
 using MatchingSystem.DataLayer.Dto;
 using MatchingSystem.Service.Statistics;
 

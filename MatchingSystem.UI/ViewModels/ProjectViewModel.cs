@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using MatchingSystem.DataLayer.Entities;
+using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.UI.ViewModels
 {

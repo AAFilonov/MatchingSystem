@@ -1,6 +1,6 @@
-namespace MatchingSystem.Data.Feature.User;
+namespace MatchingSystem.DataLayer.Feature.User;
 
-public interface IUserRepository :IRepository<Model.User>
+public interface IUserRepository :IRepository<Data.Model.User>
 {
-    Model.User? findByLogin(string authLogin);
+    Data.Model.User? FindByLogin(string authLogin);
 }

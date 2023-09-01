@@ -1,9 +1,9 @@
 ﻿
-using MatchingSystem.Data.Model;
+using MatchingSystem.DataLayer.Model;
 
-namespace MatchingSystem.Data.Feature.Matching;
+namespace MatchingSystem.DataLayer.Feature.Matching;
 
-public interface IMatchingRepository :  IRepository<Model.Matching>
+public interface IMatchingRepository :  IRepository<Data.Model.Matching>
 {
-    Model.Stage GetCurrentStage(int matchingId);
+    Stage GetCurrentStage(int matchingId);
 }

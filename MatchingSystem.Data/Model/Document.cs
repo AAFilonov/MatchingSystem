@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace MatchingSystem.DataLayer.Model;
 
-namespace MatchingSystem.Data.Model;
-
-public partial class Document
+public class Document
 {
     public int DocumentId { get; set; }
     public int StageId { get; set; }

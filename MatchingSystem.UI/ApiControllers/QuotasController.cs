@@ -1,6 +1,4 @@
 ﻿using System;
-using MatchingSystem.DataLayer.Interface;
-using MatchingSystem.DataLayer.IO.Params;
 using MatchingSystem.DataLayer.Dto;
 using Microsoft.AspNetCore.Mvc;
 using System.Data.SqlClient;

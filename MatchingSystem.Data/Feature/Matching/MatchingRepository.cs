@@ -1,15 +1,16 @@
-﻿using MatchingSystem.Data.Model;
+﻿using System;
+using MatchingSystem.DataLayer.Model;
 using Microsoft.EntityFrameworkCore;
 
-namespace MatchingSystem.Data.Feature.Matching;
+namespace MatchingSystem.DataLayer.Feature.Matching;
 
-public class MatchingRepository :  Repository<Model.Matching>,IMatchingRepository
+public class MatchingRepository :  Repository<Data.Model.Matching>,IMatchingRepository
 {
     public MatchingRepository(DbContext context) : base(context)
     {
     }
       
-    public Model.Stage GetCurrentStage(int matchingId)
+    public Stage GetCurrentStage(int matchingId)
     {
         throw new NotImplementedException();
     }

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Threading.Tasks;
 using MatchingSystem.DataLayer;
-using MatchingSystem.DataLayer.Interface;
+using MatchingSystem.DataLayer.Feature.Interface;
 using MatchingSystem.UI.Helpers;
 using MatchingSystem.UI.Services;
 using MatchingSystem.UI.ViewModels;

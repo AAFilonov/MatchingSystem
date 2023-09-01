@@ -2,9 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using MatchingSystem.DataLayer;
-using MatchingSystem.DataLayer.Entities;
-using MatchingSystem.DataLayer.Interface;
-using MatchingSystem.DataLayer.Repository;
+using MatchingSystem.DataLayer.Feature.Interface;
+using MatchingSystem.DataLayer.OldEntities;
 using MatchingSystem.UI.Helpers;
 using MatchingSystem.UI.Services;
 using MatchingSystem.UI.ViewModels;

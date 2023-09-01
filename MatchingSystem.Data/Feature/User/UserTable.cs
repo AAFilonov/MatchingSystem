@@ -1,11 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace MatchingSystem.Data.Feature.User;
+namespace MatchingSystem.DataLayer.Feature.User;
 
-public class UserTable : IEntityTypeConfiguration<Model.User>
+public class UserTable : IEntityTypeConfiguration<Data.Model.User>
 {
-    public void Configure(EntityTypeBuilder<Model.User> builder)
+    public void Configure(EntityTypeBuilder<Data.Model.User> builder)
     {
         builder.Property(e => e.UserId).HasColumnName("UserID");
         builder.Property(e => e.Email).HasMaxLength(50);

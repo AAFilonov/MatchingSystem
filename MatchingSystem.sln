@@ -5,11 +5,9 @@ VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MatchingSystem.UI", "MatchingSystem.UI\MatchingSystem.UI.csproj", "{A0151FF8-AD60-4276-BA1B-5ABA3633B1A8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MatchingSystem.DataLayer", "MatchingSystem.DataLayer\MatchingSystem.DataLayer.csproj", "{22E23962-4356-4956-A618-37C9D3826A69}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MatchingSystem.Data", "MatchingSystem.Data\MatchingSystem.Data.csproj", "{22E23962-4356-4956-A618-37C9D3826A69}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatchingSystem.Constants", "MatchingSystem.Constants\MatchingSystem.Constants.csproj", "{002E06FB-FEDC-40D4-83FA-7D9617C9BEF4}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatchingSystem.Data", "MatchingSystem.Data\MatchingSystem.Data.csproj", "{954CD888-53DB-4DC6-9449-2862277D80F9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatchingSystem.Service", "MatchingSystem.Service\MatchingSystem.Service.csproj", "{00071BE1-A638-4E23-A154-ADCE728A3ACA}"
 EndProject
@@ -44,12 +42,6 @@ Global
 		{002E06FB-FEDC-40D4-83FA-7D9617C9BEF4}.Production|Any CPU.Build.0 = Debug|Any CPU
 		{002E06FB-FEDC-40D4-83FA-7D9617C9BEF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{002E06FB-FEDC-40D4-83FA-7D9617C9BEF4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{954CD888-53DB-4DC6-9449-2862277D80F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{954CD888-53DB-4DC6-9449-2862277D80F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{954CD888-53DB-4DC6-9449-2862277D80F9}.Production|Any CPU.ActiveCfg = Debug|Any CPU
-		{954CD888-53DB-4DC6-9449-2862277D80F9}.Production|Any CPU.Build.0 = Debug|Any CPU
-		{954CD888-53DB-4DC6-9449-2862277D80F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{954CD888-53DB-4DC6-9449-2862277D80F9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{00071BE1-A638-4E23-A154-ADCE728A3ACA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{00071BE1-A638-4E23-A154-ADCE728A3ACA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{00071BE1-A638-4E23-A154-ADCE728A3ACA}.Production|Any CPU.ActiveCfg = Debug|Any CPU

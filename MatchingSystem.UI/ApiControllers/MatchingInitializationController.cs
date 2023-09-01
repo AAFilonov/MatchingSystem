@@ -2,7 +2,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using MatchingSystem.DataLayer.Dto.MatchingInit;
-using MatchingSystem.DataLayer.Interface;
+using MatchingSystem.DataLayer.Feature.Interface;
 using MatchingSystem.Service.DocumentsProcessing;
 using MatchingSystem.Service.Exception;
 using MatchingSystem.Service.MatchingInitialization;

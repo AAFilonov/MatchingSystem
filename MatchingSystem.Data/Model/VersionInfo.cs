@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace MatchingSystem.Data.Model;
+namespace MatchingSystem.DataLayer.Model;
 
-public partial class VersionInfo
+public class VersionInfo
 {
     public long Version { get; set; }
     public DateTime? AppliedOn { get; set; }

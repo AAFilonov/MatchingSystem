@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MatchingSystem.DataLayer.Entities;
+using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.UI.ViewModels
 {

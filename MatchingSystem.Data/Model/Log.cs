@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace MatchingSystem.Data.Model;
+namespace MatchingSystem.DataLayer.Model;
 
-public partial class Log
+public class Log
 {
     public Guid Id { get; set; }
     public string? Request { get; set; }

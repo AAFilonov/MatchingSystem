@@ -1,6 +1,8 @@
+using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace MatchingSystem.Data.Feature;
+namespace MatchingSystem.DataLayer.Feature;
 
 public interface IRepository<TEntity> where TEntity : class
 {

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using MatchingSystem.DataLayer.Interface;
-using IUserRepository = MatchingSystem.DataLayer.Interface.IUserRepository;
+using MatchingSystem.DataLayer.Feature.Interface;
+using IUserRepository = MatchingSystem.DataLayer.Feature.Interface.IUserRepository;
 
 namespace MatchingSystem.Service.Notification;
 

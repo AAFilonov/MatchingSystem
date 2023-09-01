@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MatchingSystem.DataLayer.Dto.MatchingMonitoring;
-using MatchingSystem.DataLayer.Entities;
-using MatchingSystem.DataLayer.Interface;
+using MatchingSystem.DataLayer.Feature.Interface;
+using MatchingSystem.DataLayer.OldEntities;
 
 
 namespace MatchingSystem.Service.Monitoring;
@@ -29,7 +29,7 @@ public class MonitoringService : IMonitoringService
     //слишком много аргументов
     List<StudentMonitoringDto> getMonitoringDataStudents(
         IEnumerable<Group> useGroups
-        ,IEnumerable<DataLayer.Entities.Student> students
+        ,IEnumerable<DataLayer.OldEntities.Student> students
         ,IEnumerable<StudentPreferences> studentPreferences
         ,IEnumerable<Project> projects
         ,IEnumerable<ProjectGroupDTO> projectGroups

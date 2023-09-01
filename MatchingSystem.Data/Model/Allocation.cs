@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace MatchingSystem.DataLayer.Model;
 
-namespace MatchingSystem.Data.Model;
-
-public partial class Allocation
+public class Allocation
 {
     public int MatchingId { get; set; }
     public int StageTypeId { get; set; }

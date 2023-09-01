@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Transactions;
 using MatchingSystem.DataLayer.Dto.MatchingInit;
-using MatchingSystem.DataLayer.Interface;
+using MatchingSystem.DataLayer.Feature.Interface;
 using MatchingSystem.Service.Exception;
 using Scrypt;
 

@@ -1,8 +1,8 @@
 ﻿using System;
 using MatchingSystem.Data;
-using MatchingSystem.DataLayer.Entities;
-using MatchingSystem.DataLayer.Interface;
-using MatchingSystem.DataLayer.Repository;
+using MatchingSystem.DataLayer.Context;
+using MatchingSystem.DataLayer.Feature.Interface;
+using MatchingSystem.DataLayer.Feature.Repository;
 using MatchingSystem.Service;
 using MatchingSystem.Service.Allocation;
 using MatchingSystem.Service.DocumentsProcessing;
@@ -58,9 +58,9 @@ namespace MatchingSystem.UI
 
             var dbContext = new DiplomaMatchingContext(optionsBuilder.Options);
             services.AddSingleton<DbContext, DiplomaMatchingContext>(options => dbContext);
-            services.AddSingleton<Data.Feature.User.IUserRepository, Data.Feature.User.UserRepository>();
+            services.AddSingleton<DataLayer.Feature.User.IUserRepository, DataLayer.Feature.User.UserRepository>();
             services
-                .AddSingleton<Data.Feature.Matching.IMatchingRepository, Data.Feature.Matching.MatchingRepository>();
+                .AddSingleton<DataLayer.Feature.Matching.IMatchingRepository, DataLayer.Feature.Matching.MatchingRepository>();
 
 
             

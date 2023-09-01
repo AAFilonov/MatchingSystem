@@ -1,12 +1,16 @@
 ﻿// ReSharper disable once CheckNamespace
+
+using System.Collections.Generic;
+using MatchingSystem.DataLayer.Model;
+
 namespace MatchingSystem.Data.Model;
 
-public partial class Matching
+public class Matching
 {
     public Matching()
     {
         Groups = new HashSet<Group>();
-        Stages = new HashSet<Model.Stage>();
+        Stages = new HashSet<Stage>();
         UsersRoles = new HashSet<UsersRole>();
     }
 
@@ -17,7 +21,7 @@ public partial class Matching
 
     public virtual MatchingType? MatchingType { get; set; }
     public virtual ICollection<Group> Groups { get; set; }
-    public virtual ICollection<Model.Stage> Stages { get; set; }
+    public virtual ICollection<Stage> Stages { get; set; }
     public virtual ICollection<UsersRole> UsersRoles { get; set; }
     
 }

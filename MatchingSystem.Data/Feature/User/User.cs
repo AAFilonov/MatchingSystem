@@ -1,4 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
+using MatchingSystem.DataLayer.Model;
+
 // ReSharper disable CheckNamespace
 namespace MatchingSystem.Data.Model;
 

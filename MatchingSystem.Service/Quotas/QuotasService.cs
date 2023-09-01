@@ -1,6 +1,6 @@
 ﻿using MatchingSystem.DataLayer.Dto;
-using MatchingSystem.DataLayer.Interface;
-using MatchingSystem.DataLayer.IO.Params;
+using MatchingSystem.DataLayer.Dto.IO.Params;
+using MatchingSystem.DataLayer.Feature.Interface;
 
 namespace MatchingSystem.Service.Quotas;
 public class QuotasService: IQuotasService

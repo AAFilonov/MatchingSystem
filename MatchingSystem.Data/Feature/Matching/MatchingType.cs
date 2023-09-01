@@ -1,7 +1,10 @@
 ﻿// ReSharper disable once CheckNamespace
+
+using System.Collections.Generic;
+
 namespace MatchingSystem.Data.Model;
 
-public partial class MatchingType
+public class MatchingType
 {
     public MatchingType()
     {

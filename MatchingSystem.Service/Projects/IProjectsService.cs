@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using MatchingSystem.DataLayer.Dto;
-using MatchingSystem.DataLayer.Entities;
+using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.Service.Projects;
 public interface IProjectsService

@@ -1,8 +1,12 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
-using MatchingSystem.Data.Exceprions;
+using MatchingSystem.DataLayer.Context;
+using MatchingSystem.DataLayer.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
-namespace MatchingSystem.Data.Feature;
+namespace MatchingSystem.DataLayer.Feature;
 
 public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
 {
