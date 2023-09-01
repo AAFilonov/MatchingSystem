@@ -50,7 +50,7 @@ test_job:
     - build_job
 
 publish_job:
-  stage: deploy
+  stage: publish
   only:
     - production
   before_script:
