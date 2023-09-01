@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Transactions;
 using MatchingSystem.DataLayer.Dto.MatchingInit;
-using MatchingSystem.DataLayer.Feature.Interface;
+using MatchingSystem.DataLayer.Feature._Interface;
+using MatchingSystem.DataLayer.Feature.Matching.service;
 using MatchingSystem.Service.Exception;
 using Scrypt;
 
@@ -14,6 +15,7 @@ public class MatchingInitializationService : IMatchingInitializationService
 {
     private readonly IGroupRepository groupRepository;
     private readonly IMatchingRepository matchingRepository;
+    private readonly IMatchingService matchingService;
     private readonly IProjectRepository projectRepository;
     private readonly IStudentRepository studentRepository;
     private readonly ITutorRepository tutorRepository;
@@ -69,8 +71,8 @@ public class MatchingInitializationService : IMatchingInitializationService
         data.tutorRecords = userRepository.SetUserIdForTutors(data.tutorRecords).ToList();
 
         //создать Mathching, Stage
-        var MatchingId = matchingRepository.CreateMatching(data.matching);
-        var StageId = matchingRepository.SetNewFirstStageInMatching(MatchingId);
+        var MatchingId = matchingService.CreateMatching(data.matching);
+        var StageId = matchingService.SetNewFirstStageInMatching(MatchingId);
         userRepository.AssignRoleForUser(creatorUserId, MatchingId);
 
         //создать группы на базе, получить id записей
@@ -136,14 +138,11 @@ public class MatchingInitializationService : IMatchingInitializationService
         {
             dto.login = Transliterate(dto.lastName + dto.firstName.Substring(0, 1) +
                                       (dto.middleName != null ? dto.middleName.Substring(0, 1) : ""));
-            if (userRepository.GetUser(dto.login) != null)
-            {
-                dto.login += "2023";
-            }
+            if (userRepository.GetUser(dto.login) != null) dto.login += "2023";
 
-            dto.userBK = dto.UserId; 
+            dto.userBK = dto.UserId;
             dto.password = CreatePassword(6);
-            
+
             var encoder = new ScryptEncoder();
 
             dto.passwordHash = encoder.Encode(dto.password);

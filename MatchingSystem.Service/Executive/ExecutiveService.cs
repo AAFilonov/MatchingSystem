@@ -3,24 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using MatchingSystem.DataLayer.Dto;
 using MatchingSystem.DataLayer.Dto.IO.Params;
-using MatchingSystem.DataLayer.Feature.Interface;
+using MatchingSystem.DataLayer.Feature._Interface;
+using MatchingSystem.DataLayer.Feature.Matching.service;
 using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.Service.Executive;
 
 public class ExecutiveService : IExecutiveService
 {
-    private readonly ITutorRepository tutorRepository;
     private readonly IExecutiveRepository executiveRepository;
     private readonly IMatchingRepository matchingRepository;
+    private readonly IMatchingService matchingService;
     private readonly IProjectRepository projectRepository;
+    private readonly ITutorRepository tutorRepository;
 
     public ExecutiveService(
         ITutorRepository tutorRepository,
         IExecutiveRepository executiveRepository,
         IMatchingRepository matchingRepository,
         IProjectRepository projectRepository
-        )
+    )
     {
         this.tutorRepository = tutorRepository;
         this.executiveRepository = executiveRepository;
@@ -31,12 +33,12 @@ public class ExecutiveService : IExecutiveService
     public void SetNextStage(int? matchingId, int? userId)
     {
         var quotaRequest = executiveRepository.GetQuotaRequestsByExecutive(userId.Value, matchingId.Value);
-        matchingRepository.SetNextStage(matchingId.Value);
+        matchingService.SetNextStage(matchingId.Value);
     }
 
     public AdjustmentData GetAllocationByExecutive(int? userId, int? matchingId)
     {
-        var model = new AdjustmentData()
+        var model = new AdjustmentData
         {
             Allocations = executiveRepository.GetAllocationsByExecutive(userId.Value, matchingId.Value),
             Tutors = tutorRepository.GetTutorsByMatching(matchingId.Value),
@@ -59,7 +61,7 @@ public class ExecutiveService : IExecutiveService
     {
         foreach (var student in request.Allocations)
         {
-            var inParams = new AdjustmentParams()
+            var inParams = new AdjustmentParams
             {
                 MatchingId = request.MatchingID.Value,
                 ProjectId = student.ProjectID.Value,
@@ -72,6 +74,6 @@ public class ExecutiveService : IExecutiveService
 
     public void SetEndDate(DateTime endDate, int matchingId)
     {
-        matchingRepository.SetStageEndDate(endDate, matchingId);
+        matchingService.SetStageEndDate(endDate, matchingId);
     }
 }

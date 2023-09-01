@@ -11,19 +11,19 @@ public class TutorParsingService : ITutorsParsingService
 {
     private const int TUTOR_GROUP_SINCE_COLUMN_INDEX = 3;
     private const int TUTOR_GROUP_SINCE_ROW_INDEX = 2;
-    
+
     public List<GroupInitDto> parseTutorGroupData(ExcelPackage package)
     {
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-        List<GroupInitDto> dtos = new List<GroupInitDto>();
+        var dtos = new List<GroupInitDto>();
 
         var worksheet = package.Workbook.Worksheets[0];
-        int totalCols = worksheet.Dimension.End.Column;
+        var totalCols = worksheet.Dimension.End.Column;
         var range = worksheet.Cells[1, 1, 1, totalCols];
-        for (int i = TUTOR_GROUP_SINCE_COLUMN_INDEX; i <= totalCols; i++)
+        for (var i = TUTOR_GROUP_SINCE_COLUMN_INDEX; i <= totalCols; i++)
         {
             var cell = (string)range[1, i].Value;
-            dtos.Add(new GroupInitDto() { name = cell, value = false });
+            dtos.Add(new GroupInitDto { name = cell, value = false });
         }
 
         return dtos;
@@ -40,24 +40,24 @@ public class TutorParsingService : ITutorsParsingService
             throw new InputDataException("Ошибка парсинга: неверный формат данных", e);
         }
     }
-    
+
     public List<TutorInitDto> parseTutors(ExcelPackage package)
     {
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-        List<TutorInitDto> dtos = new List<TutorInitDto>();
-        
-        var worksheet = package.Workbook.Worksheets[0];
-        
+        var dtos = new List<TutorInitDto>();
 
-        int rowCount = worksheet.Dimension.End.Row; 
-        int colCount = worksheet.Dimension.End.Column; 
+        var worksheet = package.Workbook.Worksheets[0];
+
+
+        var rowCount = worksheet.Dimension.End.Row;
+        var colCount = worksheet.Dimension.End.Column;
         var range = worksheet.Cells[1, 1, rowCount, colCount];
-        
-        for (int row = TUTOR_GROUP_SINCE_ROW_INDEX; row < rowCount; row++)
+
+        for (var row = TUTOR_GROUP_SINCE_ROW_INDEX; row < rowCount; row++)
         {
             var tutorNameAbbreviation = (string)range[row, 1].Value;
-            if ( tutorNameAbbreviation == null) break;
-            
+            if (tutorNameAbbreviation == null) break;
+
             var tutor = fillTutorDto(range, row, colCount);
 
             dtos.Add(tutor);
@@ -69,16 +69,16 @@ public class TutorParsingService : ITutorsParsingService
     private static TutorInitDto fillTutorDto(ExcelRange range, int row, int colCount)
     {
         var tutor = new TutorInitDto();
-        
+
         tutor.nameAbbreviation = (string)range[row, 1].Value;
-        tutor.quota = Convert.ToInt32((Double)range[row, 2].Value);
+        tutor.quota = Convert.ToInt32((double)range[row, 2].Value);
         tutor.groups = new List<GroupInitDto>();
 
         for (var col = TUTOR_GROUP_SINCE_COLUMN_INDEX; col <= colCount; col++)
         {
-            int tutorGroupCell = Convert.ToInt32((Double)range[row, col].Value);
+            var tutorGroupCell = Convert.ToInt32((double)range[row, col].Value);
             var groupName = (string)range[1, col].Value;
-            var groupDto = new GroupInitDto() { name = groupName, value = tutorGroupCell == 1 };
+            var groupDto = new GroupInitDto { name = groupName, value = tutorGroupCell == 1 };
             tutor.groups.Add(groupDto);
         }
 

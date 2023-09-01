@@ -2,11 +2,12 @@
 using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.Service.Statistics;
+
 public interface IStatisticsService
 {
-    public IEnumerable<StatisticsMain> GetStatisticsMain(int? matchingId,int? currentStage);
+    public IEnumerable<StatisticsMain> GetStatisticsMain(int? matchingId, int? currentStage);
     public IEnumerable<StatisticsMain> GetStatisticsGroups(int? matchingId);
-    
+
     public IEnumerable<StatisticsTutors> GetStatisticsTutors(int? matchingId, int? currentStage);
 
     public IEnumerable<StatisticsStudents> GetStatisticsStudents(int? matchingId, int? currentStage);

@@ -11,5 +11,4 @@ public interface IQuotasService
     public void CreateRequestForLastStage(ChangeQuotaRequest data);
 
     public void AcceptRequest(int quotaid, string action);
-
 }

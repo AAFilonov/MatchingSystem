@@ -10,14 +10,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\MatchingSystem.Constants\MatchingSystem.Constants.csproj" />
-      <ProjectReference Include="..\MatchingSystem.Data\MatchingSystem.Data.csproj" />
+        <ProjectReference Include="..\MatchingSystem.Constants\MatchingSystem.Constants.csproj"/>
+        <ProjectReference Include="..\MatchingSystem.DataLayer\MatchingSystem.DataLayer.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="EPPlus" Version="6.0.4" />
-      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-      <PackageReference Include="Scrypt.NET" Version="1.3.0" />
+        <PackageReference Include="EPPlus" Version="6.0.4"/>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
+        <PackageReference Include="Scrypt.NET" Version="1.3.0"/>
     </ItemGroup>
 
 </Project>

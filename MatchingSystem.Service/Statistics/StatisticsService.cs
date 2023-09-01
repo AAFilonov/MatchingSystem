@@ -1,30 +1,26 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using MatchingSystem.DataLayer.Feature.Interface;
+using MatchingSystem.DataLayer.Feature._Interface;
 using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.Service.Statistics;
+
 public class StatisticsService : IStatisticsService
 {
     private readonly IStatisticsRepository statisticsRepository;
+
     public StatisticsService(IStatisticsRepository statisticsRepository)
     {
         this.statisticsRepository = statisticsRepository;
     }
 
-    public IEnumerable<StatisticsMain> GetStatisticsMain(int? matchingId,int? currentStage)
+    public IEnumerable<StatisticsMain> GetStatisticsMain(int? matchingId, int? currentStage)
     {
-        if (currentStage > 4)
-        {
-            currentStage = 4;
-        }
+        if (currentStage > 4) currentStage = 4;
 
         var result = statisticsRepository.GetStatisticsMain(matchingId.Value, currentStage.Value);
 
-        foreach (var stat in result)
-        {
-            stat.StatValue_Str = stat.StatValue_Str?.Replace(",", "<br>");
-        }
+        foreach (var stat in result) stat.StatValue_Str = stat.StatValue_Str?.Replace(",", "<br>");
 
         return result;
     }
@@ -33,20 +29,14 @@ public class StatisticsService : IStatisticsService
     {
         var result = statisticsRepository.GetStatisticsGroups(matchingId.Value);
 
-        foreach (var stat in result)
-        {
-            stat.StatValue_Str = stat.StatValue_Str?.Replace(",", "<br>");
-        }
+        foreach (var stat in result) stat.StatValue_Str = stat.StatValue_Str?.Replace(",", "<br>");
 
         return result;
     }
 
-    public IEnumerable<StatisticsTutors> GetStatisticsTutors(int? matchingId,int? currentStage)
+    public IEnumerable<StatisticsTutors> GetStatisticsTutors(int? matchingId, int? currentStage)
     {
-        if (currentStage > 4)
-        {
-            currentStage = 4;
-        }
+        if (currentStage > 4) currentStage = 4;
 
         var result = statisticsRepository.GetStatisticsTutors(matchingId.Value, currentStage.Value);
 
@@ -55,10 +45,7 @@ public class StatisticsService : IStatisticsService
 
     public IEnumerable<StatisticsStudents> GetStatisticsStudents(int? matchingId, int? currentStage)
     {
-        if (currentStage > 4)
-        {
-            currentStage = 4;
-        }
+        if (currentStage > 4) currentStage = 4;
 
         var result = statisticsRepository.GetStatisticsStudents(matchingId.Value, currentStage.Value);
 

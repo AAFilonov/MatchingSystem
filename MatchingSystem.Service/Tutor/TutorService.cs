@@ -2,7 +2,7 @@
 using System.Linq;
 using MatchingSystem.DataLayer.Dto;
 using MatchingSystem.DataLayer.Dto.MatchingInit;
-using MatchingSystem.DataLayer.Feature.Interface;
+using MatchingSystem.DataLayer.Feature._Interface;
 using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.Service.Tutor;
@@ -29,7 +29,6 @@ public class TutorService : ITutorService
 
 
         foreach (var proj in projects)
-        {
             viewModel.ChoiceDatas.Add(new TutorChoiceData
             {
                 ProjectID = proj,
@@ -38,19 +37,18 @@ public class TutorService : ITutorService
                 Choices = result.Where(x => x.ProjectID == proj).OrderBy(t => t.SortOrderNumber).ToList(),
                 ProjectIsClosed = result.FirstOrDefault(x => x.ProjectID == proj)?.ProjectIsClosed
             });
-        }
 
         return viewModel;
     }
 
     public async void SetReady(int tutorId)
     {
-            await tutorRepository.SetReadyAsync(tutorId);
+        await tutorRepository.SetReadyAsync(tutorId);
     }
 
     public void SaveChoice(List<TutorChoice_1> data, int tutorId)
     {
-            tutorRepository.SetPreferences(data, tutorId);
+        tutorRepository.SetPreferences(data, tutorId);
     }
 
     public List<TutorInitDto> GetAllTutors()
@@ -58,16 +56,15 @@ public class TutorService : ITutorService
         var tutors = tutorRepository.GetAllTutors();
         var tutorDtos = new List<TutorInitDto>();
         foreach (var tutor in tutors)
-        {
             //tutorDtos.Add(tutor); //(TutorDto.construct(tutor,groups));  
-            tutorDtos.Add(this.construct(tutor));
-        }
+            tutorDtos.Add(construct(tutor));
 
         return tutorDtos;
     }
+
     private TutorInitDto construct(DataLayer.OldEntities.Tutor tutor)
     {
-        TutorInitDto initDto = new TutorInitDto();
+        var initDto = new TutorInitDto();
         initDto.UserId = tutor.TutorID;
         initDto.nameAbbreviation = tutor.NameAbbreviation;
         initDto.isIncluded = true;

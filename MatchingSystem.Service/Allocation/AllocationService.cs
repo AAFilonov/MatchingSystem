@@ -1,5 +1,5 @@
 ﻿using MatchingSystem.DataLayer.Dto;
-using MatchingSystem.DataLayer.Feature.Interface;
+using MatchingSystem.DataLayer.Feature.Matching.service;
 
 namespace MatchingSystem.Service.Allocation;
 
@@ -17,7 +17,7 @@ public class AllocationService : IAllocationService
         var model = new AllocationData
         {
             Allocations = matchingRepository.GetFinalAllocations(),
-            Matchings = matchingRepository.GetMatchingsInfo()
+            Matchings = matchingRepository.GetMatchingsDto()
         };
         return model;
     }

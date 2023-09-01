@@ -50,7 +50,7 @@
         <div class="right col col-12 col-xl-6 col-lg-6 col-md-6 col-sm-6">
             <div class="dropdown">
                 <a href="javascript: void(0);" class="user-name dropdown-toggle text-decoration-none hover-link" id="fio" data-toggle="dropdown">
-                    @data.User?.NameAbbreviation
+                    @data.UserDto?.NameAbbreviation
                 </a>
                 <h4 class="user-name">
                     @rolesMatchings.Find(x => x.RoleName == data.SelectedRole)?.RoleName_ru
@@ -106,7 +106,7 @@
 <div class="notification-bar col col-lg-3"></div>
 @RenderBody()
 <form class="d-none" id="metadata">
-    <input type="hidden" name="userId" id="userId" value="@data.User.UserId"/>
+    <input type="hidden" name="userId" id="userId" value="@data.UserDto.UserId"/>
     <input type="hidden" name="matchingId" id="matchingId" value="@data.SelectedMatching"/>
     @if (data.TutorId != null)
     {
@@ -177,7 +177,7 @@
 @if (data.SelectedRole == "Tutor")
 {
     <script>
-        CheckNotificationsByTutor("Вам ответили на запрос на изменение квоты", @data.TutorId, @data.User.UserId, @data.SelectedMatching);
+        CheckNotificationsByTutor("Вам ответили на запрос на изменение квоты", @data.TutorId, @data.UserDto.UserId, @data.SelectedMatching);
     </script>
 }
 </body>

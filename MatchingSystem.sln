@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MatchingSystem.UI", "MatchingSystem.UI\MatchingSystem.UI.csproj", "{A0151FF8-AD60-4276-BA1B-5ABA3633B1A8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MatchingSystem.Data", "MatchingSystem.Data\MatchingSystem.Data.csproj", "{22E23962-4356-4956-A618-37C9D3826A69}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MatchingSystem.DataLayer", "MatchingSystem.DataLayer\MatchingSystem.DataLayer.csproj", "{22E23962-4356-4956-A618-37C9D3826A69}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatchingSystem.Constants", "MatchingSystem.Constants\MatchingSystem.Constants.csproj", "{002E06FB-FEDC-40D4-83FA-7D9617C9BEF4}"
 EndProject

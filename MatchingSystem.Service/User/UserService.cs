@@ -1,13 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using MatchingSystem.DataLayer.Feature.Interface;
+using MatchingSystem.DataLayer.Feature.Matching;
+using MatchingSystem.DataLayer.Feature.Matching.service;
+using MatchingSystem.DataLayer.Feature.User;
 using MatchingSystem.DataLayer.OldEntities;
+using IUserRepository = MatchingSystem.DataLayer.Feature._Interface.IUserRepository;
 
 namespace MatchingSystem.Service.User;
+
 public class UserService : IUserService
 {
-    private readonly IUserRepository userRepository;
     private readonly IMatchingRepository matchingRepository;
+    private readonly IUserRepository userRepository;
 
     public UserService(IUserRepository userRepository, IMatchingRepository matchingRepository)
     {
@@ -15,7 +19,7 @@ public class UserService : IUserService
         this.userRepository = userRepository;
     }
 
-    public IEnumerable<Matching> GetMatchingsForUser(int userId)
+    public IEnumerable<MatchingDto> GetMatchingsForUser(int userId)
     {
         var model = matchingRepository.GetMatchingsByUser(userId).OrderByDescending(matching => matching.MatchingID);
         return model;
@@ -28,7 +32,7 @@ public class UserService : IUserService
         return model;
     }
 
-    public IEnumerable<DataLayer.OldEntities.User> getStudentUsersByMatching(int matchingId)
+    public IEnumerable<UserDto> getStudentUsersByMatching(int matchingId)
     {
         return userRepository.getStudentUsersByMatching(matchingId);
     }

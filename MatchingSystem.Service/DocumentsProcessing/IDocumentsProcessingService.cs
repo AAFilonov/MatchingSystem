@@ -7,4 +7,4 @@ namespace MatchingSystem.Service.DocumentsProcessing;
 public interface IDocumentsProcessingService
 {
     public ExcelPackage formStudentDataReport(List<StudentInitDto> students);
-} 
+}

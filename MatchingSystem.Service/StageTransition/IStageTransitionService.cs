@@ -1,4 +1,5 @@
 ﻿namespace MatchingSystem.Service.Follow;
+
 public interface IStageTransitionService
 {
     public bool isNeedToTransit(int matchingId);

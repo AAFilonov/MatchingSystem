@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Threading.Tasks;
 using MatchingSystem.DataLayer;
-using MatchingSystem.DataLayer.Feature.Interface;
+using MatchingSystem.DataLayer.Feature._Interface;
+using MatchingSystem.DataLayer.Feature.Matching.service;
 using MatchingSystem.UI.Helpers;
 using MatchingSystem.UI.Services;
 using MatchingSystem.UI.ViewModels;
@@ -36,14 +37,14 @@ namespace MatchingSystem.UI.Controllers
         public override void OnActionExecuted(ActionExecutedContext ctx)
         {
             base.OnActionExecuted(ctx);
-            data.CurrentStage = matchingRepository.GetCurrentStage(data.SelectedMatching);
+            data.CurrentStage = matchingRepository.GetCurrentStageDto(data.SelectedMatching);
             HttpContext.Session.Set<SessionData>("Data", data);
         }
 
         [HttpGet]
         public IActionResult Index()
         {
-            return View("~/Views/General/Index.cshtml", data.User);
+            return View("~/Views/General/Index.cshtml", data.UserDto);
         }
         
         [HttpGet]

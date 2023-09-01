@@ -7,5 +7,5 @@ namespace MatchingSystem.Service.DocumentsProcessing;
 public interface ITutorsParsingService
 {
     public List<GroupInitDto> parseTutorGroupData(ExcelPackage package);
-    public  List<TutorInitDto> tryToParseTutorsData(ExcelPackage package);
-} 
+    public List<TutorInitDto> tryToParseTutorsData(ExcelPackage package);
+}

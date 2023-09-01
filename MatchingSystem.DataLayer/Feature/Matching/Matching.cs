@@ -1,0 +1,27 @@
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using MatchingSystem.DataLayer.Model;
+
+namespace MatchingSystem.DataLayer.Feature.Matching;
+
+public class Matching
+{
+    public Matching()
+    {
+        Groups = new HashSet<Group>();
+        Stages = new HashSet<Stage.Stage>();
+        UsersRoles = new HashSet<UsersRole>();
+    }
+
+    public int MatchingId { get; set; }
+    public string MatchingName { get; set; } = null!;
+    public int MatchingTypeId { get; set; }
+    public int? CreatorUserId { get; set; }
+    
+    [Required]
+    public virtual MatchingType MatchingType { get; set; }
+    public virtual ICollection<Group> Groups { get; set; }
+    public virtual ICollection<Stage.Stage> Stages { get; set; }
+    public virtual ICollection<UsersRole> UsersRoles { get; set; }
+    
+}

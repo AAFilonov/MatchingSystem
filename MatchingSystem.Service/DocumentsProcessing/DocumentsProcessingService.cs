@@ -1,8 +1,5 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using MatchingSystem.DataLayer.Dto.MatchingInit;
-using MatchingSystem.Service.Exception;
 using OfficeOpenXml;
 
 namespace MatchingSystem.Service.DocumentsProcessing;
@@ -13,7 +10,7 @@ public class DocumentsProcessingService : IDocumentsProcessingService
     {
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         var package = new ExcelPackage();
-        ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Студенты");
+        var worksheet = package.Workbook.Worksheets.Add("Студенты");
         worksheet.Cells["A1"].Value = "Группа";
         worksheet.Cells["B1"].Value = "Фамилия";
         worksheet.Cells["C1"].Value = "Имя";

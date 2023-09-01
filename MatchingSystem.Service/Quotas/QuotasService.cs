@@ -1,13 +1,14 @@
 ﻿using MatchingSystem.DataLayer.Dto;
 using MatchingSystem.DataLayer.Dto.IO.Params;
-using MatchingSystem.DataLayer.Feature.Interface;
+using MatchingSystem.DataLayer.Feature._Interface;
 
 namespace MatchingSystem.Service.Quotas;
-public class QuotasService: IQuotasService
+
+public class QuotasService : IQuotasService
 {
-    private readonly ITutorRepository tutorRepository;
-    private readonly IProjectRepository projectRepository;
     private readonly IExecutiveRepository executiveRepository;
+    private readonly IProjectRepository projectRepository;
+    private readonly ITutorRepository tutorRepository;
 
     public QuotasService(
         ITutorRepository tutorRepository,
@@ -25,12 +26,9 @@ public class QuotasService: IQuotasService
         var model = new TutorQuotaData
         {
             History = tutorRepository.GetQuotaRequestHistoryByTutor(tutorId),
-            CommonQuota = tutorRepository.GetCommonQuotaByTutor(tutorId),
+            CommonQuota = tutorRepository.GetCommonQuotaByTutor(tutorId)
         };
-        if (stageTypeCode == 4)
-        {
-            model.Projects = projectRepository.GetProjectsByTutor(tutorId);
-        }
+        if (stageTypeCode == 4) model.Projects = projectRepository.GetProjectsByTutor(tutorId);
 
         return model;
     }
@@ -54,7 +52,7 @@ public class QuotasService: IQuotasService
     }
 
 
-    public void AcceptRequest(int quotaid,string action)
+    public void AcceptRequest(int quotaid, string action)
     {
         executiveRepository.AcceptQuotaRequest(quotaid, action == "accept");
     }

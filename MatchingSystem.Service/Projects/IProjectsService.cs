@@ -3,6 +3,7 @@ using MatchingSystem.DataLayer.Dto;
 using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.Service.Projects;
+
 public interface IProjectsService
 {
     public bool AddTutorProject(ProjectRequest project);

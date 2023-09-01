@@ -3,7 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Security.Claims;
-using MatchingSystem.DataLayer.Feature.Interface;
+using MatchingSystem.DataLayer.Feature.Matching.service;
+using MatchingSystem.DataLayer.Feature.User;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -12,6 +13,7 @@ using MatchingSystem.UI.Helpers;
 using MatchingSystem.UI.Services;
 using MatchingSystem.UI.ViewModels;
 using Microsoft.Extensions.Logging;
+using IUserRepository = MatchingSystem.DataLayer.Feature._Interface.IUserRepository;
 
 namespace MatchingSystem.UI.Controllers
 {
@@ -19,17 +21,19 @@ namespace MatchingSystem.UI.Controllers
     {
         private readonly IUserRepository userRepository;
         private DataLayer.Feature.User.IUserRepository _userRepository;
-        //private MatchingSystem.Data.Feature.Matching.IMatchingRepository _matchingRepository;
-        private readonly IMatchingRepository matchingRepository;
+        private IMatchingRepository matchingRepository;
         private readonly ILogger<HomeController> logger;
 
-        public HomeController(IUserRepository userRepository, IMatchingRepository matchingRepository, DataLayer.Feature.User.IUserRepository userRepository2, DataLayer.Feature.Matching.IMatchingRepository matchingRepository1, ILogger<HomeController> logger)
+        public HomeController(
+            IUserRepository userRepository, 
+            IMatchingRepository matchingRepository, 
+            DataLayer.Feature.User.IUserRepository userRepository2,  
+            ILogger<HomeController> logger)
         {
             this.userRepository = userRepository;
            this.matchingRepository = matchingRepository;
             _userRepository = userRepository2;
             this.logger = logger;
-            //  _matchingRepository = matchingRepository1;
         }
 
         [HttpGet]
@@ -40,34 +44,33 @@ namespace MatchingSystem.UI.Controllers
             {
                 if (HttpContext.User.Identity.IsAuthenticated)
                 {
-                    var user = _userRepository.FindByLogin(HttpContext.User.Identity.Name);
-
+                    var userModel = _userRepository.getByLogin(HttpContext.User.Identity.Name);
+                    var user =  UserDto.fromEntity(userModel);
 
                     data.RolesMatchings = userRepository.GetAllRoles(user.UserId);
 
-                    data.User = user;
+                    data.UserDto = user;
                     data.CountRoles = data.RolesMatchings.Count();
 
 
                     var selectedMatchingId = Convert.ToInt32(HttpContext.Request.Cookies["selectedMatching"]);
 
                     if (matchingRepository.GetMatchings()
-                        .Any(matching => matching.MatchingID.Equals(selectedMatchingId)))
+                        .Any(matching => matching.MatchingId.Equals(selectedMatchingId)))
                     {
                         data.SelectedMatching = selectedMatchingId;
-                        // data.MatchingTypeCode = _matchingRepository.findById(selectedMatchingId).MatchingType.MatchingTypeCode;
                         data.MatchingTypeCode = matchingRepository.GetMatchings()
-                            .First(matching => matching.MatchingID == selectedMatchingId)
-                            .MatchingTypeCode;
+                            .First(matching => matching.MatchingId == selectedMatchingId)
+                            .MatchingType.MatchingTypeCode;
                         string selectedRole = HttpContext.Request.Cookies["selectedRole"];
                         data.SelectedRole = selectedRole;
 
-                        data.CurrentStage = matchingRepository.GetCurrentStage(data.SelectedMatching);
+                        data.CurrentStage = matchingRepository.GetCurrentStageDto(data.SelectedMatching);
 
                         userRepository.SetLastVisitDate(user.UserId, selectedRole,
                             System.Convert.ToInt32(selectedMatchingId));
 
-                        HttpContext.Session.Set<SessionData>("Data", data);
+                        HttpContext.Session.Set("Data", data);
                         return RedirectToLk(selectedRole);
 
                     }
@@ -91,12 +94,12 @@ namespace MatchingSystem.UI.Controllers
             }
 
             SessionData data = new SessionData();
-            Data.Model.User user = null;
+            User user = null;
 
             try
             {
-                user = _userRepository.FindByLogin(auth.Login);
-
+                 user = _userRepository.getByLogin(auth.Login);
+               
             }
             catch (Exception e)
             {
@@ -132,7 +135,7 @@ namespace MatchingSystem.UI.Controllers
 
             data.SelectedRole = data.RolesMatchings.First().RoleName;
             HttpContext.Response.Cookies.Append("selectedRole", data.RolesMatchings.FirstOrDefault()?.RoleName!);
-            data.User = user;
+            data.UserDto = UserDto.fromEntity(user);
             data.SelectedMatching = data.RolesMatchings.First().MatchingId;
             HttpContext.Response.Cookies.Append("selectedMatching",
                 data.RolesMatchings.First().MatchingId.ToString()!);
@@ -140,10 +143,10 @@ namespace MatchingSystem.UI.Controllers
              userRepository.SetLastVisitDate(user.UserId, data.RolesMatchings.First().RoleName!,
                 data.RolesMatchings.First().MatchingId);
 
-            data.CurrentStage = await matchingRepository.GetCurrentStageAsync(data.SelectedMatching);
+            data.CurrentStage = matchingRepository.GetCurrentStageDto(data.SelectedMatching);
             
             data.MatchingTypeCode = matchingRepository.GetMatchings()
-                .First(matching => matching.MatchingID.Equals(data.SelectedMatching)).MatchingTypeCode;
+                .First(matching => matching.MatchingId.Equals(data.SelectedMatching)).MatchingType.MatchingTypeCode;
             
             HttpContext.Session.Set<SessionData>("Data", data);
             return RedirectToLk(data.RolesMatchings.First().RoleName);
