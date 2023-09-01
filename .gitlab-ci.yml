@@ -55,9 +55,8 @@ publish_job:
     - production
   before_script:
     - CHCP 65001
-  script:
     - echo %CD%
-    - dir
+  script:
     - dotnet publish --configuration Release -o "C:\\GitLabUtils\\release"  #TMP_RELEASE_FOLDER
   dependencies:
     - test_job
