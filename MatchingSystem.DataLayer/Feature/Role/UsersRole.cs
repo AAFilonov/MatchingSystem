@@ -1,5 +1,7 @@
 ﻿using System;
 using MatchingSystem.DataLayer.Feature.Matching;
+using MatchingSystem.DataLayer.Feature.Role;
+using MatchingSystem.DataLayer.Feature.Student;
 using MatchingSystem.DataLayer.Feature.User;
 
 namespace MatchingSystem.DataLayer.Model;

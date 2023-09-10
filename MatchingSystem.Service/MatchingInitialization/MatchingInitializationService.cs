@@ -6,6 +6,10 @@ using System.Transactions;
 using MatchingSystem.DataLayer.Dto.MatchingInit;
 using MatchingSystem.DataLayer.Feature._Interface;
 using MatchingSystem.DataLayer.Feature.Matching.service;
+using MatchingSystem.DataLayer.Feature.Role.service;
+using MatchingSystem.DataLayer.Feature.Student;
+using MatchingSystem.DataLayer.Feature.User.service;
+using MatchingSystem.DataLayer.Utils;
 using MatchingSystem.Service.Exception;
 using Scrypt;
 
@@ -14,27 +18,29 @@ namespace MatchingSystem.Service.MatchingInitialization;
 public class MatchingInitializationService : IMatchingInitializationService
 {
     private readonly IGroupRepository groupRepository;
-    private readonly IMatchingRepository matchingRepository;
     private readonly IMatchingService matchingService;
     private readonly IProjectRepository projectRepository;
-    private readonly IStudentRepository studentRepository;
+    private readonly IStudentRepositoryOld studentRepositoryOld;
     private readonly ITutorRepository tutorRepository;
+    //private readonly IUserRepositoryOld userRepositoryOld;
     private readonly IUserRepository userRepository;
+    private readonly IRoleRepository roleRepository;
 
-    public MatchingInitializationService(IMatchingRepository matchingRepository
-        , IUserRepository userRepository
-        , IStudentRepository studentRepository
+    public MatchingInitializationService(
+        IStudentRepositoryOld studentRepositoryOld
         , IGroupRepository groupRepository
         , ITutorRepository tutorRepository
         , IProjectRepository projectRepository
-    )
+        , IMatchingService matchingService, IUserRepository userRepository, IRoleRepository roleRepository)
     {
-        this.matchingRepository = matchingRepository;
-        this.userRepository = userRepository;
-        this.studentRepository = studentRepository;
+        
+        this.studentRepositoryOld = studentRepositoryOld;
         this.groupRepository = groupRepository;
         this.tutorRepository = tutorRepository;
         this.projectRepository = projectRepository;
+        this.matchingService = matchingService;
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
     }
 
     public MatchingInitData createMatching(MatchingInitData data, int creatorUserId)
@@ -47,7 +53,7 @@ public class MatchingInitializationService : IMatchingInitializationService
             matching = TryCreateMatching(data, creatorUserId);
 //            transactionScope.Complete();
             return matching;
-            //Транзации не работают но распределение ссоздать можно
+            //TODO DPL-17 транзакционность через EF, тк в Dapper она не работает
             using (var transactionScope = new TransactionScope(TransactionScopeOption.Required, TimeSpan.MaxValue))
             {
                 matching = TryCreateMatching(data, creatorUserId);
@@ -67,16 +73,17 @@ public class MatchingInitializationService : IMatchingInitializationService
 
     private MatchingInitData TryCreateMatching(MatchingInitData data, int creatorUserId)
     {
+        //TODO DPL-16
         //просетить userId преподавателей по NameAbbreviation
         data.tutorRecords = userRepository.SetUserIdForTutors(data.tutorRecords).ToList();
 
         //создать Mathching, Stage
         var MatchingId = matchingService.CreateMatching(data.matching);
-        var StageId = matchingService.SetNewFirstStageInMatching(MatchingId);
-        userRepository.AssignRoleForUser(creatorUserId, MatchingId);
+        var StageId = matchingService.createFirstStage(MatchingId);
+        roleRepository.AssignRoleForUser(creatorUserId, MatchingId, 3);
 
         //создать группы на базе, получить id записей
-        foreach (var group in data.groupRecords) group.groupId = groupRepository.CreateGroup(group.name, MatchingId);
+        foreach (var group in data.groupRecords) group.groupId = groupRepository.CreateGroup(group.name, MatchingId);   //TODO реализваоно по старому
 
 
         //записать полученные ID Group в набор студентов
@@ -86,41 +93,44 @@ public class MatchingInitializationService : IMatchingInitializationService
 
         //записать полученные ID Group в набор преподавателей
         foreach (var tut in data.tutorRecords)
-            //tut.groups.Remove(tut.groups.FirstOrDefault(x => x.name == null));
-        foreach (var tutGroup in tut.groups)
-            tutGroup.groupId = data.groupRecords.Where(x => x.name == tutGroup.name).Select(x => x.groupId)
-                .FirstOrDefault();
-
-        //создать учетные записи для студентов
-        data.studentRecords = ctreateUsersForStudents(data);
+        {
+            tut.groups.ForEach(group =>
+            {
+                group.groupId = data.groupRecords.Where(x => x.name == group.name).Select(x => x.groupId)
+                    .FirstOrDefault();
+            });
+        }
+        
+        //создать учетные записи для студентов 
+        data.studentRecords = ctreateUsersForStudents(data);//TODO - этот шаг очень медленный, нужно переписать;
 
         //Создать Tutors на данный Matching
         data.tutorRecords = tutorRepository.CreateTutors(data.tutorRecords, MatchingId).ToList();
 
         //Провязать роли для преподавателей 
-        tutorRepository.AssignTutorRole(data.tutorRecords, MatchingId);
+        tutorRepository.AssignTutorRole(data.tutorRecords, MatchingId); //TODO реализваоно по старому
 
         //задать квоты преподавателям
-        tutorRepository.SetCommonQuotasForTutors(data.tutorRecords, StageId);
+        tutorRepository.SetCommonQuotasForTutors(data.tutorRecords, StageId); //TODO реализваоно по старому
 
         //создать провязки преподаватель - группа
-        groupRepository.AssignGroupsToTutors(data.tutorRecords, MatchingId);
+        groupRepository.AssignGroupsToTutors(data.tutorRecords, MatchingId); //TODO реализваоно по старому
 
 
-        // projectRepository.CreateDefaultTutorsProjects(data.tutorRecords);
+        projectRepository.CreateDefaultTutorsProjects(data.tutorRecords); //TODO реализваоно по старому
 
 
         //создать проекты по умолчанию для преподавателей
-        data.tutorRecords = projectRepository.CreateDefaultProjectsForTutors(data.tutorRecords, MatchingId)
+        data.tutorRecords = projectRepository.CreateDefaultProjectsForTutors(data.tutorRecords, MatchingId) //TODO реализваоно по старому
             .ToList();
         //связать проекты по умолчанию с группами
-        projectRepository.SetDefaultProjects_Groups(data.tutorRecords);
+        projectRepository.SetDefaultProjects_Groups(data.tutorRecords); //TODO реализваоно по старому
 
         //создать на базе Студентов
-        data.studentRecords = studentRepository.CreateStudents(data.studentRecords, MatchingId).ToList();
+        data.studentRecords = studentRepositoryOld.CreateStudents(data.studentRecords, MatchingId).ToList();
 
         //Провязать роли для студентов 
-        studentRepository.CreateUserRoles_Students(data.studentRecords, MatchingId);
+        studentRepositoryOld.CreateUserRoles_Students(data.studentRecords, MatchingId); //TODO реализваоно по старому
 
         //перейти к следующему шагу
         //переключиться в новое распределение
@@ -136,59 +146,19 @@ public class MatchingInitializationService : IMatchingInitializationService
     {
         foreach (var dto in data.studentRecords)
         {
-            dto.login = Transliterate(dto.lastName + dto.firstName.Substring(0, 1) +
-                                      (dto.middleName != null ? dto.middleName.Substring(0, 1) : ""));
-            if (userRepository.GetUser(dto.login) != null) dto.login += "2023";
+            dto.login = UserUtils.Transliterate(dto.lastName + dto.firstName.Substring(0, 1) +
+                                                (dto.middleName != null ? dto.middleName.Substring(0, 1) : ""));
+            //if (userRepository.GetByLogin(dto.login) != null) dto.login += "2023";
 
             dto.userBK = dto.UserId;
-            dto.password = CreatePassword(6);
+            dto.password = UserUtils.CreatePassword(6);
 
             var encoder = new ScryptEncoder();
 
             dto.passwordHash = encoder.Encode(dto.password);
         }
 
-        return userRepository.CreateUsersForStudents(data.studentRecords).ToList();
+        return userRepository.SaveStudents(data.studentRecords).ToList();
     }
 
-    public static string Transliterate(string str)
-    {
-        string[] lat_up =
-        {
-            "A", "B", "V", "G", "D", "E", "Yo", "Zh", "Z", "I", "Y", "K", "L", "M", "N", "O", "P", "R", "S", "T", "U",
-            "F", "Kh", "Ts", "Ch", "Sh", "Shch", "", "Y", "", "E", "Yu", "Ya"
-        };
-        string[] lat_low =
-        {
-            "a", "b", "v", "g", "d", "e", "yo", "zh", "z", "i", "y", "k", "l", "m", "n", "o", "p", "r", "s", "t", "u",
-            "f", "kh", "ts", "ch", "sh", "shch", "", "y", "", "e", "yu", "ya"
-        };
-        string[] rus_up =
-        {
-            "А", "Б", "В", "Г", "Д", "Е", "Ё", "Ж", "З", "И", "Й", "К", "Л", "М", "Н", "О", "П", "Р", "С", "Т", "У",
-            "Ф", "Х", "Ц", "Ч", "Ш", "Щ", "Ъ", "Ы", "Ь", "Э", "Ю", "Я"
-        };
-        string[] rus_low =
-        {
-            "а", "б", "в", "г", "д", "е", "ё", "ж", "з", "и", "й", "к", "л", "м", "н", "о", "п", "р", "с", "т", "у",
-            "ф", "х", "ц", "ч", "ш", "щ", "ъ", "ы", "ь", "э", "ю", "я"
-        };
-        for (var i = 0; i <= 32; i++)
-        {
-            str = str.Replace(rus_up[i], lat_up[i]);
-            str = str.Replace(rus_low[i], lat_low[i]);
-        }
-
-        return str;
-    }
-
-
-    public string CreatePassword(int length)
-    {
-        const string valid = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-        var res = new StringBuilder();
-        var rnd = new Random();
-        while (0 < length--) res.Append(valid[rnd.Next(valid.Length)]);
-        return res.ToString();
-    }
 }

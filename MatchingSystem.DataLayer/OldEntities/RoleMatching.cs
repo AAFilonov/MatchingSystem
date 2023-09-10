@@ -11,7 +11,7 @@
         public int MatchingTypeCode { get; set; }
         public string MatchingTypeName { get; set; }
         public string MatchingTypeName_ru { get; set; }
-        public int TutorID { get; set; }
-        public int StudentID { get; set; }
+        public int? TutorID { get; set; }
+        public int? StudentID { get; set; }
     }
 }

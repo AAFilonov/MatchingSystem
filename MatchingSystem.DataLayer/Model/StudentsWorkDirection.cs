@@ -1,4 +1,6 @@
-﻿namespace MatchingSystem.DataLayer.Model;
+﻿using MatchingSystem.DataLayer.Feature.Student;
+
+namespace MatchingSystem.DataLayer.Model;
 
 public class StudentsWorkDirection
 {

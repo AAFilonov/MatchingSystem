@@ -21,9 +21,6 @@
         },
          async projectsByTutorInfoWindow(item) {
              this.tutor = item;
-
-        
-             //TODO переписать на запрос статистики  по проектам  по этапу
              let request = await fetch(`${params.basePath}/api/Statistics/getStatisticsTutorProjects?matchingId=${this.matchingId}&tutorId=${this.tutor.tutorID}`);
              if (request.ok) {
                

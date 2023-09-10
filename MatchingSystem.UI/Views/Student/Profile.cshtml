@@ -22,10 +22,10 @@
             <div class="col col-8">
                 <div class="card bg-secondary">
                     <div class="card-header">
-                        Информация о студенте @Model.Student.Surname @Model.Student.Name @Model.Student.Patronimic
+                        Информация о студенте @Model.studentDto.Surname @Model.studentDto.Name @Model.studentDto.Patronimic
                         @if (data.CurrentStage?.StageTypeCode < 4)
                         {
-                            <a href="javascript: void(0);" data-student-id="@Model.Student.StudentID" data-toggle="modal" data-target="#js-profile-edit-modal" class="float-right d-flex align-items-center" id="js-profile-edit-trigger">
+                            <a href="javascript: void(0);" data-student-id="@Model.studentDto.StudentID" data-toggle="modal" data-target="#js-profile-edit-modal" class="float-right d-flex align-items-center" id="js-profile-edit-trigger">
                                 <span class="material-icons" style="font-size: inherit;">create</span> Изменить
                             </a>
                         }
@@ -33,45 +33,45 @@
                     <div class="card-body">
                         <div class="row mb-3">
                             <div class="col col-4">
-                                @Html.DisplayNameFor(model => model.Student.GroupName)
+                                @Html.DisplayNameFor(model => model.studentDto.GroupName)
                             </div>
                             <div class="col col-8">
-                                @Model.Student.GroupName
+                                @Model.studentDto.GroupName
                             </div>
                         </div>
-                        @if(!string.IsNullOrEmpty(Model.Student.Info2))
+                        @if(!string.IsNullOrEmpty(Model.studentDto.Info2))
                         {
                             <div class="row mb-3">
                                 <div class="col col-4">
-                                    @Html.DisplayNameFor(model => model.Student.Info2)
+                                    @Html.DisplayNameFor(model => model.studentDto.Info2)
                                 </div>
                                 <div class="col col-8">
-                                    @Model.Student.Info2
+                                    @Model.studentDto.Info2
                                 </div>
                             </div>
                         }
                         <div class="row mb-3">
                             <div class="col col-4">
-                                @Html.DisplayNameFor(model => model.Student.TechnologiesName_List)
+                                @Html.DisplayNameFor(model => model.studentDto.TechnologiesName_List)
                             </div>
                             <div class="col col-8">
-                                @Model.Student.TechnologiesName_List
+                                @Model.studentDto.TechnologiesName_List
                             </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col col-4">
-                                @Html.DisplayNameFor(model => model.Student.WorkDirectionsName_List)
+                                @Html.DisplayNameFor(model => model.studentDto.WorkDirectionsName_List)
                             </div>
                             <div class="col col-8">
-                                @Model.Student.WorkDirectionsName_List
+                                @Model.studentDto.WorkDirectionsName_List
                             </div>
                         </div>
                         <div class="row">
                             <div class="col col-4">
-                                @Html.DisplayNameFor(model => model.Student.Info)
+                                @Html.DisplayNameFor(model => model.studentDto.Info)
                             </div>
                             <div class="col col-8">
-                                @Model.Student.Info
+                                @Model.studentDto.Info
                             </div>
                         </div>
                     </div>
@@ -116,7 +116,7 @@
                             }
                         </div>
                     </div>
-                    @if (data.SelectedMatching == 3 && Model.Student.GroupID.Value == 11)
+                    @if (data.SelectedMatching == 3 && Model.studentDto.GroupID.Value == 11)
                     {
                         <div class="form-group">
                             <label data-toggle="collapse" class="cursor-pointer dropdown-toggle" data-target="#gr">Группа (для ИВТ)</label>
@@ -133,7 +133,7 @@
                         <textarea class="form-control" name="info"></textarea>
                     </div>
                     <div class="form-group">
-                        <input type="hidden" name="studentId" value=@Model.Student.StudentID />
+                        <input type="hidden" name="studentId" value=@Model.studentDto.StudentID />
                     </div>
                 </form>
             </div>
@@ -145,8 +145,8 @@
 </div>
 
 <script >
-    var studentId = @Model.Student.StudentID;
-    @if (Model.Student.Info2 == null)
+    var studentId = @Model.studentDto.StudentID;
+    @if (Model.studentDto.Info2 == null)
     {
         <text>
             var needModal = true;

@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MatchingSystem.DataLayer.OldEntities
+namespace MatchingSystem.DataLayer.Feature.Student
 {
-    public class Student
+    public class StudentDto
     {
         public int? StudentID { get; set; }
         public int? GroupID { get; set; }

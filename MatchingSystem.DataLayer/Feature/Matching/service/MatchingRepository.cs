@@ -2,40 +2,44 @@
 using System.Collections.Generic;
 using System.Linq;
 using MatchingSystem.DataLayer.Feature.Stage;
-using MatchingSystem.DataLayer.OldEntities;
+using MatchingSystem.DataLayer.Model;
 using Microsoft.EntityFrameworkCore;
+using Allocation = MatchingSystem.DataLayer.OldEntities.Allocation;
 
 namespace MatchingSystem.DataLayer.Feature.Matching.service;
 
 public class MatchingRepository : Repository<Matching>, IMatchingRepository
 {
+
     public MatchingRepository(DbContext context) : base(context)
     {
     }
 
-    public IEnumerable<MatchingDto> GetMatchingsInfo()
-    {
-        throw new NotImplementedException();
-    }
-    
-    //TODO в allocationsRepository
+
     public IEnumerable<Allocation> GetFinalAllocations()
     {
-        throw new NotImplementedException();
+        List<AllocationFullInfo> allocations = _matchingSystemContext.AllocationFullInfos.ToList();
+        return allocations.Select(info =>
+        {
+            Allocation dto = new Allocation();
+            dto.GroupName = info.GroupName;
+            dto.IsAllocated = info.IsAllocated==1;
+            dto.ProjectName = info.ProjectName;
+            dto.GroupID = info.GroupId;
+            dto.ProjectID = info.ProjectId;
+            dto.MatchingID = info.MatchingId;
+            dto.StudentID = info.StudentId;
+            dto.StudentNameAbbreviation = info.StudentNameAbbreviation;
+            dto.TutorID = info.TutorId;
+            dto.TutorNameAbbreviation = info.TutorNameAbbreviation;
+            return dto;
+        });
+        
     }
 
     public IEnumerable<Allocation> GetFinalAllocationByMatching(int MatchingId)
     {
-        throw new NotImplementedException();
-    }
-
-    public IEnumerable<MatchingDto> GetMatchingsByUser(int userId)
-    {
-        var matchingIds = _matchingSystemContext.UsersRoles.Where(role => role.MatchingId.Equals(userId)).ToArray()
-            .Select(role => role.MatchingId);
-        return _matchingSystemContext
-            .Matchings.Where(matching => matchingIds.Contains(matching.MatchingId))
-            .Select(matching => new MatchingDto(matching));
+        return GetFinalAllocations().Where(allocation => allocation.MatchingID == MatchingId);
     }
 
     public StageDto GetCurrentStageDto(int matchingId)
@@ -46,9 +50,9 @@ public class MatchingRepository : Repository<Matching>, IMatchingRepository
 
     public Stage.Stage GetCurrentStage(int matchingId)
     {
-        var stage = _matchingSystemContext.Matchings.Find(matchingId)?.Stages
-            .FirstOrDefault(stage => stage.IsCurrent != null && (bool)stage.IsCurrent);
-        return stage;
+        List<Stage.Stage> stages = _matchingSystemContext.Matchings.Find(matchingId)?.Stages.ToList();
+        Stage.Stage currentStage = stages.Where(stage => stage.IsCurrent == true).FirstOrDefault();
+        return currentStage;
     }
 
     public IEnumerable<MatchingDto> GetMatchingsDto()

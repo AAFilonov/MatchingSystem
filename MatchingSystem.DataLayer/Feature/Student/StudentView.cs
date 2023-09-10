@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace MatchingSystem.DataLayer.Model;
+namespace MatchingSystem.DataLayer.Feature.Student;
 
-public class Student1
+public class StudentView
 {
     public int StudentId { get; set; }
     public int GroupId { get; set; }

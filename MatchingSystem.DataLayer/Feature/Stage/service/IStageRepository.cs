@@ -1,4 +1,4 @@
-﻿namespace MatchingSystem.DataLayer.Feature.Stage;
+﻿namespace MatchingSystem.DataLayer.Feature.Stage.service;
 
 public interface IStageRepository: IRepository<Stage>
 {

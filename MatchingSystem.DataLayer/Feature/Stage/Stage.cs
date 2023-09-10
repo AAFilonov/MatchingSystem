@@ -8,7 +8,7 @@ public class Stage
 {
     public Stage()
     {
-        CommonQuota = new HashSet<CommonQuota>();
+        CommonQuota = new HashSet<CommonQuota.CommonQuota>();
         Documents = new HashSet<Document>();
         TutorsChoices = new HashSet<TutorsChoice>();
     }
@@ -25,7 +25,7 @@ public class Stage
 
     public virtual Matching.Matching Matching { get; set; } = null!;
     public virtual StagesType StageType { get; set; } = null!;
-    public virtual ICollection<CommonQuota> CommonQuota { get; set; }
+    public virtual ICollection<CommonQuota.CommonQuota> CommonQuota { get; set; }
     public virtual ICollection<Document> Documents { get; set; }
     public virtual ICollection<TutorsChoice> TutorsChoices { get; set; }
 }

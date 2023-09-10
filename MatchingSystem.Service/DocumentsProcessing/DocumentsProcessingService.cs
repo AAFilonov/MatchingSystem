@@ -23,8 +23,8 @@ public class DocumentsProcessingService : IDocumentsProcessingService
             var student = students[index];
             var rowIndex = index + 2;
             worksheet.Cells["A" + rowIndex].Value = student.groupName;
-            worksheet.Cells["B" + rowIndex].Value = student.firstName;
-            worksheet.Cells["C" + rowIndex].Value = student.lastName;
+            worksheet.Cells["B" + rowIndex].Value = student.lastName;
+            worksheet.Cells["C" + rowIndex].Value = student.firstName;
             worksheet.Cells["D" + rowIndex].Value = student.middleName;
             worksheet.Cells["E" + rowIndex].Value = student.login;
             worksheet.Cells["F" + rowIndex].Value = student.password;

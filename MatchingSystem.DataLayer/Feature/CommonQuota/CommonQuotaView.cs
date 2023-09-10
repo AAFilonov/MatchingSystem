@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace MatchingSystem.DataLayer.Model;
+namespace MatchingSystem.DataLayer.Feature.CommonQuota;
 
-public class CommonQuota1
+public class CommonQuotaView
 {
     public int? MatchingId { get; set; }
     public int TutorId { get; set; }
