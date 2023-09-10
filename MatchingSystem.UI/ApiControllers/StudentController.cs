@@ -2,8 +2,8 @@
 using System.Linq;
 using MatchingSystem.DataLayer.Dto;
 using MatchingSystem.DataLayer.Dto.IO.Params;
+using MatchingSystem.DataLayer.Feature.Student;
 using MatchingSystem.Service.Follow;
-using MatchingSystem.Service.Student;
 using MatchingSystem.UI.Helpers;
 using MatchingSystem.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -87,7 +87,7 @@ namespace MatchingSystem.UI.ApiControllers
             {
                 return BadRequest("В запросе отстутствует параметр StudentID");
             }
-            var student = studentService.GetStudentInfo(studentId);
+            StudentDto student = studentService.GetStudentInfo(studentId);
 
             return new JsonResult(student);
         }

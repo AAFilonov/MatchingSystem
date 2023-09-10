@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using MatchingSystem.DataLayer.Dto;
 using MatchingSystem.DataLayer.Dto.IO.Params;
+using MatchingSystem.DataLayer.Dto.MatchingInit;
 using MatchingSystem.DataLayer.OldEntities;
 
-namespace MatchingSystem.Service.Student;
+namespace MatchingSystem.DataLayer.Feature.Student;
 
 public interface IStudentService
 {
@@ -15,6 +16,7 @@ public interface IStudentService
 
     public void SetPreferences(int studentId, string selectedList);
 
-    public DataLayer.OldEntities.Student GetStudentInfo(int? studentId);
+    public StudentDto GetStudentInfo(int? studentId);
     public AllocatedByStudent GetAllocatedProject(int? studentId);
+    List<StudentInitDto> resetPasswords(List<StudentView> students);
 }

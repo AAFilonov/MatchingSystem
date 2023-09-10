@@ -1,7 +1,10 @@
-﻿using MatchingSystem.DataLayer.Feature.Matching;
+﻿using MatchingSystem.DataLayer.Feature.CommonQuota;
+using MatchingSystem.DataLayer.Feature.Matching;
 using MatchingSystem.DataLayer.Feature.Role;
 using MatchingSystem.DataLayer.Feature.Stage;
+using MatchingSystem.DataLayer.Feature.Student;
 using MatchingSystem.DataLayer.Feature.User;
+using MatchingSystem.DataLayer.Feature.UserRole;
 using MatchingSystem.DataLayer.Model;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,7 +24,7 @@ public partial class DiplomaMatchingContext: DbContext
     public virtual DbSet<AvailableStudentsPreference> AvailableStudentsPreferences { get; set; } = null!;
     public virtual DbSet<ChoosingType> ChoosingTypes { get; set; } = null!;
     public virtual DbSet<CommonQuota> CommonQuotas { get; set; } = null!;
-    public virtual DbSet<CommonQuota1> CommonQuotas1 { get; set; } = null!;
+    public virtual DbSet<CommonQuotaView> CommonQuotas1 { get; set; } = null!;
     public virtual DbSet<Document> Documents { get; set; } = null!;
     public virtual DbSet<Group> Groups { get; set; } = null!;
     public virtual DbSet<Log> Logs { get; set; } = null!;
@@ -37,7 +40,7 @@ public partial class DiplomaMatchingContext: DbContext
     public virtual DbSet<Stage> Stages { get; set; } = null!;
     public virtual DbSet<StagesType> StagesTypes { get; set; } = null!;
     public virtual DbSet<Student> Students { get; set; } = null!;
-    public virtual DbSet<Student1> Students1 { get; set; } = null!;
+    public virtual DbSet<StudentView> StudentsViews { get; set; } = null!;
     public virtual DbSet<StudentsPreference> StudentsPreferences { get; set; } = null!;
     public virtual DbSet<StudentsTechnology> StudentsTechnologies { get; set; } = null!;
     public virtual DbSet<StudentsWorkDirection> StudentsWorkDirections { get; set; } = null!;
@@ -230,7 +233,7 @@ public partial class DiplomaMatchingContext: DbContext
                 .HasConstraintName("FK_CommonQuotas_Tutors");
         });
 
-        modelBuilder.Entity<CommonQuota1>(entity =>
+        modelBuilder.Entity<CommonQuotaView>(entity =>
         {
             entity.HasNoKey();
 
@@ -311,6 +314,7 @@ public partial class DiplomaMatchingContext: DbContext
       
         modelBuilder.ApplyConfiguration(new MatchingTable());
         modelBuilder.ApplyConfiguration(new MatchingTypeTable());
+        modelBuilder.ApplyConfiguration(new UserRoleTable());
     
         modelBuilder.Entity<Project>(entity =>
         {
@@ -541,7 +545,7 @@ public partial class DiplomaMatchingContext: DbContext
                 .HasConstraintName("FK_Students_Groups");
         });
 
-        modelBuilder.Entity<Student1>(entity =>
+        modelBuilder.Entity<StudentView>(entity =>
         {
             entity.HasNoKey();
 
@@ -830,55 +834,7 @@ public partial class DiplomaMatchingContext: DbContext
 
             entity.Property(e => e.UserId).HasColumnName("UserID");
         });
-
-        modelBuilder.Entity<UsersRole>(entity =>
-        {
-            entity.HasKey(e => e.UserRoleId);
-
-            entity.ToTable("Users_Roles");
-
-            entity.Property(e => e.UserRoleId).HasColumnName("UserRoleID");
-
-            entity.Property(e => e.LastVisitDate).HasColumnType("datetime");
-
-            entity.Property(e => e.MatchingId).HasColumnName("MatchingID");
-
-            entity.Property(e => e.RoleId).HasColumnName("RoleID");
-
-            entity.Property(e => e.StudentId).HasColumnName("StudentID");
-
-            entity.Property(e => e.TutorId).HasColumnName("TutorID");
-
-            entity.Property(e => e.UserId).HasColumnName("UserID");
-
-            entity.HasOne(d => d.Matching)
-                .WithMany(p => p.UsersRoles)
-                .HasForeignKey(d => d.MatchingId)
-                .HasConstraintName("FK_Users_Roles_Matching");
-
-            entity.HasOne(d => d.Role)
-                .WithMany(p => p.UsersRoles)
-                .HasForeignKey(d => d.RoleId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Users_Roles_Roles");
-
-            entity.HasOne(d => d.Student)
-                .WithMany(p => p.UsersRoles)
-                .HasForeignKey(d => d.StudentId)
-                .HasConstraintName("FK_Users_Roles_Students");
-
-            entity.HasOne(d => d.Tutor)
-                .WithMany(p => p.UsersRoles)
-                .HasForeignKey(d => d.TutorId)
-                .HasConstraintName("FK_Users_Roles_Tutors");
-
-            entity.HasOne(d => d.User)
-                .WithMany(p => p.UsersRoles)
-                .HasForeignKey(d => d.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Users_Roles_Users");
-        });
-
+        
         modelBuilder.Entity<VersionInfo>(entity =>
         {
             entity.HasNoKey();

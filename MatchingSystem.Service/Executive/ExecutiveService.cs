@@ -21,13 +21,13 @@ public class ExecutiveService : IExecutiveService
         ITutorRepository tutorRepository,
         IExecutiveRepository executiveRepository,
         IMatchingRepository matchingRepository,
-        IProjectRepository projectRepository
-    )
+        IProjectRepository projectRepository, IMatchingService matchingService)
     {
         this.tutorRepository = tutorRepository;
         this.executiveRepository = executiveRepository;
         this.matchingRepository = matchingRepository;
         this.projectRepository = projectRepository;
+        this.matchingService = matchingService;
     }
 
     public void SetNextStage(int? matchingId, int? userId)
@@ -40,7 +40,7 @@ public class ExecutiveService : IExecutiveService
     {
         var model = new AdjustmentData
         {
-            Allocations = executiveRepository.GetAllocationsByExecutive(userId.Value, matchingId.Value),
+            Allocations = executiveRepository.GetAllocationsByExecutive(userId.Value, matchingId.Value).Where(allocation =>allocation.StudentID!=null ).ToList(),
             Tutors = tutorRepository.GetTutorsByMatching(matchingId.Value),
             Projects = new List<Project>()
         };

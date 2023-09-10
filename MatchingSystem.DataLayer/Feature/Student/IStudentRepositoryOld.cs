@@ -4,14 +4,14 @@ using MatchingSystem.DataLayer.Dto.IO.Params;
 using MatchingSystem.DataLayer.Dto.MatchingInit;
 using MatchingSystem.DataLayer.OldEntities;
 
-namespace MatchingSystem.DataLayer.Feature._Interface
+namespace MatchingSystem.DataLayer.Feature.Student
 {
-    public interface IStudentRepository
+    public interface IStudentRepositoryOld
     {
         Task<AllocatedByStudent> GetAllocationByStudentAsync(int studentId);
         AllocatedByStudent GetAllocationByStudent(int studentId);
-        Task<Student> GetStudentAsync(int studentId);
-        Student GetStudent(int studentId);
+        Task<StudentDto> GetStudentAsync(int studentId);
+        StudentDto GetStudent(int studentId);
         IEnumerable<StudentPreferences> GetStudentPreferencesByMatching(int matchingId);
         public IEnumerable<StudentPreferences> GetStudentAssignedToProject(int matchingId);
         IEnumerable<StudentPreferences> GetStudentAvailablePreferencesByMatching(int matchingId);
@@ -29,6 +29,6 @@ namespace MatchingSystem.DataLayer.Feature._Interface
         Task SetPreferencesAsync(StudentPreferenceParams inParams);
         void ClearPreferences(int studentId);
         Task ClearPreferencesAsync(int studentId);
-        IEnumerable<Student> GetStudentsByMatching(int matchingId);
+        IEnumerable<StudentDto> GetStudentsByMatching(int matchingId);
     }
 }

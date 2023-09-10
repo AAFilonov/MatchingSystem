@@ -168,9 +168,14 @@
                                            v-model="matchingData.matching.startDate">
                                 </div>
                                 <button  class="btn btn-primary"
-                                        v-on:click="postMatchingData">
+                                         v-if="!matchingRequestPending"
+                                         v-on:click="postMatchingData">
                                     <span>Готово</span>
                                 </button>
+                                   <button  class="btn btn-primary disabled"
+                                        v-if="matchingRequestPending">
+                                        <span>Отправка...</span>
+                                   </button>
                             </div>
                         </div>
                     </div>
@@ -211,6 +216,7 @@ let app = new Vue({
           },
           studentFile: null,
           tutorsFile: null,
+          matchingRequestPending:false,
       }
   },
   async mounted(){ 
@@ -262,7 +268,9 @@ let app = new Vue({
                  }
                )
                .then(response => this.onTutorsUploadSuccess(response))
-               .catch(error => DisplayNotification('Ошибка при загрузке данных: '+ error,'error' ));
+               .catch(error => {
+                   DisplayNotification('Ошибка при загрузке данных: '+ error.response.data,'error');
+               });
           },
      async onStudentsUploadSuccess(response){
          if (response.data) {                       
@@ -283,6 +291,7 @@ let app = new Vue({
          }       
      }, 
      postMatchingData(){
+        this.matchingRequestPending = true;
         if (this.matchingData.matching.name ==="" ||this.matchingData.matching.typeCode ==="" ||this.matchingData.matching.startDate ==="" )
             return;
         axios.post( `${params.basePath}/api/matchingInitialization/create_matching`,
@@ -294,11 +303,11 @@ let app = new Vue({
         )
         .then(response =>{         
           this.exportStudents();
-      
         })
-        .catch(function(reason){
-           DisplayNotification('Ошибка при создании распределения','error' );
-        });
+        .catch(error => {
+          DisplayNotification('Ошибка при загрузке данных: '+ error.response.data,'error');
+        })
+        .finally(() => this.matchingRequestPending=false);
      },
      async exportStudents(){
         axios.get(`${params.basePath}/api/matchingInitialization/student_data_report`,{ responseType: 'blob'})                                                                      

@@ -12,19 +12,21 @@ namespace MatchingSystem.UI.ApiControllers
         private readonly IUserRepository userRepository;
         private readonly IMatchingRepository matchingRepository;
         private readonly IRoleRepository roleRepository;
+        private readonly IMatchingService matchingService;
 
-        public UserController(IUserRepository userRepository, IMatchingRepository matchingRepository, IRoleRepository roleRepository)
+        public UserController(IUserRepository userRepository, IMatchingRepository matchingRepository, IRoleRepository roleRepository, IMatchingService matchingService)
         {
             this.userRepository = userRepository;
             this.matchingRepository = matchingRepository;
             this.roleRepository = roleRepository;
+            this.matchingService = matchingService;
         }
 
         [Route("api/[controller]/getMatchings")]
         [HttpGet]
         public IActionResult GetMatchingsForUser([FromQuery] int userId)
         {
-            var model = matchingRepository.GetMatchingsByUser(userId);
+            var model = matchingService.GetMatchingsByUser(userId);
             return new JsonResult(model);
         }
 
@@ -32,7 +34,7 @@ namespace MatchingSystem.UI.ApiControllers
         [HttpGet]
         public IActionResult GetRolesForUser([FromQuery] int matchingId, [FromQuery] int userId)
         {
-            var model = roleRepository.GetRolesForUser(userId);
+            var model = roleRepository.GetRolesForUserAndMatching(userId, matchingId);
             return new JsonResult(model);
         }
     }

@@ -63,7 +63,7 @@ namespace MatchingSystem.UI.ApiControllers
 
         [Route("api/[controller]/setAllocation")]
         [HttpPatch]
-        public IActionResult SetAllocationByExecutive([FromBody] AdjustmentRequest request)
+        public IActionResult SetAllocationByExecutive( AdjustmentRequest request)
         {
             if (!request.MatchingID.HasValue || !request.UserID.HasValue ||
                 request.Allocations.Count == 0 || request.Allocations == null)

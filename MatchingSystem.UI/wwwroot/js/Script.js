@@ -42,7 +42,6 @@ let template = new Vue({
             let matchingResponse = await fetch(`${params.basePath}/api/user/getMatchings?userId=${this.userId}`, {
                 method: 'get'
             });
-            
             if (matchingResponse.ok) {
                 this.matchings = await matchingResponse.json();
             }
@@ -51,7 +50,6 @@ let template = new Vue({
             let rolesResponse = await fetch(`${params.basePath}/api/user/getRoles?userId=${this.userId}&matchingId=${matching}`, {
                 method: 'get'
             });
-
             if (rolesResponse.ok) {
                 this.roles = await rolesResponse.json();
             }

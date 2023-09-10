@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MatchingSystem.DataLayer.Dto.MatchingMonitoring;
 using MatchingSystem.DataLayer.Feature._Interface;
+using MatchingSystem.DataLayer.Feature.Student;
 using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.Service.Monitoring;
@@ -11,16 +12,16 @@ public class MonitoringService : IMonitoringService
 {
     private readonly IGroupRepository groupRepository;
     private readonly IProjectRepository projectRepository;
-    private readonly IStudentRepository studentRepository;
+    private readonly IStudentRepositoryOld studentRepositoryOld;
     private readonly ITutorRepository tutorRepository;
 
-    public MonitoringService(IStudentRepository studentRepository
+    public MonitoringService(IStudentRepositoryOld studentRepositoryOld
         , ITutorRepository tutorRepository
         , IProjectRepository projectRepository
         , IGroupRepository groupRepository
     )
     {
-        this.studentRepository = studentRepository;
+        this.studentRepositoryOld = studentRepositoryOld;
         this.tutorRepository = tutorRepository;
         this.projectRepository = projectRepository;
         this.groupRepository = groupRepository;
@@ -28,6 +29,7 @@ public class MonitoringService : IMonitoringService
 
     public MatchingMonitoringData getMonitoringData(int matchingId)
     {
+        //TODO DPL-15
         throw new NotImplementedException("Функционал мониторинга в разработке");
         /*
         var studentPreferences = studentRepository.GetStudentPreferencesByMatching(matchingId);
@@ -184,7 +186,7 @@ public class MonitoringService : IMonitoringService
     //слишком много аргументов
     private List<StudentMonitoringDto> getMonitoringDataStudents(
         IEnumerable<Group> useGroups
-        , IEnumerable<DataLayer.OldEntities.Student> students
+        , IEnumerable<StudentDto> students
         , IEnumerable<StudentPreferences> studentPreferences
         , IEnumerable<Project> projects
         , IEnumerable<ProjectGroupDTO> projectGroups

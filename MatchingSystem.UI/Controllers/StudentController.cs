@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using MatchingSystem.DataLayer;
 using MatchingSystem.DataLayer.Feature._Interface;
 using MatchingSystem.DataLayer.Feature.Matching.service;
+using MatchingSystem.DataLayer.Feature.Student;
 using MatchingSystem.DataLayer.OldEntities;
 using MatchingSystem.UI.Helpers;
 using MatchingSystem.UI.Services;
@@ -14,18 +15,18 @@ namespace MatchingSystem.UI.Controllers
     [Authorize(Roles = "Student")]
     public class StudentController: Controller
     {
-        private readonly IStudentRepository studentRepository;
+        private readonly IStudentRepositoryOld studentRepositoryOld;
         private readonly IDictionaryRepository dictionaryRepository;
         private readonly IMatchingRepository matchingRepository;
         private SessionData data;
-        private Student student;
+        private StudentDto studentDto;
 
         public override void OnActionExecuting(ActionExecutingContext ctx)
         {
             base.OnActionExecuting(ctx);
             data ??= HttpContext.Session.Get<SessionData>("Data");
-            var studentId = studentRepository.GetStudentId(data.UserDto.UserId, data.SelectedMatching);
-            student = studentRepository.GetStudent(studentId);
+            var studentId = studentRepositoryOld.GetStudentId(data.UserDto.UserId, data.SelectedMatching);
+            studentDto = studentRepositoryOld.GetStudent(studentId);
         }
 
         public override void OnActionExecuted(ActionExecutedContext ctx)
@@ -35,9 +36,9 @@ namespace MatchingSystem.UI.Controllers
             HttpContext.Session.Set<SessionData>("Data", data);
         }
 
-        public StudentController(IStudentRepository studentRepository, IDictionaryRepository dictionaryRepository, IMatchingRepository matchingRepository)
+        public StudentController(IStudentRepositoryOld studentRepositoryOld, IDictionaryRepository dictionaryRepository, IMatchingRepository matchingRepository)
         {
-            this.studentRepository = studentRepository;
+            this.studentRepositoryOld = studentRepositoryOld;
             this.dictionaryRepository = dictionaryRepository;
             this.matchingRepository = matchingRepository;
         }
@@ -51,7 +52,7 @@ namespace MatchingSystem.UI.Controllers
         {
             StudentViewModel model = new StudentViewModel
             {
-                Student = student,
+                studentDto = studentDto,
                 Technology = dictionaryRepository.GetTechnologiesAll(),
                 WorkDirection = dictionaryRepository.GetWorkDirectionsAll()
             };
@@ -61,7 +62,7 @@ namespace MatchingSystem.UI.Controllers
 
         public IActionResult Preferences()
         {
-            return View(student.StudentID);
+            return View(studentDto.StudentID);
         }
     }
 }

@@ -4,15 +4,14 @@ using Dapper;
 using MatchingSystem.DataLayer.Context;
 using MatchingSystem.DataLayer.Dto.IO.Params;
 using MatchingSystem.DataLayer.Dto.MatchingInit;
-using MatchingSystem.DataLayer.Feature._Interface;
 using MatchingSystem.DataLayer.OldEntities;
 
-namespace MatchingSystem.DataLayer.Feature._Repository
+namespace MatchingSystem.DataLayer.Feature.Student
 {
-    public class StudentRepository : ConnectionBase, IStudentRepository
+    public class StudentRepositoryOld : ConnectionBase, IStudentRepositoryOld
     {
 
-        public StudentRepository(string connectionString) : base(connectionString)
+        public StudentRepositoryOld(string connectionString) : base(connectionString)
         {
         }
 
@@ -41,9 +40,9 @@ namespace MatchingSystem.DataLayer.Feature._Repository
         }
 
 
-        public async Task<Student> GetStudentAsync(int studentId)
+        public async Task<StudentDto> GetStudentAsync(int studentId)
         {
-          var result = await Connection.QueryFirstAsync<Student>(
+          var result = await Connection.QueryFirstAsync<StudentDto>(
                 "select " +
                 "StudentID, " + 
                 "GroupID, " +
@@ -61,9 +60,9 @@ namespace MatchingSystem.DataLayer.Feature._Repository
             return result;
         }
 
-        public Student GetStudent(int studentId)
+        public StudentDto GetStudent(int studentId)
         {
-            var result = Connection.QueryFirst<Student>(
+            var result = Connection.QueryFirst<StudentDto>(
                 "select " +
                 "StudentID, " + 
                 "GroupID, " +
@@ -129,9 +128,9 @@ namespace MatchingSystem.DataLayer.Feature._Repository
         }
 
 
-        public Student GetStudents(int studentId)
+        public StudentDto GetStudents(int studentId)
         {
-            var result = Connection.QueryFirst<Student>(
+            var result = Connection.QueryFirst<StudentDto>(
                 "select " +
                 "StudentID, " +
                 "GroupID, " +
@@ -317,9 +316,9 @@ namespace MatchingSystem.DataLayer.Feature._Repository
             );
         }
 
-        public IEnumerable<Student> GetStudentsByMatching(int matchingId)
+        public IEnumerable<StudentDto> GetStudentsByMatching(int matchingId)
         {
-            return Connection.Query<Student>(
+            return Connection.Query<StudentDto>(
                 "select distinct " +
                 "[GroupID],"+
                 "[GroupName],"+

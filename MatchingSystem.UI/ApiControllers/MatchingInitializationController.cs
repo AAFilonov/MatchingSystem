@@ -1,8 +1,10 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using MatchingSystem.DataLayer.Dto.MatchingInit;
 using MatchingSystem.DataLayer.Feature._Interface;
+using MatchingSystem.DataLayer.Feature.Student;
 using MatchingSystem.DataLayer.Feature.User.service;
 using MatchingSystem.Service.DocumentsProcessing;
 using MatchingSystem.Service.Exception;
@@ -25,22 +27,22 @@ public class MatchingInitializationController : ControllerBase
     private readonly IMatchingInitializationService matchingInitializationService;
     private readonly IStudentsParsingService studentsParsingService;
     private readonly ITutorRepository tutorRepository;
-    private readonly ITutorService tutorService;
-    private readonly IUserRepository userRepository;
+    private readonly IStudentService studentService;
+    private readonly IStudentRepository studentRepository;
 
     private readonly ITutorsParsingService tutorsParsingService;
-    private MatchingInitData buffer; //TODO  костыль для демо
 
-    public MatchingInitializationController(IDocumentsProcessingService documentsProcessingService, IMatchingInitializationService matchingInitializationService, ILogger<MatchingInitializationController> logger, IStudentsParsingService studentsParsingService, ITutorRepository tutorRepository, ITutorService tutorService, IUserRepository userRepository, ITutorsParsingService tutorsParsingService)
+    public MatchingInitializationController(IDocumentsProcessingService documentsProcessingService, IMatchingInitializationService matchingInitializationService, ILogger<MatchingInitializationController> logger, IStudentsParsingService studentsParsingService, ITutorRepository tutorRepository, ITutorsParsingService tutorsParsingService, IStudentService studentService, IStudentRepository studentRepository)
     {
         this.documentsProcessingService = documentsProcessingService;
         this.matchingInitializationService = matchingInitializationService;
         this.logger = logger;
         this.studentsParsingService = studentsParsingService;
         this.tutorRepository = tutorRepository;
-        this.tutorService = tutorService;
-        this.userRepository = userRepository;
+
         this.tutorsParsingService = tutorsParsingService;
+        this.studentService = studentService;
+        this.studentRepository = studentRepository;
     }
 
 
@@ -128,7 +130,7 @@ public class MatchingInitializationController : ControllerBase
     // шаг 3
     [Route("api/[controller]/create_matching")]
     [HttpPost]
-    public IActionResult createNewMatching([FromBody] MatchingInitData data)
+    public IActionResult createNewMatching(MatchingInitData data)
     {
         var sessionData = HttpContext.Session.Get<SessionData>("Data");
         sessionData.matchingInitData.matching = data.matching;
@@ -150,14 +152,12 @@ public class MatchingInitializationController : ControllerBase
     public FileResult getStudentDataReport()
     {
         var sessionData = HttpContext.Session.Get<SessionData>("Data");
-        var data = sessionData.matchingInitData;
-        //var data = buffer;
-
-        var matchingId = sessionData.SelectedMatching;
-        userRepository.GetStudentUsersByMatching(matchingId); 
+        int currentMatchingId = sessionData.SelectedMatching;
         
-        var students = data.studentRecords;
-        var package = documentsProcessingService.formStudentDataReport(students);
+        List<StudentView> students = studentRepository.getStundentsView().Where(student => student.MatchingId == currentMatchingId).ToList();
+        List<StudentInitDto> studentDos=studentService.resetPasswords(students);
+        
+        var package = documentsProcessingService.formStudentDataReport(studentDos);
         return File(package.GetAsByteArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             "Reports.xlsx");
     }

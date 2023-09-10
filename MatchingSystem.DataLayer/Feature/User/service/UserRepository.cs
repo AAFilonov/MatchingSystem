@@ -2,13 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MatchingSystem.DataLayer.Dto.MatchingInit;
+using MatchingSystem.DataLayer.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace MatchingSystem.DataLayer.Feature.User.service;
 
-public class UserService :Repository<User>, IUserRepository
+public class UserRepository :Repository<User>, IUserRepository
 {
-    public UserService(DbContext context) : base(context)
+    public UserRepository(DbContext context) : base(context)
     {
     }
 
@@ -46,10 +47,11 @@ public class UserService :Repository<User>, IUserRepository
 
     public IEnumerable<TutorInitDto> SetUserIdForTutors(List<TutorInitDto> tutors)
     {
-       var tutorsRoles = _matchingSystemContext.UsersRoles.Where(role => role.TutorId != null).ToList();
+      
+       List<TutorViewDto> tutorsRoles =   _matchingSystemContext.Tutors1.Where(role => role.TutorId != null).ToList();
        tutors.ForEach(dto =>
        {
-          var userRole =  tutorsRoles.FirstOrDefault(role => role.User.NameAbbreviation == dto.nameAbbreviation);
+          var userRole =  tutorsRoles.FirstOrDefault(tutor => tutor.NameAbbreviation == dto.nameAbbreviation);
           dto.UserId = userRole.UserId;
           dto.TutorId = (int)userRole.TutorId;
        } );

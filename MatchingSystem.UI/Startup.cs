@@ -2,8 +2,11 @@
 using MatchingSystem.DataLayer.Context;
 using MatchingSystem.DataLayer.Feature._Interface;
 using MatchingSystem.DataLayer.Feature._Repository;
+using MatchingSystem.DataLayer.Feature.CommonQuota;
 using MatchingSystem.DataLayer.Feature.Matching.service;
 using MatchingSystem.DataLayer.Feature.Role.service;
+using MatchingSystem.DataLayer.Feature.Stage.service;
+using MatchingSystem.DataLayer.Feature.Student;
 using MatchingSystem.DataLayer.Feature.User.service;
 using MatchingSystem.Service.Allocation;
 using MatchingSystem.Service.DocumentsProcessing;
@@ -15,7 +18,6 @@ using MatchingSystem.Service.Notification;
 using MatchingSystem.Service.Projects;
 using MatchingSystem.Service.Quotas;
 using MatchingSystem.Service.Statistics;
-using MatchingSystem.Service.Student;
 using MatchingSystem.Service.Tutor;
 using MatchingSystem.UI.Middleware;
 using Microsoft.AspNetCore.Builder;
@@ -49,7 +51,7 @@ namespace MatchingSystem.UI
             services.AddDistributedMemoryCache();
             services.AddMvc();
             services
-                .AddControllersWithViews()
+                .AddControllersWithViews(options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true)
                 .AddRazorRuntimeCompilation();
 
             var optionsBuilder = new DbContextOptionsBuilder<DiplomaMatchingContext>();
@@ -61,10 +63,11 @@ namespace MatchingSystem.UI
             services
                 .AddSingleton<IMatchingRepository, MatchingRepository>();
 
-
+            services.AddTransient<IMatchingRepositoryDapper, MatchingRepositoryDapper>(_ =>
+                new MatchingRepositoryDapper(connectionString));
             
-            services.AddTransient<IStudentRepository, StudentRepository>(_ =>
-                new StudentRepository(connectionString));
+            services.AddTransient<IStudentRepositoryOld, StudentRepositoryOld>(_ =>
+                new StudentRepositoryOld(connectionString));
 
             services.AddTransient<IDictionaryRepository, DictionaryRepository>(_ =>
                 new DictionaryRepository(connectionString));
@@ -105,7 +108,7 @@ namespace MatchingSystem.UI
             services.AddSingleton<IStudentService, StudentService>();
             services.AddSingleton<IQuotasService, QuotasService>();
             services.AddSingleton<ITutorService, TutorService>();
-            services.AddSingleton<IUserRepository, IUserRepository>();            
+            services.AddSingleton<IUserRepository, UserRepository>();            
             services.AddSingleton<IRoleRepository, RoleRepository>();
             services.AddSingleton<ITutorsParsingService, TutorParsingService>();            
             services.AddSingleton<IStudentsParsingService, StudentsParsingService>();            
@@ -114,7 +117,11 @@ namespace MatchingSystem.UI
             services.AddSingleton<IMonitoringService, MonitoringService>();
             services.AddSingleton<IStageTransitionService, StageTransitionService>();
             services.AddSingleton<IMatchingService, MatchingService>();
-    
+            services.AddSingleton<ICommonQuotaRepository, CommonQuotaRepository>();
+            services.AddSingleton<IStageRepository, StageRepository>();
+            services.AddSingleton<IRoleRepository, RoleRepository>();
+            services.AddSingleton<IStudentRepository, StudentRepository>();
+
             //--Services
             
 
@@ -127,7 +134,6 @@ namespace MatchingSystem.UI
             var useMigrations = (bool) Configuration.GetValue(typeof(bool), "ApplicationSettings:UseMigrations");
            
         }
-
         public void Configure(IApplicationBuilder app)
         {
             var env = Configuration.GetValue(typeof(string), "ApplicationSettings:Environment").ToString();

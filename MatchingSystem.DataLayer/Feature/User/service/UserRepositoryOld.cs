@@ -49,13 +49,13 @@ namespace MatchingSystem.DataLayer.Feature.User.service
 
         }
 
-        public  void AssignRoleForUser(int userId,int matchingId)
+        public void AssignRoleForUser(int userId, int matchingId, int roleId)
         {
             Connection.Execute(
                 "insert into Users_Roles (UserID,RoleID,MatchingID) VALUES(@UserId,@RoleId,@MatchingId)"
                 , new
                 {
-                    UserId = userId, RoleId = 3, MatchingId = matchingId
+                    UserId = userId, RoleId = roleId, MatchingId = matchingId
                 }
             );
         }
@@ -156,10 +156,7 @@ namespace MatchingSystem.DataLayer.Feature.User.service
             }
         }
 
-        public IEnumerable<UserDto> getStudentUsersByMatching(int matchingId)
-        {
-            throw new NotImplementedException();
-        }
+
 
         public async Task ReadNotificationsAsync(int userId, int matchingId, int tutorId )
         {
