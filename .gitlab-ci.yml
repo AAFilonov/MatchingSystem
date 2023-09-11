@@ -18,7 +18,7 @@ variables:
 stages: 
   - build
   - test
-  - publish
+#  - publish
   - deploy
 
 build_job:
@@ -49,23 +49,23 @@ test_job:
   dependencies: 
     - build_job
 
-publish_job:
-  stage: publish
-  only:
-    - production
-  before_script:
-    - CHCP 65001
-    - echo %CD%
-  script:
-    - dotnet publish --configuration Release -o "C:\\GitLabUtils\\release"  #TMP_RELEASE_FOLDER
-  dependencies:
-    - test_job
-  environment: production
-  artifacts:
-    expire_in: 2 days
-    paths:
-      - '.\\Publish'
-
+#publish_job:
+#stage: publish
+#only:
+#  - production
+#before_script:
+#  - CHCP 65001
+#  - echo %CD%
+#script:
+#  - dotnet publish --configuration Release -o "C:\\GitLabUtils\\release"  #TMP_RELEASE_FOLDER
+#dependencies:
+#  - test_job
+#environment: production
+#artifacts:
+#  expire_in: 2 days
+#  paths:
+#    - '.\\Publish'
+#
 deploy_job:
   stage: deploy
   only:
@@ -74,6 +74,4 @@ deploy_job:
     - CHCP 65001 #смена кодировки консоли для корректного отображения текста ошибок
   script:
     - "& C:\\GitLabUtils\\deployDiploma.bat" #DEPLOY_SCRIPT_PATH
-  dependencies:
-    - publish_job
   environment: production
