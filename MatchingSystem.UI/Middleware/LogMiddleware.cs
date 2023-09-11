@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace MatchingSystem.UI.Middleware
 {
@@ -57,7 +57,7 @@ namespace MatchingSystem.UI.Middleware
 
         private void WriteRequestForm(StringBuilder writer, IFormCollection form)
         {
-            writer.Append( JsonConvert.SerializeObject( form));
+            writer.Append( JsonSerializer.Serialize( form));
                return;
             foreach (var data in form)
             {
@@ -90,7 +90,7 @@ namespace MatchingSystem.UI.Middleware
                     writer.Append("{");
                 foreach (var value in data.Value)
                 {
-                    writer.Append(JsonConvert.SerializeObject( value));
+                    writer.Append( JsonSerializer.Serialize( value));
                 }
                 if (data.Value.Count > 1) 
                     writer.Append("}");

@@ -235,18 +235,18 @@ nav .active {
 }
 
 .choices__choice .bg-success {
-    background-color: rgba(75,191,115, 0.5) !important;
+    background-color: rgba(75, 191, 115, 0.5) !important;
 }
 
 .choices__choice .bg-danger {
-    background-color: rgba(217,83,79, 0.5) !important;
+    background-color: rgba(217, 83, 79, 0.5) !important;
 }
 
 .bg-intermediate {
     background-color: rgba(29, 29, 29, 0.2);
 }
 
-#empty *{
+#empty * {
     box-shadow: none;
 }
 

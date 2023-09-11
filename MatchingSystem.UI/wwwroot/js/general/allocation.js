@@ -16,15 +16,13 @@
             }
         },
         sortAllocationsHandler(key) {
-            if (key === 'group')
-            {
+            if (key === 'group') {
                 this.allocations = this.allocations.sort(function (a, b) {
                     if (a.groupName < b.groupName) return -1;
                     else if (a.groupName === b.groupName) return 0;
                     else return 1;
                 });
-            }
-            else if (key === 'student') {
+            } else if (key === 'student') {
                 this.allocations = this.allocations.sort(function (a, b) {
                     if (a.studentNameAbbreviation < b.studentNameAbbreviation) return -1;
                     else if (a.studentNameAbbreviation === b.studentNameAbbreviation) return 0;

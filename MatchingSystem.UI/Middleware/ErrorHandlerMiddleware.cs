@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using MatchingSystem.Service.Exception;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace MatchingSystem.UI.Middleware;
 
@@ -33,7 +33,7 @@ public class ErrorHandlerMiddleware
             response.ContentType = "application/json";
             response.StatusCode = (int)HttpStatusCode.BadRequest;
             
-            var result = JsonConvert.SerializeObject(ex.Message);
+            var result = JsonSerializer.Serialize(ex.Message);
             await response.WriteAsync(result);
         }
         catch (Exception error)
@@ -43,7 +43,7 @@ public class ErrorHandlerMiddleware
             response.ContentType = "application/json";
             response.StatusCode = (int)HttpStatusCode.InternalServerError;
             
-            var result = JsonConvert.SerializeObject(error.Message);
+            var result = JsonSerializer.Serialize(error.Message);
            await response.WriteAsync(result);
         }
     }
