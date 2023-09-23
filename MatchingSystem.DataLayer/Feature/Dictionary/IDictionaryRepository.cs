@@ -7,6 +7,6 @@ namespace MatchingSystem.DataLayer.Feature._Interface
     public interface IDictionaryRepository
     {
         IEnumerable<TechnologyDto> GetTechnologiesAll();
-        IEnumerable<WorkDirection> GetWorkDirectionsAll();
+        IEnumerable<WorkDirectionDto> GetWorkDirectionsAll();
     }
 }

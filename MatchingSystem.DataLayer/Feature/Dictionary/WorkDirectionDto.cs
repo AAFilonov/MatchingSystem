@@ -3,7 +3,7 @@
 namespace MatchingSystem.DataLayer.OldEntities
 {
     #nullable enable
-    public class WorkDirection
+    public class WorkDirectionDto
     {
         [Key]
         public int DirectionCode { get; set; }

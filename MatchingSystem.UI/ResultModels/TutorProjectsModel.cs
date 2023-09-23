@@ -9,7 +9,7 @@ namespace MatchingSystem.UI.ResultModels
         public List<Project> Projects { get; set; }
         public IEnumerable<Group> Groups { get; set; }
         public IEnumerable<TechnologyDto> Technology { get; set; }
-        public IEnumerable<WorkDirection> WorkDirections { get; set; }
+        public IEnumerable<WorkDirectionDto> WorkDirections { get; set; }
         public int? IsReady { get; set; }
     }
 }

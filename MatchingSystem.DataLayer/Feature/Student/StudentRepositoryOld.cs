@@ -219,10 +219,10 @@ namespace MatchingSystem.DataLayer.Feature.Student
                       );
         }
 
-        public async Task<IEnumerable<WorkDirection>> GetWorkDirectionsSelectedByStudentAsync(int studentId)
+        public async Task<IEnumerable<WorkDirectionDto>> GetWorkDirectionsSelectedByStudentAsync(int studentId)
         {
          
-            return await Connection.QueryAsync<WorkDirection>(
+            return await Connection.QueryAsync<WorkDirectionDto>(
                 "select DirectionCode, DirectionName_ru from napp.get_WorkDirections_WithSelected_ByStudent(@StudentID) where IsSelectedByStudent = 1",
                 new
                 {
@@ -232,9 +232,9 @@ namespace MatchingSystem.DataLayer.Feature.Student
             );
         }
 
-        public IEnumerable<WorkDirection> GetWorkDirectionsSelectedByStudent(int studentId)
+        public IEnumerable<WorkDirectionDto> GetWorkDirectionsSelectedByStudent(int studentId)
         {
-            return  Connection.Query<WorkDirection>(
+            return  Connection.Query<WorkDirectionDto>(
                "select DirectionCode, DirectionName_ru from napp.get_WorkDirections_WithSelected_ByStudent(@StudentID) where IsSelectedByStudent = 1",
                new
                {
