@@ -31,10 +31,10 @@ build_job:
     - dotnet restore
     - dotnet build --configuration Release -o "C:\\GitLabUtils\\build"      #TMP_BUILD_FOLDER
    # - dotnet publish --configuration Release -o "C:\\GitLabUtils\\release"  #TMP_RELEASE_FOLDER
-  artifacts:
-    expire_in: 2 days 
-    paths:
-      - '.\\Build' 
+    # artifacts:
+    # expire_in: 2 days 
+    # paths:
+    #  - '.\\Build' 
 
 
 test_job: 
