@@ -50,16 +50,43 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
         _context.SaveChanges();
         return item;
     }
+    public IEnumerable<TEntity> saveAll(IEnumerable<TEntity> items)
+    {
+        foreach (var tEntity in items)
+        {
+            _context.Set<TEntity>().Add(tEntity);
+        }
+        _context.SaveChanges();
+        return items;
+    }
+
 
     public void update(TEntity item)
     {
         _context.Set<TEntity>().Update(item);
         _context.SaveChanges();
     }
+    public void updateAll(IEnumerable<TEntity> items)
+    {
+        foreach (var tEntity in items)
+        {
+            _context.Set<TEntity>().Update(tEntity);
+        }
+        _context.SaveChanges();
+    }
 
     public void delete(TEntity item)
     {
         _context.Set<TEntity>().Remove(item);
+        _context.SaveChanges();
+    }
+    
+    public void deleteAll(IEnumerable<TEntity> items)
+    {
+        foreach (var tEntity in items)
+        {
+            _context.Set<TEntity>().Update(tEntity);
+        }
         _context.SaveChanges();
     }
 }
