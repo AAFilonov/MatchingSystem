@@ -3,7 +3,7 @@
 namespace MatchingSystem.DataLayer.OldEntities
 {
     #nullable enable
-    public class Technology
+    public class TechnologyDto
     {
         [Key]
         public int TechnologyCode { get; set; }

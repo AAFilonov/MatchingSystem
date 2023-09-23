@@ -171,9 +171,9 @@ namespace MatchingSystem.DataLayer.Feature.Student
             return studentId;
         }
 
-        public async Task<IEnumerable<Technology>> GetTechnologiesSelectedByStudentAsync(int studentId)
+        public async Task<IEnumerable<TechnologyDto>> GetTechnologiesSelectedByStudentAsync(int studentId)
         {
-            return await Connection.QueryAsync<Technology>(
+            return await Connection.QueryAsync<TechnologyDto>(
                 "select TechnologyCode, TechnologyName_ru from napp.get_Technologies_WithSelected_ByStudent(@StudentID) where IsSelectedByStudent = 1",
                 studentId
             );
@@ -209,9 +209,9 @@ namespace MatchingSystem.DataLayer.Feature.Student
             return studs;
         }
 
-        public IEnumerable<Technology> GetTechnologiesSelectedByStudent(int studentId)
+        public IEnumerable<TechnologyDto> GetTechnologiesSelectedByStudent(int studentId)
         {
-            return Connection.Query<Technology>(
+            return Connection.Query<TechnologyDto>(
                   "select TechnologyCode, TechnologyName_ru from napp.get_Technologies_WithSelected_ByStudent(@StudentID) where IsSelectedByStudent = 1",
                   new
                   {

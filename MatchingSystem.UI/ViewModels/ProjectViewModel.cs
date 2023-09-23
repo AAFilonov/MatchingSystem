@@ -9,7 +9,7 @@ namespace MatchingSystem.UI.ViewModels
         public int CommonQuota { get; set; }
         public List<Project> Projects { get; set; }
         public List<Group> Groups { get; set; }
-        public List<Technology> Technology { get; set; }
+        public List<TechnologyDto> Technology { get; set; }
         public List<WorkDirection> WorkDirections { get; set; }
         public int? IsReady { get; set; }
     }

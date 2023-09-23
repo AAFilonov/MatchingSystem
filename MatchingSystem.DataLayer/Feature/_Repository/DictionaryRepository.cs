@@ -15,9 +15,9 @@ namespace MatchingSystem.DataLayer.Feature._Repository
         }
         
 
-        public IEnumerable<Technology> GetTechnologiesAll()
+        public IEnumerable<TechnologyDto> GetTechnologiesAll()
         {
-            return Connection.Query<Technology>("select * from napp.get_Technologies_All()");
+            return Connection.Query<TechnologyDto>("select * from napp.get_Technologies_All()");
         }
         
         public IEnumerable<WorkDirection> GetWorkDirectionsAll()
