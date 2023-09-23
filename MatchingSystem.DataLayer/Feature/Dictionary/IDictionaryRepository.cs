@@ -6,7 +6,7 @@ namespace MatchingSystem.DataLayer.Feature._Interface
 {
     public interface IDictionaryRepository
     {
-        IEnumerable<Technology> GetTechnologiesAll();
+        IEnumerable<TechnologyDto> GetTechnologiesAll();
         IEnumerable<WorkDirection> GetWorkDirectionsAll();
     }
 }

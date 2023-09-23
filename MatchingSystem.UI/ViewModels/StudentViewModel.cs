@@ -11,6 +11,6 @@ namespace MatchingSystem.UI.ViewModels
     {
         public StudentDto studentDto { get; set; }
         public IEnumerable<WorkDirection> WorkDirection { get; set; }
-        public IEnumerable<Technology> Technology { get; set; }
+        public IEnumerable<TechnologyDto> Technology { get; set; }
     }
 }
