@@ -27,8 +27,16 @@ public class DictionaryRepository : Repository<Technology>, IDictionaryRepositor
         });
     }
 
-    public IEnumerable<MatchingSystem.DataLayer.OldEntities.WorkDirection> GetWorkDirectionsAll()
+    public IEnumerable<WorkDirectionDto> GetWorkDirectionsAll()
     {
-        throw new System.NotImplementedException();
+        var workDirectionList = _matchingSystemContext.WorkDirections.ToList();
+        return workDirectionList.Select(info => {
+            WorkDirectionDto dto = new WorkDirectionDto();
+
+            dto.DirectionCode = info.DirectionCode;
+            dto.DirectionName_ru = info.DirectionNameRu;
+
+            return dto;
+        });
     }
 }

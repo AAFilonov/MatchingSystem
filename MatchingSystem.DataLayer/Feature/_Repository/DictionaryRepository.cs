@@ -20,9 +20,9 @@ namespace MatchingSystem.DataLayer.Feature._Repository
             return Connection.Query<TechnologyDto>("select * from napp.get_Technologies_All()");
         }
         
-        public IEnumerable<WorkDirection> GetWorkDirectionsAll()
+        public IEnumerable<WorkDirectionDto> GetWorkDirectionsAll()
         {
-            return Connection.Query<WorkDirection>("select * from napp.get_WorkDirections_All()");
+            return Connection.Query<WorkDirectionDto>("select * from napp.get_WorkDirections_All()");
         }
     }
 }

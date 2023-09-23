@@ -21,8 +21,8 @@ namespace MatchingSystem.DataLayer.Feature.Student
         IEnumerable<StudentInitDto> CreateStudents(List<StudentInitDto> users,int matchingId);
         Task<IEnumerable<TechnologyDto>> GetTechnologiesSelectedByStudentAsync(int studentId);
         IEnumerable<TechnologyDto> GetTechnologiesSelectedByStudent(int studentId);
-        Task<IEnumerable<WorkDirection>> GetWorkDirectionsSelectedByStudentAsync(int studentId);
-        IEnumerable<WorkDirection> GetWorkDirectionsSelectedByStudent(int studentId);
+        Task<IEnumerable<WorkDirectionDto>> GetWorkDirectionsSelectedByStudentAsync(int studentId);
+        IEnumerable<WorkDirectionDto> GetWorkDirectionsSelectedByStudent(int studentId);
         Task EditProfileAsync(EditProfileParams inParams);
         void EditProfile(EditProfileParams inParams);
         void SetPreferences(StudentPreferenceParams inParams);
