@@ -9,6 +9,7 @@ using MatchingSystem.DataLayer.Feature.Matching.service;
 using MatchingSystem.DataLayer.Feature.Role.service;
 using MatchingSystem.DataLayer.Feature.Student;
 using MatchingSystem.DataLayer.Feature.User.service;
+using MatchingSystem.DataLayer.Model;
 using MatchingSystem.DataLayer.Utils;
 using MatchingSystem.Service.Exception;
 using Scrypt;
@@ -33,7 +34,7 @@ public class MatchingInitializationService : IMatchingInitializationService
         , IProjectRepository projectRepository
         , IMatchingService matchingService, IUserRepository userRepository, IRoleRepository roleRepository)
     {
-        
+
         this.studentRepositoryOld = studentRepositoryOld;
         this.groupRepository = groupRepository;
         this.tutorRepository = tutorRepository;
@@ -51,7 +52,7 @@ public class MatchingInitializationService : IMatchingInitializationService
         try
         {
             matching = TryCreateMatching(data, creatorUserId);
-//            transactionScope.Complete();
+            //            transactionScope.Complete();
             return matching;
             //TODO DPL-17 транзакционность через EF, тк в Dapper она не работает
             using (var transactionScope = new TransactionScope(TransactionScopeOption.Required, TimeSpan.MaxValue))
@@ -82,8 +83,12 @@ public class MatchingInitializationService : IMatchingInitializationService
         var StageId = matchingService.createFirstStage(MatchingId);
         roleRepository.AssignRoleForUser(creatorUserId, MatchingId, 3);
 
-        //создать группы на базе, получить id записей
-        foreach (var group in data.groupRecords) group.groupId = groupRepository.CreateGroup(group.name, MatchingId);   //TODO реализваоно по старому
+        var groups = data.groupRecords.Select(item => new Group()
+        {
+            GroupName = item.name,
+            MatchingId = MatchingId,
+        });
+        groupRepository.saveAll(groups);
 
 
         //записать полученные ID Group в набор студентов
@@ -100,7 +105,7 @@ public class MatchingInitializationService : IMatchingInitializationService
                     .FirstOrDefault();
             });
         }
-        
+
         //создать учетные записи для студентов 
         data.studentRecords = ctreateUsersForStudents(data);//TODO - этот шаг очень медленный, нужно переписать;
 
@@ -114,7 +119,7 @@ public class MatchingInitializationService : IMatchingInitializationService
         tutorRepository.SetCommonQuotasForTutors(data.tutorRecords, StageId); //TODO реализваоно по старому
 
         //создать провязки преподаватель - группа
-        groupRepository.AssignGroupsToTutors(data.tutorRecords, MatchingId); //TODO реализваоно по старому
+        groupRepository.AssignGroupsToTutors(data.tutorRecords); //TODO реализваоно по старому
 
 
         projectRepository.CreateDefaultTutorsProjects(data.tutorRecords); //TODO реализваоно по старому

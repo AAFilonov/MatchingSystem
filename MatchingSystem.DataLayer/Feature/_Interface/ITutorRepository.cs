@@ -16,12 +16,12 @@ namespace MatchingSystem.DataLayer.Feature._Interface
         Task<IEnumerable<Tutor>> GetTutorsByMatchingAsync(int matchingId);
         IEnumerable<Tutor> GetTutorsByMatching(int matchingId);
         IEnumerable<TutorFullDTO> GetFullInfoTutorByMatching(int matchingId);
-        Task<IEnumerable<Group>> GetGroupsByTutorAsync(int tutorId);
+        Task<IEnumerable<GroupDto>> GetGroupsByTutorAsync(int tutorId);
         void SetCommonQuotasForTutors(List<TutorInitDto> tuts, int stageId);
         IEnumerable<TutorInitDto> CreateTutors(List<TutorInitDto> tuts, int matchingId);
          //Вынести в репозиторий ролей
         void AssignTutorRole(List<TutorInitDto> tuts, int matchingID);
-        IEnumerable<Group> GetGroupsByTutor(int tutorId);
+        IEnumerable<GroupDto> GetGroupsByTutor(int tutorId);
         Task<IEnumerable<TutorChoice>> GetChoiceByTutorAsync(int tutorId);
         IEnumerable<TutorChoice> GetChoiceByTutor(int tutorId);
         IEnumerable<TutorChoice> getChoicesByMatchingCurrentStage(int MatchingId);

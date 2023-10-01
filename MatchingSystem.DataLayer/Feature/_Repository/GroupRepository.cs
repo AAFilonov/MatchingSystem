@@ -7,15 +7,15 @@ using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.DataLayer.Feature._Repository;
 
-public class GroupRepository :ConnectionBase, IGroupRepository
+public class GroupRepository : ConnectionBase
 {
     public GroupRepository(string connectionString) : base(connectionString)
     {
     }
 
-    public  IEnumerable<Group> getGroupsByMatching(int matchingId)
+    public  IEnumerable<GroupDto> getGroupsByMatching(int matchingId)
     {
-        return  Connection.Query<Group>("select GroupID, GroupName from Groups");
+        return  Connection.Query<GroupDto>("select GroupID, GroupName from Groups");
     }
     
     public int CreateGroup(string groupName,int matchingId)
@@ -39,9 +39,9 @@ public class GroupRepository :ConnectionBase, IGroupRepository
                     "insert into Tutors_Groups (TutorID,GroupID) Values(@TutorId,@GroupId)",
                     new
                     {
-                        tut.TutorId
-                        ,GroupId = tutGroup.groupId
-                    });   
+                        tut.TutorId,
+                        GroupId = tutGroup.groupId
+                    });
             }
         }
     }

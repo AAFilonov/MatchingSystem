@@ -185,7 +185,7 @@ public class MonitoringService : IMonitoringService
 
     //слишком много аргументов
     private List<StudentMonitoringDto> getMonitoringDataStudents(
-        IEnumerable<Group> useGroups
+        IEnumerable<GroupDto> useGroups
         , IEnumerable<StudentDto> students
         , IEnumerable<StudentPreferences> studentPreferences
         , IEnumerable<Project> projects
