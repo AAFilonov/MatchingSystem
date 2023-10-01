@@ -12,10 +12,10 @@ using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.DataLayer.Feature._Repository
 {
-    public class TutorRepository : ConnectionBase, ITutorRepository
+    public class TutorRepositoryDapper : ConnectionBase
     {
         private string connectionString;
-        public TutorRepository(string connectionString) : base(connectionString)
+        public TutorRepositoryDapper(string connectionString) : base(connectionString)
         {
             this.connectionString = connectionString;
         }
@@ -52,9 +52,9 @@ namespace MatchingSystem.DataLayer.Feature._Repository
             );
         }
 
-        public async Task<IEnumerable<Tutor>> GetTutorsByMatchingAsync(int matchingId)
+        public async Task<IEnumerable<TutorDto>> GetTutorsByMatchingAsync(int matchingId)
         {
-            return await Connection.QueryAsync<Tutor>(
+            return await Connection.QueryAsync<TutorDto>(
                 "select TutorID, TutorNameAbbreviation from napp.get_Tutors_ByMatching(@MatchingID)",
                 new { MatchingID = matchingId }
             );
@@ -105,9 +105,9 @@ namespace MatchingSystem.DataLayer.Feature._Repository
             }
         }
         
-        public IEnumerable<Tutor> GetTutorsByMatching(int matchingId)
+        public IEnumerable<TutorDto> GetTutorsByMatching(int matchingId)
         {
-            return Connection.Query<Tutor>(
+            return Connection.Query<TutorDto>(
                 "select TutorID, TutorNameAbbreviation from napp.get_Tutors_ByMatching(@MatchingID)",
                 new { MatchingID = matchingId }
             );
@@ -409,9 +409,9 @@ namespace MatchingSystem.DataLayer.Feature._Repository
                 new {Choices = table.AsTableValuedParameter("dbo.TutorsChoice_1"), TutorID = tutorId}
             );
         }
-        public IEnumerable<Tutor> GetAllTutors()
+        public IEnumerable<TutorDto> GetAllTutors()
         {
-            return Connection.Query<Tutor>(
+            return Connection.Query<TutorDto>(
                 "select distinct NameAbbreviation, UserID from dbo_v.Tutors" 
             );
         }

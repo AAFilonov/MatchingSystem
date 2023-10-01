@@ -1,4 +1,5 @@
 ﻿using System;
+using MatchingSystem.DataLayer.Feature.Stage;
 using MatchingSystem.DataLayer.Model;
 
 namespace MatchingSystem.DataLayer.Feature.CommonQuota;
@@ -16,6 +17,6 @@ public class CommonQuota
     public int? StageId { get; set; }
 
     public virtual QuotasState QuotaState { get; set; } = null!;
-    public virtual Stage.StageEntity? Stage { get; set; }
+    public virtual StageEntity? Stage { get; set; }
     public virtual Tutor? Tutor { get; set; }
 }

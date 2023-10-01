@@ -41,35 +41,13 @@ public class TutorService : ITutorService
         return viewModel;
     }
 
-    public async void SetReady(int tutorId)
+    public void SetReady(int tutorId)
     {
-        await tutorRepository.SetReadyAsync(tutorId);
+        tutorRepository.SetReady(tutorId);
     }
 
     public void SaveChoice(List<TutorChoice_1> data, int tutorId)
     {
         tutorRepository.SetPreferences(data, tutorId);
-    }
-
-    public List<TutorInitDto> GetAllTutors()
-    {
-        var tutors = tutorRepository.GetAllTutors();
-        var tutorDtos = new List<TutorInitDto>();
-        foreach (var tutor in tutors)
-            //tutorDtos.Add(tutor); //(TutorDto.construct(tutor,groups));  
-            tutorDtos.Add(construct(tutor));
-
-        return tutorDtos;
-    }
-
-    private TutorInitDto construct(DataLayer.OldEntities.Tutor tutor)
-    {
-        var initDto = new TutorInitDto();
-        initDto.UserId = tutor.TutorID;
-        initDto.nameAbbreviation = tutor.NameAbbreviation;
-        initDto.isIncluded = true;
-        initDto.groups = null;
-        initDto.quota = 3;
-        return initDto;
     }
 }

@@ -3,7 +3,7 @@
 namespace MatchingSystem.DataLayer.OldEntities
 {
     #nullable enable
-    public class Tutor
+    public class TutorDto
     {
         [Key]
         public int TutorID { get; set; }

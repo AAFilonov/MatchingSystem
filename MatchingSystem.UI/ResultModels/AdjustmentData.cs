@@ -5,7 +5,7 @@ namespace MatchingSystem.UI.ResultModels
 {
     public class AdjustmentData
     {
-        public List<Tutor> Tutors { get; set; }
+        public List<TutorDto> Tutors { get; set; }
         public List<Allocation> Allocations { get; set; }
         public List<Project> Projects { get; set; }
     }
