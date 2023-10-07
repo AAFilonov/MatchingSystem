@@ -3,9 +3,9 @@ using MatchingSystem.DataLayer.Model;
 
 namespace MatchingSystem.DataLayer.Feature.Role;
 
-public class Role
+public class RoleEntity
 {
-    public Role()
+    public RoleEntity()
     {
         UsersRoles = new HashSet<UsersRole>();
     }
