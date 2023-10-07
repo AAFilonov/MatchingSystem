@@ -9,7 +9,7 @@ public class Matching
     public Matching()
     {
         Groups = new HashSet<Group>();
-        Stages = new HashSet<Stage.Stage>();
+        Stages = new HashSet<Stage.StageEntity>();
         UsersRoles = new HashSet<UsersRole>();
     }
 
@@ -21,7 +21,7 @@ public class Matching
     [Required]
     public virtual MatchingType MatchingType { get; set; }
     public virtual ICollection<Group> Groups { get; set; }
-    public virtual ICollection<Stage.Stage> Stages { get; set; }
+    public virtual ICollection<Stage.StageEntity> Stages { get; set; }
     public virtual ICollection<UsersRole> UsersRoles { get; set; }
     
 }

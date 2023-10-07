@@ -48,10 +48,10 @@ public class MatchingRepository : Repository<Matching>, IMatchingRepository
         return StageDto.fromEntity(stage);
     }
 
-    public Stage.Stage GetCurrentStage(int matchingId)
+    public Stage.StageEntity GetCurrentStage(int matchingId)
     {
-        List<Stage.Stage> stages = _matchingSystemContext.Matchings.Find(matchingId)?.Stages.ToList();
-        Stage.Stage currentStage = stages.Where(stage => stage.IsCurrent == true).FirstOrDefault();
+        List<Stage.StageEntity> stages = _matchingSystemContext.Matchings.Find(matchingId)?.Stages.ToList();
+        Stage.StageEntity currentStage = stages.Where(stage => stage.IsCurrent == true).FirstOrDefault();
         return currentStage;
     }
 

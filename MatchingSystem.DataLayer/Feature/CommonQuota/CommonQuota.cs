@@ -16,6 +16,6 @@ public class CommonQuota
     public int? StageId { get; set; }
 
     public virtual QuotasState QuotaState { get; set; } = null!;
-    public virtual Stage.Stage? Stage { get; set; }
+    public virtual Stage.StageEntity? Stage { get; set; }
     public virtual Tutor? Tutor { get; set; }
 }

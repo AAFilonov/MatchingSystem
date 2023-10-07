@@ -52,7 +52,7 @@ public class MatchingService : IMatchingService
 
     public int createFirstStage(int MatchingID)
     {
-        Stage.Stage firstStage = new Stage.Stage();
+        Stage.StageEntity firstStage = new Stage.StageEntity();
         firstStage.StageTypeId = 1;
         firstStage.StartDate = DateTime.Now;
         firstStage.StartDate = DateTime.Now.Add(TimeSpan.FromHours(1));

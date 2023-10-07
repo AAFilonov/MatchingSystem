@@ -37,7 +37,7 @@ public partial class DiplomaMatchingContext: DbContext
     public virtual DbSet<ProjectsWorkDirection> ProjectsWorkDirections { get; set; } = null!;
     public virtual DbSet<QuotasState> QuotasStates { get; set; } = null!;
     public virtual DbSet<Role> Roles { get; set; } = null!;
-    public virtual DbSet<Stage> Stages { get; set; } = null!;
+    public virtual DbSet<StageEntity> Stages { get; set; } = null!;
     public virtual DbSet<StagesType> StagesTypes { get; set; } = null!;
     public virtual DbSet<StudentEntity> Students { get; set; } = null!;
     public virtual DbSet<StudentView> StudentsViews { get; set; } = null!;
@@ -478,7 +478,7 @@ public partial class DiplomaMatchingContext: DbContext
                 .HasColumnName("RoleName_ru");
         });
 
-        modelBuilder.Entity<Stage>(entity =>
+        modelBuilder.Entity<StageEntity>(entity =>
         {
             entity.Property(e => e.StageId).HasColumnName("StageID");
 

@@ -21,7 +21,7 @@ public class TutorsChoice
     public bool? IsFromPreviousIteration { get; set; }
 
     public virtual Project Project { get; set; } = null!;
-    public virtual Stage Stage { get; set; } = null!;
+    public virtual StageEntity Stage { get; set; } = null!;
     public virtual StudentEntity Student { get; set; } = null!;
     public virtual ChoosingType Type { get; set; } = null!;
 }

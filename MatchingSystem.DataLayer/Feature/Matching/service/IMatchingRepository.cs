@@ -8,7 +8,7 @@ namespace MatchingSystem.DataLayer.Feature.Matching.service
     {
         IEnumerable<Allocation> GetFinalAllocations();
         StageDto GetCurrentStageDto(int matchingId);
-        Stage.Stage GetCurrentStage(int matchingId);
+        Stage.StageEntity GetCurrentStage(int matchingId);
         IEnumerable<MatchingDto> GetMatchingsDto();
         IEnumerable<Matching> GetMatchings();
     }

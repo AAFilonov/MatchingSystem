@@ -6,7 +6,7 @@ public class StagesType
 {
     public StagesType()
     {
-        Stages = new HashSet<Stage>();
+        Stages = new HashSet<StageEntity>();
     }
 
     public int StageTypeId { get; set; }
@@ -14,5 +14,5 @@ public class StagesType
     public string StageTypeName { get; set; } = null!;
     public string? StageTypeNameRu { get; set; }
 
-    public virtual ICollection<Stage> Stages { get; set; }
+    public virtual ICollection<StageEntity> Stages { get; set; }
 }

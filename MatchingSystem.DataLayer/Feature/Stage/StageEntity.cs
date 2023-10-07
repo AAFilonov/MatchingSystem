@@ -4,9 +4,9 @@ using MatchingSystem.DataLayer.Model;
 
 namespace MatchingSystem.DataLayer.Feature.Stage;
 
-public class Stage
+public class StageEntity
 {
-    public Stage()
+    public StageEntity()
     {
         CommonQuota = new HashSet<CommonQuota.CommonQuota>();
         Documents = new HashSet<Document>();
