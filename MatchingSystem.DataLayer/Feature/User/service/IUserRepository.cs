@@ -3,9 +3,9 @@ using MatchingSystem.DataLayer.Dto.MatchingInit;
 
 namespace MatchingSystem.DataLayer.Feature.User.service;
 
-public interface IUserRepository :IRepository<User> 
+public interface IUserRepository :IRepository<UserEntity> 
 {
-    User? GetByLogin(string authLogin);
+    UserEntity? GetByLogin(string authLogin);
     IEnumerable<TutorInitDto> SetUserIdForTutors(List<TutorInitDto> tutors);
     
     IEnumerable<StudentInitDto> SaveStudents(List<StudentInitDto> users);

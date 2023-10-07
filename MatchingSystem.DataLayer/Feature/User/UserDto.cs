@@ -5,7 +5,7 @@ namespace MatchingSystem.DataLayer.Feature.User
 {
     public class UserDto
     {
-        public static UserDto fromEntity(User user)
+        public static UserDto fromEntity(UserEntity user)
         {
             var dto = new UserDto
             {

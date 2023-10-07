@@ -7,13 +7,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MatchingSystem.DataLayer.Feature.User.service;
 
-public class UserRepository :Repository<User>, IUserRepository
+public class UserRepository :Repository<UserEntity>, IUserRepository
 {
     public UserRepository(DbContext context) : base(context)
     {
     }
 
-    public User GetByLogin(string login)
+    public UserEntity GetByLogin(string login)
     {
         return _matchingSystemContext.Users.Single(user => user.Login.Equals(login));
     }
@@ -22,7 +22,7 @@ public class UserRepository :Repository<User>, IUserRepository
     {
         foreach (var student in students)
         {
-            User user = new User()
+            UserEntity user = new UserEntity()
             {
                 Login = student.login,
                 PasswordHash = student.passwordHash,

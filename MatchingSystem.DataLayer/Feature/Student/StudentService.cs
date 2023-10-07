@@ -96,7 +96,7 @@ public class StudentService : IStudentService
         {
             var password = UserUtils.CreatePassword(8);
             var encoder = new ScryptEncoder();
-            User.User user = userRepository.findById(student.UserId);
+            User.UserEntity user = userRepository.findById(student.UserId);
             user.PasswordHash = encoder.Encode(password);
             userRepository.update(user);
             dtos.Add(new StudentInitDto()

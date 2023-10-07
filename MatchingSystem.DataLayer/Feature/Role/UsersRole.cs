@@ -19,5 +19,5 @@ public class UsersRole
     public virtual RoleEntity Role { get; set; } = null!;
     public virtual StudentEntity? Student { get; set; }
     public virtual Tutor? Tutor { get; set; }
-    public virtual User User { get; set; } = null!;
+    public virtual UserEntity User { get; set; } = null!;
 }

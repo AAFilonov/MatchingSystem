@@ -49,7 +49,7 @@ public partial class DiplomaMatchingContext: DbContext
     public virtual DbSet<TutorViewDto> Tutors1 { get; set; } = null!;
     public virtual DbSet<TutorsChoice> TutorsChoices { get; set; } = null!;
     public virtual DbSet<TutorsGroup> TutorsGroups { get; set; } = null!;
-    public virtual DbSet<User> Users { get; set; } = null!;
+    public virtual DbSet<UserEntity> Users { get; set; } = null!;
     public virtual DbSet<UsersFullInfo> UsersFullInfos { get; set; } = null!;
     public virtual DbSet<UsersRole> UsersRoles { get; set; } = null!;
     public virtual DbSet<VersionInfo> VersionInfos { get; set; } = null!;
