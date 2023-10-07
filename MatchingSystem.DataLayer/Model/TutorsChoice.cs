@@ -22,6 +22,6 @@ public class TutorsChoice
 
     public virtual Project Project { get; set; } = null!;
     public virtual Stage Stage { get; set; } = null!;
-    public virtual Student Student { get; set; } = null!;
+    public virtual StudentEntity Student { get; set; } = null!;
     public virtual ChoosingType Type { get; set; } = null!;
 }

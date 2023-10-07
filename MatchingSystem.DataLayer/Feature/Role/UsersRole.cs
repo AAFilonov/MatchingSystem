@@ -17,7 +17,7 @@ public class UsersRole
 
     public virtual Matching? Matching { get; set; }
     public virtual Role Role { get; set; } = null!;
-    public virtual Student? Student { get; set; }
+    public virtual StudentEntity? Student { get; set; }
     public virtual Tutor? Tutor { get; set; }
     public virtual User User { get; set; } = null!;
 }

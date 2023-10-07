@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MatchingSystem.DataLayer.Feature.Student;
 
-public class StudentRepository : Repository<Student>,IStudentRepository
+public class StudentRepository : Repository<StudentEntity>,IStudentRepository
 {
     public StudentRepository(DbContext context) : base(context)
     {
