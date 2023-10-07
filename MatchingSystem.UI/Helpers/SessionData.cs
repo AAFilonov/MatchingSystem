@@ -3,7 +3,6 @@ using MatchingSystem.DataLayer.Dto.MatchingInit;
 using MatchingSystem.DataLayer.Feature.Stage;
 using MatchingSystem.DataLayer.Feature.User;
 using MatchingSystem.DataLayer.OldEntities;
-using User = MatchingSystem.DataLayer.Feature.User.User;
 
 
 namespace MatchingSystem.UI.Helpers

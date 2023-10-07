@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace MatchingSystem.DataLayer.Feature.Matching;
 
-public class MatchingTable : IEntityTypeConfiguration<Matching>
+public class MatchingTable : IEntityTypeConfiguration<MatchingEntity>
 {
-    public void Configure(EntityTypeBuilder<Matching> builder)
+    public void Configure(EntityTypeBuilder<MatchingEntity> builder)
     {
         builder.ToTable("Matching");
         builder.Property(e => e.MatchingId).HasColumnName("MatchingID");

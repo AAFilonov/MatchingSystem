@@ -9,7 +9,7 @@ public class Group
     public Group()
     {
         ProjectsGroups = new HashSet<ProjectsGroup>();
-        Students = new HashSet<Student>();
+        Students = new HashSet<StudentEntity>();
         TutorsGroups = new HashSet<TutorsGroup>();
     }
 
@@ -18,8 +18,8 @@ public class Group
     public string GroupName { get; set; } = null!;
     public int? MatchingId { get; set; }
 
-    public virtual Matching? Matching { get; set; }
+    public virtual MatchingEntity? Matching { get; set; }
     public virtual ICollection<ProjectsGroup> ProjectsGroups { get; set; }
-    public virtual ICollection<Student> Students { get; set; }
+    public virtual ICollection<StudentEntity> Students { get; set; }
     public virtual ICollection<TutorsGroup> TutorsGroups { get; set; }
 }

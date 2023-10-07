@@ -9,5 +9,5 @@ public class Document
     public string Path { get; set; } = null!;
     public string DocumentName { get; set; } = null!;
 
-    public virtual Stage Stage { get; set; } = null!;
+    public virtual StageEntity Stage { get; set; } = null!;
 }

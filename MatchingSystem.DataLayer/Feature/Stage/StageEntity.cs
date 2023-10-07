@@ -4,9 +4,9 @@ using MatchingSystem.DataLayer.Model;
 
 namespace MatchingSystem.DataLayer.Feature.Stage;
 
-public class Stage
+public class StageEntity
 {
-    public Stage()
+    public StageEntity()
     {
         CommonQuota = new HashSet<CommonQuota.CommonQuota>();
         Documents = new HashSet<Document>();
@@ -23,7 +23,7 @@ public class Stage
     public bool? IsCurrent { get; set; }
     public int MatchingId { get; set; }
 
-    public virtual Matching.Matching Matching { get; set; } = null!;
+    public virtual Matching.MatchingEntity Matching { get; set; } = null!;
     public virtual StagesType StageType { get; set; } = null!;
     public virtual ICollection<CommonQuota.CommonQuota> CommonQuota { get; set; }
     public virtual ICollection<Document> Documents { get; set; }

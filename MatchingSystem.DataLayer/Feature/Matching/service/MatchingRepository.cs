@@ -8,7 +8,7 @@ using Allocation = MatchingSystem.DataLayer.OldEntities.Allocation;
 
 namespace MatchingSystem.DataLayer.Feature.Matching.service;
 
-public class MatchingRepository : Repository<Matching>, IMatchingRepository
+public class MatchingRepository : Repository<MatchingEntity>, IMatchingRepository
 {
 
     public MatchingRepository(DbContext context) : base(context)
@@ -48,10 +48,10 @@ public class MatchingRepository : Repository<Matching>, IMatchingRepository
         return StageDto.fromEntity(stage);
     }
 
-    public Stage.Stage GetCurrentStage(int matchingId)
+    public Stage.StageEntity GetCurrentStage(int matchingId)
     {
-        List<Stage.Stage> stages = _matchingSystemContext.Matchings.Find(matchingId)?.Stages.ToList();
-        Stage.Stage currentStage = stages.Where(stage => stage.IsCurrent == true).FirstOrDefault();
+        List<Stage.StageEntity> stages = _matchingSystemContext.Matchings.Find(matchingId)?.Stages.ToList();
+        Stage.StageEntity currentStage = stages.Where(stage => stage.IsCurrent == true).FirstOrDefault();
         return currentStage;
     }
 
@@ -60,7 +60,7 @@ public class MatchingRepository : Repository<Matching>, IMatchingRepository
         return _matchingSystemContext.Matchings.Select(matching => new MatchingDto(matching));
     }
     
-    public IEnumerable<Matching> GetMatchings()
+    public IEnumerable<MatchingEntity> GetMatchings()
     {
         return _matchingSystemContext.Matchings.Include(matching =>matching.MatchingType );
     }

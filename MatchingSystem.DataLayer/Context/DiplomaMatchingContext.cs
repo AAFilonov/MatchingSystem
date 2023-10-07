@@ -28,7 +28,7 @@ public partial class DiplomaMatchingContext: DbContext
     public virtual DbSet<Document> Documents { get; set; } = null!;
     public virtual DbSet<Group> Groups { get; set; } = null!;
     public virtual DbSet<Log> Logs { get; set; } = null!;
-    public virtual DbSet<Matching> Matchings { get; set; } = null!;
+    public virtual DbSet<MatchingEntity> Matchings { get; set; } = null!;
     public virtual DbSet<MatchingType> MatchingTypes { get; set; } = null!;
     public virtual DbSet<Project> Projects { get; set; } = null!;
     public virtual DbSet<Project1> Projects1 { get; set; } = null!;
@@ -36,10 +36,10 @@ public partial class DiplomaMatchingContext: DbContext
     public virtual DbSet<ProjectsTechnology> ProjectsTechnologies { get; set; } = null!;
     public virtual DbSet<ProjectsWorkDirection> ProjectsWorkDirections { get; set; } = null!;
     public virtual DbSet<QuotasState> QuotasStates { get; set; } = null!;
-    public virtual DbSet<Role> Roles { get; set; } = null!;
-    public virtual DbSet<Stage> Stages { get; set; } = null!;
+    public virtual DbSet<RoleEntity> Roles { get; set; } = null!;
+    public virtual DbSet<StageEntity> Stages { get; set; } = null!;
     public virtual DbSet<StagesType> StagesTypes { get; set; } = null!;
-    public virtual DbSet<Student> Students { get; set; } = null!;
+    public virtual DbSet<StudentEntity> Students { get; set; } = null!;
     public virtual DbSet<StudentView> StudentsViews { get; set; } = null!;
     public virtual DbSet<StudentsPreference> StudentsPreferences { get; set; } = null!;
     public virtual DbSet<StudentsTechnology> StudentsTechnologies { get; set; } = null!;
@@ -49,7 +49,7 @@ public partial class DiplomaMatchingContext: DbContext
     public virtual DbSet<TutorViewDto> Tutors1 { get; set; } = null!;
     public virtual DbSet<TutorsChoice> TutorsChoices { get; set; } = null!;
     public virtual DbSet<TutorsGroup> TutorsGroups { get; set; } = null!;
-    public virtual DbSet<User> Users { get; set; } = null!;
+    public virtual DbSet<UserEntity> Users { get; set; } = null!;
     public virtual DbSet<UsersFullInfo> UsersFullInfos { get; set; } = null!;
     public virtual DbSet<UsersRole> UsersRoles { get; set; } = null!;
     public virtual DbSet<VersionInfo> VersionInfos { get; set; } = null!;
@@ -467,7 +467,7 @@ public partial class DiplomaMatchingContext: DbContext
                 .HasColumnName("QuotaStateName_ru");
         });
 
-        modelBuilder.Entity<Role>(entity =>
+        modelBuilder.Entity<RoleEntity>(entity =>
         {
             entity.Property(e => e.RoleId).HasColumnName("RoleID");
 
@@ -478,7 +478,7 @@ public partial class DiplomaMatchingContext: DbContext
                 .HasColumnName("RoleName_ru");
         });
 
-        modelBuilder.Entity<Stage>(entity =>
+        modelBuilder.Entity<StageEntity>(entity =>
         {
             entity.Property(e => e.StageId).HasColumnName("StageID");
 
@@ -526,7 +526,7 @@ public partial class DiplomaMatchingContext: DbContext
                 .HasColumnName("StageTypeName_ru");
         });
 
-        modelBuilder.Entity<Student>(entity =>
+        modelBuilder.Entity<StudentEntity>(entity =>
         {
             entity.Property(e => e.StudentId).HasColumnName("StudentID");
 

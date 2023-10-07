@@ -4,12 +4,12 @@ using MatchingSystem.DataLayer.Model;
 
 namespace MatchingSystem.DataLayer.Feature.Matching;
 
-public class Matching
+public class MatchingEntity
 {
-    public Matching()
+    public MatchingEntity()
     {
         Groups = new HashSet<Group>();
-        Stages = new HashSet<Stage.Stage>();
+        Stages = new HashSet<Stage.StageEntity>();
         UsersRoles = new HashSet<UsersRole>();
     }
 
@@ -21,7 +21,7 @@ public class Matching
     [Required]
     public virtual MatchingType MatchingType { get; set; }
     public virtual ICollection<Group> Groups { get; set; }
-    public virtual ICollection<Stage.Stage> Stages { get; set; }
+    public virtual ICollection<Stage.StageEntity> Stages { get; set; }
     public virtual ICollection<UsersRole> UsersRoles { get; set; }
     
 }

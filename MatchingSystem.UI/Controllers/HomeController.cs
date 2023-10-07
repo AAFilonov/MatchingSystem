@@ -96,7 +96,7 @@ public class HomeController : Controller
         }
 
         SessionData data = new SessionData();
-        User user = null;
+        UserEntity user = null;
 
         try
         {

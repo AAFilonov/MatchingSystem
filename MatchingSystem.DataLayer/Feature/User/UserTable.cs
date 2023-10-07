@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace MatchingSystem.DataLayer.Feature.User;
 
-public class UserTable : IEntityTypeConfiguration<User>
+public class UserTable : IEntityTypeConfiguration<UserEntity>
 {
-    public void Configure(EntityTypeBuilder<User> builder)
+    public void Configure(EntityTypeBuilder<UserEntity> builder)
     {
         builder.Property(e => e.UserId).HasColumnName("UserID");
         builder.Property(e => e.Email).HasMaxLength(50);

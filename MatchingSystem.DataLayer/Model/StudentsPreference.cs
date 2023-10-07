@@ -16,6 +16,6 @@ public class StudentsPreference
     public DateTime? CreateDate { get; set; }
 
     public virtual Project Project { get; set; } = null!;
-    public virtual Student Student { get; set; } = null!;
+    public virtual StudentEntity Student { get; set; } = null!;
     public virtual ChoosingType? Type { get; set; }
 }

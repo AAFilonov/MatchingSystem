@@ -6,7 +6,7 @@ namespace MatchingSystem.DataLayer.Feature.Stage
 #nullable enable
     public class StageDto
     {
-        public static StageDto fromEntity(Stage stage)
+        public static StageDto fromEntity(StageEntity stage)
         {
             var dto = new StageDto
             {

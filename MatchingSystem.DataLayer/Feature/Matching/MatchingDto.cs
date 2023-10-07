@@ -3,7 +3,7 @@
 #nullable enable
     public class MatchingDto
     {
-        public MatchingDto(Matching matching)
+        public MatchingDto(MatchingEntity matching)
         {
             MatchingID = matching.MatchingId;
             MatchingName = matching.MatchingName;

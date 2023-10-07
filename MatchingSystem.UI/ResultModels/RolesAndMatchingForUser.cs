@@ -6,7 +6,7 @@ namespace MatchingSystem.UI.ResultModels
 {
     public class RolesAndMatchingForUser
     {
-        public List<Matching> Matchings { get; set; }
+        public List<MatchingEntity> Matchings { get; set; }
         public List<RoleDto> Roles { get; set; }
     }
 }

@@ -9,5 +9,5 @@ public class StudentsWorkDirection
     public int DirectionId { get; set; }
 
     public virtual WorkDirection Direction { get; set; } = null!;
-    public virtual Student Student { get; set; } = null!;
+    public virtual StudentEntity Student { get; set; } = null!;
 }
