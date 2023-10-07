@@ -131,17 +131,17 @@ namespace MatchingSystem.DataLayer.Feature._Repository
             ); 
         }
 
-        public async Task<IEnumerable<Group>> GetGroupsByTutorAsync(int tutorId)
+        public async Task<IEnumerable<GroupDto>> GetGroupsByTutorAsync(int tutorId)
         {
-            return await Connection.QueryAsync<Group>(
+            return await Connection.QueryAsync<GroupDto>(
                 "select * from napp.get_Groups_ByTutor(@TutorID)",
                 new { TutorID = tutorId }
             );
         }
 
-        public IEnumerable<Group> GetGroupsByTutor(int tutorId)
+        public IEnumerable<GroupDto> GetGroupsByTutor(int tutorId)
         {
-            return Connection.Query<Group>(
+            return Connection.Query<GroupDto>(
                 "select * from napp.get_Groups_ByTutor(@TutorID)",
                 new { TutorID = tutorId }
             );

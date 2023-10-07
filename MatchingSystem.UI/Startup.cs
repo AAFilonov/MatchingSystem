@@ -74,8 +74,6 @@ namespace MatchingSystem.UI
 
             services.AddTransient<IProjectRepository, ProjectRepository>(_ =>
                 new ProjectRepository(connectionString));
-            services.AddTransient<IGroupRepository, GroupRepository>(_ =>
-                new GroupRepository(connectionString));
             services.AddTransient<IUserRepositoryOld, UserRepositoryOld>(_ =>
                 new UserRepositoryOld(connectionString));
 
@@ -119,6 +117,7 @@ namespace MatchingSystem.UI
             services.AddSingleton<IRoleRepository, RoleRepository>();
             services.AddSingleton<IStudentRepository, StudentRepository>();
             services.AddSingleton<IDictionaryRepository, DictionaryRepository>();
+            services.AddSingleton<IGroupRepository, GroupRepository>();
             //--Services
             
 

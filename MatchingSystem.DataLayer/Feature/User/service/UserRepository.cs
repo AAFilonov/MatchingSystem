@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MatchingSystem.DataLayer.Feature.User.service;
 
-public class UserRepository :Repository<UserEntity>, IUserRepository
+public class UserRepository : Repository<UserEntity>, IUserRepository
 {
     public UserRepository(DbContext context) : base(context)
     {
