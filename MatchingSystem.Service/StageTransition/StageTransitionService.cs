@@ -1,9 +1,13 @@
 ﻿using System.Linq;
 using MatchingSystem.DataLayer.Feature._Interface;
-using MatchingSystem.DataLayer.Feature.Matching.service;
+using MatchingSystem.DataLayer.Feature.Matching.repo;
 using MatchingSystem.DataLayer.Feature.Student;
+using MatchingSystem.DataLayer.Feature.Student.repo;
+using MatchingSystem.DataLayer.Feature.Tutor;
+using MatchingSystem.DataLayer.Feature.Tutor.repo;
+using MatchingSystem.Service.Matching;
 
-namespace MatchingSystem.Service.Follow;
+namespace MatchingSystem.Service.StageTransition;
 
 public class StageTransitionService : IStageTransitionService
 {
@@ -31,8 +35,8 @@ public class StageTransitionService : IStageTransitionService
         switch (curStageDto.StageTypeCode)
         {
             case 2: //переход со стадии создания проектов к заполнению списков предпочтений
-                needToTransit = tutorRepository.GetTutorsByMatching(matchingId)
-                    .All(x => tutorRepository.GetReadyByTutor(x.TutorID));
+                needToTransit = tutorRepository.find(entity => entity.MatchingId==matchingId)
+                    .All(x => tutorRepository.findById(x.TutorId).IsReadyToStart ?? true);
                 break;
             case 3: //переход со стадии заполнения списков предпочтений к 1 итерации
                 var studPref = studentRepositoryOld.GetStudentPreferencesByMatching(matchingId)

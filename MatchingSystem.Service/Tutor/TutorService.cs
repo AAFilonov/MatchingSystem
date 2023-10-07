@@ -3,6 +3,9 @@ using System.Linq;
 using MatchingSystem.DataLayer.Dto;
 using MatchingSystem.DataLayer.Dto.MatchingInit;
 using MatchingSystem.DataLayer.Feature._Interface;
+using MatchingSystem.DataLayer.Feature.CommonQuota;
+using MatchingSystem.DataLayer.Feature.Tutor;
+using MatchingSystem.DataLayer.Feature.Tutor.repo;
 using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.Service.Tutor;
@@ -10,10 +13,12 @@ namespace MatchingSystem.Service.Tutor;
 public class TutorService : ITutorService
 {
     private readonly ITutorRepository tutorRepository;
+    private readonly ICommonQuotaRepository commonQuotaRepository;
 
-    public TutorService(ITutorRepository tutorRepository)
+    public TutorService(ITutorRepository tutorRepository, ICommonQuotaRepository commonQuotaRepository)
     {
         this.tutorRepository = tutorRepository;
+        this.commonQuotaRepository = commonQuotaRepository;
     }
 
     public IterationData GetChoice(int tutorId)
@@ -24,7 +29,7 @@ public class TutorService : ITutorService
 
         var viewModel = new IterationData
         {
-            CommonQuota = tutorRepository.GetCommonQuotaByTutor(tutorId)
+            CommonQuota = commonQuotaRepository.find( entity =>entity.TutorId== tutorId).First().Qty
         };
 
 
@@ -43,7 +48,9 @@ public class TutorService : ITutorService
 
     public void SetReady(int tutorId)
     {
-        tutorRepository.SetReady(tutorId);
+       TutorEntity tutor = tutorRepository.findById(tutorId);
+       tutor.IsReadyToStart = true;
+       tutorRepository.save(tutor);
     }
 
     public void SaveChoice(List<TutorChoice_1> data, int tutorId)

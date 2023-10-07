@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using MatchingSystem.DataLayer.Feature.Group;
+using MatchingSystem.DataLayer.Feature.Role;
 using MatchingSystem.DataLayer.Model;
 
 namespace MatchingSystem.DataLayer.Feature.Student;
@@ -10,8 +12,8 @@ public class StudentEntity
         StudentsPreferences = new HashSet<StudentsPreference>();
         StudentsTechnologies = new HashSet<StudentsTechnology>();
         StudentsWorkDirections = new HashSet<StudentsWorkDirection>();
-        TutorsChoices = new HashSet<TutorsChoice>();
-        UsersRoles = new HashSet<UsersRole>();
+        TutorsChoices = new HashSet<TutorsChoiceEntity>();
+        UsersRoles = new HashSet<UsersRoleEntity>();
     }
 
     public int StudentId { get; set; }
@@ -21,10 +23,10 @@ public class StudentEntity
     public int? MatchingId { get; set; }
     public string? Info2 { get; set; }
 
-    public virtual Group Group { get; set; } = null!;
+    public virtual GroupEntity Group { get; set; } = null!;
     public virtual ICollection<StudentsPreference> StudentsPreferences { get; set; }
     public virtual ICollection<StudentsTechnology> StudentsTechnologies { get; set; }
     public virtual ICollection<StudentsWorkDirection> StudentsWorkDirections { get; set; }
-    public virtual ICollection<TutorsChoice> TutorsChoices { get; set; }
-    public virtual ICollection<UsersRole> UsersRoles { get; set; }
+    public virtual ICollection<TutorsChoiceEntity> TutorsChoices { get; set; }
+    public virtual ICollection<UsersRoleEntity> UsersRoles { get; set; }
 }

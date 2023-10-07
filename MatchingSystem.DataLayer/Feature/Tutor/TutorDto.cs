@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MatchingSystem.DataLayer.OldEntities
+namespace MatchingSystem.DataLayer.Feature.Tutor
 {
     #nullable enable
     public class TutorDto

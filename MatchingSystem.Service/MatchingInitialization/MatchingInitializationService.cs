@@ -5,13 +5,19 @@ using System.Text;
 using System.Transactions;
 using MatchingSystem.DataLayer.Dto.MatchingInit;
 using MatchingSystem.DataLayer.Feature._Interface;
-using MatchingSystem.DataLayer.Feature.Matching.service;
-using MatchingSystem.DataLayer.Feature.Role.service;
+using MatchingSystem.DataLayer.Feature.CommonQuota;
+using MatchingSystem.DataLayer.Feature.Group;
+using MatchingSystem.DataLayer.Feature.Group.repo;
+using MatchingSystem.DataLayer.Feature.Role.repo;
 using MatchingSystem.DataLayer.Feature.Student;
-using MatchingSystem.DataLayer.Feature.User.service;
+using MatchingSystem.DataLayer.Feature.Student.repo;
+using MatchingSystem.DataLayer.Feature.Tutor;
+using MatchingSystem.DataLayer.Feature.Tutor.repo;
+using MatchingSystem.DataLayer.Feature.User.repo;
 using MatchingSystem.DataLayer.Model;
 using MatchingSystem.DataLayer.Utils;
 using MatchingSystem.Service.Exception;
+using MatchingSystem.Service.Matching;
 using Scrypt;
 
 namespace MatchingSystem.Service.MatchingInitialization;
@@ -23,6 +29,7 @@ public class MatchingInitializationService : IMatchingInitializationService
     private readonly IProjectRepository projectRepository;
     private readonly IStudentRepositoryOld studentRepositoryOld;
     private readonly ITutorRepository tutorRepository;
+    private readonly ICommonQuotaRepository quotaRepository;
     //private readonly IUserRepositoryOld userRepositoryOld;
     private readonly IUserRepository userRepository;
     private readonly IRoleRepository roleRepository;
@@ -32,7 +39,7 @@ public class MatchingInitializationService : IMatchingInitializationService
         , IGroupRepository groupRepository
         , ITutorRepository tutorRepository
         , IProjectRepository projectRepository
-        , IMatchingService matchingService, IUserRepository userRepository, IRoleRepository roleRepository)
+        , IMatchingService matchingService, IUserRepository userRepository, IRoleRepository roleRepository, ICommonQuotaRepository quotaRepository)
     {
 
         this.studentRepositoryOld = studentRepositoryOld;
@@ -42,6 +49,7 @@ public class MatchingInitializationService : IMatchingInitializationService
         this.matchingService = matchingService;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.quotaRepository = quotaRepository;
     }
 
     public MatchingInitData createMatching(MatchingInitData data, int creatorUserId)
@@ -83,7 +91,7 @@ public class MatchingInitializationService : IMatchingInitializationService
         var StageId = matchingService.createFirstStage(MatchingId);
         roleRepository.AssignRoleForUser(creatorUserId, MatchingId, 3);
 
-        var groups = data.groupRecords.Select(item => new Group()
+        var groups = data.groupRecords.Select(item => new GroupEntity()
         {
             GroupName = item.name,
             MatchingId = MatchingId,
@@ -113,10 +121,10 @@ public class MatchingInitializationService : IMatchingInitializationService
         data.tutorRecords = tutorRepository.CreateTutors(data.tutorRecords, MatchingId).ToList();
 
         //Провязать роли для преподавателей 
-        tutorRepository.AssignTutorRole(data.tutorRecords, MatchingId); //TODO реализваоно по старому
+        roleRepository.AssignTutorRole(data.tutorRecords, MatchingId); //TODO реализваоно по старому
 
         //задать квоты преподавателям
-        tutorRepository.SetCommonQuotasForTutors(data.tutorRecords, StageId); //TODO реализваоно по старому
+        quotaRepository.SetCommonQuotasForTutors(data.tutorRecords, StageId); //TODO реализваоно по старому
 
         //создать провязки преподаватель - группа
         groupRepository.AssignGroupsToTutors(data.tutorRecords); //TODO реализваоно по старому

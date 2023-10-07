@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using MatchingSystem.DataLayer.Feature._Interface;
+using MatchingSystem.DataLayer.Feature.Project;
 using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.Service.Statistics;
@@ -65,7 +66,7 @@ public class StatisticsService : IStatisticsService
         return model.OrderBy(project => project.OrderNumber);
     }
 
-    public IEnumerable<Project> GetStatisticsTutorsProjects(int? matchingId, int? tutorId)
+    public IEnumerable<ProjectDto> GetStatisticsTutorsProjects(int? matchingId, int? tutorId)
     {
         var result = statisticsRepository.GetStatisticsTutorsProjects(matchingId.Value, tutorId.Value);
         return result;

@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using MatchingSystem.DataLayer.Feature._Interface;
+using MatchingSystem.DataLayer.Feature.Tutor;
+using MatchingSystem.DataLayer.Feature.Tutor.repo;
 using MatchingSystem.DataLayer.OldEntities;
-using MatchingSystem.Service.Follow;
+using MatchingSystem.Service.StageTransition;
 using Microsoft.AspNetCore.Mvc;
 using MatchingSystem.Service.Tutor;
 using MatchingSystem.UI.Helpers;

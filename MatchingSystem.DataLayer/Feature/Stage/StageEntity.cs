@@ -8,9 +8,8 @@ public class StageEntity
 {
     public StageEntity()
     {
-        CommonQuota = new HashSet<CommonQuota.CommonQuota>();
-        Documents = new HashSet<Document>();
-        TutorsChoices = new HashSet<TutorsChoice>();
+        CommonQuota = new HashSet<CommonQuota.CommonQuotaEntity>();
+        TutorsChoices = new HashSet<TutorsChoiceEntity>();
     }
 
     public int StageId { get; set; }
@@ -25,7 +24,6 @@ public class StageEntity
 
     public virtual Matching.MatchingEntity Matching { get; set; } = null!;
     public virtual StagesType StageType { get; set; } = null!;
-    public virtual ICollection<CommonQuota.CommonQuota> CommonQuota { get; set; }
-    public virtual ICollection<Document> Documents { get; set; }
-    public virtual ICollection<TutorsChoice> TutorsChoices { get; set; }
+    public virtual ICollection<CommonQuota.CommonQuotaEntity> CommonQuota { get; set; }
+    public virtual ICollection<TutorsChoiceEntity> TutorsChoices { get; set; }
 }

@@ -3,7 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using MatchingSystem.DataLayer.Dto.MatchingMonitoring;
 using MatchingSystem.DataLayer.Feature._Interface;
+using MatchingSystem.DataLayer.Feature.Group;
+using MatchingSystem.DataLayer.Feature.Group.repo;
+using MatchingSystem.DataLayer.Feature.Project;
 using MatchingSystem.DataLayer.Feature.Student;
+using MatchingSystem.DataLayer.Feature.Student.repo;
+using MatchingSystem.DataLayer.Feature.Tutor;
+using MatchingSystem.DataLayer.Feature.Tutor.repo;
+using MatchingSystem.DataLayer.Model;
 using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.Service.Monitoring;
@@ -188,10 +195,10 @@ public class MonitoringService : IMonitoringService
         IEnumerable<GroupDto> useGroups
         , IEnumerable<StudentDto> students
         , IEnumerable<StudentPreferences> studentPreferences
-        , IEnumerable<Project> projects
+        , IEnumerable<ProjectDto> projects
         , IEnumerable<ProjectGroupDTO> projectGroups
-        , IEnumerable<TutorChoice> tutorsChoices
-        , IEnumerable<TutorFullDTO> tutors
+        , IEnumerable<TutorChoiceDto> tutorsChoices
+        , IEnumerable<TutorView> tutors
     )
     {
         var assignedStudent = new List<ProjectMonitoringDto>();
@@ -205,7 +212,7 @@ public class MonitoringService : IMonitoringService
                                                      &&
                                                      x.ProjectID == proj.ProjectID
             );
-            var tutor = tutors.Where(x => x.TutorID == proj.TutorID).FirstOrDefault();
+            var tutor = tutors.Where(x => x.TutorId == proj.TutorID).FirstOrDefault();
             assignedStudent.Add(new ProjectMonitoringDto
             {
                 assignmentStudentId = stud.StudentID.Value,
@@ -230,7 +237,7 @@ public class MonitoringService : IMonitoringService
             foreach (var pref in studentPreferences.Where(x => x.StudentID == student.StudentID))
             foreach (var proj in projects.Where(x => x.ProjectID == pref.ProjectID))
             {
-                var tutor = tutors.Where(x => x.TutorID == proj.TutorID).FirstOrDefault();
+                var tutor = tutors.Where(x => x.TutorId == proj.TutorID).FirstOrDefault();
                 var tutchoice = tutorsChoices.Where(x => x.StudentID == pref.StudentID
                                                          &&
                                                          x.ProjectID == proj.ProjectID

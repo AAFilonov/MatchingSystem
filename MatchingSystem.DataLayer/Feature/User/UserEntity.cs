@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using MatchingSystem.DataLayer.Feature.Role;
 using MatchingSystem.DataLayer.Model;
 
 namespace MatchingSystem.DataLayer.Feature.User;
@@ -8,7 +9,7 @@ public class UserEntity
 {
     public UserEntity()
     {
-        UsersRoles = new HashSet<UsersRole>();
+        UsersRoles = new HashSet<UsersRoleEntity>();
     }
 
     public int UserId { get; set; }
@@ -25,7 +26,7 @@ public class UserEntity
         get;
     }
 
-    public virtual IEnumerable<UsersRole> UsersRoles { get; set; }
+    public virtual IEnumerable<UsersRoleEntity> UsersRoles { get; set; }
 
     public override string ToString()
     {

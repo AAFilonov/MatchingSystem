@@ -1,32 +1,34 @@
-﻿using MatchingSystem.DataLayer.Dto;
+﻿
+using System.Linq;
+using MatchingSystem.DataLayer.Dto;
 using MatchingSystem.DataLayer.Dto.IO.Params;
 using MatchingSystem.DataLayer.Feature._Interface;
+using MatchingSystem.DataLayer.Feature.CommonQuota;
+using MatchingSystem.Service.Executive;
 
 namespace MatchingSystem.Service.Quotas;
 
 public class QuotasService : IQuotasService
 {
-    private readonly IExecutiveRepository executiveRepository;
+    private readonly IExecutiveServiceOld executiveService;
     private readonly IProjectRepository projectRepository;
-    private readonly ITutorRepository tutorRepository;
+    private readonly ICommonQuotaRepository commonQuotaRepository;
 
     public QuotasService(
-        ITutorRepository tutorRepository,
         IProjectRepository projectRepository,
-        IExecutiveRepository executiveRepository
-    )
+        IExecutiveServiceOld executiveService, ICommonQuotaRepository commonQuotaRepository)
     {
-        this.tutorRepository = tutorRepository;
         this.projectRepository = projectRepository;
-        this.executiveRepository = executiveRepository;
+        this.executiveService = executiveService;
+        this.commonQuotaRepository = commonQuotaRepository;
     }
 
     public TutorQuotaData Initialize(int tutorId, int stageTypeCode)
     {
         var model = new TutorQuotaData
         {
-            History = tutorRepository.GetQuotaRequestHistoryByTutor(tutorId),
-            CommonQuota = tutorRepository.GetCommonQuotaByTutor(tutorId)
+            History = commonQuotaRepository.GetQuotaRequestHistoryByTutor(tutorId),
+            CommonQuota = commonQuotaRepository.find( entity =>entity.TutorId== tutorId).First().Qty
         };
         if (stageTypeCode == 4) model.Projects = projectRepository.GetProjectsByTutor(tutorId);
 
@@ -35,7 +37,7 @@ public class QuotasService : IQuotasService
 
     public void CreateRequest(ChangeQuotaRequest data)
     {
-        tutorRepository.CreateCommonQuotaRequestForSecondStage(data.TutorId, data.NewQuotaQty, data.Message);
+        commonQuotaRepository.CreateCommonQuotaRequestForSecondStage(data.TutorId, data.NewQuotaQty, data.Message);
     }
 
     public void CreateRequestForLastStage(ChangeQuotaRequest data)
@@ -48,12 +50,11 @@ public class QuotasService : IQuotasService
         };
         request.FillProjectQuota(data.Deltas);
 
-        tutorRepository.CreateCommonQuotaRequestForLastStage(request);
+        commonQuotaRepository.CreateCommonQuotaRequestForLastStage(request);
     }
-
-
+    
     public void AcceptRequest(int quotaid, string action)
     {
-        executiveRepository.AcceptQuotaRequest(quotaid, action == "accept");
+        executiveService.AcceptQuotaRequest(quotaid, action == "accept");
     }
 }

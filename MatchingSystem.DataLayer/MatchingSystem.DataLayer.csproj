@@ -29,9 +29,4 @@
         <Compile Remove="Interface\IGroupRepositoryd.cs" />
     </ItemGroup>
 
-    <ItemGroup>
-        <Folder Include="Feature\Notifications" />
-        <Folder Include="Feature\UserRole" />
-    </ItemGroup>
-
 </Project>

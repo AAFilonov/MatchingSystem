@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using MatchingSystem.DataLayer.Feature.Project;
 using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.Service.Statistics;
@@ -16,5 +17,5 @@ public interface IStatisticsService
 
     public IEnumerable<StatisticsStudentsProjects> GetStatisticsStudentsProjects(int? matchingId, int? studentId);
 
-    public IEnumerable<Project> GetStatisticsTutorsProjects(int? matchingId, int? tutorId);
+    public IEnumerable<ProjectDto> GetStatisticsTutorsProjects(int? matchingId, int? tutorId);
 }

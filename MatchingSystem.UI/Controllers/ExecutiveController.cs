@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using MatchingSystem.DataLayer.Feature._Interface;
-using MatchingSystem.DataLayer.Feature.Matching.service;
+using MatchingSystem.DataLayer.Feature.Matching.repo;
+using MatchingSystem.Service.Executive;
 using MatchingSystem.UI.Helpers;
 using MatchingSystem.UI.Services;
 using MatchingSystem.UI.ViewModels;
@@ -13,13 +14,13 @@ namespace MatchingSystem.UI.Controllers
     public class ExecutiveController : Controller
     {
         private readonly IMatchingRepository matchingRepository;
-        private readonly IExecutiveRepository executiveRepository;
+        private readonly IExecutiveServiceOld executiveService;
         private SessionData data;
 
-        public ExecutiveController(IMatchingRepository matchingRepository, IExecutiveRepository executiveRepository)
+        public ExecutiveController(IMatchingRepository matchingRepository, IExecutiveServiceOld executiveService)
         {
             this.matchingRepository = matchingRepository;
-            this.executiveRepository = executiveRepository;
+            this.executiveService = executiveService;
         }
         
         public override void OnActionExecuting(ActionExecutingContext ctx)
@@ -50,8 +51,8 @@ namespace MatchingSystem.UI.Controllers
         {
             ExecutiveQuotaViewModel model = new ExecutiveQuotaViewModel();
 
-            model.Requests = executiveRepository.GetQuotaRequestsByExecutive(data.UserDto.UserId, data.SelectedMatching);
-            model.History = executiveRepository.GetQuotaRequestHistoryByExecutive(data.UserDto.UserId, data.SelectedMatching);
+            model.Requests = executiveService.GetQuotaRequestsByExecutive(data.UserDto.UserId, data.SelectedMatching);
+            model.History = executiveService.GetQuotaRequestHistoryByExecutive(data.UserDto.UserId, data.SelectedMatching);
 
             return View(model);
         }
