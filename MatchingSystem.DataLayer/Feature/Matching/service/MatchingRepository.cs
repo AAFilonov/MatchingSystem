@@ -8,7 +8,7 @@ using Allocation = MatchingSystem.DataLayer.OldEntities.Allocation;
 
 namespace MatchingSystem.DataLayer.Feature.Matching.service;
 
-public class MatchingRepository : Repository<Matching>, IMatchingRepository
+public class MatchingRepository : Repository<MatchingEntity>, IMatchingRepository
 {
 
     public MatchingRepository(DbContext context) : base(context)
@@ -60,7 +60,7 @@ public class MatchingRepository : Repository<Matching>, IMatchingRepository
         return _matchingSystemContext.Matchings.Select(matching => new MatchingDto(matching));
     }
     
-    public IEnumerable<Matching> GetMatchings()
+    public IEnumerable<MatchingEntity> GetMatchings()
     {
         return _matchingSystemContext.Matchings.Include(matching =>matching.MatchingType );
     }

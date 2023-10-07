@@ -42,7 +42,7 @@ public class MatchingService : IMatchingService
 
     public int CreateMatching(MatchingInitDto data)
     {
-        Matching matching = new Matching();
+        MatchingEntity matching = new MatchingEntity();
         matching.MatchingName = data.name;
         matching.MatchingTypeId = (data.typeCode == "MG") ? 2 : 1;
         matching.CreatorUserId = 2;

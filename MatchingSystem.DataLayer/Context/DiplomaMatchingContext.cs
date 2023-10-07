@@ -28,7 +28,7 @@ public partial class DiplomaMatchingContext: DbContext
     public virtual DbSet<Document> Documents { get; set; } = null!;
     public virtual DbSet<Group> Groups { get; set; } = null!;
     public virtual DbSet<Log> Logs { get; set; } = null!;
-    public virtual DbSet<Matching> Matchings { get; set; } = null!;
+    public virtual DbSet<MatchingEntity> Matchings { get; set; } = null!;
     public virtual DbSet<MatchingType> MatchingTypes { get; set; } = null!;
     public virtual DbSet<Project> Projects { get; set; } = null!;
     public virtual DbSet<Project1> Projects1 { get; set; } = null!;

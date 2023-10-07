@@ -4,9 +4,9 @@ using MatchingSystem.DataLayer.Model;
 
 namespace MatchingSystem.DataLayer.Feature.Matching;
 
-public class Matching
+public class MatchingEntity
 {
-    public Matching()
+    public MatchingEntity()
     {
         Groups = new HashSet<Group>();
         Stages = new HashSet<Stage.StageEntity>();
