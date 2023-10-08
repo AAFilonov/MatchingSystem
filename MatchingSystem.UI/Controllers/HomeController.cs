@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Security.Claims;
-using MatchingSystem.DataLayer.Feature._Interface;
 using MatchingSystem.DataLayer.Feature.Matching.repo;
 using MatchingSystem.DataLayer.Feature.Role.repo;
 using MatchingSystem.DataLayer.Feature.User;
@@ -47,7 +46,7 @@ public class HomeController : Controller
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 var userModel = userRepository.GetByLogin(HttpContext.User.Identity.Name);
-                var user =  UserDto.fromEntity(userModel);
+                var user = UserDto.fromEntity(userModel);
 
                 data.RolesMatchings = roleRepository.GetRolesForUser(user.UserId);
 
@@ -78,11 +77,11 @@ public class HomeController : Controller
                 }
             }
         }
-        catch  (Exception e)
+        catch (Exception e)
         {
-            logger.Log(LogLevel.Debug,e.ToString());
+            logger.Log(LogLevel.Debug, e.ToString());
         }
-            
+
         AuthViewModel userVm = new AuthViewModel();
         return View(userVm);
     }
@@ -101,7 +100,7 @@ public class HomeController : Controller
         try
         {
             user = userRepository.GetByLogin(auth.Login);
-               
+
         }
         catch (Exception e)
         {
@@ -110,7 +109,7 @@ public class HomeController : Controller
             ModelState.AddModelError("login", "Произошла ошибка");
             return View();
         }
-          
+
         if (user == null)
         {
             ModelState.AddModelError("login", "Неверный логин");
@@ -118,16 +117,16 @@ public class HomeController : Controller
         }
 
         ScryptEncoder encoder = new ScryptEncoder();
-            
+
 
         if (!encoder.Compare(auth.Password, user.PasswordHash))
         {
             ModelState.AddModelError("Password", "Неверный пароль");
             return View();
         }
-            
-           
-        data.RolesMatchings =  roleRepository.GetRolesForUser(user.UserId);
+
+
+        data.RolesMatchings = roleRepository.GetRolesForUser(user.UserId);
         data.RolesMatchings = data.RolesMatchings.OrderByDescending(matching => matching.MatchingId);
         string[] roles = data.RolesMatchings
             .Select(roleItem => roleItem.RoleName)
@@ -141,15 +140,15 @@ public class HomeController : Controller
         data.SelectedMatching = data.RolesMatchings.First().MatchingId;
         HttpContext.Response.Cookies.Append("selectedMatching",
             data.RolesMatchings.First().MatchingId.ToString()!);
-           
+
         userRepository.SetLastVisitDate(user.UserId, data.RolesMatchings.First().RoleName!,
             data.RolesMatchings.First().MatchingId);
 
         data.CurrentStage = matchingRepository.GetCurrentStageDto(data.SelectedMatching);
-            
+
         data.MatchingTypeCode = matchingRepository.GetMatchings()
             .First(matching => matching.MatchingId.Equals(data.SelectedMatching)).MatchingType.MatchingTypeCode;
-            
+
         HttpContext.Session.Set<SessionData>("Data", data);
         return RedirectToLk(data.RolesMatchings.First().RoleName);
     }
@@ -187,6 +186,7 @@ public class HomeController : Controller
             "Tutor" => RedirectToAction("index", "tutor"),
             "Executive" => RedirectToAction("index", "executive"),
             "Student" => RedirectToAction("index", "student"),
+            "Admin" => RedirectToAction("index", "admin"),
             _ => NotFound()
         };
     }

@@ -1,5 +1,4 @@
-﻿using MatchingSystem.DataLayer.Feature._Interface;
-using MatchingSystem.DataLayer.Feature.User.repo;
+﻿using MatchingSystem.DataLayer.Feature.User.repo;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Scrypt;

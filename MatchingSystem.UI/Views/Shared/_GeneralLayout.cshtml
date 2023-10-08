@@ -85,6 +85,10 @@
                     {
                         await Html.RenderPartialAsync("../Components/NavMenu/_Student");
                     }
+                    @if (data.SelectedRole.Contains("Admin"))
+                    {
+                        await Html.RenderPartialAsync("../Components/NavMenu/_Admin");
+                    }
                 </ul>
                 <ul class="navbar-nav">
                     @if (rolesMatchings.Count > 1)
