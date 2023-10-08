@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MatchingSystem.DataLayer.OldEntities
+namespace MatchingSystem.DataLayer.Feature.Dictionary
 {
     #nullable enable
     public class TechnologyDto

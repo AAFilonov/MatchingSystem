@@ -1,5 +1,7 @@
-﻿using MatchingSystem.DataLayer.Feature._Interface;
-using MatchingSystem.DataLayer.Feature.Matching.service;
+﻿using System.Linq;
+using MatchingSystem.DataLayer.Feature.Matching.repo;
+using MatchingSystem.DataLayer.Feature.Tutor;
+using MatchingSystem.DataLayer.Feature.Tutor.repo;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -26,7 +28,8 @@ namespace MatchingSystem.UI.Controllers
             base.OnActionExecuting(ctx);
             if (data != null) return;
             data = HttpContext.Session.Get<SessionData>("Data");
-            data.TutorId = tutorRepository.GetTutorId(data.UserDto.UserId, data.SelectedMatching);
+            data.TutorId = tutorRepository.GetTutorsViews().FirstOrDefault(view =>
+                view.UserId == data.UserDto.UserId && view.MatchingId == data.SelectedMatching)!.TutorId;
             HttpContext.Session.Set("Data", data);
         }
 

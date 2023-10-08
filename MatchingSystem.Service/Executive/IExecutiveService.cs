@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using MatchingSystem.DataLayer.Dto;
+using MatchingSystem.DataLayer.Dto.IO.Params;
+using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.Service.Executive;
 
@@ -10,6 +13,7 @@ public interface IExecutiveService
     public void SetEndDate(DateTime endDate, int matchingId);
 
     public AdjustmentData GetAllocationByExecutive(int? userId, int? matchingId);
+    public IEnumerable<QuotaRequest> GetQuotaRequestsByExecutive(int userId, int matchingId);
+    public void AcceptQuotaRequest(int quotaId, bool result);
 
-    public void SetAllocationByExecutive(AdjustmentRequest request);
 }

@@ -3,6 +3,9 @@ using System.Linq;
 using MatchingSystem.DataLayer.Dto;
 using MatchingSystem.DataLayer.Dto.MatchingInit;
 using MatchingSystem.DataLayer.Feature._Interface;
+using MatchingSystem.DataLayer.Feature.CommonQuota;
+using MatchingSystem.DataLayer.Feature.Tutor;
+using MatchingSystem.DataLayer.Feature.Tutor.repo;
 using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.Service.Tutor;
@@ -10,10 +13,12 @@ namespace MatchingSystem.Service.Tutor;
 public class TutorService : ITutorService
 {
     private readonly ITutorRepository tutorRepository;
+    private readonly ICommonQuotaRepository commonQuotaRepository;
 
-    public TutorService(ITutorRepository tutorRepository)
+    public TutorService(ITutorRepository tutorRepository, ICommonQuotaRepository commonQuotaRepository)
     {
         this.tutorRepository = tutorRepository;
+        this.commonQuotaRepository = commonQuotaRepository;
     }
 
     public IterationData GetChoice(int tutorId)
@@ -24,7 +29,7 @@ public class TutorService : ITutorService
 
         var viewModel = new IterationData
         {
-            CommonQuota = tutorRepository.GetCommonQuotaByTutor(tutorId)
+            CommonQuota = commonQuotaRepository.find( entity =>entity.TutorId== tutorId).First().Qty
         };
 
 
@@ -41,35 +46,15 @@ public class TutorService : ITutorService
         return viewModel;
     }
 
-    public async void SetReady(int tutorId)
+    public void SetReady(int tutorId)
     {
-        await tutorRepository.SetReadyAsync(tutorId);
+       TutorEntity tutor = tutorRepository.findById(tutorId);
+       tutor.IsReadyToStart = true;
+       tutorRepository.save(tutor);
     }
 
     public void SaveChoice(List<TutorChoice_1> data, int tutorId)
     {
         tutorRepository.SetPreferences(data, tutorId);
-    }
-
-    public List<TutorInitDto> GetAllTutors()
-    {
-        var tutors = tutorRepository.GetAllTutors();
-        var tutorDtos = new List<TutorInitDto>();
-        foreach (var tutor in tutors)
-            //tutorDtos.Add(tutor); //(TutorDto.construct(tutor,groups));  
-            tutorDtos.Add(construct(tutor));
-
-        return tutorDtos;
-    }
-
-    private TutorInitDto construct(DataLayer.OldEntities.Tutor tutor)
-    {
-        var initDto = new TutorInitDto();
-        initDto.UserId = tutor.TutorID;
-        initDto.nameAbbreviation = tutor.NameAbbreviation;
-        initDto.isIncluded = true;
-        initDto.groups = null;
-        initDto.quota = 3;
-        return initDto;
     }
 }

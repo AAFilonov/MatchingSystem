@@ -2,22 +2,28 @@
 using MatchingSystem.DataLayer.Context;
 using MatchingSystem.DataLayer.Feature._Interface;
 using MatchingSystem.DataLayer.Feature._Repository;
+using MatchingSystem.DataLayer.Feature.Allocation.repo;
 using MatchingSystem.DataLayer.Feature.CommonQuota;
-using MatchingSystem.DataLayer.Feature.Matching.service;
-using MatchingSystem.DataLayer.Feature.Role.service;
-using MatchingSystem.DataLayer.Feature.Stage.service;
-using MatchingSystem.DataLayer.Feature.Student;
-using MatchingSystem.DataLayer.Feature.User.service;
+using MatchingSystem.DataLayer.Feature.Dictionary.repo;
+using MatchingSystem.DataLayer.Feature.Group.repo;
+using MatchingSystem.DataLayer.Feature.Matching.repo;
+using MatchingSystem.DataLayer.Feature.Role.repo;
+using MatchingSystem.DataLayer.Feature.Stage.repo;
+using MatchingSystem.DataLayer.Feature.Student.repo;
+using MatchingSystem.DataLayer.Feature.Tutor.repo;
+using MatchingSystem.DataLayer.Feature.User.repo;
 using MatchingSystem.Service.Allocation;
 using MatchingSystem.Service.DocumentsProcessing;
 using MatchingSystem.Service.Executive;
-using MatchingSystem.Service.Follow;
+using MatchingSystem.Service.Matching;
 using MatchingSystem.Service.MatchingInitialization;
 using MatchingSystem.Service.Monitoring;
 using MatchingSystem.Service.Notification;
 using MatchingSystem.Service.Projects;
 using MatchingSystem.Service.Quotas;
+using MatchingSystem.Service.StageTransition;
 using MatchingSystem.Service.Statistics;
+using MatchingSystem.Service.Student;
 using MatchingSystem.Service.Tutor;
 using MatchingSystem.UI.Middleware;
 using Microsoft.AspNetCore.Builder;
@@ -69,20 +75,20 @@ namespace MatchingSystem.UI
             services.AddTransient<IStudentRepositoryOld, StudentRepositoryOld>(_ =>
                 new StudentRepositoryOld(connectionString));
 
-            services.AddTransient<ITutorRepository, TutorRepository>(_ =>
-                new TutorRepository(connectionString));
-
-            services.AddTransient<IProjectRepository, ProjectRepository>(_ =>
-                new ProjectRepository(connectionString));
+            services.AddTransient<IProjectRepository, ProjectRepositoryDapper>(_ =>
+                new ProjectRepositoryDapper(connectionString));
             services.AddTransient<IUserRepositoryOld, UserRepositoryOld>(_ =>
                 new UserRepositoryOld(connectionString));
+            services.AddSingleton<IExecutiveServiceOld, ExecutiveServiceDapper>(_ =>
+                new ExecutiveServiceDapper(connectionString));
+
 
            // services.AddTransient<IMatchingRepository, MatchingRepository>(options =>
            //     new MatchingRepository());
         
 
-            services.AddTransient<IExecutiveRepository, ExecutiveRepository>(_ =>
-                new ExecutiveRepository(connectionString));
+            services.AddTransient<IExecutiveServiceOld, ExecutiveServiceDapper>(_ =>
+                new ExecutiveServiceDapper(connectionString));
             services.AddSingleton<IStatisticsRepository, StatisticsRepository>(_ =>
                 new StatisticsRepository(connectionString));
             services.AddSingleton<IMatchingRepository, MatchingRepository>(_ =>
@@ -98,7 +104,7 @@ namespace MatchingSystem.UI
             services.AddSingleton<INotificationService, NotificationService>();
             services.AddSingleton<IStatisticsService, StatisticsService>();
             services.AddSingleton<IAllocationService, AllocationService>();
-            services.AddSingleton<IExecutiveService, ExecutiveService>();
+            services.AddSingleton<Service.Executive.IExecutiveService, ExecutiveService>();
             services.AddSingleton<IProjectsService, ProjectsService>();
             services.AddSingleton<IStudentService, StudentService>();
             services.AddSingleton<IQuotasService, QuotasService>();
@@ -118,6 +124,8 @@ namespace MatchingSystem.UI
             services.AddSingleton<IStudentRepository, StudentRepository>();
             services.AddSingleton<IDictionaryRepository, DictionaryRepository>();
             services.AddSingleton<IGroupRepository, GroupRepository>();
+            services.AddSingleton<ITutorRepository, TutorRepository>();
+            services.AddSingleton<IAllocationRepository, AllocationRepository>();
             //--Services
             
 

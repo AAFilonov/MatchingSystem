@@ -1,12 +1,15 @@
 ﻿using System.Collections.Generic;
+using MatchingSystem.DataLayer.Feature.Allocation;
+using MatchingSystem.DataLayer.Feature.Project;
+using MatchingSystem.DataLayer.Feature.Tutor;
 using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.UI.ResultModels
 {
     public class AdjustmentData
     {
-        public List<Tutor> Tutors { get; set; }
-        public List<Allocation> Allocations { get; set; }
-        public List<Project> Projects { get; set; }
+        public List<TutorDto> Tutors { get; set; }
+        public List<AllocationDto> Allocations { get; set; }
+        public List<ProjectDto> Projects { get; set; }
     }
 }

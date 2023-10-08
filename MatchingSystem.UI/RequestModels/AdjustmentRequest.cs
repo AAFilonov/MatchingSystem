@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using MatchingSystem.DataLayer.Feature.Allocation;
 using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.UI.RequestModels
@@ -11,6 +12,6 @@ namespace MatchingSystem.UI.RequestModels
         [JsonPropertyName("matchingId")]
         public int? MatchingID { get; set; }
         [JsonPropertyName("adjustment")]
-        public List<Allocation> Allocations { get; set; }
+        public List<AllocationDto> Allocations { get; set; }
     }
 }

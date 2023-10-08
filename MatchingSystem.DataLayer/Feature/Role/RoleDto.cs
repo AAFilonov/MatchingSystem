@@ -1,4 +1,4 @@
-﻿namespace MatchingSystem.DataLayer.OldEntities
+﻿namespace MatchingSystem.DataLayer.Feature.Role
 {
     #nullable enable
     public class RoleDto

@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using MatchingSystem.DataLayer.Feature.Group;
+using MatchingSystem.DataLayer.Feature.Role;
 using MatchingSystem.DataLayer.Model;
 
 namespace MatchingSystem.DataLayer.Feature.Matching;
@@ -8,9 +10,9 @@ public class MatchingEntity
 {
     public MatchingEntity()
     {
-        Groups = new HashSet<Group>();
+        Groups = new HashSet<GroupEntity>();
         Stages = new HashSet<Stage.StageEntity>();
-        UsersRoles = new HashSet<UsersRole>();
+        UsersRoles = new HashSet<UsersRoleEntity>();
     }
 
     public int MatchingId { get; set; }
@@ -20,8 +22,8 @@ public class MatchingEntity
     
     [Required]
     public virtual MatchingType MatchingType { get; set; }
-    public virtual ICollection<Group> Groups { get; set; }
+    public virtual ICollection<GroupEntity> Groups { get; set; }
     public virtual ICollection<Stage.StageEntity> Stages { get; set; }
-    public virtual ICollection<UsersRole> UsersRoles { get; set; }
+    public virtual ICollection<UsersRoleEntity> UsersRoles { get; set; }
     
 }

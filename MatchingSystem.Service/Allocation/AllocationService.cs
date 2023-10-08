@@ -1,5 +1,5 @@
 ﻿using MatchingSystem.DataLayer.Dto;
-using MatchingSystem.DataLayer.Feature.Matching.service;
+using MatchingSystem.DataLayer.Feature.Matching.repo;
 
 namespace MatchingSystem.Service.Allocation;
 

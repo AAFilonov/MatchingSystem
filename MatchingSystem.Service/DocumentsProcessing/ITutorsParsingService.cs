@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using MatchingSystem.DataLayer.Dto.MatchingInit;
+using MatchingSystem.DataLayer.Feature.Tutor;
 using OfficeOpenXml;
 
 namespace MatchingSystem.Service.DocumentsProcessing;

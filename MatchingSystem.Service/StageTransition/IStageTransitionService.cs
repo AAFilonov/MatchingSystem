@@ -1,4 +1,4 @@
-﻿namespace MatchingSystem.Service.Follow;
+﻿namespace MatchingSystem.Service.StageTransition;
 
 public interface IStageTransitionService
 {

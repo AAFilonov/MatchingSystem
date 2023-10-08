@@ -4,7 +4,15 @@ using MatchingSystem.Constants;
 using MatchingSystem.DataLayer.Dto;
 using MatchingSystem.DataLayer.Dto.IO.Params;
 using MatchingSystem.DataLayer.Feature._Interface;
-using MatchingSystem.DataLayer.Feature.Matching.service;
+using MatchingSystem.DataLayer.Feature.CommonQuota;
+using MatchingSystem.DataLayer.Feature.Dictionary;
+using MatchingSystem.DataLayer.Feature.Dictionary.repo;
+using MatchingSystem.DataLayer.Feature.Group;
+using MatchingSystem.DataLayer.Feature.Group.repo;
+using MatchingSystem.DataLayer.Feature.Matching.repo;
+using MatchingSystem.DataLayer.Feature.Project;
+using MatchingSystem.DataLayer.Feature.Tutor;
+using MatchingSystem.DataLayer.Feature.Tutor.repo;
 using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.Service.Projects;
@@ -15,18 +23,21 @@ public class ProjectsService : IProjectsService
     private readonly IMatchingRepository matchingRepository;
     private readonly IProjectRepository projectRepository;
     private readonly ITutorRepository tutorRepository;
+    private readonly IGroupRepository groupRepository;
+    private readonly CommonQuotaRepository commonQuotaRepository;
 
     public ProjectsService(
         IDictionaryRepository dictionaryRepository,
         ITutorRepository tutorRepository,
         IMatchingRepository matchingRepository,
-        IProjectRepository projectRepository
-    )
+        IProjectRepository projectRepository, CommonQuotaRepository commonQuotaRepository, IGroupRepository groupRepository)
     {
         this.dictionaryRepository = dictionaryRepository;
         this.tutorRepository = tutorRepository;
         this.matchingRepository = matchingRepository;
         this.projectRepository = projectRepository;
+        this.commonQuotaRepository = commonQuotaRepository;
+        this.groupRepository = groupRepository;
     }
 
     public bool AddTutorProject(ProjectRequest project)
@@ -69,11 +80,11 @@ public class ProjectsService : IProjectsService
         var model = new TutorProjectsModel
         {
             Projects = projectRepository.GetProjectsByTutor(tutorId).ToList(),
-            Groups = tutorRepository.GetGroupsByTutor(tutorId),
+            Groups = groupRepository.GetGroupsByTutor(tutorId),
             Technology = dictionaryRepository.GetTechnologiesAll(),
             WorkDirections = dictionaryRepository.GetWorkDirectionsAll(),
-            CommonQuota = tutorRepository.GetCommonQuotaByTutor(tutorId),
-            IsReady = tutorRepository.GetReadyByTutor(tutorId)
+            CommonQuota = commonQuotaRepository.find( entity =>entity.TutorId== tutorId).First().Qty,
+            IsReady = tutorRepository.findById(tutorId).IsReadyToStart
         };
 
         model.Projects.ForEach(x =>
@@ -103,7 +114,7 @@ public class ProjectsService : IProjectsService
         projectRepository.SetProjectClose(tutorId, projectId);
     }
 
-    public IEnumerable<Project> GetProjectsByTutor(int tutorId)
+    public IEnumerable<ProjectDto> GetProjectsByTutor(int tutorId)
     {
         var model = projectRepository.GetProjectsByTutor(tutorId);
 

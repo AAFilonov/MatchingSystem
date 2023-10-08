@@ -1,0 +1,12 @@
+using System.Collections.Generic;
+using MatchingSystem.DataLayer.Feature.Tutor;
+
+namespace MatchingSystem.DataLayer.Dto.MatchingInit;
+
+public class MatchingInitData
+{
+    public MatchingInitDto matching { get; set; } = new();
+    public List<StudentInitDto> studentRecords { get; set; } = new();
+    public List<TutorInitDto> tutorRecords { get; set; } = new();
+    public List<GroupInitDto> groupRecords { get; set; } = new();
+}

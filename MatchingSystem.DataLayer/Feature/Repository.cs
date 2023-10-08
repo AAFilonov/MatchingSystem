@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using MatchingSystem.DataLayer.Context;
-using MatchingSystem.DataLayer.Exceptions;
+using MatchingSystem.DataLayer.Utils.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace MatchingSystem.DataLayer.Feature;
 
-public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
+public class Repository
 {
     private readonly DbContext _context;
 
@@ -24,69 +24,5 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     public Repository(DbContext context)
     {
         _context = context;
-    }
-
-    public TEntity findById(int id)
-    {
-       var item =  _context.Set<TEntity>().Find(id);
-       if (item == null)
-           throw new RecordNotFoundException();
-        return item;
-    }
-
-    public IEnumerable<TEntity> find(Expression<Func<TEntity, bool>> predicate)
-    {
-        return _context.Set<TEntity>().Where(predicate);
-    }
-
-    public IEnumerable<TEntity> findAll()
-    {
-        return _context.Set<TEntity>().ToList();
-    }
-
-    public TEntity save(TEntity item)
-    {
-        _context.Set<TEntity>().Add(item);
-        _context.SaveChanges();
-        return item;
-    }
-    public IEnumerable<TEntity> saveAll(IEnumerable<TEntity> items)
-    {
-        foreach (var tEntity in items)
-        {
-            _context.Set<TEntity>().Add(tEntity);
-        }
-        _context.SaveChanges();
-        return items;
-    }
-
-
-    public void update(TEntity item)
-    {
-        _context.Set<TEntity>().Update(item);
-        _context.SaveChanges();
-    }
-    public void updateAll(IEnumerable<TEntity> items)
-    {
-        foreach (var tEntity in items)
-        {
-            _context.Set<TEntity>().Update(tEntity);
-        }
-        _context.SaveChanges();
-    }
-
-    public void delete(TEntity item)
-    {
-        _context.Set<TEntity>().Remove(item);
-        _context.SaveChanges();
-    }
-    
-    public void deleteAll(IEnumerable<TEntity> items)
-    {
-        foreach (var tEntity in items)
-        {
-            _context.Set<TEntity>().Update(tEntity);
-        }
-        _context.SaveChanges();
     }
 }

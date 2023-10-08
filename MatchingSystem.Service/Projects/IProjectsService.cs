@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using MatchingSystem.DataLayer.Dto;
+using MatchingSystem.DataLayer.Feature.Project;
 using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.Service.Projects;
@@ -18,5 +19,5 @@ public interface IProjectsService
 
     public void CloseProject(int tutorId, int projectId);
 
-    public IEnumerable<Project> GetProjectsByTutor(int tutorId);
+    public IEnumerable<ProjectDto> GetProjectsByTutor(int tutorId);
 }

@@ -2,22 +2,24 @@ using System.Collections.Generic;
 using System.Linq;
 using MatchingSystem.DataLayer.Feature._Interface;
 using MatchingSystem.DataLayer.Feature.CommonQuota;
-using MatchingSystem.DataLayer.Feature.Role.service;
-using MatchingSystem.DataLayer.Feature.User.service;
+using MatchingSystem.DataLayer.Feature.Tutor;
+using MatchingSystem.DataLayer.Feature.Tutor.repo;
+using MatchingSystem.DataLayer.Feature.User.repo;
+using MatchingSystem.Service.Executive;
 
 namespace MatchingSystem.Service.Notification;
 
 public class NotificationService : INotificationService
 {
-    private readonly IExecutiveRepository executiveRepository;
+    private readonly IExecutiveServiceOld executiveService;
     private readonly ITutorRepository tutorRepository;
     private readonly IUserRepositoryOld userRepositoryOld;
     private readonly ICommonQuotaRepository commonQuotaRepository;
 
-    public NotificationService(ITutorRepository tutorRepository, IExecutiveRepository executiveRepository, ICommonQuotaRepository commonQuotaRepository, IUserRepositoryOld userRepositoryOld)
+    public NotificationService(ITutorRepository tutorRepository, IExecutiveServiceOld executiveService, ICommonQuotaRepository commonQuotaRepository, IUserRepositoryOld userRepositoryOld)
     {
         this.tutorRepository = tutorRepository;
-        this.executiveRepository = executiveRepository;
+        this.executiveService = executiveService;
         this.commonQuotaRepository = commonQuotaRepository;
         this.userRepositoryOld = userRepositoryOld;
     }
@@ -49,7 +51,7 @@ public class NotificationService : INotificationService
     public Dictionary<string, int> GetNotificationsByExecutive(int userId, int matchingId)
     {
         var actionResult = new Dictionary<string, int>(1);
-        var result = executiveRepository.GetNotificationsCountByExecutive(userId, matchingId);
+        var result = executiveService.GetNotificationsCountByExecutive(userId, matchingId);
         actionResult.Add("count", result);
         ReadNotifications(userId, matchingId);
         return actionResult;

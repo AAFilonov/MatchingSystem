@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using MatchingSystem.DataLayer.Dto;
+using MatchingSystem.DataLayer.Feature.Allocation.repo;
 using MatchingSystem.Service.Executive;
-using MatchingSystem.Service.Follow;
+using MatchingSystem.Service.StageTransition;
 using MatchingSystem.UI.Helpers;
 using MatchingSystem.UI.Services;
 
@@ -16,6 +17,7 @@ namespace MatchingSystem.UI.ApiControllers
     {
         private readonly IExecutiveService executiveService;
         private readonly IStageTransitionService stageTransitionService;
+        private readonly IAllocationRepository allocationRepository;
 
         public ExecutiveController(IExecutiveService executiveService,IStageTransitionService stageTransitionService)
         {
@@ -70,7 +72,7 @@ namespace MatchingSystem.UI.ApiControllers
             {
                 return BadRequest("Некорректный запрос.");
             }
-            executiveService.SetAllocationByExecutive(request);
+            allocationRepository.SetAdjustmentByExecutive(request);
             var sessionData = HttpContext.Session.Get<SessionData>("Data"); 
             var currentMatchingId = sessionData .SelectedMatching;
             //check transition from 'manual adjustment' to 'final'

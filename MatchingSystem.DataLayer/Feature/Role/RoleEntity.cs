@@ -7,7 +7,7 @@ public class RoleEntity
 {
     public RoleEntity()
     {
-        UsersRoles = new HashSet<UsersRole>();
+        UsersRoles = new HashSet<UsersRoleEntity>();
     }
 
     public int RoleId { get; set; }
@@ -16,5 +16,5 @@ public class RoleEntity
     public short? RoleType { get; set; }
     public string? RoleNameRu { get; set; }
 
-    public virtual ICollection<UsersRole> UsersRoles { get; set; }
+    public virtual ICollection<UsersRoleEntity> UsersRoles { get; set; }
 }

@@ -5,10 +5,13 @@ using System.Threading.Tasks;
 using MatchingSystem.DataLayer.Dto.MatchingInit;
 using MatchingSystem.DataLayer.Feature._Interface;
 using MatchingSystem.DataLayer.Feature.Student;
-using MatchingSystem.DataLayer.Feature.User.service;
+using MatchingSystem.DataLayer.Feature.Student.repo;
+using MatchingSystem.DataLayer.Feature.Tutor;
+using MatchingSystem.DataLayer.Feature.Tutor.repo;
 using MatchingSystem.Service.DocumentsProcessing;
 using MatchingSystem.Service.Exception;
 using MatchingSystem.Service.MatchingInitialization;
+using MatchingSystem.Service.Student;
 using MatchingSystem.Service.Tutor;
 using MatchingSystem.UI.Helpers;
 using MatchingSystem.UI.Services;
@@ -111,7 +114,7 @@ public class MatchingInitializationController : ControllerBase
             .Where(pair => pair.Value > 0).ToList();
         if (dublicatedTutors.Count > 0) throw new InputDataException("в списке преподавателей присутсвуют дубликаты");
 
-        var existing_tutors = tutorRepository.GetAllTutors().ToList();
+        var existing_tutors = tutorRepository.GetTutorsViews();
 
         tutors.ToList().ForEach(tutorDto =>
         {

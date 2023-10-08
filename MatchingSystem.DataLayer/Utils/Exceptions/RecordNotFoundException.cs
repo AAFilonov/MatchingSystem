@@ -1,6 +1,6 @@
 using System;
 
-namespace MatchingSystem.DataLayer.Exceptions;
+namespace MatchingSystem.DataLayer.Utils.Exceptions;
 
 public class RecordNotFoundException : Exception
 {

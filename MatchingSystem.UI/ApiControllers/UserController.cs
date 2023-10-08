@@ -1,7 +1,8 @@
 ﻿using System.Linq;
-using MatchingSystem.DataLayer.Feature.Matching.service;
-using MatchingSystem.DataLayer.Feature.Role.service;
-using MatchingSystem.DataLayer.Feature.User.service;
+using MatchingSystem.DataLayer.Feature.Matching.repo;
+using MatchingSystem.DataLayer.Feature.Role.repo;
+using MatchingSystem.DataLayer.Feature.User.repo;
+using MatchingSystem.Service.Matching;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MatchingSystem.UI.ApiControllers

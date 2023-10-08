@@ -1,0 +1,15 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace MatchingSystem.DataLayer.Feature.Tutor
+{
+    #nullable enable
+    public class TutorDto
+    {
+        [Key]
+        public int TutorID { get; set; }
+        public int UserID { get; set; }
+         //Костыльное имя из хранимки
+        public string? TutorNameAbbreviation { get; set; }
+        public string? NameAbbreviation { get; set; }
+    }
+}

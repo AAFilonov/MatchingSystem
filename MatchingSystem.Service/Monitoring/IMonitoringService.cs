@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using MatchingSystem.DataLayer.Dto.MatchingMonitoring;
+using MatchingSystem.DataLayer.Feature.Tutor;
 
 namespace MatchingSystem.Service.Monitoring;
 
