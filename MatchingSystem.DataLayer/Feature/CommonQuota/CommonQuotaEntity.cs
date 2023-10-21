@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations;
 using MatchingSystem.DataLayer.Feature.Dictionary;
 using MatchingSystem.DataLayer.Feature.Stage;
 using MatchingSystem.DataLayer.Feature.Tutor;
-using MatchingSystem.DataLayer.Model;
 
 namespace MatchingSystem.DataLayer.Feature.CommonQuota;
 

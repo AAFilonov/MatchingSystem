@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using MatchingSystem.DataLayer.Feature.Tutor;
+using MatchingSystem.DataLayer.Feature.TutorChoise;
 using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.UI.ResultModels

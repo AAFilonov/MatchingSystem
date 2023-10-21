@@ -1,7 +1,7 @@
 ﻿using MatchingSystem.DataLayer.Feature.Dictionary;
 using MatchingSystem.DataLayer.Feature.Student;
 
-namespace MatchingSystem.DataLayer.Model;
+namespace MatchingSystem.DataLayer.Feature._LinkTables;
 
 public class StudentsTechnology
 {

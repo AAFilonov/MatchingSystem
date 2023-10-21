@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using MatchingSystem.DataLayer.Dto.MatchingInit;
+using MatchingSystem.DataLayer.OldDto.MatchingInit;
 using MatchingSystem.Service.Exception;
 using OfficeOpenXml;
 

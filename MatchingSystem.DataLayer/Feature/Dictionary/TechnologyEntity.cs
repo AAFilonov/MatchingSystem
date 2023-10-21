@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using MatchingSystem.DataLayer.Model;
+using MatchingSystem.DataLayer.Feature._LinkTables;
 
 namespace MatchingSystem.DataLayer.Feature.Dictionary;
 

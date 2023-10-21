@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 using Dapper;
-using MatchingSystem.DataLayer.Context;
-using MatchingSystem.DataLayer.Dto.IO.Params;
+using MatchingSystem.DataLayer._Technical;
 using MatchingSystem.DataLayer.Feature.Group;
+using MatchingSystem.DataLayer.Feature.TutorChoise;
+using MatchingSystem.DataLayer.OldDto.IO.Params;
 using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.DataLayer.Feature.Tutor.repo

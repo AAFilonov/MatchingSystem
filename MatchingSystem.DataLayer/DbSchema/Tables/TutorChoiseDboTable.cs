@@ -1,8 +1,8 @@
-﻿using MatchingSystem.DataLayer.Model;
+﻿using MatchingSystem.DataLayer.Feature.TutorChoise;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace MatchingSystem.DataLayer.Feature.TutorChoise;
+namespace MatchingSystem.DataLayer.DbSchema.Tables;
 
 public class TutorChoiseDboTable : IEntityTypeConfiguration<TutorsChoiceEntity>
 {

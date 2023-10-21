@@ -1,13 +1,9 @@
 using System.Collections.Generic;
 using Dapper;
-using MatchingSystem.DataLayer.Context;
-using MatchingSystem.DataLayer.Dto.MatchingInit;
-using MatchingSystem.DataLayer.Feature._Interface;
-using MatchingSystem.DataLayer.Feature.Group;
+using MatchingSystem.DataLayer._Technical;
 using MatchingSystem.DataLayer.Feature.Tutor;
-using MatchingSystem.DataLayer.OldEntities;
 
-namespace MatchingSystem.DataLayer.Feature._Repository;
+namespace MatchingSystem.DataLayer.Feature.Group.repo;
 
 public class GroupRepositoryDapper : ConnectionBase
 {

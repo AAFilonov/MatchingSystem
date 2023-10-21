@@ -1,7 +1,7 @@
 ﻿using System;
-using MatchingSystem.DataLayer.Dto;
 using Microsoft.AspNetCore.Mvc;
 using System.Data.SqlClient;
+using MatchingSystem.DataLayer.OldDto;
 using MatchingSystem.Service.Quotas;
 
 namespace MatchingSystem.UI.ApiControllers

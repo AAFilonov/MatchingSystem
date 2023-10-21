@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MatchingSystem.DataLayer.Dto;
+﻿using MatchingSystem.DataLayer.OldDto;
+using Microsoft.AspNetCore.Mvc;
 using MatchingSystem.Service.Allocation;
 
 namespace MatchingSystem.UI.ApiControllers

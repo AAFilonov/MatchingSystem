@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using MatchingSystem.DataLayer.Dto;
-using MatchingSystem.DataLayer.Dto.IO.Params;
-using MatchingSystem.DataLayer.Dto.MatchingInit;
 using MatchingSystem.DataLayer.Feature.Project;
 using MatchingSystem.DataLayer.Feature.Student;
+using MatchingSystem.DataLayer.OldDto;
+using MatchingSystem.DataLayer.OldDto.IO.Params;
+using MatchingSystem.DataLayer.OldDto.MatchingInit;
 using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.Service.Student;

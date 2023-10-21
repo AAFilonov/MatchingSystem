@@ -1,6 +1,4 @@
-﻿using MatchingSystem.DataLayer.Model;
-
-namespace MatchingSystem.DataLayer.Feature.Allocation
+﻿namespace MatchingSystem.DataLayer.Feature.Allocation
 {
     #nullable enable
     public class AllocationDto

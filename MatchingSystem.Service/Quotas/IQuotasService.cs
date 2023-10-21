@@ -1,4 +1,4 @@
-﻿using MatchingSystem.DataLayer.Dto;
+﻿using MatchingSystem.DataLayer.OldDto;
 
 namespace MatchingSystem.Service.Quotas;
 

@@ -1,8 +1,8 @@
-﻿using MatchingSystem.DataLayer.Model;
+﻿using MatchingSystem.DataLayer.Feature.CommonQuota;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace MatchingSystem.DataLayer.Feature.CommonQuota;
+namespace MatchingSystem.DataLayer.DbSchema.View;
 
 public class ActiveCommonQuotaDboView: IEntityTypeConfiguration<ActiveCommonQuotaView>
 {

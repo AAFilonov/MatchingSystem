@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
+using MatchingSystem.DataLayer.Feature._LinkTables;
 using MatchingSystem.DataLayer.Feature.Project;
 using MatchingSystem.DataLayer.Feature.Role;
-using MatchingSystem.DataLayer.Model;
 
 namespace MatchingSystem.DataLayer.Feature.Tutor;
 

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
-using MatchingSystem.DataLayer.Dto;
-using MatchingSystem.DataLayer.Dto.IO.Params;
+using MatchingSystem.DataLayer.OldDto;
 
 namespace MatchingSystem.DataLayer.Feature.Allocation.repo;
 

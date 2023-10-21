@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using MatchingSystem.DataLayer.Feature.Role;
-using MatchingSystem.DataLayer.Model;
 
 namespace MatchingSystem.DataLayer.Feature.User;
 

@@ -1,4 +1,4 @@
-﻿namespace MatchingSystem.DataLayer.Model;
+﻿namespace MatchingSystem.DataLayer.Feature.Student;
 
 public class AvailableStudentsPreferenceView
 {

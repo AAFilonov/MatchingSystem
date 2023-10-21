@@ -1,6 +1,6 @@
 ﻿using System.Data.SqlClient;
 
-namespace MatchingSystem.DataLayer.Context
+namespace MatchingSystem.DataLayer._Technical
 {
     public class ConnectionBase
     {

@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using MatchingSystem.DataLayer.Feature.Tutor;
-using MatchingSystem.DataLayer.OldEntities;
+using MatchingSystem.DataLayer.Feature.TutorChoise;
 
-namespace MatchingSystem.DataLayer.Dto;
+namespace MatchingSystem.DataLayer.OldDto;
 
 #nullable enable
 public class TutorChoiceData

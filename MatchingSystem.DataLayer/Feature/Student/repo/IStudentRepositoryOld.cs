@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using MatchingSystem.DataLayer.Dto.IO.Params;
-using MatchingSystem.DataLayer.Dto.MatchingInit;
 using MatchingSystem.DataLayer.Feature.Dictionary;
+using MatchingSystem.DataLayer.OldDto.IO.Params;
+using MatchingSystem.DataLayer.OldDto.MatchingInit;
 using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.DataLayer.Feature.Student.repo

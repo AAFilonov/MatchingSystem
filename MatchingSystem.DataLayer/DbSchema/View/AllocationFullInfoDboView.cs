@@ -1,8 +1,8 @@
-﻿using MatchingSystem.DataLayer.Model;
+﻿using MatchingSystem.DataLayer.Feature.Allocation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace MatchingSystem.DataLayer.Feature.Allocation;
+namespace MatchingSystem.DataLayer.DbSchema.View;
 
 public class AllocationFullInfoDboView : IEntityTypeConfiguration<AllocationFullInfoView>
 {

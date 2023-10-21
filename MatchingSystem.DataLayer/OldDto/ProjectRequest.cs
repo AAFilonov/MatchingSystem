@@ -1,4 +1,4 @@
-﻿namespace MatchingSystem.DataLayer.Dto
+﻿namespace MatchingSystem.DataLayer.OldDto
 {
     public class ProjectRequest
     {

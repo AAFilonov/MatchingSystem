@@ -1,14 +1,15 @@
 ﻿using System;
-using MatchingSystem.DataLayer.Context;
-using MatchingSystem.DataLayer.Feature._Interface;
-using MatchingSystem.DataLayer.Feature._Repository;
+using MatchingSystem.DataLayer;
+using MatchingSystem.DataLayer._Technical;
 using MatchingSystem.DataLayer.Feature.Allocation.repo;
 using MatchingSystem.DataLayer.Feature.CommonQuota;
 using MatchingSystem.DataLayer.Feature.Dictionary.repo;
 using MatchingSystem.DataLayer.Feature.Group.repo;
 using MatchingSystem.DataLayer.Feature.Matching.repo;
+using MatchingSystem.DataLayer.Feature.Project.Repo;
 using MatchingSystem.DataLayer.Feature.Role.repo;
 using MatchingSystem.DataLayer.Feature.Stage.repo;
+using MatchingSystem.DataLayer.Feature.Statistics;
 using MatchingSystem.DataLayer.Feature.Student.repo;
 using MatchingSystem.DataLayer.Feature.Tutor.repo;
 using MatchingSystem.DataLayer.Feature.User.repo;
@@ -29,6 +30,7 @@ using MatchingSystem.UI.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -59,15 +61,18 @@ namespace MatchingSystem.UI
             services
                 .AddControllersWithViews(options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true)
                 .AddRazorRuntimeCompilation();
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options => options.LoginPath = new PathString("/Home/Login"));
+
 
             var optionsBuilder = new DbContextOptionsBuilder<DiplomaMatchingContext>();
             optionsBuilder.UseSqlServer(connectionString);
             optionsBuilder.UseLazyLoadingProxies();
+        
 
             var dbContext = new DiplomaMatchingContext(optionsBuilder.Options);
             services.AddSingleton<DbContext, DiplomaMatchingContext>(_ => dbContext);
-            services
-                .AddSingleton<IMatchingRepository, MatchingRepository>();
+      
 
             services.AddTransient<IMatchingRepositoryDapper, MatchingRepositoryDapper>(_ =>
                 new MatchingRepositoryDapper(connectionString));
@@ -81,30 +86,23 @@ namespace MatchingSystem.UI
                 new UserRepositoryOld(connectionString));
             services.AddSingleton<IExecutiveServiceOld, ExecutiveServiceDapper>(_ =>
                 new ExecutiveServiceDapper(connectionString));
-
-
-           // services.AddTransient<IMatchingRepository, MatchingRepository>(options =>
-           //     new MatchingRepository());
-        
-
             services.AddTransient<IExecutiveServiceOld, ExecutiveServiceDapper>(_ =>
                 new ExecutiveServiceDapper(connectionString));
             services.AddSingleton<IStatisticsRepository, StatisticsRepository>(_ =>
                 new StatisticsRepository(connectionString));
-            services.AddSingleton<IMatchingRepository, MatchingRepository>(_ =>
-                new MatchingRepository(dbContext));
 
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options => options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Home/Login"));
+ 
             
-            
+
+       
       
 
             //--Services
+            services.AddSingleton<IMatchingRepository, MatchingRepository>();
             services.AddSingleton<INotificationService, NotificationService>();
             services.AddSingleton<IStatisticsService, StatisticsService>();
             services.AddSingleton<IAllocationService, AllocationService>();
-            services.AddSingleton<Service.Executive.IExecutiveService, ExecutiveService>();
+            services.AddSingleton<IExecutiveService, ExecutiveService>();
             services.AddSingleton<IProjectsService, ProjectsService>();
             services.AddSingleton<IStudentService, StudentService>();
             services.AddSingleton<IQuotasService, QuotasService>();
@@ -135,7 +133,7 @@ namespace MatchingSystem.UI
                 options.Cookie.Name = "SessionStorage";
             });
 
-            var useMigrations = (bool) Configuration.GetValue(typeof(bool), "ApplicationSettings:UseMigrations");
+      
            
         }
         public void Configure(IApplicationBuilder app)
@@ -163,6 +161,21 @@ namespace MatchingSystem.UI
                     pattern: "{controller=Home}/{action=Login}"
                 );
             });
+
+            var useMigrations = (bool)Configuration.GetValue(typeof(bool), "ApplicationSettings:UseMigrations");
+            if (useMigrations) ApplyMigrations(app);
+        }
+
+        private static void ApplyMigrations(IApplicationBuilder app)
+        {
+            using (var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                var dbcontext = scope.ServiceProvider.GetService<DbContext>();
+                var PendingMigrations =
+                    dbcontext.Database.GetPendingMigrations();
+                Console.WriteLine("Applayng pending migrations: " + PendingMigrations);
+                dbcontext.Database.Migrate();
+            }
         }
     }
 }

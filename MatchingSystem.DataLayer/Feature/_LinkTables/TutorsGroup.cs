@@ -1,7 +1,7 @@
 ﻿using MatchingSystem.DataLayer.Feature.Group;
 using MatchingSystem.DataLayer.Feature.Tutor;
 
-namespace MatchingSystem.DataLayer.Model;
+namespace MatchingSystem.DataLayer.Feature._LinkTables;
 
 public class TutorsGroup
 {

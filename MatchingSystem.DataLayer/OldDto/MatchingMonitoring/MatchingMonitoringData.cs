@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MatchingSystem.DataLayer.Feature.Tutor;
 
-namespace MatchingSystem.DataLayer.Dto.MatchingMonitoring;
+namespace MatchingSystem.DataLayer.OldDto.MatchingMonitoring;
 
 public class MatchingMonitoringData
 {
