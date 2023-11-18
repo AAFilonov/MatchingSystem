@@ -1,0 +1,39 @@
+@{
+    Layout = "~/Views/Shared/_GeneralLayout.cshtml";
+    ViewData["title"] = "Users";
+}
+
+<div id="app">
+    <v-app>
+        <v-btn 
+            v-for="color in colors"
+            :color="color"
+            :key="color"
+            class="button"
+        >
+            {{ color }}
+        </v-btn>
+    </v-app>
+</div>
+
+<script>
+    let app = new Vue({
+        el: '#app',
+        vuetify: new Vuetify(),
+        data() {
+            return {
+                colors: ['primary', 'secondary', 'error', 'success', 'warning'],
+            }
+        },
+    })
+</script>
+
+<style scoped>
+    .button {
+        margin-top: 50px;
+    }
+
+    .button:not(:first-child) {
+        margin-top: 10px;
+    }
+</style>

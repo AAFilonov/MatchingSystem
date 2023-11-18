@@ -1,0 +1,9 @@
+﻿@using MatchingSystem.UI.Helpers
+@using MatchingSystem.UI.Services
+@{
+    var data = Context.Session.Get<SessionData>("Data");
+}
+
+<li class="nav-item">
+    <a href=@Url.Action("Users", "admin") class="active nav-link">Users</a>
+</li>

@@ -1,14 +1,10 @@
-﻿using System.Linq;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using System.Threading.Tasks;
-using MatchingSystem.DataLayer;
 using MatchingSystem.DataLayer.Feature._Interface;
 using MatchingSystem.DataLayer.Feature.Matching.repo;
 using MatchingSystem.UI.Helpers;
 using MatchingSystem.UI.Services;
-using MatchingSystem.UI.ViewModels;
 
 namespace MatchingSystem.UI.Controllers
 {
