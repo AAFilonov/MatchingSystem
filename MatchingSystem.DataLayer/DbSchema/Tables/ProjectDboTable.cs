@@ -1,8 +1,8 @@
-﻿using MatchingSystem.DataLayer.Model;
+﻿using MatchingSystem.DataLayer.Feature.Project;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace MatchingSystem.DataLayer.Feature.Project;
+namespace MatchingSystem.DataLayer.DbSchema.Tables;
 
 public class ProjectDboTable: IEntityTypeConfiguration<ProjectEntity>
 {

@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using MatchingSystem.DataLayer.Dto.IO.Params;
-using MatchingSystem.DataLayer.Dto.MatchingInit;
 using MatchingSystem.DataLayer.Feature.Tutor;
+using MatchingSystem.DataLayer.OldDto.IO.Params;
 using MatchingSystem.DataLayer.OldEntities;
 using Microsoft.EntityFrameworkCore;
 

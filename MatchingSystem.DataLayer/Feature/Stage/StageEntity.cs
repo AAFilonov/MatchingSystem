@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using MatchingSystem.DataLayer.Model;
+using MatchingSystem.DataLayer.Feature.TutorChoise;
 
 namespace MatchingSystem.DataLayer.Feature.Stage;
 

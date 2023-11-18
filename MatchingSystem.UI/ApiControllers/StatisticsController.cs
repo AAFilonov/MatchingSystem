@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using MatchingSystem.DataLayer.Dto;
 using MatchingSystem.Service.Statistics;
 
 namespace MatchingSystem.UI.ApiControllers

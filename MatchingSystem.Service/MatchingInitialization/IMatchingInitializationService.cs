@@ -1,4 +1,4 @@
-using MatchingSystem.DataLayer.Dto.MatchingInit;
+using MatchingSystem.DataLayer.OldDto.MatchingInit;
 
 namespace MatchingSystem.Service.MatchingInitialization;
 

@@ -2,16 +2,12 @@
 using System.Data;
 using System.Threading.Tasks;
 using Dapper;
-using MatchingSystem.DataLayer.Context;
-using MatchingSystem.DataLayer.Dto.IO.Params;
-using MatchingSystem.DataLayer.Dto.MatchingInit;
-using MatchingSystem.DataLayer.Dto.MatchingMonitoring;
-using MatchingSystem.DataLayer.Feature._Interface;
-using MatchingSystem.DataLayer.Feature.Project;
+using MatchingSystem.DataLayer._Technical;
 using MatchingSystem.DataLayer.Feature.Tutor;
-using MatchingSystem.DataLayer.OldEntities;
+using MatchingSystem.DataLayer.OldDto.IO.Params;
+using MatchingSystem.DataLayer.OldDto.MatchingMonitoring;
 
-namespace MatchingSystem.DataLayer.Feature._Repository
+namespace MatchingSystem.DataLayer.Feature.Project.Repo
 {
     public class ProjectRepositoryDapper : ConnectionBase, IProjectRepository
     {

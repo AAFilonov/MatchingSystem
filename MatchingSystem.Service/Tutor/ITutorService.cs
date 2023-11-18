@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
-using MatchingSystem.DataLayer.Dto;
-using MatchingSystem.DataLayer.Dto.MatchingInit;
+using MatchingSystem.DataLayer.OldDto;
 using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.Service.Tutor;

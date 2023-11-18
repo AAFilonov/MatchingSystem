@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using MatchingSystem.DataLayer.Dto;
-using MatchingSystem.DataLayer.Dto.IO.Params;
 using MatchingSystem.DataLayer.Feature.Matching.repo;
 using MatchingSystem.DataLayer.Feature.Stage;
 using MatchingSystem.DataLayer.Feature.Stage.repo;
-using MatchingSystem.DataLayer.Model;
+using MatchingSystem.DataLayer.Feature.TutorChoise;
+using MatchingSystem.DataLayer.OldDto;
+using MatchingSystem.DataLayer.OldDto.IO.Params;
 using Microsoft.EntityFrameworkCore;
 
 namespace MatchingSystem.DataLayer.Feature.Allocation.repo;

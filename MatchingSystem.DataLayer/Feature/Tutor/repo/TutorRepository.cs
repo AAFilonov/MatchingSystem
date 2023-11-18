@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using MatchingSystem.DataLayer.Feature.Role;
-using MatchingSystem.DataLayer.Model;
+using MatchingSystem.DataLayer.Feature.TutorChoise;
 using MatchingSystem.DataLayer.OldEntities;
 using Microsoft.EntityFrameworkCore;
 

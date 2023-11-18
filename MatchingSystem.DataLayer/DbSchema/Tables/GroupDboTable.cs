@@ -1,7 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MatchingSystem.DataLayer.Feature.Group;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace MatchingSystem.DataLayer.Feature.Group;
+namespace MatchingSystem.DataLayer.DbSchema.Tables;
 
 public class GroupDboTable : IEntityTypeConfiguration<GroupEntity>
 {

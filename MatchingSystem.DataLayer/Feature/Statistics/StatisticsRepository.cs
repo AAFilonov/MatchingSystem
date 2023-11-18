@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Dapper;
-using MatchingSystem.DataLayer.Context;
-using MatchingSystem.DataLayer.Feature._Interface;
+using MatchingSystem.DataLayer._Technical;
 using MatchingSystem.DataLayer.Feature.Project;
 using MatchingSystem.DataLayer.OldEntities;
 
-namespace MatchingSystem.DataLayer.Feature._Repository
+namespace MatchingSystem.DataLayer.Feature.Statistics
 {
     public class StatisticsRepository : ConnectionBase, IStatisticsRepository
     {

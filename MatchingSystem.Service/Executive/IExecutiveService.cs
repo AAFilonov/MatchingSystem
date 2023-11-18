@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using MatchingSystem.DataLayer.Dto;
-using MatchingSystem.DataLayer.Dto.IO.Params;
+using MatchingSystem.DataLayer.OldDto;
 using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.Service.Executive;

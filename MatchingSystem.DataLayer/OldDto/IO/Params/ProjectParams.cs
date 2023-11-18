@@ -1,4 +1,4 @@
-﻿namespace MatchingSystem.DataLayer.Dto.IO.Params
+﻿namespace MatchingSystem.DataLayer.OldDto.IO.Params
 {
     public class ProjectParams
     {

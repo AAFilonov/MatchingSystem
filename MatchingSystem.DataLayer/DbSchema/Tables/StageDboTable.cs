@@ -1,8 +1,8 @@
-﻿using MatchingSystem.DataLayer.Feature.Role;
+﻿using MatchingSystem.DataLayer.Feature.Stage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace MatchingSystem.DataLayer.Feature.Stage;
+namespace MatchingSystem.DataLayer.DbSchema.Tables;
 
 public class StageDboTable: IEntityTypeConfiguration<StageEntity>
 {

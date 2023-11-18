@@ -2,7 +2,7 @@
 using System.Text.Json.Serialization;
 using MatchingSystem.DataLayer.OldEntities;
 
-namespace MatchingSystem.DataLayer.Dto;
+namespace MatchingSystem.DataLayer.OldDto;
 
 public class ChangeQuotaRequest
 {

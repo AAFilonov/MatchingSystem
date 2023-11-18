@@ -1,7 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MatchingSystem.DataLayer.Feature.Student;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace MatchingSystem.DataLayer.Feature.Student;
+namespace MatchingSystem.DataLayer.DbSchema.View;
 
 public class StudentsDboView: IEntityTypeConfiguration<StudentView>
 {

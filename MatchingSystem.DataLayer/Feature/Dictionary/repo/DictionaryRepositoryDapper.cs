@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
 using Dapper;
-using MatchingSystem.DataLayer.Context;
-using MatchingSystem.DataLayer.Feature.Dictionary;
-using MatchingSystem.DataLayer.Feature.Dictionary.repo;
+using MatchingSystem.DataLayer._Technical;
 
-namespace MatchingSystem.DataLayer.Feature._Repository
+namespace MatchingSystem.DataLayer.Feature.Dictionary.repo
 {
 
     public class DictionaryRepositoryDapper : ConnectionBase, IDictionaryRepository

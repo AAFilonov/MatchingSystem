@@ -2,7 +2,6 @@
 using System.ComponentModel.DataAnnotations;
 using MatchingSystem.DataLayer.Feature.Group;
 using MatchingSystem.DataLayer.Feature.Role;
-using MatchingSystem.DataLayer.Model;
 
 namespace MatchingSystem.DataLayer.Feature.Matching;
 

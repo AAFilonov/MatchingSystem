@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MatchingSystem.DataLayer.Model;
+namespace MatchingSystem.DataLayer.Feature.User;
 
 public class UsersFullInfoView
 {

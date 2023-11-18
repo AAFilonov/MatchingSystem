@@ -1,7 +1,8 @@
+using MatchingSystem.DataLayer.Feature.Role;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace MatchingSystem.DataLayer.Feature.Role;
+namespace MatchingSystem.DataLayer.DbSchema.Tables;
 
 public class RoleDboTable : IEntityTypeConfiguration<RoleEntity>
 {

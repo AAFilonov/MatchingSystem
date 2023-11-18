@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using MatchingSystem.DataLayer.Feature.Tutor;
 
-namespace MatchingSystem.DataLayer.Dto.MatchingInit;
+namespace MatchingSystem.DataLayer.OldDto.MatchingInit;
 
 public class MatchingInitData
 {

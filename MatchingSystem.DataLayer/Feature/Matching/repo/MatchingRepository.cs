@@ -2,7 +2,6 @@
 using System.Linq;
 using MatchingSystem.DataLayer.Feature.Allocation;
 using MatchingSystem.DataLayer.Feature.Stage;
-using MatchingSystem.DataLayer.Model;
 using MatchingSystem.DataLayer.OldEntities;
 using Microsoft.EntityFrameworkCore;
 

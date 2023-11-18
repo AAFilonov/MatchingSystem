@@ -1,12 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using MatchingSystem.DataLayer.Dto.IO.Params;
-using MatchingSystem.DataLayer.Dto.MatchingInit;
-using MatchingSystem.DataLayer.Feature.Project;
 using MatchingSystem.DataLayer.Feature.Tutor;
-using MatchingSystem.DataLayer.OldEntities;
+using MatchingSystem.DataLayer.OldDto.IO.Params;
 
-namespace MatchingSystem.DataLayer.Feature._Interface
+namespace MatchingSystem.DataLayer.Feature.Project.Repo
 {
     public interface IProjectRepository
     {

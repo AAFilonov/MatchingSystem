@@ -1,7 +1,8 @@
+using MatchingSystem.DataLayer.Feature.Matching;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace MatchingSystem.DataLayer.Feature.Matching;
+namespace MatchingSystem.DataLayer.DbSchema.Tables;
 
 public class MatchingTypeDboTable : IEntityTypeConfiguration<MatchingType>
 {

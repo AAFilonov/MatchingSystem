@@ -2,9 +2,8 @@
 using MatchingSystem.DataLayer.Feature.Dictionary;
 using MatchingSystem.DataLayer.Feature.Group;
 using MatchingSystem.DataLayer.Feature.Project;
-using MatchingSystem.DataLayer.OldEntities;
 
-namespace MatchingSystem.DataLayer.Dto;
+namespace MatchingSystem.DataLayer.OldDto;
 
 public class TutorProjectsModel
 {

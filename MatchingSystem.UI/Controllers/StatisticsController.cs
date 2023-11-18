@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using MatchingSystem.DataLayer.Feature._Interface;
 using MatchingSystem.DataLayer.Feature.Matching.repo;
+using MatchingSystem.DataLayer.Feature.Statistics;
 using MatchingSystem.UI.Helpers;
 using MatchingSystem.UI.Services;
 
@@ -63,7 +63,5 @@ namespace MatchingSystem.UI.Controllers
         {
             return View();
         }
-
-        
     }
 }

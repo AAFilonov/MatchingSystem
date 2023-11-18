@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using MatchingSystem.DataLayer.Feature.Project;
 using MatchingSystem.DataLayer.OldEntities;
 
-namespace MatchingSystem.DataLayer.Feature._Interface
+namespace MatchingSystem.DataLayer.Feature.Statistics
 {
     public interface IStatisticsRepository
     {

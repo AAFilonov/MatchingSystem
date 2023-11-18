@@ -1,8 +1,8 @@
-﻿using MatchingSystem.DataLayer.Model;
+﻿using MatchingSystem.DataLayer.Feature.Student;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace MatchingSystem.DataLayer.Feature._Common;
+namespace MatchingSystem.DataLayer.DbSchema.View;
 
 public class AvailableStudentsPreferenceDboView: IEntityTypeConfiguration<AvailableStudentsPreferenceView>
 {

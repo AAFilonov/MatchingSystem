@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using MatchingSystem.DataLayer.Dto.MatchingMonitoring;
+using MatchingSystem.DataLayer.OldDto.MatchingMonitoring;
 
 namespace MatchingSystem.DataLayer.Feature.Tutor;
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using MatchingSystem.DataLayer.Dto.MatchingInit;
 using MatchingSystem.DataLayer.Feature.Matching;
+using MatchingSystem.DataLayer.OldDto.MatchingInit;
 
 namespace MatchingSystem.Service.Matching;
 

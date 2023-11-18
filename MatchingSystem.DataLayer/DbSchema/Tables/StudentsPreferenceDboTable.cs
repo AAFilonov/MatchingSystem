@@ -1,8 +1,8 @@
-﻿using MatchingSystem.DataLayer.Model;
+﻿using MatchingSystem.DataLayer.Feature._LinkTables;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace MatchingSystem.DataLayer.Feature.Student;
+namespace MatchingSystem.DataLayer.DbSchema.Tables;
 
 public class StudentsPreferenceDboTable : IEntityTypeConfiguration<StudentsPreference>
 {

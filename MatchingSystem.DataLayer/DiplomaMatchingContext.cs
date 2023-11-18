@@ -1,4 +1,7 @@
-﻿using MatchingSystem.DataLayer.Feature._Common;
+﻿using MatchingSystem.DataLayer._Technical;
+using MatchingSystem.DataLayer.DbSchema.Tables;
+using MatchingSystem.DataLayer.DbSchema.View;
+using MatchingSystem.DataLayer.Feature._LinkTables;
 using MatchingSystem.DataLayer.Feature.Allocation;
 using MatchingSystem.DataLayer.Feature.CommonQuota;
 using MatchingSystem.DataLayer.Feature.Dictionary;
@@ -11,12 +14,11 @@ using MatchingSystem.DataLayer.Feature.Student;
 using MatchingSystem.DataLayer.Feature.Tutor;
 using MatchingSystem.DataLayer.Feature.TutorChoise;
 using MatchingSystem.DataLayer.Feature.User;
-using MatchingSystem.DataLayer.Model;
 using Microsoft.EntityFrameworkCore;
 
-namespace MatchingSystem.DataLayer.Context;
+namespace MatchingSystem.DataLayer;
 
-public partial class DiplomaMatchingContext: DbContext
+public class DiplomaMatchingContext: DbContext
 {      
 
     public DiplomaMatchingContext(DbContextOptions<DiplomaMatchingContext> options)
@@ -315,5 +317,11 @@ public partial class DiplomaMatchingContext: DbContext
             entity.Property(e => e.Description).HasMaxLength(1024);
         });
         
+        //modelBuilder.Entity<Test>(entity =>
+        //{
+        //    entity.HasNoKey();
+        //    entity.ToTable("Test");
+        //    entity.Property(e => e.Description).HasMaxLength(1024);
+        //});
     }
 }

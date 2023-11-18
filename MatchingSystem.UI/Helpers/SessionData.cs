@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using MatchingSystem.DataLayer.Dto.MatchingInit;
 using MatchingSystem.DataLayer.Feature.Stage;
 using MatchingSystem.DataLayer.Feature.User;
+using MatchingSystem.DataLayer.OldDto.MatchingInit;
 using MatchingSystem.DataLayer.OldEntities;
 
 

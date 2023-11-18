@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using MatchingSystem.DataLayer.Dto;
-using MatchingSystem.DataLayer.Dto.IO.Params;
-using MatchingSystem.DataLayer.Feature._Interface;
 using MatchingSystem.DataLayer.Feature.Allocation.repo;
 using MatchingSystem.DataLayer.Feature.Project;
+using MatchingSystem.DataLayer.Feature.Project.Repo;
 using MatchingSystem.DataLayer.Feature.Tutor.repo;
+using MatchingSystem.DataLayer.OldDto;
 using MatchingSystem.DataLayer.OldEntities;
 using MatchingSystem.Service.Matching;
 

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using MatchingSystem.DataLayer.Feature._LinkTables;
 using MatchingSystem.DataLayer.Feature.Tutor;
-using MatchingSystem.DataLayer.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace MatchingSystem.DataLayer.Feature.Group.repo;

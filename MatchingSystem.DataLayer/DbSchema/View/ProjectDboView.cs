@@ -1,8 +1,8 @@
-﻿using MatchingSystem.DataLayer.Feature.Student;
+﻿using MatchingSystem.DataLayer.Feature.Project;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace MatchingSystem.DataLayer.Feature.Project;
+namespace MatchingSystem.DataLayer.DbSchema.View;
 
 public class ProjectDboView: IEntityTypeConfiguration<ProjectView>
 {

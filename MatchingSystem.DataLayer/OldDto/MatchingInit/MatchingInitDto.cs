@@ -1,4 +1,4 @@
-namespace MatchingSystem.DataLayer.Dto.MatchingInit;
+namespace MatchingSystem.DataLayer.OldDto.MatchingInit;
 
 public class MatchingInitDto
 {

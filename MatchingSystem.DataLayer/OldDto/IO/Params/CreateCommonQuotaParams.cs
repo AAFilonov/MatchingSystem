@@ -2,7 +2,7 @@
 using System.Data;
 using MatchingSystem.DataLayer.OldEntities;
 
-namespace MatchingSystem.DataLayer.Dto.IO.Params
+namespace MatchingSystem.DataLayer.OldDto.IO.Params
 {
     public class CreateCommonQuotaParams
     {

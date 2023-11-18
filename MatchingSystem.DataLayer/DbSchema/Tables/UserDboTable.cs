@@ -1,7 +1,8 @@
+using MatchingSystem.DataLayer.Feature.User;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace MatchingSystem.DataLayer.Feature.User;
+namespace MatchingSystem.DataLayer.DbSchema.Tables;
 
 public class UserDboTable : IEntityTypeConfiguration<UserEntity>
 {
