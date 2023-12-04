@@ -91,11 +91,10 @@ namespace MatchingSystem.UI
             services.AddSingleton<IStatisticsRepository, StatisticsRepository>(_ =>
                 new StatisticsRepository(connectionString));
 
- 
-            
 
-       
-      
+
+
+
 
             //--Services
             services.AddSingleton<IMatchingRepository, MatchingRepository>();
@@ -107,7 +106,7 @@ namespace MatchingSystem.UI
             services.AddSingleton<IStudentService, StudentService>();
             services.AddSingleton<IQuotasService, QuotasService>();
             services.AddSingleton<ITutorService, TutorService>();
-            services.AddSingleton<IUserRepository, UserRepository>();            
+            services.AddScoped<IUserRepository, UserRepository>();            
             services.AddSingleton<IRoleRepository, RoleRepository>();
             services.AddSingleton<ITutorsParsingService, TutorParsingService>();            
             services.AddSingleton<IStudentsParsingService, StudentsParsingService>();            

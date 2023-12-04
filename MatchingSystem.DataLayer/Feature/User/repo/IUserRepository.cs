@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using MatchingSystem.DataLayer.Feature.Role;
 using MatchingSystem.DataLayer.Feature.Tutor;
 using MatchingSystem.DataLayer.OldDto.MatchingInit;
 
@@ -10,7 +11,7 @@ public interface IUserRepository :IRepository<UserEntity>
     IEnumerable<TutorInitDto> SetUserIdForTutors(List<TutorInitDto> tutors);
     
     IEnumerable<StudentInitDto> SaveStudents(List<StudentInitDto> users);
-    IEnumerable<UserDto> GetStudentUsersByMatching(int matchingId);
+    List<UsersRoleEntity> GetStudentUsersByMatching(int matchingId);
     
     void UpdatePasswordHash(int userId, string newHash);
     public void SetLastVisitDate(int userId, string roleId, int projectId);

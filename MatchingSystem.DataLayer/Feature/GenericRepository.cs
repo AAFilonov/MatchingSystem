@@ -9,16 +9,15 @@ namespace MatchingSystem.DataLayer.Feature;
 
 public class GenericRepository<TEntity> : Repository, IRepository<TEntity> where TEntity : class
 {
-    
     public GenericRepository(DbContext context) : base(context)
     {
     }
 
     public TEntity findById(int id)
     {
-       var item =  _matchingSystemContext.Set<TEntity>().Find(id);
-       if (item == null)
-           throw new RecordNotFoundException();
+        var item = _matchingSystemContext.Set<TEntity>().Find(id);
+        if (item == null)
+            throw new RecordNotFoundException();
         return item;
     }
 
@@ -38,12 +37,14 @@ public class GenericRepository<TEntity> : Repository, IRepository<TEntity> where
         _matchingSystemContext.SaveChanges();
         return item;
     }
+
     public IEnumerable<TEntity> saveAll(IEnumerable<TEntity> items)
     {
         foreach (var tEntity in items)
         {
             _matchingSystemContext.Set<TEntity>().Add(tEntity);
         }
+
         _matchingSystemContext.SaveChanges();
         return items;
     }
@@ -53,13 +54,17 @@ public class GenericRepository<TEntity> : Repository, IRepository<TEntity> where
     {
         _matchingSystemContext.Set<TEntity>().Update(item);
         _matchingSystemContext.SaveChanges();
+
+        /*TEntity entity = _matchingSystemContext.Set<TEntity>().SingleOrDefault(entity => entity.Equals(item));*/
     }
+
     public void updateAll(IEnumerable<TEntity> items)
     {
         foreach (var tEntity in items)
         {
             _matchingSystemContext.Set<TEntity>().Update(tEntity);
         }
+
         _matchingSystemContext.SaveChanges();
     }
 
@@ -68,13 +73,14 @@ public class GenericRepository<TEntity> : Repository, IRepository<TEntity> where
         _matchingSystemContext.Set<TEntity>().Remove(item);
         _matchingSystemContext.SaveChanges();
     }
-    
+
     public void deleteAll(IEnumerable<TEntity> items)
     {
         foreach (var tEntity in items)
         {
             _matchingSystemContext.Set<TEntity>().Update(tEntity);
         }
+
         _matchingSystemContext.SaveChanges();
     }
 }
