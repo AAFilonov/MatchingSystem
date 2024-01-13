@@ -55,7 +55,7 @@ namespace MatchingSystem.UI
         public void ConfigureServices(IServiceCollection services)
         {
             var connectionString = Configuration.GetConnectionString("DefaultConnection");
-
+            DbContextUtils.Init(connectionString);
             services.AddDistributedMemoryCache();
             services.AddMvc();
             services
@@ -70,8 +70,8 @@ namespace MatchingSystem.UI
             optionsBuilder.UseLazyLoadingProxies();
         
 
-            var dbContext = new DiplomaMatchingContext(optionsBuilder.Options);
-            services.AddSingleton<DbContext, DiplomaMatchingContext>(_ => dbContext);
+           var dbContext = new DiplomaMatchingContext(DbContextUtils.CreateDbContextOptions().Options);
+           services.AddTransient<DbContext, DiplomaMatchingContext>(_ => dbContext);
       
 
             services.AddTransient<IMatchingRepositoryDapper, MatchingRepositoryDapper>(_ =>
@@ -169,7 +169,7 @@ namespace MatchingSystem.UI
         {
             using (var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
-                var dbcontext = scope.ServiceProvider.GetService<DbContext>();
+                var dbcontext = scope.ServiceProvider.GetService<Microsoft.EntityFrameworkCore.DbContext>();
                 var PendingMigrations =
                     dbcontext.Database.GetPendingMigrations();
                 Console.WriteLine("Applayng pending migrations: " + PendingMigrations);

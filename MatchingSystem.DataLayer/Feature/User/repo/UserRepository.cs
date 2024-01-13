@@ -66,11 +66,16 @@ public class UserRepository : GenericRepository<UserEntity>, IUserRepository
 
     public void SetLastVisitDate(int userId, string RoleName, int projectId)
     {
-        var userRole = _matchingSystemContext.UsersRoles.FirstOrDefault(
-            role => role.UserId == userId &&
-                    role.Role.RoleName == RoleName
-        );
-        userRole.LastVisitDate = DateTime.Now;
-        _matchingSystemContext.UsersRoles.Update(userRole);
+        using (var context = _matchingSystemContext)
+        {
+            var userRole = context.UsersRoles.FirstOrDefault(
+                role => role.UserId == userId &&
+                        role.Role.RoleName == RoleName
+            );
+            userRole.LastVisitDate = DateTime.Now;
+
+            context.UsersRoles.Update(userRole);
+            context.SaveChanges();
+        }
     }
 }

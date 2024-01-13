@@ -33,54 +33,58 @@ public class GenericRepository<TEntity> : Repository, IRepository<TEntity> where
 
     public TEntity save(TEntity item)
     {
-        _matchingSystemContext.Set<TEntity>().Add(item);
-        _matchingSystemContext.SaveChanges();
+        using (var context = _matchingSystemContext)
+        {
+            context.Set<TEntity>().Add(item);
+            context.SaveChanges();
+        }
+
         return item;
     }
 
-    public IEnumerable<TEntity> saveAll(IEnumerable<TEntity> items)
+    public IEnumerable<TEntity> saveRange(IEnumerable<TEntity> items)
     {
-        foreach (var tEntity in items)
+        using (var context = _matchingSystemContext)
         {
-            _matchingSystemContext.Set<TEntity>().Add(tEntity);
+            context.Set<TEntity>().AddRange(items);
+            context.SaveChanges();
+            return items;
         }
-
-        _matchingSystemContext.SaveChanges();
-        return items;
     }
-
 
     public void update(TEntity item)
     {
-        _matchingSystemContext.Set<TEntity>().Update(item);
-        _matchingSystemContext.SaveChanges();
-
-        /*TEntity entity = _matchingSystemContext.Set<TEntity>().SingleOrDefault(entity => entity.Equals(item));*/
+        using (var context = _matchingSystemContext)
+        {
+            context.Set<TEntity>().Update(item);
+            context  .SaveChanges();
+        }
     }
 
-    public void updateAll(IEnumerable<TEntity> items)
+    public void updateRange(IEnumerable<TEntity> items)
     {
-        foreach (var tEntity in items)
+        using (var context = _matchingSystemContext)
         {
-            _matchingSystemContext.Set<TEntity>().Update(tEntity);
+            context.Set<TEntity>().UpdateRange(items);
+            context.SaveChanges();
         }
-
-        _matchingSystemContext.SaveChanges();
     }
 
     public void delete(TEntity item)
     {
-        _matchingSystemContext.Set<TEntity>().Remove(item);
-        _matchingSystemContext.SaveChanges();
+        using (var context = _matchingSystemContext)
+        {
+            context.Set<TEntity>().Remove(item);
+            context.SaveChanges();
+        }
     }
 
-    public void deleteAll(IEnumerable<TEntity> items)
+    public void deleteRange(IEnumerable<TEntity> items)
     {
-        foreach (var tEntity in items)
+        using (var context = _matchingSystemContext)
         {
-            _matchingSystemContext.Set<TEntity>().Update(tEntity);
+            context.Set<TEntity>().RemoveRange(items);
+            context.SaveChanges();
         }
-
-        _matchingSystemContext.SaveChanges();
     }
 }

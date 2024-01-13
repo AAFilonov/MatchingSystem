@@ -41,9 +41,13 @@ public class CommonQuotaRepository :GenericRepository<CommonQuotaEntity>, ICommo
 
             return commonQuota;
         });
-
-        _matchingSystemContext.CommonQuotas.AddRange(quotas);
+        using (var context = _matchingSystemContext)
+        {
+            context.CommonQuotas.AddRange(quotas);
+            context.SaveChanges();
+        }
     }
+      
 
     public IEnumerable<QuotaHistoryTutor> GetQuotaRequestHistoryByTutor(int tutorId)
     {

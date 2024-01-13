@@ -24,27 +24,30 @@ public class AllocationRepository :  Repository, IAllocationRepository
 
     public IEnumerable<AllocationDto> GetAllocationsByExecutive(int userId, int matchingId)
     {
-        return _matchingSystemContext.AllocationFullInfos
-            .Join(_matchingSystemContext.UsersRoles,
-                view => view.MatchingId,
-                ur => ur.MatchingId,
-                (view, ur) => new AllocationDto()
-                {
-                    MatchingID = view.MatchingId,
-                    ProjectID = view.ProjectId,
-                    StudentID = view.StudentId,
-                    TutorID = view.TutorId,
-                    StudentNameAbbreviation = view.StudentNameAbbreviation,
-                    GroupName = view.GroupName,
-                    ProjectName = view.ProjectName,
-                    TutorNameAbbreviation = view.TutorNameAbbreviation,
-                    IsAllocated = view.IsAllocated == 1,
-                    UserID = ur.UserId,
-                    UserRoleID = ur.UserRoleId
-                }).Where(dto => 
-                dto.MatchingID == matchingId &&
-                dto.UserID == userId &&
-                dto.UserRoleID == EXECUTIVE_ROLE_ID);
+        using (var context = _matchingSystemContext)
+        {
+            return context.AllocationFullInfos
+                .Join(context.UsersRoles,
+                    view => view.MatchingId,
+                    ur => ur.MatchingId,
+                    (view, ur) => new AllocationDto()
+                    {
+                        MatchingID = view.MatchingId,
+                        ProjectID = view.ProjectId,
+                        StudentID = view.StudentId,
+                        TutorID = view.TutorId,
+                        StudentNameAbbreviation = view.StudentNameAbbreviation,
+                        GroupName = view.GroupName,
+                        ProjectName = view.ProjectName,
+                        TutorNameAbbreviation = view.TutorNameAbbreviation,
+                        IsAllocated = view.IsAllocated == 1,
+                        UserID = ur.UserId,
+                        UserRoleID = ur.UserRoleId
+                    }).Where(dto =>
+                    dto.MatchingID == matchingId &&
+                    dto.UserID == userId &&
+                    dto.UserRoleID == EXECUTIVE_ROLE_ID);
+        }
 
     }
 
@@ -63,19 +66,23 @@ public class AllocationRepository :  Repository, IAllocationRepository
         }
 
       StageEntity currentStage = matchingRepository.GetCurrentStage((int)request.MatchingID);
-        
-      _matchingSystemContext.TutorsChoices.AddRange(
+      using (var context = _matchingSystemContext)
+      {
+          context.TutorsChoices.AddRange(
               request.Allocations.Select(student =>new TutorsChoiceEntity()
               {
-                    StudentId = student.StudentID.Value,
-                    ProjectId = student.ProjectID.Value,
-                    IsInQuota = true,
-                    IsChangeble = false,
-                    TypeId = CHOSING_TYPE_BY_EXECUTIVE_ID,
-                    StageId = currentStage.StageId,
-                    CreateDate = DateTime.Now,
-                    IsFromPreviousIteration = false
+                  StudentId = student.StudentID.Value,
+                  ProjectId = student.ProjectID.Value,
+                  IsInQuota = true,
+                  IsChangeble = false,
+                  TypeId = CHOSING_TYPE_BY_EXECUTIVE_ID,
+                  StageId = currentStage.StageId,
+                  CreateDate = DateTime.Now,
+                  IsFromPreviousIteration = false
               })
           );
+          context.SaveChanges();
+      }
+      
     }
 }

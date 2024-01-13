@@ -11,9 +11,9 @@ public interface IRepository<TEntity> where TEntity : class
     IEnumerable<TEntity> findAll();
 
     TEntity save(TEntity item);
-    public IEnumerable<TEntity> saveAll(IEnumerable<TEntity> items);
+    public IEnumerable<TEntity> saveRange(IEnumerable<TEntity> items);
     void update(TEntity item);
-    public void updateAll(IEnumerable<TEntity> items);
+    public void updateRange(IEnumerable<TEntity> items);
     void delete(TEntity item);
-    public void deleteAll(IEnumerable<TEntity> items);
+    public void deleteRange(IEnumerable<TEntity> items);
 }

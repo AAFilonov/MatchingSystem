@@ -15,19 +15,20 @@ public class GroupRepository : GenericRepository<GroupEntity>, IGroupRepository
 
     public void AssignGroupsToTutors(List<TutorInitDto> tutors)
     {
-        foreach (var tutor in tutors)
+        using (var context = _matchingSystemContext)
         {
-            _matchingSystemContext.TutorsGroups.AddRange(tutor.groups.Select(info =>
-            {
-                return new TutorsGroup()
+            foreach (var tutor in tutors)
+                context.TutorsGroups.AddRange(tutor.groups.Select(info =>
                 {
-                    GroupId = info.groupId,
-                    TutorId = tutor.TutorId,
-                };
-            }));
-        }
+                    return new TutorsGroup
+                    {
+                        GroupId = info.groupId,
+                        TutorId = tutor.TutorId
+                    };
+                }));
 
-        _matchingSystemContext.SaveChanges();
+            context.SaveChanges();
+        }
     }
 
     public IEnumerable<GroupDto> getGroupsByMatching(int matchingId)

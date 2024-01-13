@@ -108,7 +108,6 @@ namespace MatchingSystem.UI.ApiControllers
                 Surname = userDto.Surname,
                 Patronimic = userDto.Patronimic,
             };
-            // todo починить update
             userRepository.update(user);
         }
     }

@@ -95,7 +95,7 @@ public class MatchingInitializationService : IMatchingInitializationService
             GroupName = item.name,
             MatchingId = MatchingId,
         });
-        groupRepository.saveAll(groups);
+        groupRepository.saveRange(groups);
 
 
         //записать полученные ID Group в набор студентов
