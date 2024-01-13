@@ -9,16 +9,15 @@ namespace MatchingSystem.DataLayer.Feature;
 
 public class GenericRepository<TEntity> : Repository, IRepository<TEntity> where TEntity : class
 {
-    
     public GenericRepository(DbContext context) : base(context)
     {
     }
 
     public TEntity findById(int id)
     {
-       var item =  _matchingSystemContext.Set<TEntity>().Find(id);
-       if (item == null)
-           throw new RecordNotFoundException();
+        var item = _matchingSystemContext.Set<TEntity>().Find(id);
+        if (item == null)
+            throw new RecordNotFoundException();
         return item;
     }
 
@@ -34,47 +33,58 @@ public class GenericRepository<TEntity> : Repository, IRepository<TEntity> where
 
     public TEntity save(TEntity item)
     {
-        _matchingSystemContext.Set<TEntity>().Add(item);
-        _matchingSystemContext.SaveChanges();
+        using (var context = _matchingSystemContext)
+        {
+            context.Set<TEntity>().Add(item);
+            context.SaveChanges();
+        }
+
         return item;
     }
-    public IEnumerable<TEntity> saveAll(IEnumerable<TEntity> items)
-    {
-        foreach (var tEntity in items)
-        {
-            _matchingSystemContext.Set<TEntity>().Add(tEntity);
-        }
-        _matchingSystemContext.SaveChanges();
-        return items;
-    }
 
+    public IEnumerable<TEntity> saveRange(IEnumerable<TEntity> items)
+    {
+        using (var context = _matchingSystemContext)
+        {
+            context.Set<TEntity>().AddRange(items);
+            context.SaveChanges();
+            return items;
+        }
+    }
 
     public void update(TEntity item)
     {
-        _matchingSystemContext.Set<TEntity>().Update(item);
-        _matchingSystemContext.SaveChanges();
-    }
-    public void updateAll(IEnumerable<TEntity> items)
-    {
-        foreach (var tEntity in items)
+        using (var context = _matchingSystemContext)
         {
-            _matchingSystemContext.Set<TEntity>().Update(tEntity);
+            context.Set<TEntity>().Update(item);
+            context  .SaveChanges();
         }
-        _matchingSystemContext.SaveChanges();
+    }
+
+    public void updateRange(IEnumerable<TEntity> items)
+    {
+        using (var context = _matchingSystemContext)
+        {
+            context.Set<TEntity>().UpdateRange(items);
+            context.SaveChanges();
+        }
     }
 
     public void delete(TEntity item)
     {
-        _matchingSystemContext.Set<TEntity>().Remove(item);
-        _matchingSystemContext.SaveChanges();
-    }
-    
-    public void deleteAll(IEnumerable<TEntity> items)
-    {
-        foreach (var tEntity in items)
+        using (var context = _matchingSystemContext)
         {
-            _matchingSystemContext.Set<TEntity>().Update(tEntity);
+            context.Set<TEntity>().Remove(item);
+            context.SaveChanges();
         }
-        _matchingSystemContext.SaveChanges();
+    }
+
+    public void deleteRange(IEnumerable<TEntity> items)
+    {
+        using (var context = _matchingSystemContext)
+        {
+            context.Set<TEntity>().RemoveRange(items);
+            context.SaveChanges();
+        }
     }
 }

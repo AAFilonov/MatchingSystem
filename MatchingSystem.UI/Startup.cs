@@ -55,7 +55,7 @@ namespace MatchingSystem.UI
         public void ConfigureServices(IServiceCollection services)
         {
             var connectionString = Configuration.GetConnectionString("DefaultConnection");
-
+            DbContextUtils.Init(connectionString);
             services.AddDistributedMemoryCache();
             services.AddMvc();
             services
@@ -70,8 +70,8 @@ namespace MatchingSystem.UI
             optionsBuilder.UseLazyLoadingProxies();
         
 
-            var dbContext = new DiplomaMatchingContext(optionsBuilder.Options);
-            services.AddSingleton<DbContext, DiplomaMatchingContext>(_ => dbContext);
+           var dbContext = new DiplomaMatchingContext(DbContextUtils.CreateDbContextOptions().Options);
+           services.AddTransient<DbContext, DiplomaMatchingContext>(_ => dbContext);
       
 
             services.AddTransient<IMatchingRepositoryDapper, MatchingRepositoryDapper>(_ =>
@@ -91,11 +91,10 @@ namespace MatchingSystem.UI
             services.AddSingleton<IStatisticsRepository, StatisticsRepository>(_ =>
                 new StatisticsRepository(connectionString));
 
- 
-            
 
-       
-      
+
+
+
 
             //--Services
             services.AddSingleton<IMatchingRepository, MatchingRepository>();
@@ -107,7 +106,7 @@ namespace MatchingSystem.UI
             services.AddSingleton<IStudentService, StudentService>();
             services.AddSingleton<IQuotasService, QuotasService>();
             services.AddSingleton<ITutorService, TutorService>();
-            services.AddSingleton<IUserRepository, UserRepository>();            
+            services.AddScoped<IUserRepository, UserRepository>();            
             services.AddSingleton<IRoleRepository, RoleRepository>();
             services.AddSingleton<ITutorsParsingService, TutorParsingService>();            
             services.AddSingleton<IStudentsParsingService, StudentsParsingService>();            
@@ -170,7 +169,7 @@ namespace MatchingSystem.UI
         {
             using (var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
-                var dbcontext = scope.ServiceProvider.GetService<DbContext>();
+                var dbcontext = scope.ServiceProvider.GetService<Microsoft.EntityFrameworkCore.DbContext>();
                 var PendingMigrations =
                     dbcontext.Database.GetPendingMigrations();
                 Console.WriteLine("Applayng pending migrations: " + PendingMigrations);

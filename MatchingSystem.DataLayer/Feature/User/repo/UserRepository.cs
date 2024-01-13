@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MatchingSystem.DataLayer.Feature.Role;
 using MatchingSystem.DataLayer.Feature.Tutor;
 using MatchingSystem.DataLayer.OldDto.MatchingInit;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +18,7 @@ public class UserRepository : GenericRepository<UserEntity>, IUserRepository
     {
         return _matchingSystemContext.Users.Single(user => user.Login.Equals(login));
     }
-    
+
     public IEnumerable<StudentInitDto> SaveStudents(List<StudentInitDto> students)
     {
         foreach (var student in students)
@@ -37,27 +38,25 @@ public class UserRepository : GenericRepository<UserEntity>, IUserRepository
         return students;
     }
 
-    public IEnumerable<UserDto> GetStudentUsersByMatching(int matchingId)
+    public List<UsersRoleEntity> GetStudentUsersByMatching(int matchingId)
     {
-        var userRoles = _matchingSystemContext.UsersRoles.Where(
-            role => role.MatchingId == matchingId && role.StudentId!=null
+        return _matchingSystemContext.UsersRoles.Where(
+            role => role.MatchingId == matchingId && role.StudentId != null
         ).ToList();
-        return userRoles.Select(role => UserDto.fromEntity(role.User));
     }
 
     public IEnumerable<TutorInitDto> SetUserIdForTutors(List<TutorInitDto> tutors)
     {
-      
-       List<TutorView> tutorsRoles =   _matchingSystemContext.TutorsViews.Where(role => role.TutorId != null).ToList();
-       tutors.ForEach(dto =>
-       {
-          var userRole =  tutorsRoles.FirstOrDefault(tutor => tutor.NameAbbreviation == dto.nameAbbreviation);
-          dto.UserId = userRole.UserId;
-          dto.TutorId = (int)userRole.TutorId;
-       } );
-       return tutors;
+        List<TutorView> tutorsRoles = _matchingSystemContext.TutorsViews.Where(role => role.TutorId != null).ToList();
+        tutors.ForEach(dto =>
+        {
+            var userRole = tutorsRoles.FirstOrDefault(tutor => tutor.NameAbbreviation == dto.nameAbbreviation);
+            dto.UserId = userRole.UserId;
+            dto.TutorId = (int)userRole.TutorId;
+        });
+        return tutors;
     }
-    
+
     public void UpdatePasswordHash(int userId, string newHash)
     {
         var user = findById(userId);
@@ -67,11 +66,16 @@ public class UserRepository : GenericRepository<UserEntity>, IUserRepository
 
     public void SetLastVisitDate(int userId, string RoleName, int projectId)
     {
-        var userRole = _matchingSystemContext.UsersRoles.FirstOrDefault(
-            role => role.UserId == userId &&
-                    role.Role.RoleName == RoleName
-        );
-        userRole.LastVisitDate = DateTime.Now;
-        _matchingSystemContext.UsersRoles.Update(userRole);
+        using (var context = _matchingSystemContext)
+        {
+            var userRole = context.UsersRoles.FirstOrDefault(
+                role => role.UserId == userId &&
+                        role.Role.RoleName == RoleName
+            );
+            userRole.LastVisitDate = DateTime.Now;
+
+            context.UsersRoles.Update(userRole);
+            context.SaveChanges();
+        }
     }
 }

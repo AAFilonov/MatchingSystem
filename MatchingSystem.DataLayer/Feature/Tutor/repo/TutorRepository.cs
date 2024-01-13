@@ -26,7 +26,11 @@ public class TutorRepository : GenericRepository<TutorEntity>, ITutorRepository
             };
             return role;
         });
-        _matchingSystemContext.UsersRoles.AddRange(tutors);
+        using (var context = _matchingSystemContext)
+        {
+            context.UsersRoles.AddRange(tutors);
+            context.SaveChanges();
+        }
     }
 
     public IEnumerable<TutorInitDto> CreateTutors(List<TutorInitDto> tuts, int matchingId)
@@ -43,7 +47,7 @@ public class TutorRepository : GenericRepository<TutorEntity>, ITutorRepository
             }
         ).ToList();
 
-        saveAll(tutors);
+        saveRange(tutors);
 
         for (var i = 0; i < tuts.Count; i++) {
             tuts[i].TutorId = tutors[i].TutorId;
@@ -75,17 +79,21 @@ public class TutorRepository : GenericRepository<TutorEntity>, ITutorRepository
 
     public void SetPreferences(IEnumerable<TutorChoice_1> newChoices, int tutorId)
     {
-        List<TutorsChoiceEntity> tutorChoicesToUpdate = _matchingSystemContext.TutorsChoices.
-            Where(entity => newChoices.Any(val => val.ChoiceID == entity.ChoiceId))
-            .ToList();
-        foreach (var tutorsChoiceEntity in tutorChoicesToUpdate)
+        using (var context = _matchingSystemContext)
         {
-            var newChoise = newChoices.First(choice1 => choice1.ChoiceID == tutorsChoiceEntity.ChoiceId);
-            tutorsChoiceEntity.SortOrderNumber = newChoise.SortOrderNumber;
-            tutorsChoiceEntity.IsInQuota = newChoise.IsInQuota;
-        }
+            var tutorChoicesToUpdate = context.TutorsChoices
+                .Where(entity => newChoices.Any(val => val.ChoiceID == entity.ChoiceId))
+                .ToList();
+            foreach (var tutorsChoiceEntity in tutorChoicesToUpdate)
+            {
+                var newChoise = newChoices.First(choice1 => choice1.ChoiceID == tutorsChoiceEntity.ChoiceId);
+                tutorsChoiceEntity.SortOrderNumber = newChoise.SortOrderNumber;
+                tutorsChoiceEntity.IsInQuota = newChoise.IsInQuota;
+            }
 
-        _matchingSystemContext.SaveChanges();
+            context.UpdateRange(tutorChoicesToUpdate);
+            context.SaveChanges();
+        }
     }
     
     public IEnumerable<TutorView> GetTutorsViews()

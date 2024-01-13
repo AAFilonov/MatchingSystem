@@ -76,6 +76,6 @@ public class RoleRepository:GenericRepository<UsersRoleEntity>,IRoleRepository
                 UserId = dto.UserId,
                 TutorId = dto.TutorId
             }).ToList();
-        saveAll(userRoles);
+        saveRange(userRoles);
     }
 }
