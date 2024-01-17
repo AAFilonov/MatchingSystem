@@ -106,7 +106,7 @@ namespace MatchingSystem.UI
             services.AddSingleton<IStudentService, StudentService>();
             services.AddSingleton<IQuotasService, QuotasService>();
             services.AddSingleton<ITutorService, TutorService>();
-            services.AddScoped<IUserRepository, UserRepository>();            
+            services.AddSingleton<IUserRepository, UserRepository>();            
             services.AddSingleton<IRoleRepository, RoleRepository>();
             services.AddSingleton<ITutorsParsingService, TutorParsingService>();            
             services.AddSingleton<IStudentsParsingService, StudentsParsingService>();            
