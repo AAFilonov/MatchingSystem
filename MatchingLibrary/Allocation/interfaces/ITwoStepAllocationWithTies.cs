@@ -26,7 +26,7 @@ public interface ITwoStepAllocationWithTies<S,L,P>
     void setStudentPreferences(S student, List< List<P>> pref);
     void setStudentPreferencePair(S student,  List<P> projectTie);
     void deleteStudentPreferencePair(S student,  List<P> projectTie);
-    void setLecturerPreferences(L lecturer, List<List<S>> studnetTies);
+    void setLecturerPreferences(L lecturer, List<List<S>> StudentTies);
 
     P? getProjectByAssigned(S s);
     void setLecturerPreferencePair(L lecturer, List<S> studentTie);

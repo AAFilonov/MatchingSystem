@@ -1,29 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using MatchingSystem.DataLayer.Feature.Tutor;
-using MatchingSystem.DataLayer.Feature.User.repo;
+using MatchingSystem.DataLayer.OldDto.MatchingInit;
 using MatchingSystem.DataLayer.OldEntities;
-using Microsoft.EntityFrameworkCore;
 
 namespace MatchingSystem.DataLayer.Feature.Role.repo;
 
-
-
-public class RoleRepository:GenericRepository<UsersRoleEntity>,IRoleRepository
+public class RoleRepository : GenericRepository<UsersRoleEntity>, IRoleRepository
 {
-    const int TUTOR_ROLE_ID=1;
-    const int STUDENT_ROLE_ID=2;
-    
-    private IUserRepositoryOld userRepositoryOld;
-    public RoleRepository(DbContext context, IUserRepositoryOld userRepositoryOld) : base(context)
-    {
-        this.userRepositoryOld = userRepositoryOld;
-    }
-
     public IEnumerable<RoleDto> GetRolesForUserAndMatching(int userId, int matchingId)
     {
         return findAll().Where(role => role.MatchingId == matchingId && role.UserId == userId)
-            .ToList() 
+            .ToList()
             .Select(role =>
             {
                 var dto = new RoleDto();
@@ -55,27 +43,42 @@ public class RoleRepository:GenericRepository<UsersRoleEntity>,IRoleRepository
         return roles;
     }
 
-    public void AssignRoleForUser(int userId, int matchingId, int roleId)
+    public void AssignRoleForUser(int userId, int matchingId, int roleId, DiplomaMatchingContext? extContext = null)
     {
-        save(new UsersRoleEntity()
+        save(new UsersRoleEntity
             {
                 MatchingId = matchingId,
                 RoleId = roleId,
                 UserId = userId
-            }
+            }, extContext
         );
     }
-    
-    public void AssignTutorRole(List<TutorInitDto> dataTutorRecords, int matchingId)
+
+    public void AssignTutorRoles(List<TutorInitDto> dataTutorRecords, int matchingId,
+        DiplomaMatchingContext? extContext = null)
     {
         var userRoles = dataTutorRecords.Select(dto =>
-            new UsersRoleEntity()
+            new UsersRoleEntity
             {
                 MatchingId = matchingId,
-                RoleId = TUTOR_ROLE_ID,
+                RoleId = (int)RolesEnum.TUTOR,
                 UserId = dto.UserId,
                 TutorId = dto.TutorId
             }).ToList();
-        saveRange(userRoles);
+        saveRange(userRoles, extContext);
+    }
+    
+    public void AssignStudentsRoles(List<StudentInitDto> studentRecords, int matchingMatchingId,
+        DiplomaMatchingContext? extContext = null)
+    {
+        var userRoles = studentRecords.Select(dto =>
+            new UsersRoleEntity
+            {
+                MatchingId = matchingMatchingId,
+                RoleId = (int)RolesEnum.STUDENT,
+                UserId = dto.UserId,
+                StudentId = dto.StudentId
+            }).ToList();
+        saveRange(userRoles, extContext);
     }
 }

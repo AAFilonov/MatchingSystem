@@ -9,9 +9,9 @@ using MatchingSystem.DataLayer.OldDto.MatchingMonitoring;
 
 namespace MatchingSystem.DataLayer.Feature.Project.Repo
 {
-    public class ProjectRepositoryDapper : ConnectionBase, IProjectRepository
+    public class ProjectRepositoryOldDapper : ConnectionBase, IProjectRepositoryOld
     {
-        public ProjectRepositoryDapper(string connectionString) : base(connectionString)
+        public ProjectRepositoryOldDapper(string connectionString) : base(connectionString)
         {
         }
 

@@ -2,16 +2,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using MatchingSystem.DataLayer.Feature.Student;
 using MatchingSystem.DataLayer.Feature.Student.repo;
-using MatchingSystem.DataLayer.Feature.Tutor;
 using MatchingSystem.DataLayer.Feature.Tutor.repo;
 using MatchingSystem.DataLayer.OldDto.MatchingInit;
 using MatchingSystem.Service.DocumentsProcessing;
 using MatchingSystem.Service.Exception;
 using MatchingSystem.Service.MatchingInitialization;
 using MatchingSystem.Service.Student;
-using MatchingSystem.Service.Tutor;
 using MatchingSystem.UI.Helpers;
 using MatchingSystem.UI.Services;
 using Microsoft.AspNetCore.Http;
@@ -34,10 +31,13 @@ public class MatchingInitializationController : ControllerBase
 
     private readonly ITutorsParsingService tutorsParsingService;
 
-    public MatchingInitializationController(IDocumentsProcessingService documentsProcessingService, IMatchingInitializationService matchingInitializationService, ILogger<MatchingInitializationController> logger, IStudentsParsingService studentsParsingService, ITutorRepository tutorRepository, ITutorsParsingService tutorsParsingService, IStudentService studentService, IStudentRepository studentRepository)
+    public MatchingInitializationController(IDocumentsProcessingService documentsProcessingService,
+        ILogger<MatchingInitializationController> logger, IStudentsParsingService studentsParsingService,
+        ITutorRepository tutorRepository, ITutorsParsingService tutorsParsingService, IStudentService studentService,
+        IStudentRepository studentRepository, IMatchingInitializationService matchingInitializationService)
     {
         this.documentsProcessingService = documentsProcessingService;
-        this.matchingInitializationService = matchingInitializationService;
+
         this.logger = logger;
         this.studentsParsingService = studentsParsingService;
         this.tutorRepository = tutorRepository;
@@ -45,6 +45,7 @@ public class MatchingInitializationController : ControllerBase
         this.tutorsParsingService = tutorsParsingService;
         this.studentService = studentService;
         this.studentRepository = studentRepository;
+        this.matchingInitializationService = matchingInitializationService;
     }
 
 
@@ -80,7 +81,8 @@ public class MatchingInitializationController : ControllerBase
     public async Task<IActionResult> uploadTutorDataAsync(IFormCollection files)
     {
         var data = files.Files[0];
-
+        string ArrayToString(List<string> list) => string.Join(", ", list.ToArray());
+        
         logger.LogInformation("INFO: Accepting tutors data upload request. Filename is {}", data.FileName);
 
         await using var memoryStream = new MemoryStream();
@@ -88,20 +90,20 @@ public class MatchingInitializationController : ControllerBase
         var sessionData = HttpContext.Session.Get<SessionData>("Data");
 
         var package = new ExcelPackage(memoryStream);
-        var groups = tutorsParsingService.parseTutorGroupData(package);
-
+        var tutorGroups = tutorsParsingService.parseTutorGroupData(package);
+        var tutorGroupsNames = tutorGroups.Select(dto => dto.name).ToList();
 
         var tutorGroupsMatchWithStudentGroups = true;
-        var groupNames = sessionData.matchingInitData.groupRecords.Select(initDto => initDto.name).ToList();
-        tutorGroupsMatchWithStudentGroups = tutorGroupsMatchWithStudentGroups && groupNames.Count.Equals(groups.Count);
-        groups.ForEach(dto =>
+        var studentGroupNames = sessionData.matchingInitData.groupRecords.Select(initDto => initDto.name).ToList();
+        tutorGroupsMatchWithStudentGroups = tutorGroupsMatchWithStudentGroups && studentGroupNames.Count.Equals(tutorGroups.Count);
+        tutorGroups.ForEach(dto =>
         {
             tutorGroupsMatchWithStudentGroups =
-                tutorGroupsMatchWithStudentGroups && groupNames.Any(name => name.Equals(dto.name));
-            
+                tutorGroupsMatchWithStudentGroups && studentGroupNames.Any(name => name.Equals(dto.name));
+
             if (!tutorGroupsMatchWithStudentGroups)
-                throw new InputDataException("группы преподавателей не соотвествуют группам заданным для студентов: '" +
-                                             dto.name + "'");
+                throw new InputDataException("группы преподавателей [" + ArrayToString(tutorGroupsNames) +
+                                             "] не соотвествуют группам заданным для студентов [" +ArrayToString(studentGroupNames)+"]");
         });
 
         var tutors = tutorsParsingService.tryToParseTutorsData(package);
@@ -111,7 +113,8 @@ public class MatchingInitializationController : ControllerBase
             .Where(g => g.Count() > 1)
             .ToDictionary(x => x.Key, y => y.Count())
             .Where(pair => pair.Value > 0).ToList();
-        if (dublicatedTutors.Count > 0) throw new InputDataException("в списке преподавателей присутсвуют дубликаты");
+        if (dublicatedTutors.Count > 0) throw new InputDataException("в списке преподавателей присутсвуют дубликаты: "
+                                                                     +ArrayToString(dublicatedTutors.Select(pair =>pair.Key).ToList()));
 
         var existing_tutors = tutorRepository.GetTutorsViews();
 
@@ -139,9 +142,11 @@ public class MatchingInitializationController : ControllerBase
         HttpContext.Session.Set("Data", sessionData);
         var currentMatchingInitData = sessionData.matchingInitData;
         currentMatchingInitData.matching = data.matching;
-
-        var updatedData =
-            matchingInitializationService.createMatching(currentMatchingInitData, sessionData.UserDto.UserId);
+        data.creatorId = sessionData.UserDto.UserId;
+        //var updatedData = matchingInitializationService.createMatching(currentMatchingInitData);
+        data.groupRecords = data.tutorRecords.FirstOrDefault().groups;
+        
+        var updatedData = matchingInitializationService.InitNewMatching(data);
         sessionData.matchingInitData = updatedData;
         HttpContext.Session.Set("Data", sessionData);
 
@@ -154,11 +159,12 @@ public class MatchingInitializationController : ControllerBase
     public FileResult getStudentDataReport()
     {
         var sessionData = HttpContext.Session.Get<SessionData>("Data");
-        int currentMatchingId = sessionData.SelectedMatching;
-        
-        List<StudentView> students = studentRepository.getStundentsView().Where(student => student.MatchingId == currentMatchingId).ToList();
-        List<StudentInitDto> studentDos=studentService.resetPasswords(students);
-        
+        var currentMatchingId = sessionData.SelectedMatching;
+
+        var students = studentRepository.getStundentsView().Where(student => student.MatchingId == currentMatchingId)
+            .ToList();
+        var studentDos = studentService.resetPasswords(students);
+
         var package = documentsProcessingService.formStudentDataReport(studentDos);
         return File(package.GetAsByteArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             "Reports.xlsx");

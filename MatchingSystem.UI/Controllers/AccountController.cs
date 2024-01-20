@@ -19,7 +19,6 @@ namespace MatchingSystem.UI.Controllers
             this.userRepository = userRepository;
         }
 
-
         public override void OnActionExecuting(ActionExecutingContext ctx)
         {
             base.OnActionExecuting(ctx);
@@ -56,6 +55,7 @@ namespace MatchingSystem.UI.Controllers
                 "Tutor" => RedirectToAction("index", "tutor"),
                 "Executive" => RedirectToAction("index", "executive"),
                 "Student" => RedirectToAction("index", "student"),
+                "Admin" => RedirectToAction("index", "admin"),
                 _ => NotFound()
             };
         }

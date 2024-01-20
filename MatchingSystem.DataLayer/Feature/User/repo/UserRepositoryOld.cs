@@ -75,7 +75,7 @@ namespace MatchingSystem.DataLayer.Feature.User.repo
                         ,Patronimic = user.middleName
                         ,Password = user.passwordHash
                         ,Login = user.login
-                        ,UserBK = user.userBK
+                        ,UserBK = user.UserId
                         
                     });
             }
@@ -86,7 +86,7 @@ namespace MatchingSystem.DataLayer.Feature.User.repo
                     new
                     { 
                         UserID = user.UserId,
-                        UserBK = user.userBK
+                        UserBK = user.UserId
                     });
             }
             

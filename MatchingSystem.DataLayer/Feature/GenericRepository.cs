@@ -3,16 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using MatchingSystem.DataLayer.Utils.Exceptions;
-using Microsoft.EntityFrameworkCore;
 
 namespace MatchingSystem.DataLayer.Feature;
 
 public class GenericRepository<TEntity> : Repository, IRepository<TEntity> where TEntity : class
 {
-    public GenericRepository(DbContext context) : base(context)
-    {
-    }
-
     public TEntity findById(int id)
     {
         var item = _matchingSystemContext.Set<TEntity>().Find(id);
@@ -31,60 +26,41 @@ public class GenericRepository<TEntity> : Repository, IRepository<TEntity> where
         return _matchingSystemContext.Set<TEntity>().ToList();
     }
 
-    public TEntity save(TEntity item)
+    public TEntity save(TEntity item, DiplomaMatchingContext? extContext = null)
     {
-        using (var context = _matchingSystemContext)
+        return СallInContext<TEntity>(context =>
         {
             context.Set<TEntity>().Add(item);
-            context.SaveChanges();
-        }
-
-        return item;
+            return item;
+        }, extContext);
     }
 
-    public IEnumerable<TEntity> saveRange(IEnumerable<TEntity> items)
+    public IEnumerable<TEntity> saveRange(IEnumerable<TEntity> items, DiplomaMatchingContext? extContext = null)
     {
-        using (var context = _matchingSystemContext)
+        return СallInContext<IEnumerable<TEntity>>(context =>
         {
             context.Set<TEntity>().AddRange(items);
-            context.SaveChanges();
             return items;
-        }
+        }, extContext);
     }
 
-    public void update(TEntity item)
+    public void update(TEntity item, DiplomaMatchingContext? extContext = null)
     {
-        using (var context = _matchingSystemContext)
-        {
-            context.Set<TEntity>().Update(item);
-            context  .SaveChanges();
-        }
+        СallInContext(context => { context.Set<TEntity>().Update(item); }, extContext);
     }
 
-    public void updateRange(IEnumerable<TEntity> items)
+    public void updateRange(IEnumerable<TEntity> items, DiplomaMatchingContext? extContext = null)
     {
-        using (var context = _matchingSystemContext)
-        {
-            context.Set<TEntity>().UpdateRange(items);
-            context.SaveChanges();
-        }
+        СallInContext(context => { context.Set<TEntity>().UpdateRange(items); }, extContext);
     }
 
-    public void delete(TEntity item)
+    public void remove(TEntity item, DiplomaMatchingContext? extContext = null)
     {
-        using (var context = _matchingSystemContext)
-        {
-            context.Set<TEntity>().Remove(item);
-            context.SaveChanges();
-        }
+        СallInContext(context => { context.Set<TEntity>().Remove(item); }, extContext);
     }
 
-    public void deleteRange(IEnumerable<TEntity> items)
+    public void removeRange(IEnumerable<TEntity> items, DiplomaMatchingContext? extContext = null)
     {
-        using (var context = _matchingSystemContext)
-        {
-            context.Set<TEntity>().RemoveRange(items);
-            context.SaveChanges();
-        }
+        СallInContext(context => { context.Set<TEntity>().RemoveRange(items); }, extContext);
     }
 }

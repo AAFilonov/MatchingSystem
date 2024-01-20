@@ -9,12 +9,6 @@ namespace MatchingSystem.DataLayer.Feature.Matching.repo;
 
 public class MatchingRepository : GenericRepository<MatchingEntity>, IMatchingRepository
 {
-
-    public MatchingRepository(DbContext context) : base(context)
-    {
-    }
-
-
     public IEnumerable<AllocationDto> GetFinalAllocations()
     {
         List<AllocationFullInfoView> allocations = _matchingSystemContext.AllocationFullInfos.ToList();
@@ -63,4 +57,7 @@ public class MatchingRepository : GenericRepository<MatchingEntity>, IMatchingRe
     {
         return _matchingSystemContext.Matchings.Include(matching =>matching.MatchingType );
     }
+    
+    
+    
 }

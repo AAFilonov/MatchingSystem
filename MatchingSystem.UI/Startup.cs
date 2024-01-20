@@ -80,8 +80,8 @@ namespace MatchingSystem.UI
             services.AddTransient<IStudentRepositoryOld, StudentRepositoryOld>(_ =>
                 new StudentRepositoryOld(connectionString));
 
-            services.AddTransient<IProjectRepository, ProjectRepositoryDapper>(_ =>
-                new ProjectRepositoryDapper(connectionString));
+            services.AddTransient<IProjectRepositoryOld, ProjectRepositoryOldDapper>(_ =>
+                new ProjectRepositoryOldDapper(connectionString));
             services.AddTransient<IUserRepositoryOld, UserRepositoryOld>(_ =>
                 new UserRepositoryOld(connectionString));
             services.AddSingleton<IExecutiveServiceOld, ExecutiveServiceDapper>(_ =>
@@ -90,11 +90,6 @@ namespace MatchingSystem.UI
                 new ExecutiveServiceDapper(connectionString));
             services.AddSingleton<IStatisticsRepository, StatisticsRepository>(_ =>
                 new StatisticsRepository(connectionString));
-
-
-
-
-
 
             //--Services
             services.AddSingleton<IMatchingRepository, MatchingRepository>();
@@ -106,11 +101,11 @@ namespace MatchingSystem.UI
             services.AddSingleton<IStudentService, StudentService>();
             services.AddSingleton<IQuotasService, QuotasService>();
             services.AddSingleton<ITutorService, TutorService>();
-            services.AddScoped<IUserRepository, UserRepository>();            
+            services.AddSingleton<IUserRepository, UserRepository>();            
             services.AddSingleton<IRoleRepository, RoleRepository>();
             services.AddSingleton<ITutorsParsingService, TutorParsingService>();            
             services.AddSingleton<IStudentsParsingService, StudentsParsingService>();            
-            services.AddSingleton<IDocumentsProcessingService, DocumentsProcessingService>();            
+            services.AddSingleton<IDocumentsProcessingService, DocumentsProcessingService>();
             services.AddSingleton<IMatchingInitializationService, MatchingInitializationService>();            
             services.AddSingleton<IMonitoringService, MonitoringService>();
             services.AddSingleton<IStageTransitionService, StageTransitionService>();
@@ -123,17 +118,15 @@ namespace MatchingSystem.UI
             services.AddSingleton<IGroupRepository, GroupRepository>();
             services.AddSingleton<ITutorRepository, TutorRepository>();
             services.AddSingleton<IAllocationRepository, AllocationRepository>();
+            services.AddSingleton<IProjectRepository,ProjectRepository>();
             //--Services
             
-
             services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromHours(2);
                 options.Cookie.Name = "SessionStorage";
             });
 
-      
-           
         }
         public void Configure(IApplicationBuilder app)
         {

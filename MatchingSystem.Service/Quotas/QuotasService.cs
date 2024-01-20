@@ -11,14 +11,14 @@ namespace MatchingSystem.Service.Quotas;
 public class QuotasService : IQuotasService
 {
     private readonly IExecutiveServiceOld executiveService;
-    private readonly IProjectRepository projectRepository;
+    private readonly IProjectRepositoryOld projectRepositoryOld;
     private readonly ICommonQuotaRepository commonQuotaRepository;
 
     public QuotasService(
-        IProjectRepository projectRepository,
+        IProjectRepositoryOld projectRepositoryOld,
         IExecutiveServiceOld executiveService, ICommonQuotaRepository commonQuotaRepository)
     {
-        this.projectRepository = projectRepository;
+        this.projectRepositoryOld = projectRepositoryOld;
         this.executiveService = executiveService;
         this.commonQuotaRepository = commonQuotaRepository;
     }
@@ -30,7 +30,7 @@ public class QuotasService : IQuotasService
             History = commonQuotaRepository.GetQuotaRequestHistoryByTutor(tutorId),
             CommonQuota = commonQuotaRepository.find( entity =>entity.TutorId== tutorId).First().Qty
         };
-        if (stageTypeCode == 4) model.Projects = projectRepository.GetProjectsByTutor(tutorId);
+        if (stageTypeCode == 4) model.Projects = projectRepositoryOld.GetProjectsByTutor(tutorId);
 
         return model;
     }
