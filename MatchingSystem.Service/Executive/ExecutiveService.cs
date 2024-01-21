@@ -14,16 +14,16 @@ namespace MatchingSystem.Service.Executive;
 public class ExecutiveService : IExecutiveService
 {
     private readonly IMatchingService matchingService;
-    private readonly IProjectRepository projectRepository;
+    private readonly IProjectRepositoryOld projectRepositoryOld;
     private readonly ITutorRepository tutorRepository;
     private readonly IAllocationRepository allocationRepository;
 
     public ExecutiveService(
         ITutorRepository tutorRepository,
-        IProjectRepository projectRepository, IMatchingService matchingService, IAllocationRepository allocationRepository)
+        IProjectRepositoryOld projectRepositoryOld, IMatchingService matchingService, IAllocationRepository allocationRepository)
     {
         this.tutorRepository = tutorRepository;
-        this.projectRepository = projectRepository;
+        this.projectRepositoryOld = projectRepositoryOld;
         this.matchingService = matchingService;
         this.allocationRepository = allocationRepository;
     }
@@ -47,7 +47,7 @@ public class ExecutiveService : IExecutiveService
 
         foreach (var tutorId in tutorIds)
         {
-            var temp = projectRepository.GetProjectsByTutor(tutorId).ToList();
+            var temp = projectRepositoryOld.GetProjectsByTutor(tutorId).ToList();
             temp.ForEach(x => x.TutorID = tutorId);
             model.Projects.AddRange(temp);
         }

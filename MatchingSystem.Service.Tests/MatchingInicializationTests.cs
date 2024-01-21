@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Text;
-using MatchingSystem.DataLayer.Feature.Matching;
-using MatchingSystem.Service.MatchingInitialization;
 using NUnit.Framework;
 using Scrypt;
 

@@ -10,10 +10,6 @@ namespace MatchingSystem.DataLayer.Feature.User.repo;
 
 public class UserRepository : GenericRepository<UserEntity>, IUserRepository
 {
-    public UserRepository(DbContext context) : base(context)
-    {
-    }
-
     public UserEntity GetByLogin(string login)
     {
         return _matchingSystemContext.Users.Single(user => user.Login.Equals(login));
@@ -21,6 +17,7 @@ public class UserRepository : GenericRepository<UserEntity>, IUserRepository
 
     public IEnumerable<StudentInitDto> SaveStudents(List<StudentInitDto> students)
     {
+        
         foreach (var student in students)
         {
             UserEntity user = new UserEntity()

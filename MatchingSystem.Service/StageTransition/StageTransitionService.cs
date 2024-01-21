@@ -13,17 +13,17 @@ public class StageTransitionService : IStageTransitionService
 {
     private readonly IMatchingRepository matchingRepository;
     private readonly IMatchingService matchingService;
-    private readonly IProjectRepository projectRepository;
+    private readonly IProjectRepositoryOld projectRepositoryOld;
     private readonly IStudentRepositoryOld studentRepositoryOld;
     private readonly ITutorRepository tutorRepository;
 
     public StageTransitionService(IMatchingRepository matchingRepository, ITutorRepository tutorRepository,
-        IStudentRepositoryOld studentRepositoryOld, IProjectRepository projectRepository, IMatchingService matchingService)
+        IStudentRepositoryOld studentRepositoryOld, IProjectRepositoryOld projectRepositoryOld, IMatchingService matchingService)
     {
         this.matchingRepository = matchingRepository;
         this.tutorRepository = tutorRepository;
         this.studentRepositoryOld = studentRepositoryOld;
-        this.projectRepository = projectRepository;
+        this.projectRepositoryOld = projectRepositoryOld;
         this.matchingService = matchingService;
     }
 
@@ -63,7 +63,7 @@ public class StageTransitionService : IStageTransitionService
     private bool needToTransitionInIteration(int MatchingId)
     {
         var tutChoice = tutorRepository.getChoicesByMatchingCurrentStage(MatchingId);
-        var projsClosed = projectRepository.GetProjectsByMatching(MatchingId).Where(x => x.IsClosed == true);
+        var projsClosed = projectRepositoryOld.GetProjectsByMatching(MatchingId).Where(x => x.IsClosed == true);
 
         //получить проекты которые уже закрыты на данной итерации (из списка полученных проектов)
         var queryTutCh = tutChoice.Where(c => !(from p in projsClosed select p.ProjectID).Contains(c.ProjectID));

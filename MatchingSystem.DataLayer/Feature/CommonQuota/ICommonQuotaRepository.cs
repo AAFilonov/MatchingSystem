@@ -10,6 +10,7 @@ public interface ICommonQuotaRepository : IRepository<CommonQuotaEntity>
     public void CreateCommonQuotaRequestForLastStage(CreateCommonQuotaParams @params);
     public void CreateCommonQuotaRequestForSecondStage(int tutorId, int quota, string message);
     public void CreateCommonQuotaRequestForThirdStage(int tutorId, int quota, string message);
-    public void SetCommonQuotasForTutors(List<TutorInitDto> tuts, int stageId);
+
+    public void CreateCommonQuotas(List<TutorInitDto> tuts, int stageId, DiplomaMatchingContext? extContext = null);
     IEnumerable<QuotaHistoryTutor> GetQuotaRequestHistoryByTutor(int tutorId);
 }

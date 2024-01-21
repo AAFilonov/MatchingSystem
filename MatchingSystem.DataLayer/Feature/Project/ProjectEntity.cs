@@ -10,7 +10,7 @@ public class ProjectEntity
 {
     public ProjectEntity()
     {
-        ProjectsGroups = new HashSet<ProjectsGroup>();
+        ProjectsGroups = new HashSet<ProjectsGroupEntity>();
         ProjectsTechnologies = new HashSet<ProjectsTechnology>();
         ProjectsWorkDirections = new HashSet<ProjectsWorkDirection>();
         StudentsPreferences = new HashSet<StudentsPreference>();
@@ -32,7 +32,7 @@ public class ProjectEntity
     public short? ProjectQuotaDelta { get; set; }
 
     public virtual TutorEntity Tutor { get; set; } = null!;
-    public virtual ICollection<ProjectsGroup> ProjectsGroups { get; set; }
+    public virtual ICollection<ProjectsGroupEntity> ProjectsGroups { get; set; }
     public virtual ICollection<ProjectsTechnology> ProjectsTechnologies { get; set; }
     public virtual ICollection<ProjectsWorkDirection> ProjectsWorkDirections { get; set; }
     public virtual ICollection<StudentsPreference> StudentsPreferences { get; set; }

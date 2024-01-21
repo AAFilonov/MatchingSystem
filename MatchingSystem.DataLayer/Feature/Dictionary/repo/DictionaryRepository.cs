@@ -6,11 +6,6 @@ namespace MatchingSystem.DataLayer.Feature.Dictionary.repo;
 
 public class DictionaryRepository : GenericRepository<TechnologyEntity>, IDictionaryRepository
 {
-
-    public DictionaryRepository(DbContext context) : base(context)
-    {
-    }
-
     public IEnumerable<TechnologyDto> GetTechnologiesAll()
     {
         var technologyList = findAll();

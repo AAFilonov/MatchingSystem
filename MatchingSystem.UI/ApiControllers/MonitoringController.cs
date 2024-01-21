@@ -1,18 +1,8 @@
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
-using MatchingSystem.Service.DocumentsProcessing;
-using MatchingSystem.Service.Exception;
-using MatchingSystem.Service.MatchingInitialization;
 using MatchingSystem.Service.Monitoring;
-using MatchingSystem.Service.Tutor;
 using MatchingSystem.UI.Helpers;
 using MatchingSystem.UI.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using OfficeOpenXml;
 
 namespace MatchingSystem.UI.ApiControllers;
 

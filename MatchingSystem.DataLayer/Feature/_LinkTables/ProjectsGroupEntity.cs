@@ -3,7 +3,7 @@ using MatchingSystem.DataLayer.Feature.Project;
 
 namespace MatchingSystem.DataLayer.Feature._LinkTables;
 
-public class ProjectsGroup
+public class ProjectsGroupEntity
 {
     public int ProjectGroupId { get; set; }
     public int ProjectId { get; set; }
