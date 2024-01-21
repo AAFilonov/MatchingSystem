@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MatchingSystem.DataLayer.Feature.CommonQuota.repo;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using MatchingSystem.DataLayer.Feature.Matching.repo;
@@ -13,13 +14,15 @@ namespace MatchingSystem.UI.Controllers
     public class ExecutiveController : Controller
     {
         private readonly IMatchingRepository matchingRepository;
+        private readonly ICommonQuotaRepository commonQuotaRepository;
         private readonly IExecutiveServiceOld executiveService;
         private SessionData data;
 
-        public ExecutiveController(IMatchingRepository matchingRepository, IExecutiveServiceOld executiveService)
+        public ExecutiveController(IMatchingRepository matchingRepository, IExecutiveServiceOld executiveService, ICommonQuotaRepository commonQuotaRepository)
         {
             this.matchingRepository = matchingRepository;
             this.executiveService = executiveService;
+            this.commonQuotaRepository = commonQuotaRepository;
         }
         
         public override void OnActionExecuting(ActionExecutingContext ctx)
@@ -49,10 +52,8 @@ namespace MatchingSystem.UI.Controllers
         public IActionResult Quotas()
         {
             ExecutiveQuotaViewModel model = new ExecutiveQuotaViewModel();
-
-            model.Requests = executiveService.GetQuotaRequestsByExecutive(data.UserDto.UserId, data.SelectedMatching);
+            model.Requests = commonQuotaRepository.GetQuotaRequestsByExecutive(data.UserDto.UserId, data.SelectedMatching);
             model.History = executiveService.GetQuotaRequestHistoryByExecutive(data.UserDto.UserId, data.SelectedMatching);
-
             return View(model);
         }
 

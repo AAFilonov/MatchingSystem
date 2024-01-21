@@ -50,12 +50,13 @@ public class MatchingService : IMatchingService
 
     public int createFirstStage(int MatchingID)
     {
-        DataLayer.Feature.Stage.StageEntity firstStage = new DataLayer.Feature.Stage.StageEntity();
-        firstStage.StageTypeId = 1;
-        firstStage.StartDate = DateTime.Now;
-        firstStage.StartDate = DateTime.Now.Add(TimeSpan.FromHours(1));
-        firstStage.IsCurrent = true;
-        firstStage.MatchingId = MatchingID;
+        DataLayer.Feature.Stage.StageEntity firstStage = new DataLayer.Feature.Stage.StageEntity
+        {
+            StageTypeId = 1,
+            StartDate = DateTime.Now.Add(TimeSpan.FromHours(1)),
+            IsCurrent = true,
+            MatchingId = MatchingID
+        };
         firstStage = stageRepository.save(firstStage);
         return firstStage.StageId;
     }

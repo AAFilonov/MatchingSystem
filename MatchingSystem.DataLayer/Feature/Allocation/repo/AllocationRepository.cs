@@ -17,7 +17,7 @@ public class AllocationRepository :  Repository, IAllocationRepository
     private const int CHOSING_TYPE_BY_EXECUTIVE_ID = 4;
     private readonly  IMatchingRepository matchingRepository;
     
-    public AllocationRepository(DbContext context, IMatchingRepository matchingRepository) : base(context)
+    public AllocationRepository(IMatchingRepository matchingRepository) 
     {
         this.matchingRepository = matchingRepository;
     }

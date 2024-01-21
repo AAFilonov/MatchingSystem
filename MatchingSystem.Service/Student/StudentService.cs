@@ -17,17 +17,17 @@ namespace MatchingSystem.Service.Student;
 
 public class StudentService : IStudentService
 {
-    private readonly IProjectRepository projectRepository;
+    private readonly IProjectRepositoryOld projectRepositoryOld;
     private readonly IStudentRepositoryOld studentRepositoryOld;
     private readonly IUserRepository userRepository;
     private readonly IStudentRepository studentRepository;
 
     public StudentService(
         IStudentRepositoryOld studentRepositoryOld,
-        IProjectRepository projectRepository, IStudentRepository studentRepository, IUserRepository userRepository)
+        IProjectRepositoryOld projectRepositoryOld, IStudentRepository studentRepository, IUserRepository userRepository)
     {
         this.studentRepositoryOld = studentRepositoryOld;
-        this.projectRepository = projectRepository;
+        this.projectRepositoryOld = projectRepositoryOld;
         this.studentRepository = studentRepository;
         this.userRepository = userRepository;
     }
@@ -53,7 +53,7 @@ public class StudentService : IStudentService
 
     public IEnumerable<ProjectForStudentDto> GetProjects(int studentId)
     {
-        var model = projectRepository.GetProjectsByStudent(studentId);
+        var model = projectRepositoryOld.GetProjectsByStudent(studentId);
 
         return model.OrderBy(x => x.OrderNumber);
     }

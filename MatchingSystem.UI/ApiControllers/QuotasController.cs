@@ -9,11 +9,11 @@ namespace MatchingSystem.UI.ApiControllers
     [ApiController]
     public class QuotasController : ControllerBase
     {
-        private readonly IQuotasService quotasService;
+        private readonly ICommonQuotaService commonQuotaService;
 
-        public QuotasController(IQuotasService quotasService)
+        public QuotasController(ICommonQuotaService commonQuotaService)
         {
-            this.quotasService = quotasService;
+            this.commonQuotaService = commonQuotaService;
         }
 
         [Route("api/[controller]/tutor/initialize")]
@@ -24,7 +24,7 @@ namespace MatchingSystem.UI.ApiControllers
             {
                 return BadRequest("Некорректный параметр запроса");
             }
-            var model = quotasService.Initialize(tutorId, stageTypeCode);
+            var model = commonQuotaService.Initialize(tutorId, stageTypeCode);
             return new JsonResult(model);
         }
 
@@ -32,7 +32,7 @@ namespace MatchingSystem.UI.ApiControllers
         [HttpPost]
         public IActionResult CreateRequest([FromBody] ChangeQuotaRequest data)
         {
-            quotasService.CreateRequest(data);
+            commonQuotaService.CreateQuotaRequest(data);
             return NoContent();
         }
         
@@ -40,7 +40,7 @@ namespace MatchingSystem.UI.ApiControllers
         [HttpPost]
         public IActionResult CreateRequestForLastStage([FromBody] ChangeQuotaRequest data)
         {
-            quotasService.CreateRequestForLastStage(data);
+            commonQuotaService.CreateRequestForLastStage(data);
             return Ok();
         }
 
@@ -51,7 +51,7 @@ namespace MatchingSystem.UI.ApiControllers
             var data = HttpContext.Request.Form;
             int quotaId = Convert.ToInt32(data["quotaId"]);
             string action = data["action"];
-            quotasService.AcceptRequest(quotaId, action);
+            commonQuotaService.AcceptRequest(quotaId, action);
 
             return NoContent();
         }

@@ -10,10 +10,10 @@ public interface IRepository<TEntity> where TEntity : class
     IEnumerable<TEntity> find(Expression<Func<TEntity, bool>> predicate);
     IEnumerable<TEntity> findAll();
 
-    TEntity save(TEntity item);
-    public IEnumerable<TEntity> saveRange(IEnumerable<TEntity> items);
-    void update(TEntity item);
-    public void updateRange(IEnumerable<TEntity> items);
-    void delete(TEntity item);
-    public void deleteRange(IEnumerable<TEntity> items);
+    TEntity save(TEntity item, DiplomaMatchingContext? extContext = null);
+    public IEnumerable<TEntity> saveRange(IEnumerable<TEntity> items, DiplomaMatchingContext? extContext = null);
+    void update(TEntity item, DiplomaMatchingContext? extContext = null);
+    public void updateRange(IEnumerable<TEntity> items, DiplomaMatchingContext? extContext = null);
+    void remove(TEntity item, DiplomaMatchingContext? extContext = null);
+    public void removeRange(IEnumerable<TEntity> items, DiplomaMatchingContext? extContext = null);
 }

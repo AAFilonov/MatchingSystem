@@ -1,61 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
-using MatchingSystem.DataLayer.Feature.Role;
 using MatchingSystem.DataLayer.Feature.TutorChoise;
 using MatchingSystem.DataLayer.OldEntities;
-using Microsoft.EntityFrameworkCore;
 
 namespace MatchingSystem.DataLayer.Feature.Tutor.repo;
 
 public class TutorRepository : GenericRepository<TutorEntity>, ITutorRepository
 {
-    public TutorRepository(DbContext context) : base(context)
-    {
-    }
-
-    public void AssignTutorRole(List<TutorInitDto> tuts, int matchingID)
-    {
-        var tutors = tuts.Select(info =>
-        {
-            UsersRoleEntity role = new UsersRoleEntity()
-            {
-                UserId = info.UserId,
-                TutorId = info.UserId,
-                MatchingId = matchingID,
-                RoleId = 1,
-            };
-            return role;
-        });
-        using (var context = _matchingSystemContext)
-        {
-            context.UsersRoles.AddRange(tutors);
-            context.SaveChanges();
-        }
-    }
-
-    public IEnumerable<TutorInitDto> CreateTutors(List<TutorInitDto> tuts, int matchingId)
-    {
-        var tutors = tuts.Select(info =>
-            {
-                TutorEntity tutor = new TutorEntity()
-                {
-                    MatchingId = matchingId,
-                    IsReadyToStart = false,
-                };
-
-                return tutor;
-            }
-        ).ToList();
-
-        saveRange(tutors);
-
-        for (var i = 0; i < tuts.Count; i++) {
-            tuts[i].TutorId = tutors[i].TutorId;
-        }
-
-        return tuts;
-    }
-
     public IEnumerable<TutorChoiceDto> GetChoiceByTutor(int tutorId)
     {
         return _matchingSystemContext.TutorsChoices
@@ -77,10 +28,9 @@ public class TutorRepository : GenericRepository<TutorEntity>, ITutorRepository
         return 0;
     }
 
-    public void SetPreferences(IEnumerable<TutorChoice_1> newChoices, int tutorId)
+    public void SetPreferences(IEnumerable<TutorChoice_1> newChoices, int tutorId,DiplomaMatchingContext? extContext = null)
     {
-        using (var context = _matchingSystemContext)
-        {
+        CallInContext(context =>{
             var tutorChoicesToUpdate = context.TutorsChoices
                 .Where(entity => newChoices.Any(val => val.ChoiceID == entity.ChoiceId))
                 .ToList();
@@ -91,11 +41,10 @@ public class TutorRepository : GenericRepository<TutorEntity>, ITutorRepository
                 tutorsChoiceEntity.IsInQuota = newChoise.IsInQuota;
             }
 
-            context.UpdateRange(tutorChoicesToUpdate);
-            context.SaveChanges();
-        }
+            context.TutorsChoices.UpdateRange(tutorChoicesToUpdate);
+        }, extContext);
     }
-    
+
     public IEnumerable<TutorView> GetTutorsViews()
     {
         return _matchingSystemContext.TutorsViews.ToList();

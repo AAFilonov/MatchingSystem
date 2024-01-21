@@ -39,6 +39,7 @@
                                 <div class="custom-file">
                                     <label for="studentsFile">Данные студентов</label>
                                     <input id="studentsFile" type="file" v-on:change="onStudentsFileChange"  accept=".xls,.xlsx,.csv">
+                                    <span>Статус: {{studentError}}</span>
                                 </div>
 
                                 <table class="table table-hover" v-if="studentsAreReady">
@@ -90,6 +91,7 @@
                                 <div class="custom-file">
                                     <label for="tutorsFile">Данные преподавателей</label>
                                     <input id="tutorsFile" type="file" v-on:change="onTutorsFileChange"  accept=".xls,.xlsx,.csv">
+                                      <span>Статус: {{tutorError}}</span>
                                 </div>
                                 
                                 <table class="table table-hover" v-if="tutorsAreReady">
@@ -168,13 +170,17 @@
                                            v-model="matchingData.matching.startDate">
                                 </div>
                                 <button  class="btn btn-primary"
-                                         v-if="!matchingRequestPending"
+                                         v-if="!matchingRequestPending && !studentDataRequestPending"
                                          v-on:click="postMatchingData">
                                     <span>Готово</span>
                                 </button>
+                                <button  class="btn btn-primary disabled"
+                                         v-if="matchingRequestPending">
+                                    <span>Отправка...</span>
+                                </button>
                                    <button  class="btn btn-primary disabled"
-                                        v-if="matchingRequestPending">
-                                        <span>Отправка...</span>
+                                           v-if="studentDataRequestPending">
+                                     <span>Обработка...</span>
                                    </button>
                             </div>
                         </div>
@@ -216,7 +222,10 @@ let app = new Vue({
           },
           studentFile: null,
           tutorsFile: null,
-          matchingRequestPending:false,
+          studentError: "Не задано",
+          tutorError: "Не задано",
+          matchingRequestPending: false,
+          studentDataRequestPending: false,
       }
   },
   async mounted(){ 
@@ -250,13 +259,14 @@ let app = new Vue({
             }
           )
           .then(response =>this.onStudentsUploadSuccess(response))
-          .catch(error =>{
-              console.log(error);
+          .catch(error =>{            
+              this.StudentError = error.response.data;
               DisplayNotification('Ошибка при загрузке данных: '+ error.response.data,'error');
           });
     
      },
      onTutorsFileChange(event){
+               this.tutorError ="";
                this.tutorsFile = event.target.files[0];            
                var formData = new FormData();           
                formData.append("doc",  this.tutorsFile);
@@ -269,24 +279,29 @@ let app = new Vue({
                )
                .then(response => this.onTutorsUploadSuccess(response))
                .catch(error => {
+                   this.tutorError = error.response.data;
                    DisplayNotification('Ошибка при загрузке данных: '+ error.response.data,'error');
                });
           },
      async onStudentsUploadSuccess(response){
-         if (response.data) {                       
+         if (response.data) {
+             this.studentError = "Загружены успешно";
              this.matchingData.studentRecords =  response.data;
              DisplayNotification('Данные загружены успешно');
          }
          else{
+             this.studentError = "Загружены с ошибкой";
              DisplayNotification('Ошибка при загрузке данных','error' );
          }       
      }, 
      async onTutorsUploadSuccess(response){
-         if (response.data) {                       
+         if (response.data) {
+             this.tutorError = "Загружены успешно";
              this.matchingData.tutorRecords =  response.data;
              DisplayNotification('Данные загружены успешно');
          }
          else{
+             this.tutorError = "Загружены с ошибкой";
              DisplayNotification('Ошибка при загрузке данных','error' );
          }       
      }, 
@@ -298,7 +313,8 @@ let app = new Vue({
           this.matchingData,{
             headers: {
                 'Content-Type': 'application/json'
-            }
+            },
+            timeout:20000
           }
         )
         .then(response =>{         
@@ -310,6 +326,7 @@ let app = new Vue({
         .finally(() => this.matchingRequestPending=false);
      },
      async exportStudents(){
+        this.studentDataRequestPending = true;
         axios.get(`${params.basePath}/api/matchingInitialization/student_data_report`,{ responseType: 'blob'})                                                                      
             .then(response => {
                 this.matchingData =  response.data; 
@@ -324,7 +341,8 @@ let app = new Vue({
                 DisplayNotification('Запрос на создание распределения отправлен!');
                 window.location.href="../"
                           
-        });
+        })
+        .finally(() => this.studentDataRequestPending=false);
      },   
   }
 })

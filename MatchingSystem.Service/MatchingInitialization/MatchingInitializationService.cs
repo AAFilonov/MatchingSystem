@@ -1,176 +1,253 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Transactions;
+using MatchingSystem.DataLayer;
+using MatchingSystem.DataLayer.Feature;
 using MatchingSystem.DataLayer.Feature.CommonQuota;
-using MatchingSystem.DataLayer.Feature.Group;
+using MatchingSystem.DataLayer.Feature.CommonQuota.repo;
 using MatchingSystem.DataLayer.Feature.Group.repo;
+using MatchingSystem.DataLayer.Feature.Matching;
+using MatchingSystem.DataLayer.Feature.Matching.repo;
 using MatchingSystem.DataLayer.Feature.Project.Repo;
+using MatchingSystem.DataLayer.Feature.Role;
 using MatchingSystem.DataLayer.Feature.Role.repo;
+using MatchingSystem.DataLayer.Feature.Stage;
+using MatchingSystem.DataLayer.Feature.Stage.repo;
 using MatchingSystem.DataLayer.Feature.Student;
 using MatchingSystem.DataLayer.Feature.Student.repo;
 using MatchingSystem.DataLayer.Feature.Tutor;
 using MatchingSystem.DataLayer.Feature.Tutor.repo;
+using MatchingSystem.DataLayer.Feature.User;
 using MatchingSystem.DataLayer.Feature.User.repo;
 using MatchingSystem.DataLayer.OldDto.MatchingInit;
 using MatchingSystem.DataLayer.Utils;
-using MatchingSystem.Service.Exception;
-using MatchingSystem.Service.Matching;
+using Microsoft.Extensions.Logging;
 using Scrypt;
 
 namespace MatchingSystem.Service.MatchingInitialization;
 
-public class MatchingInitializationService : IMatchingInitializationService
+public class MatchingInitializationService : Repository, IMatchingInitializationService
 {
+    private readonly ILogger<MatchingInitializationService> logger;
     private readonly IGroupRepository groupRepository;
-    private readonly IMatchingService matchingService;
+    private readonly IMatchingRepository matchingRepository;
     private readonly IProjectRepository projectRepository;
-    private readonly IStudentRepositoryOld studentRepositoryOld;
+    private readonly IStudentRepository studentRepository;
     private readonly ITutorRepository tutorRepository;
     private readonly ICommonQuotaRepository quotaRepository;
-    //private readonly IUserRepositoryOld userRepositoryOld;
     private readonly IUserRepository userRepository;
     private readonly IRoleRepository roleRepository;
+    private readonly IStageRepository stageRepository;
 
     public MatchingInitializationService(
-        IStudentRepositoryOld studentRepositoryOld
-        , IGroupRepository groupRepository
-        , ITutorRepository tutorRepository
-        , IProjectRepository projectRepository
-        , IMatchingService matchingService, IUserRepository userRepository, IRoleRepository roleRepository, ICommonQuotaRepository quotaRepository)
+        IRoleRepository roleRepository,
+        IUserRepository userRepository,
+        ICommonQuotaRepository quotaRepository,
+        ITutorRepository tutorRepository,
+        IGroupRepository groupRepository,
+        IMatchingRepository matchingRepository,
+        IStageRepository stageRepository,
+        IProjectRepository projectRepository,
+        IStudentRepository studentRepository, ILogger<MatchingInitializationService> logger)
     {
-
-        this.studentRepositoryOld = studentRepositoryOld;
-        this.groupRepository = groupRepository;
-        this.tutorRepository = tutorRepository;
-        this.projectRepository = projectRepository;
-        this.matchingService = matchingService;
-        this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.userRepository = userRepository;
         this.quotaRepository = quotaRepository;
+        this.tutorRepository = tutorRepository;
+        this.groupRepository = groupRepository;
+        this.matchingRepository = matchingRepository;
+        this.stageRepository = stageRepository;
+        this.projectRepository = projectRepository;
+        this.studentRepository = studentRepository;
+        this.logger = logger;
     }
 
-    public MatchingInitData createMatching(MatchingInitData data, int creatorUserId)
+    public MatchingInitData InitNewMatching(MatchingInitData data)
     {
-        if (data == null)
-            throw new ArgumentNullException(nameof(data));
-        MatchingInitData matching;
+        using var context = _matchingSystemContext;
+        using var transaction = context.Database.BeginTransaction();
         try
         {
-            matching = TryCreateMatching(data, creatorUserId);
-            //            transactionScope.Complete();
-            return matching;
-            //TODO DPL-17 транзакционность через EF, тк в Dapper она не работает
-            using (var transactionScope = new TransactionScope(TransactionScopeOption.Required, TimeSpan.MaxValue))
-            {
-                matching = TryCreateMatching(data, creatorUserId);
-                transactionScope.Complete();
-                return matching;
-            }
-        }
-        catch (TransactionAbortedException ex)
-        {
-            return data;
+            logger.LogInformation("Начат процесс обработки распределения {}", data.matching.name);
+            var updatedData = TryToInitNewMatching(context, data);
+            context.SaveChanges();
+            transaction.Commit();
+            logger.LogInformation("Процесс обработки распределения {} успешно завершен", data.matching.name);
+            return updatedData;
         }
         catch (System.Exception e)
         {
-            throw new InputDataException("Unknown matching creation error", e);
+            transaction.Rollback();
+            throw new System.Exception("Matching creation error: " + e.Message, e);
         }
     }
 
-    private MatchingInitData TryCreateMatching(MatchingInitData data, int creatorUserId)
+    private MatchingInitData TryToInitNewMatching(DiplomaMatchingContext context, MatchingInitData data)
     {
-        //TODO DPL-16
-        //просетить userId преподавателей по NameAbbreviation
-        data.tutorRecords = userRepository.SetUserIdForTutors(data.tutorRecords).ToList();
-
-        //создать Mathching, Stage
-        var MatchingId = matchingService.CreateMatching(data.matching);
-        var StageId = matchingService.createFirstStage(MatchingId);
-        roleRepository.AssignRoleForUser(creatorUserId, MatchingId, 3);
-
-        var groups = data.groupRecords.Select(item => new GroupEntity()
-        {
-            GroupName = item.name,
-            MatchingId = MatchingId,
-        });
-        groupRepository.saveRange(groups);
-
-
-        //записать полученные ID Group в набор студентов
-        foreach (var stud in data.studentRecords)
-            stud.GroupId = data.groupRecords.Where(x => x.name == stud.groupName).Select(x => x.groupId)
-                .FirstOrDefault();
-
-        //записать полученные ID Group в набор преподавателей
-        foreach (var tut in data.tutorRecords)
-        {
-            tut.groups.ForEach(group =>
-            {
-                group.groupId = data.groupRecords.Where(x => x.name == group.name).Select(x => x.groupId)
-                    .FirstOrDefault();
-            });
-        }
-
-        //создать учетные записи для студентов 
-        data.studentRecords = ctreateUsersForStudents(data);//TODO - этот шаг очень медленный, нужно переписать;
-
-        //Создать Tutors на данный Matching
-        data.tutorRecords = tutorRepository.CreateTutors(data.tutorRecords, MatchingId).ToList();
-
-        //Провязать роли для преподавателей 
-        roleRepository.AssignTutorRole(data.tutorRecords, MatchingId); //TODO реализваоно по старому
-
-        //задать квоты преподавателям
-        quotaRepository.SetCommonQuotasForTutors(data.tutorRecords, StageId); //TODO реализваоно по старому
-
-        //создать провязки преподаватель - группа
-        groupRepository.AssignGroupsToTutors(data.tutorRecords); //TODO реализваоно по старому
-
-
-        projectRepository.CreateDefaultTutorsProjects(data.tutorRecords); //TODO реализваоно по старому
-
-
-        //создать проекты по умолчанию для преподавателей
-        data.tutorRecords = projectRepository.CreateDefaultProjectsForTutors(data.tutorRecords, MatchingId) //TODO реализваоно по старому
-            .ToList();
-        //связать проекты по умолчанию с группами
-        projectRepository.SetDefaultProjects_Groups(data.tutorRecords); //TODO реализваоно по старому
-
-        //создать на базе Студентов
-        data.studentRecords = studentRepositoryOld.CreateStudents(data.studentRecords, MatchingId).ToList();
-
-        //Провязать роли для студентов 
-        studentRepositoryOld.CreateUserRoles_Students(data.studentRecords, MatchingId); //TODO реализваоно по старому
-
-        //перейти к следующему шагу
-        //переключиться в новое распределение
-        //SetNewFirstStageInMatching(MatchingId);
-        //    transactionScope.Complete();
-        //}
-
-
+        data.matching.matchingId = InitMatchingEntity(data, context).MatchingId;
+        data.matching.firstStageId = InitFirStageEntity(data, context).StageId;
+        InitCreatorRoles(context, data);
+        InitGroups(context, data);
+        InitTutors(context, data);
+        InitTutorDefaultProjects(context, data);
+        InitStudents(context, data);
         return data;
     }
 
-    private List<StudentInitDto> ctreateUsersForStudents(MatchingInitData data)
+    private void InitStudents(DiplomaMatchingContext context, MatchingInitData data)
     {
-        foreach (var dto in data.studentRecords)
+        PrepareStudentDtos(data.studentRecords);
+        data.studentRecords = CreateStudentUserEntities(context, data);
+        var studentEntities = data.studentRecords.Select(student => new StudentEntity
         {
-            dto.login = UserUtils.Transliterate(dto.lastName + dto.firstName.Substring(0, 1) +
-                                                (dto.middleName != null ? dto.middleName.Substring(0, 1) : ""));
-            //if (userRepository.GetByLogin(dto.login) != null) dto.login += "2023";
+            GroupId = student.GroupId,
+            MatchingId = data.matching.matchingId
+        }).ToList();
+        studentRepository.saveRange(studentEntities, context);
 
-            dto.userBK = dto.UserId;
-            dto.password = UserUtils.CreatePassword(6);
+        for (var i = 0; i < data.studentRecords.Count; i++)
+            data.studentRecords[i].StudentId = studentEntities[i].StudentId;
+        logger.LogInformation("Операционные записи студентов созданы успешно");
 
-            var encoder = new ScryptEncoder();
-
-            dto.passwordHash = encoder.Encode(dto.password);
-        }
-
-        return userRepository.SaveStudents(data.studentRecords).ToList();
+        roleRepository.AssignStudentsRoles(data.studentRecords, data.matching.matchingId, context);
+        logger.LogInformation("Назначение ролей студентам выполнено успешно");
     }
 
+    private void InitTutorDefaultProjects(DiplomaMatchingContext context, MatchingInitData data)
+    {
+        //создать проекты по умолчанию для преподавателей
+        data.tutorRecords =
+            projectRepository.CreateDefaultProjectsForTutors(data.tutorRecords, data.matching.matchingId, context);
+        logger.LogInformation("Проекты преподавателей по умолчанию созданы успешно");
+
+        //связать проекты по умолчанию с группами
+        projectRepository.AssignProjectsToGroups(data.tutorRecords, context);
+        logger.LogInformation("Проекты преподавателей  успешно связаны с группами");
+    }
+    
+    private void InitTutors(DiplomaMatchingContext context, MatchingInitData data)
+    {
+        //инициализировать UserId у преподавателей
+        data.tutorRecords = userRepository.SetUserIdForTutors(data.tutorRecords).ToList();
+        //создать TutorEntity
+        var tutors = data.tutorRecords.Select(info => new TutorEntity
+        {
+            MatchingId = data.matching.matchingId,
+            IsReadyToStart = false
+        }).ToList();
+        tutorRepository.saveRange(tutors, context);
+        for (var i = 0; i < tutors.Count; i++)  data.tutorRecords[i].TutorId = tutors[i].TutorId;
+        logger.LogInformation("Записи о преподавателях созданы успешно");
+
+        //Провязать роли для преподавателей 
+        roleRepository.AssignTutorRoles(data.tutorRecords, data.matching.matchingId, context);
+        logger.LogInformation("Назначение ролей преподавателям выполнено успешно");
+        //задать квоты преподавателям
+        quotaRepository.CreateCommonQuotas(data.tutorRecords, data.matching.firstStageId, context);
+        logger.LogInformation("Квоты преподавателей созданы успешно");
+        //создать провязки преподаватель - группа
+        groupRepository.AssignGroupsToTutors(data.tutorRecords, context);
+        logger.LogInformation("Назначение групп преподавателям выполнено успешно");
+    }
+
+    private void InitCreatorRoles(DiplomaMatchingContext context, MatchingInitData data)
+    {
+        roleRepository.AssignRoleForUser(data.creatorId, data.matching.matchingId, (int)RolesEnum.EXECUTIVE, context);
+        roleRepository.AssignRoleForUser(data.creatorId, data.matching.matchingId, (int)RolesEnum.ADMIN, context);
+        logger.LogInformation("Роли администратора и отвественного назначены успешно");
+    }
+
+    private void InitGroups(DiplomaMatchingContext context, MatchingInitData data)
+    {
+        var groups = groupRepository.CreateGroups(data, context);
+        for (var i = 0; i < data.tutorRecords.Count(); i++)
+            data.tutorRecords[i].groups.ForEach(tutorGroup =>
+            {
+                tutorGroup.groupId = groups.Find(g => g.GroupName == tutorGroup.name).GroupId;
+            });
+        //записать полученные ID Group в набор студентов
+        foreach (var stud in data.studentRecords)
+            stud.GroupId = data.groupRecords
+                .Where(x => x.name == stud.groupName)
+                .Select(x => x.groupId)
+                .FirstOrDefault();
+        logger.LogInformation("Группы студентов созданы успешно");
+    }
+
+    private StageEntity InitFirStageEntity(MatchingInitData data, DiplomaMatchingContext context)
+    {
+        var firstStage = new StageEntity
+        {
+            StageTypeId = 1,
+            StartDate = DateTime.Now.Add(TimeSpan.FromHours(1)),
+            IsCurrent = true,
+            MatchingId = data.matching.matchingId
+        };
+        firstStage = stageRepository.save(firstStage, context);
+        logger.LogInformation("Начальная стадия распределения созадана успешно, StageId ={}", firstStage.StageId);
+        return firstStage;
+    }
+
+    private MatchingEntity InitMatchingEntity(MatchingInitData data, DiplomaMatchingContext context)
+    {
+        var matching = new MatchingEntity
+        {
+            MatchingName = data.matching.name,
+            MatchingTypeId = data.matching.typeCode == "MG" ? 2 : 1,
+            CreatorUserId = data.creatorId
+        };
+        matching = matchingRepository.save(matching, context);
+        logger.LogInformation("Матчинг созадан успешно, matchingId ={}", data.matching.matchingId);
+        return matching;
+    }
+
+    private List<StudentInitDto> CreateStudentUserEntities(DiplomaMatchingContext context, MatchingInitData data)
+    {
+        var views = studentRepository.getStundentsView();
+        var studentsToCreate = new List<UserEntity>();
+
+        foreach (var student in data.studentRecords)
+        {
+            var existingUser = views.Find(view =>
+                view.Name == student.firstName &&
+                view.Patronimic == student.middleName &&
+                view.Surname == student.lastName
+            );
+
+            if (existingUser == null)
+                studentsToCreate.Add(new UserEntity
+                {
+                    Login = student.login,
+                    PasswordHash = student.passwordHash,
+                    Name = student.firstName,
+                    Surname = student.lastName,
+                    Patronimic = student.middleName
+                });
+            else
+                student.UserId = existingUser.UserId;
+        }
+
+        userRepository.saveRange(studentsToCreate, context);
+        data.studentRecords
+            .Where(student => student.UserId == 0)
+            .ToList().ForEach(student =>
+            {
+                var user = studentsToCreate.Find(user => user.Login == student.login);
+                student.UserId = user.UserId;
+            });
+        logger.LogInformation("Учетные записи студентов созданы успешно");
+        return data.studentRecords;
+    }
+
+    private void PrepareStudentDtos(List<StudentInitDto> studentRecords)
+    {
+        foreach (var dto in studentRecords)
+        {
+            dto.login = UserUtils.Transliterate(dto.lastName + dto.firstName[..1] +
+                                                (dto.middleName != null ? dto.middleName[..1] : ""));
+            dto.password = UserUtils.CreatePassword(6);
+            var encoder = new ScryptEncoder();
+            dto.passwordHash = encoder.Encode(dto.password);
+        }
+    }
 }

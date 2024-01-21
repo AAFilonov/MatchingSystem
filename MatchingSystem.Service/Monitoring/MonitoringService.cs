@@ -18,19 +18,19 @@ namespace MatchingSystem.Service.Monitoring;
 public class MonitoringService : IMonitoringService
 {
     private readonly IGroupRepository groupRepository;
-    private readonly IProjectRepository projectRepository;
+    private readonly IProjectRepositoryOld projectRepositoryOld;
     private readonly IStudentRepositoryOld studentRepositoryOld;
     private readonly ITutorRepository tutorRepository;
 
     public MonitoringService(IStudentRepositoryOld studentRepositoryOld
         , ITutorRepository tutorRepository
-        , IProjectRepository projectRepository
+        , IProjectRepositoryOld projectRepositoryOld
         , IGroupRepository groupRepository
     )
     {
         this.studentRepositoryOld = studentRepositoryOld;
         this.tutorRepository = tutorRepository;
-        this.projectRepository = projectRepository;
+        this.projectRepositoryOld = projectRepositoryOld;
         this.groupRepository = groupRepository;
     }
 

@@ -2,13 +2,13 @@
 
 namespace MatchingSystem.Service.Quotas;
 
-public interface IQuotasService
+public interface ICommonQuotaService
 {
     public TutorQuotaData Initialize(int tutorId, int stageTypeCode);
 
-    public void CreateRequest(ChangeQuotaRequest data);
+    public void CreateQuotaRequest(ChangeQuotaRequest data);
 
     public void CreateRequestForLastStage(ChangeQuotaRequest data);
 
-    public void AcceptRequest(int quotaid, string action);
+    public void AcceptRequest(int quotaId, string action);
 }

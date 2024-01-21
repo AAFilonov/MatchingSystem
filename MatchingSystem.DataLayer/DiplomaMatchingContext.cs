@@ -38,7 +38,7 @@ public class DiplomaMatchingContext: DbContext
     public virtual DbSet<MatchingType> MatchingTypes { get; set; } = null!;
     public virtual DbSet<ProjectEntity> Projects { get; set; } = null!;
     public virtual DbSet<ProjectView> Projects1 { get; set; } = null!;
-    public virtual DbSet<ProjectsGroup> ProjectsGroups { get; set; } = null!;
+    public virtual DbSet<ProjectsGroupEntity> ProjectsGroups { get; set; } = null!;
     public virtual DbSet<ProjectsTechnology> ProjectsTechnologies { get; set; } = null!;
     public virtual DbSet<ProjectsWorkDirection> ProjectsWorkDirections { get; set; } = null!;
     public virtual DbSet<QuotasStateEntity> QuotasStates { get; set; } = null!;
@@ -138,7 +138,7 @@ public class DiplomaMatchingContext: DbContext
         //технические таблицы и таблицы связи
 
         
-        modelBuilder.Entity<ProjectsGroup>(entity =>
+        modelBuilder.Entity<ProjectsGroupEntity>(entity =>
         {
             entity.HasKey(e => e.ProjectGroupId)
                 .HasName("PK__Projects__17125E7ED62BC05D");
