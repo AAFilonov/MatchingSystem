@@ -7,7 +7,7 @@ public class Repository
 {
     protected DiplomaMatchingContext _matchingSystemContext => new(DbContextUtils.CreateDbContextOptions().Options);
     
-    protected void СallInContext(Action<DiplomaMatchingContext> myDelegate, DiplomaMatchingContext? extContext = null)
+    protected void CallInContext(Action<DiplomaMatchingContext> myDelegate, DiplomaMatchingContext? extContext = null)
     {
         if (extContext == null)
         {
@@ -22,7 +22,7 @@ public class Repository
         }
     }
 
-    protected T СallInContext<T>(Func<DiplomaMatchingContext, T> myDelegate, DiplomaMatchingContext? extContext = null)
+    protected T CallInContext<T>(Func<DiplomaMatchingContext, T> myDelegate, DiplomaMatchingContext? extContext = null)
     {
         if (extContext == null)
         {

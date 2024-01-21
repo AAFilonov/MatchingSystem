@@ -49,7 +49,6 @@ public class UserRepository : GenericRepository<UserEntity>, IUserRepository
         {
             var userRole = tutorsRoles.FirstOrDefault(tutor => tutor.NameAbbreviation == dto.nameAbbreviation);
             dto.UserId = userRole.UserId;
-            dto.TutorId = (int)userRole.TutorId;
         });
         return tutors;
     }

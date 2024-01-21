@@ -170,7 +170,7 @@
                                            v-model="matchingData.matching.startDate">
                                 </div>
                                 <button  class="btn btn-primary"
-                                         v-if="!matchingRequestPending"
+                                         v-if="!matchingRequestPending && !studentDataRequestPending"
                                          v-on:click="postMatchingData">
                                     <span>Готово</span>
                                 </button>
@@ -224,8 +224,8 @@ let app = new Vue({
           tutorsFile: null,
           studentError: "Не задано",
           tutorError: "Не задано",
-          matchingRequestPending:false,
-          studentDataRequestPending:false,
+          matchingRequestPending: false,
+          studentDataRequestPending: false,
       }
   },
   async mounted(){ 

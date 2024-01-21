@@ -28,7 +28,7 @@ public class GenericRepository<TEntity> : Repository, IRepository<TEntity> where
 
     public TEntity save(TEntity item, DiplomaMatchingContext? extContext = null)
     {
-        return СallInContext<TEntity>(context =>
+        return CallInContext<TEntity>(context =>
         {
             context.Set<TEntity>().Add(item);
             return item;
@@ -37,7 +37,7 @@ public class GenericRepository<TEntity> : Repository, IRepository<TEntity> where
 
     public IEnumerable<TEntity> saveRange(IEnumerable<TEntity> items, DiplomaMatchingContext? extContext = null)
     {
-        return СallInContext<IEnumerable<TEntity>>(context =>
+        return CallInContext<IEnumerable<TEntity>>(context =>
         {
             context.Set<TEntity>().AddRange(items);
             return items;
@@ -46,21 +46,21 @@ public class GenericRepository<TEntity> : Repository, IRepository<TEntity> where
 
     public void update(TEntity item, DiplomaMatchingContext? extContext = null)
     {
-        СallInContext(context => { context.Set<TEntity>().Update(item); }, extContext);
+        CallInContext(context => { context.Set<TEntity>().Update(item); }, extContext);
     }
 
     public void updateRange(IEnumerable<TEntity> items, DiplomaMatchingContext? extContext = null)
     {
-        СallInContext(context => { context.Set<TEntity>().UpdateRange(items); }, extContext);
+        CallInContext(context => { context.Set<TEntity>().UpdateRange(items); }, extContext);
     }
 
     public void remove(TEntity item, DiplomaMatchingContext? extContext = null)
     {
-        СallInContext(context => { context.Set<TEntity>().Remove(item); }, extContext);
+        CallInContext(context => { context.Set<TEntity>().Remove(item); }, extContext);
     }
 
     public void removeRange(IEnumerable<TEntity> items, DiplomaMatchingContext? extContext = null)
     {
-        СallInContext(context => { context.Set<TEntity>().RemoveRange(items); }, extContext);
+        CallInContext(context => { context.Set<TEntity>().RemoveRange(items); }, extContext);
     }
 }

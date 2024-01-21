@@ -10,7 +10,7 @@ public class GroupRepository : GenericRepository<GroupEntity>, IGroupRepository
 {
     public void AssignGroupsToTutors(List<TutorInitDto> tutors, DiplomaMatchingContext? extContext = null)
     {
-        СallInContext(context =>
+        CallInContext(context =>
         {
             foreach (var tutor in tutors)
                 context.TutorsGroups.AddRange(tutor.groups.Select(info =>

@@ -8,18 +8,18 @@ namespace MatchingSystem.UI.ApiControllers
     [ApiController]
     public class NotificationController : ControllerBase
     {
-        private readonly INotificationService notificationService;
+        private readonly IQuotaNotificationService quotaNotificationService;
 
-        public NotificationController(INotificationService notificationService)
+        public NotificationController(IQuotaNotificationService quotaNotificationService)
         {
-            this.notificationService = notificationService;
+            this.quotaNotificationService = quotaNotificationService;
         }
   
         [Route("api/[controller]/get_notifications")]
         [HttpGet]
         public IActionResult GetNotificationsByExecutive(int userId, int matchingId)
         {
-            var result = notificationService.GetNotificationsByExecutive(userId, matchingId);
+            var result = quotaNotificationService.ReadNotificationsByExecutive(matchingId);
             return new JsonResult(result);
         }
 
@@ -27,7 +27,7 @@ namespace MatchingSystem.UI.ApiControllers
         [HttpGet]
         public IActionResult GetNotificationsByTutor(int tutorId, int userId, int matchingId)
         {
-            var result = notificationService.GetNotificationsByTutor(tutorId, userId,matchingId);
+            var result = quotaNotificationService.ReadNotificationsByTutor(tutorId);
             return new JsonResult(result);
         }
     }

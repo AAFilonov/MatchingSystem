@@ -30,7 +30,7 @@ public class TutorRepository : GenericRepository<TutorEntity>, ITutorRepository
 
     public void SetPreferences(IEnumerable<TutorChoice_1> newChoices, int tutorId,DiplomaMatchingContext? extContext = null)
     {
-        СallInContext(context =>{
+        CallInContext(context =>{
             var tutorChoicesToUpdate = context.TutorsChoices
                 .Where(entity => newChoices.Any(val => val.ChoiceID == entity.ChoiceId))
                 .ToList();

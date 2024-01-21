@@ -4,6 +4,7 @@ using System.Linq;
 using MatchingSystem.DataLayer;
 using MatchingSystem.DataLayer.Feature;
 using MatchingSystem.DataLayer.Feature.CommonQuota;
+using MatchingSystem.DataLayer.Feature.CommonQuota.repo;
 using MatchingSystem.DataLayer.Feature.Group.repo;
 using MatchingSystem.DataLayer.Feature.Matching;
 using MatchingSystem.DataLayer.Feature.Matching.repo;
@@ -123,8 +124,7 @@ public class MatchingInitializationService : Repository, IMatchingInitialization
         projectRepository.AssignProjectsToGroups(data.tutorRecords, context);
         logger.LogInformation("Проекты преподавателей  успешно связаны с группами");
     }
-
-
+    
     private void InitTutors(DiplomaMatchingContext context, MatchingInitData data)
     {
         //инициализировать UserId у преподавателей
@@ -136,7 +136,7 @@ public class MatchingInitializationService : Repository, IMatchingInitialization
             IsReadyToStart = false
         }).ToList();
         tutorRepository.saveRange(tutors, context);
-        for (var i = 0; i < tutors.Count; i++) tutors[i].TutorId = tutors[i].TutorId;
+        for (var i = 0; i < tutors.Count; i++)  data.tutorRecords[i].TutorId = tutors[i].TutorId;
         logger.LogInformation("Записи о преподавателях созданы успешно");
 
         //Провязать роли для преподавателей 

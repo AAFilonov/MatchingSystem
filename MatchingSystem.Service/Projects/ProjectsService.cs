@@ -1,19 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using MatchingSystem.Constants;
-using MatchingSystem.DataLayer.Feature.CommonQuota;
-using MatchingSystem.DataLayer.Feature.Dictionary;
+using MatchingSystem.DataLayer.Feature.CommonQuota.repo;
 using MatchingSystem.DataLayer.Feature.Dictionary.repo;
-using MatchingSystem.DataLayer.Feature.Group;
 using MatchingSystem.DataLayer.Feature.Group.repo;
 using MatchingSystem.DataLayer.Feature.Matching.repo;
 using MatchingSystem.DataLayer.Feature.Project;
 using MatchingSystem.DataLayer.Feature.Project.Repo;
-using MatchingSystem.DataLayer.Feature.Tutor;
 using MatchingSystem.DataLayer.Feature.Tutor.repo;
 using MatchingSystem.DataLayer.OldDto;
 using MatchingSystem.DataLayer.OldDto.IO.Params;
-using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.Service.Projects;
 
@@ -24,13 +20,13 @@ public class ProjectsService : IProjectsService
     private readonly IProjectRepositoryOld projectRepositoryOld;
     private readonly ITutorRepository tutorRepository;
     private readonly IGroupRepository groupRepository;
-    private readonly CommonQuotaRepository commonQuotaRepository;
+    private readonly ICommonQuotaRepository commonQuotaRepository;
 
     public ProjectsService(
         IDictionaryRepository dictionaryRepository,
         ITutorRepository tutorRepository,
         IMatchingRepository matchingRepository,
-        IProjectRepositoryOld projectRepositoryOld, CommonQuotaRepository commonQuotaRepository, IGroupRepository groupRepository)
+        IProjectRepositoryOld projectRepositoryOld,ICommonQuotaRepository commonQuotaRepository, IGroupRepository groupRepository)
     {
         this.dictionaryRepository = dictionaryRepository;
         this.tutorRepository = tutorRepository;

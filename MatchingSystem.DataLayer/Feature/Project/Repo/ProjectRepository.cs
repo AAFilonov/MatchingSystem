@@ -10,19 +10,20 @@ public class ProjectRepository : GenericRepository<ProjectEntity>, IProjectRepos
     public List<TutorInitDto> CreateDefaultProjectsForTutors(List<TutorInitDto> tutors, int matchingId,
         DiplomaMatchingContext? extContext = null)
     {
-        СallInContext(context =>
+        CallInContext(context =>
         {
             var projects = tutors.Select(dto =>
             {
                 return new ProjectEntity
                 {
+                    ProjectName = "Записаться к преподавателю",
                     IsClosed = false,
                     IsDefault = true,
                     TutorId = dto.TutorId,
                     MatchingId = matchingId
                 };
             }).ToList();
-            saveRange(projects);
+            saveRange(projects,context);
             for (var i = 0; i < tutors.Count; i++) tutors[i].DefaultProjectId = projects[i].ProjectId;
         }, extContext);
         return tutors;
@@ -30,7 +31,7 @@ public class ProjectRepository : GenericRepository<ProjectEntity>, IProjectRepos
 
     public void AssignProjectsToGroups(List<TutorInitDto> tutors,  DiplomaMatchingContext? extContext = null)
     {
-        СallInContext(context =>
+        CallInContext(context =>
         {
             var projectsGroupEntities = new List<ProjectsGroupEntity>();
             tutors.ForEach(tutor =>
