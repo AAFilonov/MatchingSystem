@@ -18,9 +18,6 @@ namespace MatchingSystem.DataLayer.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.10")
-                .HasAnnotation("Proxies:ChangeTracking", false)
-                .HasAnnotation("Proxies:CheckEquality", false)
-                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -262,7 +259,7 @@ namespace MatchingSystem.DataLayer.Migrations
                         .HasColumnType("datetime")
                         .HasDefaultValueSql("(getdate())");
 
-                    b.Property<bool?>("IsNotification")
+                    b.Property<bool>("IsNotification")
                         .HasColumnType("bit");
 
                     b.Property<string>("Message")
@@ -276,11 +273,11 @@ namespace MatchingSystem.DataLayer.Migrations
                         .HasColumnType("int")
                         .HasColumnName("QuotaStateID");
 
-                    b.Property<int?>("StageId")
+                    b.Property<int>("StageId")
                         .HasColumnType("int")
                         .HasColumnName("StageID");
 
-                    b.Property<int?>("TutorId")
+                    b.Property<int>("TutorId")
                         .HasColumnType("int")
                         .HasColumnName("TutorID");
 
@@ -1002,7 +999,7 @@ namespace MatchingSystem.DataLayer.Migrations
                     b.Property<bool?>("IsReadyToStart")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("MatchingId")
+                    b.Property<int>("MatchingId")
                         .HasColumnType("int")
                         .HasColumnName("MatchingID");
 
@@ -1252,7 +1249,7 @@ namespace MatchingSystem.DataLayer.Migrations
                     b.ToView("Users_FullInfo", "dbo_v");
                 });
 
-            modelBuilder.Entity("MatchingSystem.DataLayer.Feature._LinkTables.ProjectsGroup", b =>
+            modelBuilder.Entity("MatchingSystem.DataLayer.Feature._LinkTables.ProjectsGroupEntity", b =>
                 {
                     b.Property<int>("ProjectGroupId")
                         .ValueGeneratedOnAdd()
@@ -1503,11 +1500,15 @@ namespace MatchingSystem.DataLayer.Migrations
                     b.HasOne("MatchingSystem.DataLayer.Feature.Stage.StageEntity", "Stage")
                         .WithMany("CommonQuota")
                         .HasForeignKey("StageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
                         .HasConstraintName("FK_CommonQuotas_Stages");
 
                     b.HasOne("MatchingSystem.DataLayer.Feature.Tutor.TutorEntity", "Tutor")
                         .WithMany("CommonQuota")
                         .HasForeignKey("TutorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
                         .HasConstraintName("FK_CommonQuotas_Tutors");
 
                     b.Navigation("QuotaState");
@@ -1655,7 +1656,7 @@ namespace MatchingSystem.DataLayer.Migrations
                     b.Navigation("typeEntity");
                 });
 
-            modelBuilder.Entity("MatchingSystem.DataLayer.Feature._LinkTables.ProjectsGroup", b =>
+            modelBuilder.Entity("MatchingSystem.DataLayer.Feature._LinkTables.ProjectsGroupEntity", b =>
                 {
                     b.HasOne("MatchingSystem.DataLayer.Feature.Group.GroupEntity", "groupEntity")
                         .WithMany("ProjectsGroups")

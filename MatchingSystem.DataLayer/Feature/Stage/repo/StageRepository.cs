@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace MatchingSystem.DataLayer.Feature.Stage.repo;
+﻿namespace MatchingSystem.DataLayer.Feature.Stage.repo;
 
 public class StageRepository: GenericRepository<StageEntity>, IStageRepository
 {

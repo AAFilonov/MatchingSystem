@@ -1,4 +1,5 @@
 ﻿using System;
+using MatchingSystem.Constants;
 using MatchingSystem.DataLayer;
 using MatchingSystem.DataLayer._Technical;
 using MatchingSystem.DataLayer.Feature.Allocation.repo;
@@ -55,8 +56,8 @@ namespace MatchingSystem.UI
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var connectionString = Configuration.GetConnectionString("DefaultConnection");
-            DbContextUtils.Init(connectionString);
+           // var connectionString = Configuration.GetConnectionString("DefaultConnection");
+            SystemParameters.Init(Configuration);
             services.AddDistributedMemoryCache();
             services.AddMvc();
             services
@@ -67,30 +68,24 @@ namespace MatchingSystem.UI
 
 
             var optionsBuilder = new DbContextOptionsBuilder<DiplomaMatchingContext>();
-            optionsBuilder.UseSqlServer(connectionString);
+            optionsBuilder.UseSqlServer(SystemParameters.getInstance().CONNECTION_STRING);
             optionsBuilder.UseLazyLoadingProxies();
         
 
-           var dbContext = new DiplomaMatchingContext(DbContextUtils.CreateDbContextOptions().Options);
-           services.AddTransient<DbContext, DiplomaMatchingContext>(_ => dbContext);
+           //var dbContext = new DiplomaMatchingContext(SystemProperties.CreateDbContextOptions().Options);
+           //services.AddTransient<DbContext, DiplomaMatchingContext>(_ => dbContext);
       
 
             services.AddTransient<IMatchingRepositoryDapper, MatchingRepositoryDapper>(_ =>
-                new MatchingRepositoryDapper(connectionString));
-            
+                new MatchingRepositoryDapper(SystemParameters.getInstance().CONNECTION_STRING));
             services.AddTransient<IStudentRepositoryOld, StudentRepositoryOld>(_ =>
-                new StudentRepositoryOld(connectionString));
-
+                new StudentRepositoryOld(SystemParameters.getInstance().CONNECTION_STRING));
             services.AddTransient<IProjectRepositoryOld, ProjectRepositoryOldDapper>(_ =>
-                new ProjectRepositoryOldDapper(connectionString));
-            services.AddTransient<IUserRepositoryOld, UserRepositoryOld>(_ =>
-                new UserRepositoryOld(connectionString));
-            services.AddSingleton<IExecutiveServiceOld, ExecutiveServiceDapper>(_ =>
-                new ExecutiveServiceDapper(connectionString));
+                new ProjectRepositoryOldDapper(SystemParameters.getInstance().CONNECTION_STRING));
             services.AddTransient<IExecutiveServiceOld, ExecutiveServiceDapper>(_ =>
-                new ExecutiveServiceDapper(connectionString));
+                new ExecutiveServiceDapper(SystemParameters.getInstance().CONNECTION_STRING));
             services.AddSingleton<IStatisticsRepository, StatisticsRepository>(_ =>
-                new StatisticsRepository(connectionString));
+                new StatisticsRepository(SystemParameters.getInstance().CONNECTION_STRING));
 
             //--Services
             services.AddSingleton<IMatchingRepository, MatchingRepository>();
@@ -154,21 +149,8 @@ namespace MatchingSystem.UI
                     pattern: "{controller=Home}/{action=Login}"
                 );
             });
-
-            var useMigrations = (bool)Configuration.GetValue(typeof(bool), "ApplicationSettings:UseMigrations");
-            if (useMigrations) ApplyMigrations(app);
-        }
-
-        private static void ApplyMigrations(IApplicationBuilder app)
-        {
-            using (var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
-            {
-                var dbcontext = scope.ServiceProvider.GetService<Microsoft.EntityFrameworkCore.DbContext>();
-                var PendingMigrations =
-                    dbcontext.Database.GetPendingMigrations();
-                Console.WriteLine("Applayng pending migrations: " + PendingMigrations);
-                dbcontext.Database.Migrate();
-            }
+            
+    
         }
     }
 }

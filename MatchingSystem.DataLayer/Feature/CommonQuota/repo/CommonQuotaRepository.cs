@@ -4,6 +4,7 @@ using System.Linq;
 using MatchingSystem.DataLayer.Feature.Tutor;
 using MatchingSystem.DataLayer.OldDto.IO.Params;
 using MatchingSystem.DataLayer.OldEntities;
+using Microsoft.EntityFrameworkCore;
 
 namespace MatchingSystem.DataLayer.Feature.CommonQuota.repo;
 
@@ -29,6 +30,7 @@ public class CommonQuotaRepository : GenericRepository<CommonQuotaEntity>, IComm
         saveRange(quotas, extContext);
     }
 
+
     public CommonQuotaEntity GetActiveTutorQuota(int tutorId, int MatchingId)
     {
         return find(entity => entity.Stage.MatchingId == MatchingId &&
@@ -36,6 +38,34 @@ public class CommonQuotaRepository : GenericRepository<CommonQuotaEntity>, IComm
                        entity.TutorId == tutorId).SingleOrDefault() ?? throw new Exception("Не найдена квота для преподавателя tutorId="+tutorId);
     }
 
+    public IEnumerable<QuotaHistoryExecutive> GetQuotaRequestHistoryByExecutive(int matchingId)
+    {
+        return CallInContext<IEnumerable<QuotaHistoryExecutive>>(context =>
+        {
+           
+            var views = context.CommonQuotas
+                .Include(quota => quota.QuotaState)
+                .Include(quota => quota.Tutor)
+                .ThenInclude(tutor => tutor.UsersRoles)
+                .ThenInclude(usersRole => usersRole.User)
+                .Include(quota => quota.Stage)
+                .Where(entity => entity.Stage.MatchingId == matchingId)
+                .OrderByDescending(entity => entity.CommonQuotaId)
+                .ToList();
+         
+            return views.Select(entity => new QuotaHistoryExecutive
+            {
+                NameAbbreviation = entity.Tutor.UsersRoles.FirstOrDefault().User.NameAbbreviation,
+                RequestedQuotaQty = entity.Qty,
+                QuotaStateName_ru = entity.QuotaState.QuotaStateNameRu,
+                StageTypeName_ru = entity.QuotaState.QuotaStateNameRu,
+                Message = entity.Message,
+                IterationNumber = entity.Stage.IterationNumber
+
+            });
+        });
+    }
+    
     public IEnumerable<QuotaHistoryTutor> GetQuotaRequestHistoryByTutor(int tutorId, int matchingId)
     {
         return CallInContext<IEnumerable<QuotaHistoryTutor>>(context =>
