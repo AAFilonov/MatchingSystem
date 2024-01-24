@@ -56,11 +56,11 @@ public class HomeController : Controller
 
                 var selectedMatchingId = Convert.ToInt32(HttpContext.Request.Cookies["selectedMatching"]);
 
-                if (matchingRepository.GetMatchings()
+                if (matchingRepository.findAll()
                     .Any(matching => matching.MatchingId.Equals(selectedMatchingId)))
                 {
                     data.SelectedMatching = selectedMatchingId;
-                    data.MatchingTypeCode = matchingRepository.GetMatchings()
+                    data.MatchingTypeCode = matchingRepository.findAll()
                         .First(matching => matching.MatchingId == selectedMatchingId)
                         .MatchingType.MatchingTypeCode;
                     string selectedRole = HttpContext.Request.Cookies["selectedRole"];
@@ -146,7 +146,7 @@ public class HomeController : Controller
 
         data.CurrentStage = matchingRepository.GetCurrentStageDto(data.SelectedMatching);
 
-        data.MatchingTypeCode = matchingRepository.GetMatchings()
+        data.MatchingTypeCode = matchingRepository.findAll()
             .First(matching => matching.MatchingId.Equals(data.SelectedMatching)).MatchingType.MatchingTypeCode;
 
         HttpContext.Session.Set<SessionData>("Data", data);

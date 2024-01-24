@@ -55,7 +55,7 @@ public class MatchingRepository : GenericRepository<MatchingEntity>, IMatchingRe
     
     public IEnumerable<MatchingEntity> GetMatchings()
     {
-        return _matchingSystemContext.Matchings.Include(matching =>matching.MatchingType );
+        return _matchingSystemContext.Matchings.Include(matching =>matching.MatchingType ).ToList();
     }
     
     
