@@ -9,6 +9,7 @@ public class MatchingRepositoryDapper : ConnectionBase,IMatchingRepositoryDapper
     {
     }
 
+    //TODO DPL-34 условные тесты с реальной базой на SQLite
     public void SetNextStage(int matchingId)
     {
         Connection.Query("exec napp.goto_NextStage @MatchingID",

@@ -54,7 +54,7 @@ public class TutorParsingService : ITutorsParsingService
         var colCount = worksheet.Dimension.End.Column;
         var range = worksheet.Cells[1, 1, rowCount, colCount];
 
-        for (var row = TUTOR_GROUP_SINCE_ROW_INDEX; row < rowCount; row++)
+        for (var row = TUTOR_GROUP_SINCE_ROW_INDEX; row <= rowCount; row++)
         {
             var tutorNameAbbreviation = (string)range[row, 1].Value;
             if (tutorNameAbbreviation == null) break;

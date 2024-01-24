@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MatchingSystem.DataLayer.Migrations
 {
     [DbContext(typeof(DiplomaMatchingContext))]
-    [Migration("20231021105557_Baseline")]
-    partial class Baseline
+    [Migration("20240123083247_Baseline_23_01_2024")]
+    partial class Baseline_23_01_2024
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -265,7 +265,7 @@ namespace MatchingSystem.DataLayer.Migrations
                         .HasColumnType("datetime")
                         .HasDefaultValueSql("(getdate())");
 
-                    b.Property<bool?>("IsNotification")
+                    b.Property<bool>("IsNotification")
                         .HasColumnType("bit");
 
                     b.Property<string>("Message")
@@ -283,7 +283,7 @@ namespace MatchingSystem.DataLayer.Migrations
                         .HasColumnType("int")
                         .HasColumnName("StageID");
 
-                    b.Property<int?>("TutorId")
+                    b.Property<int>("TutorId")
                         .HasColumnType("int")
                         .HasColumnName("TutorID");
 
@@ -1005,7 +1005,7 @@ namespace MatchingSystem.DataLayer.Migrations
                     b.Property<bool?>("IsReadyToStart")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("MatchingId")
+                    b.Property<int>("MatchingId")
                         .HasColumnType("int")
                         .HasColumnName("MatchingID");
 
@@ -1162,7 +1162,7 @@ namespace MatchingSystem.DataLayer.Migrations
 
                     b.Property<string>("NameAbbreviation")
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("nvarchar(300)")
                         .HasComputedColumnSql("[Name] + ' ' + [Patronimic]+ ' ' + [Surname]");
 
                     b.Property<string>("PasswordHash")
@@ -1255,7 +1255,7 @@ namespace MatchingSystem.DataLayer.Migrations
                     b.ToView("Users_FullInfo", "dbo_v");
                 });
 
-            modelBuilder.Entity("MatchingSystem.DataLayer.Feature._LinkTables.ProjectsGroup", b =>
+            modelBuilder.Entity("MatchingSystem.DataLayer.Feature._LinkTables.ProjectsGroupEntity", b =>
                 {
                     b.Property<int>("ProjectGroupId")
                         .ValueGeneratedOnAdd()
@@ -1511,6 +1511,8 @@ namespace MatchingSystem.DataLayer.Migrations
                     b.HasOne("MatchingSystem.DataLayer.Feature.Tutor.TutorEntity", "Tutor")
                         .WithMany("CommonQuota")
                         .HasForeignKey("TutorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
                         .HasConstraintName("FK_CommonQuotas_Tutors");
 
                     b.Navigation("QuotaState");
@@ -1658,7 +1660,7 @@ namespace MatchingSystem.DataLayer.Migrations
                     b.Navigation("typeEntity");
                 });
 
-            modelBuilder.Entity("MatchingSystem.DataLayer.Feature._LinkTables.ProjectsGroup", b =>
+            modelBuilder.Entity("MatchingSystem.DataLayer.Feature._LinkTables.ProjectsGroupEntity", b =>
                 {
                     b.HasOne("MatchingSystem.DataLayer.Feature.Group.GroupEntity", "groupEntity")
                         .WithMany("ProjectsGroups")

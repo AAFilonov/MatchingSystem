@@ -5,8 +5,8 @@ namespace MatchingSystem.DataLayer.Feature;
 
 public class Repository
 {
-    protected DiplomaMatchingContext _matchingSystemContext => new(DbContextUtils.CreateDbContextOptions().Options);
-    
+    protected DiplomaMatchingContext _matchingSystemContext => DbContextUtils.GetContext();
+
     protected void CallInContext(Action<DiplomaMatchingContext> myDelegate, DiplomaMatchingContext? extContext = null)
     {
         if (extContext == null)

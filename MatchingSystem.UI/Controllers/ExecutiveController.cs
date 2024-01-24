@@ -53,7 +53,7 @@ namespace MatchingSystem.UI.Controllers
         {
             ExecutiveQuotaViewModel model = new ExecutiveQuotaViewModel();
             model.Requests = commonQuotaRepository.GetQuotaRequestsByExecutive(data.UserDto.UserId, data.SelectedMatching);
-            model.History = executiveService.GetQuotaRequestHistoryByExecutive(data.UserDto.UserId, data.SelectedMatching);
+            model.History = commonQuotaRepository.GetQuotaRequestHistoryByExecutive(data.SelectedMatching);
             return View(model);
         }
 

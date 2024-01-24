@@ -15,9 +15,9 @@ public class CommonQuotaEntity
     public DateTime? UpdateDate { get; set; }
     public bool IsNotification { get; set; }
     public string? Message { get; set; }
-    public int? StageId { get; set; }
+    public int StageId { get; set; }
 
     public virtual QuotasStateEntity QuotaState { get; set; } = null!;
-    public virtual StageEntity? Stage { get; set; }
-    public virtual TutorEntity? Tutor { get; set; }
+    public virtual StageEntity Stage { get; set; }
+    public virtual TutorEntity Tutor { get; set; }
 }

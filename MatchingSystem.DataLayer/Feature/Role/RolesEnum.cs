@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace MatchingSystem.DataLayer.Feature.Role;
+﻿namespace MatchingSystem.DataLayer.Feature.Role;
 
 public enum RolesEnum
 {

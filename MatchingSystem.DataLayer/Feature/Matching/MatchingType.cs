@@ -1,7 +1,6 @@
 ﻿// ReSharper disable once CheckNamespace
 
 using System.Collections.Generic;
-using MatchingSystem.DataLayer.Feature.Matching;
 
 namespace MatchingSystem.DataLayer.Feature.Matching;
 

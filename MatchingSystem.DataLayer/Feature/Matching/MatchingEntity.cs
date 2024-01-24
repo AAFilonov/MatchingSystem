@@ -24,5 +24,9 @@ public class MatchingEntity
     public virtual ICollection<GroupEntity> Groups { get; set; }
     public virtual ICollection<Stage.StageEntity> Stages { get; set; }
     public virtual ICollection<UsersRoleEntity> UsersRoles { get; set; }
-    
+
+    public override string ToString()
+    {
+        return $"{nameof(MatchingId)}: {MatchingId}, {nameof(MatchingName)}: {MatchingName}, {nameof(MatchingTypeId)}: {MatchingTypeId}";
+    }
 }
