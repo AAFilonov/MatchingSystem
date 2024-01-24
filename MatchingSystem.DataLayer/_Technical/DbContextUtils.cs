@@ -8,6 +8,7 @@ namespace MatchingSystem.DataLayer._Technical;
 
 public class DbContextUtils
 {
+    private static DiplomaMatchingContext? _inMemoryDiplomaMatchingContext;
     private static SqliteConnection? _dbConnection;
     private static bool _isFirstRun = true;
 
@@ -25,9 +26,26 @@ public class DbContextUtils
             case DbType.SqliteFile:
             case DbType.SqliteMemory:
                 return CreateSqliteContext();
+            case DbType.InMemory:
+                return CreateInMemoryContext();
             default:
                 throw new Exception("Некорректный тип базы данных: " + SystemParameters.getInstance().DB_TYPE);
         }
+    }
+
+    private static DiplomaMatchingContext CreateInMemoryContext()
+    {
+        if (_inMemoryDiplomaMatchingContext == null)
+        {
+            var options = new DbContextOptionsBuilder<DiplomaMatchingContext>()
+                .UseInMemoryDatabase(databaseName: "DiplomaMatching")
+                .Options;
+            _inMemoryDiplomaMatchingContext = new DiplomaMatchingContext(options);
+            if (SystemParameters.getInstance().USE_MIGRATIONS) ApplyMigrations(_inMemoryDiplomaMatchingContext);
+        }
+
+        return _inMemoryDiplomaMatchingContext;
+
     }
 
     private static DiplomaMatchingContext CreateSqliteContext()
@@ -37,6 +55,7 @@ public class DbContextUtils
         {
             _dbConnection = new SqliteConnection(SystemParameters.getInstance().CONNECTION_STRING);
             _dbConnection.Open();
+            _dbConnection.CreateFunction("getdate", () => DateTime.Now);
         }
 
         var options = new DbContextOptionsBuilder<DiplomaMatchingContext>()

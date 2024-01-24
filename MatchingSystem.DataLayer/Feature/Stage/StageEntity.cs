@@ -26,4 +26,27 @@ public class StageEntity
     public virtual StagesType StageType { get; set; } = null!;
     public virtual ICollection<CommonQuota.CommonQuotaEntity> CommonQuota { get; set; }
     public virtual ICollection<TutorsChoiceEntity> TutorsChoices { get; set; }
+
+    public override string ToString()
+    {
+        return $"{nameof(StageId)}: {StageId}, {nameof(StageTypeId)}: {StageTypeId}, {nameof(StageName)}: {StageName}, {nameof(IterationNumber)}: {IterationNumber}, {nameof(StartDate)}: {StartDate}, {nameof(IsCurrent)}: {IsCurrent}, {nameof(MatchingId)}: {MatchingId}";
+    }
+    
+    protected bool Equals(StageEntity other)
+    {
+        return StageId == other.StageId;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(null, obj)) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        if (obj.GetType() != this.GetType()) return false;
+        return Equals((StageEntity)obj);
+    }
+
+    public override int GetHashCode()
+    {
+        return StageId;
+    }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using MatchingSystem.DataLayer.Feature.Group;
 using MatchingSystem.DataLayer.Feature.Role;
@@ -29,4 +30,23 @@ public class MatchingEntity
     {
         return $"{nameof(MatchingId)}: {MatchingId}, {nameof(MatchingName)}: {MatchingName}, {nameof(MatchingTypeId)}: {MatchingTypeId}";
     }
+    
+    protected bool Equals(MatchingEntity other)
+    {
+        return MatchingId == other.MatchingId && MatchingName == other.MatchingName && MatchingTypeId == other.MatchingTypeId;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(null, obj)) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        if (obj.GetType() != this.GetType()) return false;
+        return Equals((MatchingEntity)obj);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(MatchingId, MatchingName, MatchingTypeId);
+    }
+
 }
