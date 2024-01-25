@@ -15,7 +15,7 @@ public class TestUtils
             .AddJsonFile(settingsPath, optional: true);
         IConfiguration configuration = builder.Build();
         SystemParameters.Init(configuration);
-        return DbContextUtils.GetContext();
+        return DbContextFactory.GetContext();
     }
     public static void DisposeDb()
     {
