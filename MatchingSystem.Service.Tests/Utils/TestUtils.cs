@@ -19,6 +19,6 @@ public class TestUtils
     }
     public static void DisposeDb()
     {
-        DbContextUtils.Dispose();
+        DbContextFactory.Dispose();
     }
 }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MatchingSystem.DataLayer._Technical;
 
-public class DbContextUtils
+public class DbContextFactory
 {
     private static DiplomaMatchingContext? _inMemoryDiplomaMatchingContext;
     private static SqliteConnection? _dbConnection;
@@ -19,7 +19,12 @@ public class DbContextUtils
 
     public static DiplomaMatchingContext GetContext()
     {
-        switch (SystemParameters.getInstance().DB_TYPE)
+        return GetContext(SystemParameters.getInstance().DB_TYPE);
+    }
+    
+    public static DiplomaMatchingContext GetContext(DbType type)
+    {
+        switch (type)
         {
             case DbType.SqlServer:
                 return CreateSqlServerContext();
@@ -29,7 +34,7 @@ public class DbContextUtils
             case DbType.InMemory:
                 return CreateInMemoryContext();
             default:
-                throw new Exception("Некорректный тип базы данных: " + SystemParameters.getInstance().DB_TYPE);
+                throw new Exception("Некорректный тип базы данных: " + type);
         }
     }
 

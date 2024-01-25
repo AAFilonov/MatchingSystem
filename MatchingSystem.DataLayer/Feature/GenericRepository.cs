@@ -2,18 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using MatchingSystem.DataLayer.Utils.Exceptions;
 
 namespace MatchingSystem.DataLayer.Feature;
 
 public class GenericRepository<TEntity> : Repository, IRepository<TEntity> where TEntity : class
 {
-    public TEntity findById(int id)
+    public TEntity? findById(int id)
     {
-        var item = _matchingSystemContext.Set<TEntity>().Find(id);
-        if (item == null)
-            throw new RecordNotFoundException();
-        return item;
+        return _matchingSystemContext.Set<TEntity>().Find(id);
     }
 
     public IEnumerable<TEntity> find(Expression<Func<TEntity, bool>> predicate)
