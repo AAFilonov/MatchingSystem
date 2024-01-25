@@ -37,4 +37,8 @@
       <ProjectReference Include="..\MatchingSystem.Constants\MatchingSystem.Constants.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="_Technical" />
+    </ItemGroup>
+
 </Project>

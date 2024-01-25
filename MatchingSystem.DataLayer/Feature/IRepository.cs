@@ -6,7 +6,7 @@ namespace MatchingSystem.DataLayer.Feature;
 
 public interface IRepository<TEntity> where TEntity : class
 {
-    TEntity findById(int id);
+    TEntity? findById(int id);
     IEnumerable<TEntity> find(Expression<Func<TEntity, bool>> predicate);
     IEnumerable<TEntity> findAll();
 

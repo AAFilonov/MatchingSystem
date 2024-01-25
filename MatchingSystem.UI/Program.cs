@@ -16,7 +16,7 @@ public class Program
         var lifetime = host.Services.GetRequiredService<IHostApplicationLifetime>();
         lifetime.ApplicationStopping.Register(() =>
         {
-            DbContextUtils.Dispose();
+            DbContextFactory.Dispose();
         });
 
         host.Run();
