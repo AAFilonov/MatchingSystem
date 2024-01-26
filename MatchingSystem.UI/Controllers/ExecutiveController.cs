@@ -14,15 +14,14 @@ namespace MatchingSystem.UI.Controllers
     public class ExecutiveController : Controller
     {
         private readonly IMatchingRepository matchingRepository;
-        private readonly ICommonQuotaRepository commonQuotaRepository;
-        private readonly IExecutiveServiceOld executiveService;
+        private readonly IQuotaRequestRepository quotaRequestRepository;
+
         private SessionData data;
 
-        public ExecutiveController(IMatchingRepository matchingRepository, IExecutiveServiceOld executiveService, ICommonQuotaRepository commonQuotaRepository)
+        public ExecutiveController(IMatchingRepository matchingRepository, IQuotaRequestRepository quotaRequestRepository)
         {
             this.matchingRepository = matchingRepository;
-            this.executiveService = executiveService;
-            this.commonQuotaRepository = commonQuotaRepository;
+            this.quotaRequestRepository = quotaRequestRepository;
         }
         
         public override void OnActionExecuting(ActionExecutingContext ctx)
@@ -52,8 +51,8 @@ namespace MatchingSystem.UI.Controllers
         public IActionResult Quotas()
         {
             ExecutiveQuotaViewModel model = new ExecutiveQuotaViewModel();
-            model.Requests = commonQuotaRepository.GetQuotaRequestsByExecutive(data.UserDto.UserId, data.SelectedMatching);
-            model.History = commonQuotaRepository.GetQuotaRequestHistoryByExecutive(data.SelectedMatching);
+            model.Requests = quotaRequestRepository.GetQuotaRequestsByExecutive(data.UserDto.UserId, data.SelectedMatching);
+            model.History = quotaRequestRepository.GetQuotaRequestHistoryByExecutive(data.SelectedMatching);
             return View(model);
         }
 

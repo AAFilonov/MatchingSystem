@@ -1,7 +1,7 @@
 ﻿using System;
 using MatchingSystem.Constants;
 using MatchingSystem.DataLayer;
-using MatchingSystem.DataLayer._Technical;
+using MatchingSystem.DataLayer.Utils;
 using Microsoft.Extensions.Configuration;
 
 namespace MatchingSystem.Service.Tests.Utils;

@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Dapper;
-using MatchingSystem.DataLayer._Technical;
 using MatchingSystem.DataLayer.Feature.Project;
 using MatchingSystem.DataLayer.OldEntities;
+using MatchingSystem.DataLayer.Utils;
 
 namespace MatchingSystem.DataLayer.Feature.Statistics
 {

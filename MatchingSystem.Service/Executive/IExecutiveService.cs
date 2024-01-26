@@ -12,7 +12,5 @@ public interface IExecutiveService
     public void SetEndDate(DateTime endDate, int matchingId);
 
     public AdjustmentData GetAllocationByExecutive(int? userId, int? matchingId);
-    public IEnumerable<QuotaRequest> GetQuotaRequestsByExecutive(int userId, int matchingId);
-    public void AcceptQuotaRequest(int quotaId, bool result);
 
 }

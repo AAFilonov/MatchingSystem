@@ -57,7 +57,7 @@ public class StageTransitionService : IStageTransitionService
     public void TransitionIfExistNeed(int MatchingId)
     {
         //TODO DPL-13 проверить что смена шагов работает правильно
-        //matchingService.SetNextStage(MatchingId);
+        matchingService.SetNextStage(MatchingId);
     }
 
     private bool needToTransitionInIteration(int MatchingId)

@@ -40,7 +40,7 @@ namespace MatchingSystem.UI.ApiControllers
         [HttpPost]
         public IActionResult CreateRequestForLastStage([FromBody] ChangeQuotaRequest data)
         {
-            commonQuotaService.CreateRequestForLastStage(data);
+            commonQuotaService.CreateQuotaRequest(data);
             return Ok();
         }
 

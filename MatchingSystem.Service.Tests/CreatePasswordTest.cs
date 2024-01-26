@@ -6,12 +6,9 @@ using Scrypt;
 namespace MatchingSystem.Service.Tests;
 
 [TestFixture]
-public class MatchingInicializationTests
+public class CreatePasswordTest
 {
-    //TODO тест с моками
-    //IMatchingRepository  matchingRepository = new Mock<IMatchingRepository>();
-    //IMatchingInitializationService  matchingInitializationService= new MatchingInitializationService();
-    
+
     [Test]
     public void createHashes()
     {
