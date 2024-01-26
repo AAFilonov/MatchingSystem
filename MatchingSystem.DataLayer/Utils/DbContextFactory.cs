@@ -4,7 +4,7 @@ using MatchingSystem.Constants;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
-namespace MatchingSystem.DataLayer._Technical;
+namespace MatchingSystem.DataLayer.Utils;
 
 public class DbContextFactory
 {

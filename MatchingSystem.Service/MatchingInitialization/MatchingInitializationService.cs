@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Lombok.NET;
 using MatchingSystem.DataLayer;
 using MatchingSystem.DataLayer.Feature;
 using MatchingSystem.DataLayer.Feature.CommonQuota;
@@ -26,7 +27,8 @@ using Scrypt;
 
 namespace MatchingSystem.Service.MatchingInitialization;
 
-public class MatchingInitializationService : Repository, IMatchingInitializationService
+[AllArgsConstructor]
+public partial class MatchingInitializationService : Repository, IMatchingInitializationService
 {
     private readonly ILogger<MatchingInitializationService> logger;
     private readonly IGroupRepository groupRepository;
@@ -38,30 +40,7 @@ public class MatchingInitializationService : Repository, IMatchingInitialization
     private readonly IUserRepository userRepository;
     private readonly IRoleRepository roleRepository;
     private readonly IStageRepository stageRepository;
-
-    public MatchingInitializationService(
-        IRoleRepository roleRepository,
-        IUserRepository userRepository,
-        ICommonQuotaRepository quotaRepository,
-        ITutorRepository tutorRepository,
-        IGroupRepository groupRepository,
-        IMatchingRepository matchingRepository,
-        IStageRepository stageRepository,
-        IProjectRepository projectRepository,
-        IStudentRepository studentRepository, ILogger<MatchingInitializationService> logger)
-    {
-        this.roleRepository = roleRepository;
-        this.userRepository = userRepository;
-        this.quotaRepository = quotaRepository;
-        this.tutorRepository = tutorRepository;
-        this.groupRepository = groupRepository;
-        this.matchingRepository = matchingRepository;
-        this.stageRepository = stageRepository;
-        this.projectRepository = projectRepository;
-        this.studentRepository = studentRepository;
-        this.logger = logger;
-    }
-
+    
     public MatchingInitData InitNewMatching(MatchingInitData data)
     {
         using var context = _matchingSystemContext;
@@ -127,6 +106,7 @@ public class MatchingInitializationService : Repository, IMatchingInitialization
     
     private void InitTutors(DiplomaMatchingContext context, MatchingInitData data)
     {
+        //TODO DPL-15 - создать преподу пользака если его у него нет
         //инициализировать UserId у преподавателей
         data.tutorRecords = userRepository.SetUserIdForTutors(data.tutorRecords).ToList();
         //создать TutorEntity

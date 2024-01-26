@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using MatchingSystem.DataLayer.Feature.Tutor;
-using MatchingSystem.DataLayer.OldDto.IO.Params;
 using MatchingSystem.DataLayer.OldEntities;
 using Microsoft.EntityFrameworkCore;
 
@@ -107,18 +106,39 @@ public class CommonQuotaRepository : GenericRepository<CommonQuotaEntity>, IComm
                 .ToList();
         });
     }
-
-    public List<CommonQuotaEntity> GetNotificationsByTutor(int tutorId)
-    {
-      return find(entity => entity.Tutor.TutorId == tutorId && entity.IsNotification == true).ToList();
-    }
     
-    public List<CommonQuotaEntity> GetNotificationsByExecutive( int matchingId)
+
+    public void AcceptRequest(int quotaId, string action)
     {
-        return find(entity =>
-                entity.Stage.MatchingId == matchingId &&
-                entity.IsNotification == true &&
-                entity.QuotaStateId == (int)CommonQuotaStateEnum.REQUESTED
-            ).ToList();
+        CallInContext(context =>
+        {
+            using var transaction = context.Database.BeginTransaction();
+            try
+            {
+                CommonQuotaEntity commonQuotaRequest = findById(quotaId);
+                if ("decline" == action)
+                {
+                    commonQuotaRequest.IsNotification = true;
+                    commonQuotaRequest.QuotaStateId = (int)CommonQuotaStateEnum.DECLINED;
+                    update(commonQuotaRequest, context);
+                    return;
+                }
+
+                var oldCommonQuota =
+                    GetActiveTutorQuota(commonQuotaRequest.TutorId, commonQuotaRequest.Stage.MatchingId);
+                commonQuotaRequest.IsNotification = true;
+                commonQuotaRequest.QuotaStateId = (int)CommonQuotaStateEnum.ACTIVE;
+                oldCommonQuota.IsNotification = true;
+                oldCommonQuota.QuotaStateId = (int)CommonQuotaStateEnum.UNACTIVE;
+                updateRange(new[] { oldCommonQuota, commonQuotaRequest }, context);
+                //TODO DPL-33 если stage  это итерация то нужно что то сделать со студентами.
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        });
+
     }
 }

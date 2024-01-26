@@ -1,7 +1,6 @@
 ﻿using System;
 using MatchingSystem.Constants;
 using MatchingSystem.DataLayer;
-using MatchingSystem.DataLayer._Technical;
 using MatchingSystem.DataLayer.Feature.Allocation.repo;
 using MatchingSystem.DataLayer.Feature.CommonQuota;
 using MatchingSystem.DataLayer.Feature.CommonQuota.repo;
@@ -89,7 +88,7 @@ namespace MatchingSystem.UI
 
             //--Services
             services.AddSingleton<IMatchingRepository, MatchingRepository>();
-            services.AddSingleton<IQuotaNotificationService, QuotaQuotaNotificationService>();
+            services.AddSingleton<IQuotaNotificationService, QuotaNotificationService>();
             services.AddSingleton<IStatisticsService, StatisticsService>();
             services.AddSingleton<IAllocationService, AllocationService>();
             services.AddSingleton<IExecutiveService, ExecutiveService>();
@@ -107,6 +106,8 @@ namespace MatchingSystem.UI
             services.AddSingleton<IStageTransitionService, StageTransitionService>();
             services.AddSingleton<IMatchingService, MatchingService>();
             services.AddSingleton<ICommonQuotaRepository, CommonQuotaRepository>();
+            services.AddSingleton<IQuotaNotificationRepository, QuotaNotificationRepository>();
+            services.AddSingleton<IQuotaRequestRepository, QuotaRequestRepository>();
             services.AddSingleton<IStageRepository, StageRepository>();
             services.AddSingleton<IRoleRepository, RoleRepository>();
             services.AddSingleton<IStudentRepository, StudentRepository>();

@@ -16,4 +16,5 @@ public interface IRepository<TEntity> where TEntity : class
     public void updateRange(IEnumerable<TEntity> items, DiplomaMatchingContext? extContext = null);
     void remove(TEntity item, DiplomaMatchingContext? extContext = null);
     public void removeRange(IEnumerable<TEntity> items, DiplomaMatchingContext? extContext = null);
+    public void CallInTransaction(Action<DiplomaMatchingContext> myDelegate);
 }

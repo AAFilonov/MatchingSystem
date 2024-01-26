@@ -11,6 +11,7 @@
 
     <ItemGroup>
         <PackageReference Include="Dapper" Version="2.0.143" />
+        <PackageReference Include="Lombok.NET" Version="2.3.0" />
         <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.1" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.10" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.10">
@@ -38,6 +39,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Feature\QuotaNotification" />
       <Folder Include="_Technical" />
     </ItemGroup>
 

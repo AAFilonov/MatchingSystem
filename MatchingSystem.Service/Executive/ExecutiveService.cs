@@ -54,16 +54,6 @@ public class ExecutiveService : IExecutiveService
 
         return model;
     }
-    
-    public void AcceptQuotaRequest(int quotaId, bool result)
-    {
-        throw new NotImplementedException();
-    }
-
-    public IEnumerable<QuotaRequest> GetQuotaRequestsByExecutive(int userId, int matchingId)
-    {
-        throw new NotImplementedException();
-    }
 
     public void SetEndDate(DateTime endDate, int matchingId)
     {

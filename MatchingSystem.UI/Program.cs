@@ -1,4 +1,4 @@
-﻿using MatchingSystem.DataLayer._Technical;
+﻿using MatchingSystem.DataLayer.Utils;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;

@@ -1,5 +1,5 @@
 using System;
-using MatchingSystem.DataLayer._Technical;
+using MatchingSystem.DataLayer.Utils;
 
 namespace MatchingSystem.DataLayer.Feature;
 
@@ -7,6 +7,23 @@ public class Repository
 {
     protected DiplomaMatchingContext _matchingSystemContext => DbContextFactory.GetContext();
 
+    public void CallInTransaction(Action<DiplomaMatchingContext> myDelegate)
+    {
+        CallInContext(context =>
+        {
+            using var transaction = context.Database.BeginTransaction();
+            try
+            {
+                myDelegate.Invoke(context);
+            }
+            catch (Exception e)
+            {
+                transaction.Rollback();
+                throw;
+            }
+        });
+    }
+    
     protected void CallInContext(Action<DiplomaMatchingContext> myDelegate, DiplomaMatchingContext? extContext = null)
     {
         if (extContext == null)

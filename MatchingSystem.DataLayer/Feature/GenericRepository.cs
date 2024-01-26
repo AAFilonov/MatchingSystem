@@ -7,9 +7,10 @@ namespace MatchingSystem.DataLayer.Feature;
 
 public class GenericRepository<TEntity> : Repository, IRepository<TEntity> where TEntity : class
 {
-    public TEntity? findById(int id)
+    public TEntity findById(int id)
     {
-        return _matchingSystemContext.Set<TEntity>().Find(id);
+        return _matchingSystemContext.Set<TEntity>().Find(id) ??
+               throw new Exception(typeof(TEntity).Name + " with id =" + id + " not found.");
     }
 
     public IEnumerable<TEntity> find(Expression<Func<TEntity, bool>> predicate)

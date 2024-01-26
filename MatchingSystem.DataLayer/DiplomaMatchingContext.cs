@@ -1,5 +1,4 @@
-﻿using MatchingSystem.DataLayer._Technical;
-using MatchingSystem.DataLayer.DbSchema.Tables;
+﻿using MatchingSystem.DataLayer.DbSchema.Tables;
 using MatchingSystem.DataLayer.DbSchema.View;
 using MatchingSystem.DataLayer.Feature._LinkTables;
 using MatchingSystem.DataLayer.Feature.Allocation;
@@ -14,6 +13,7 @@ using MatchingSystem.DataLayer.Feature.Student;
 using MatchingSystem.DataLayer.Feature.Tutor;
 using MatchingSystem.DataLayer.Feature.TutorChoise;
 using MatchingSystem.DataLayer.Feature.User;
+using MatchingSystem.DataLayer.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace MatchingSystem.DataLayer;

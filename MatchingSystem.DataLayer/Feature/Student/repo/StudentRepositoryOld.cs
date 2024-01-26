@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Dapper;
-using MatchingSystem.DataLayer._Technical;
 using MatchingSystem.DataLayer.Feature.Dictionary;
 using MatchingSystem.DataLayer.OldDto.IO.Params;
 using MatchingSystem.DataLayer.OldDto.MatchingInit;
 using MatchingSystem.DataLayer.OldEntities;
+using MatchingSystem.DataLayer.Utils;
 
 namespace MatchingSystem.DataLayer.Feature.Student.repo
 {
