@@ -58,13 +58,13 @@
                         @* если студент не распределен *@
                         @* выбор преподавателя *@
                         <td v-if="!student.isAllocated">
-                            <select v-model="student.tutorID" class="custom-select" :disabled="currentStageCode > 5">
-                                <option v-for="tutor in tutors" :value="tutor.tutorID">{{tutor.tutorNameAbbreviation}}</option>
+                            <select v-model="student.tutorId" class="custom-select" :disabled="currentStageCode > 5">
+                                <option v-for="tutor in tutors" :value="tutor.tutorId">{{tutor.nameAbbreviation}}</option>
                             </select>
                         </td>
                         <td v-if="!student.isAllocated">
-                            <select v-model="student.projectID" class="custom-select" :disabled="currentStageCode > 5">
-                                <option v-for="project in projects.filter(e => e.tutorID === student.tutorID)" :value="project.projectID">{{project.projectName}}</option>
+                            <select v-model="student.projectId" class="custom-select" :disabled="currentStageCode > 5">
+                                <option v-for="project in projects.filter(e => e.tutorId === student.tutorId)" :value="project.projectId">{{project.projectName}}</option>
                             </select>
                         </td>
                         @* end *@
@@ -79,4 +79,90 @@
     const userId = @data.UserDto?.UserId;
     const matchingId = @data.SelectedMatching;
 </script>
-<script src="~/js/roles/executive/adjustment.js"></script>
+
+<script>
+let app = new Vue({
+    el: '#app',
+    data: {
+        userId: null,
+        matchingId: null,
+        currentStageCode: null,
+        allocations: [],
+        tutors: [],
+        projects: []
+    },
+    methods: {
+        async initialize() {
+            let response = await fetch(`${params.basePath}/api/executive/getAllocation?userId=${this.userId}&matchingId=${this.matchingId}`, {
+                method: 'get'
+            });
+            
+            if (response.ok) {
+                let result = await response.json();
+                this.allocations = result.allocations;
+                this.tutors = result.tutors;
+                this.projects = result.projects;
+            }
+                
+            else DisplayNotification((await response.json()).detail, 'error');
+        },
+        async saveAllocationClickHandler() {
+            let students = this.allocations.filter(x => x.isAllocated === false && x.projectId !== null && x.tutorId !== null);
+            let data = {
+                userId: this.userId,
+                matchingId: this.matchingId,
+                adjustment: students
+            }
+            
+            let response = await fetch(`${params.basePath}/api/executive/setAllocation`, {
+                method: 'patch',
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (response.ok) window.location.reload();
+            else { 
+                DisplayNotification((await response.json()).detail, 'error');
+            }
+        },
+        sortAllocationsHandler(key) {
+            if (key === 'group')
+            {
+                this.allocations = this.allocations.sort(function (a, b) {
+                    if (a.groupName < b.groupName) return -1;
+                    else if (a.groupName === b.groupName) return 0;
+                    else return 1;
+                });
+            }
+            else if (key === 'student') {
+                this.allocations = this.allocations.sort(function (a, b) {
+                    if (a.studentNameAbbreviation < b.studentNameAbbreviation) return -1;
+                    else if (a.studentNameAbbreviation === b.studentNameAbbreviation) return 0;
+                    else return 1;
+                });
+            } else if (key === 'tutor') {
+                this.allocations = this.allocations.sort(function (a, b) {
+                    if (a.tutorNameAbbreviation < b.tutorNameAbbreviation) return -1;
+                    else if (a.tutorNameAbbreviation === b.tutorNameAbbreviation) return 0;
+                    else return 1;
+                });
+            } else if (key === 'project') {
+                this.allocations = this.allocations.sort(function (a, b) {
+                    if (a.projectName < b.projectName) return -1;
+                    else if (a.projectName === b.projectName) return 0;
+                    else return 1;
+                });
+            }
+        }
+    },
+    async mounted() {
+        this.userId = userId;
+        this.matchingId = matchingId;
+        this.currentStageCode = currentStageCode;
+        
+        await this.initialize();
+    }
+});
+</script>

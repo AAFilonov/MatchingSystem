@@ -1,24 +1,22 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Lombok.NET;
 using MatchingSystem.DataLayer.Feature.CommonQuota;
 using MatchingSystem.DataLayer.Feature.CommonQuota.repo;
 using MatchingSystem.DataLayer.Feature.Tutor;
 using MatchingSystem.DataLayer.Feature.Tutor.repo;
+using MatchingSystem.DataLayer.Feature.TutorChoise.repo;
 using MatchingSystem.DataLayer.OldDto;
 using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.Service.Tutor;
 
-public class TutorService : ITutorService
+[AllArgsConstructor]
+public partial class TutorService : ITutorService
 {
     private readonly ITutorRepository tutorRepository;
+    private readonly ITutorsChoiceRepository tutorsChoiceRepository;
     private readonly ICommonQuotaRepository commonQuotaRepository;
-
-    public TutorService(ITutorRepository tutorRepository, ICommonQuotaRepository commonQuotaRepository)
-    {
-        this.tutorRepository = tutorRepository;
-        this.commonQuotaRepository = commonQuotaRepository;
-    }
 
     public IterationData GetChoice(int tutorId)
     {
@@ -49,11 +47,11 @@ public class TutorService : ITutorService
     {
        TutorEntity tutor = tutorRepository.findById(tutorId);
        tutor.IsReadyToStart = true;
-       tutorRepository.save(tutor);
+       tutorRepository.update(tutor);
     }
 
-    public void SaveChoice(List<TutorChoice_1> data, int tutorId)
+    public void SaveChoice(List<TutorChoiceDto> data, int tutorId)
     {
-        tutorRepository.SetPreferences(data, tutorId);
+        tutorsChoiceRepository.SetPreferences(data, tutorId);
     }
 }

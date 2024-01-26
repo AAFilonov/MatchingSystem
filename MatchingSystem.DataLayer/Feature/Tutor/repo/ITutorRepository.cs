@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using MatchingSystem.DataLayer.Feature.TutorChoise;
 using MatchingSystem.DataLayer.OldEntities;
+using TutorChoiceDto = MatchingSystem.DataLayer.Feature.TutorChoise.TutorChoiceDto;
 
 namespace MatchingSystem.DataLayer.Feature.Tutor.repo
 {
@@ -9,7 +10,5 @@ namespace MatchingSystem.DataLayer.Feature.Tutor.repo
         IEnumerable<TutorView> GetTutorsViews();
         IEnumerable<TutorChoiceDto> GetChoiceByTutor(int tutorId);
         IEnumerable<TutorChoiceDto> getChoicesByMatchingCurrentStage(int MatchingId);
-        int GetNotificationsCountByTutor(int tutorId);
-        void SetPreferences(IEnumerable<TutorChoice_1> newChoices, int tutorId,DiplomaMatchingContext? extContext = null);
     }
 }

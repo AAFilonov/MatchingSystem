@@ -11,6 +11,6 @@ public interface IExecutiveService
 
     public void SetEndDate(DateTime endDate, int matchingId);
 
-    public AdjustmentData GetAllocationByExecutive(int? userId, int? matchingId);
+    public AdjustmentData GetAllocationByExecutive(int userId, int matchingId);
 
 }

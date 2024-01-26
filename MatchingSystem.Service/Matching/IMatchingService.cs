@@ -9,7 +9,7 @@ public interface IMatchingService
 {
        
     void SetStageEndDate(DateTime date, int matchingId);
-    void SetNextStage(int matchingId);
+    void MoveToNextStage(int matchingId);
     int CreateMatching(MatchingInitDto data);
     int createFirstStage(int MatchingID);
     IEnumerable<MatchingDto> GetMatchingsByUser(int userId);

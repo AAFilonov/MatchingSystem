@@ -3,9 +3,9 @@ using MatchingSystem.DataLayer.Feature.Dictionary;
 using MatchingSystem.DataLayer.Feature.Project;
 using MatchingSystem.DataLayer.Feature.Student;
 
-namespace MatchingSystem.DataLayer.Feature._LinkTables;
+namespace MatchingSystem.DataLayer.Feature.StudentPreference;
 
-public class StudentsPreference
+public class StudentsPreferenceEntity
 {
     public int PreferenceId { get; set; }
     public int StudentId { get; set; }

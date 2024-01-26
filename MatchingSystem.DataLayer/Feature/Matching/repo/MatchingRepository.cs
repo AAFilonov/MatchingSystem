@@ -18,12 +18,12 @@ public class MatchingRepository : GenericRepository<MatchingEntity>, IMatchingRe
             dto.GroupName = info.GroupName;
             dto.IsAllocated = info.IsAllocated==1;
             dto.ProjectName = info.ProjectName;
-            dto.GroupID = info.GroupId;
-            dto.ProjectID = info.ProjectId;
-            dto.MatchingID = info.MatchingId;
-            dto.StudentID = info.StudentId;
+            dto.GroupId = info.GroupId;
+            dto.ProjectId = info.ProjectId;
+            dto.MatchingId = info.MatchingId;
+            dto.StudentId = info.StudentId;
             dto.StudentNameAbbreviation = info.StudentNameAbbreviation;
-            dto.TutorID = info.TutorId;
+            dto.TutorId = info.TutorId;
             dto.TutorNameAbbreviation = info.TutorNameAbbreviation;
             return dto;
         });
@@ -32,7 +32,7 @@ public class MatchingRepository : GenericRepository<MatchingEntity>, IMatchingRe
 
     public IEnumerable<AllocationDto> GetFinalAllocationByMatching(int MatchingId)
     {
-        return GetFinalAllocations().Where(allocation => allocation.MatchingID == MatchingId);
+        return GetFinalAllocations().Where(allocation => allocation.MatchingId == MatchingId);
     }
 
     public StageDto GetCurrentStageDto(int matchingId)

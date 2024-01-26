@@ -30,25 +30,23 @@ public class ExecutiveService : IExecutiveService
 
     public void SetNextStage(int? matchingId, int? userId)
     {
-        matchingService.SetNextStage(matchingId.Value);
+        matchingService.MoveToNextStage(matchingId.Value);
     }
 
-    public AdjustmentData GetAllocationByExecutive(int? userId, int? matchingId)
+    public AdjustmentData GetAllocationByExecutive(int userId, int matchingId)
     {
-        var model = new AdjustmentData
-        {
-            Allocations = allocationRepository.GetAllocationsByExecutive(userId.Value, matchingId.Value)
-                .Where(allocation => allocation.StudentID != null).ToList(),
-            Tutors = tutorRepository.GetTutorsViews().Where(view => view.MatchingId == matchingId.Value),
-            Projects = new List<ProjectDto>()
-        };
+        var model = new AdjustmentData();
+        model.Allocations = allocationRepository.GetAllocationsByExecutive(userId, matchingId)
+            .Where(allocation => allocation.StudentId != null).ToList();
+        model.Tutors = tutorRepository.GetTutorsViews().Where(view => view.MatchingId == matchingId).ToList();
+        model.Projects = new List<ProjectDto>();
 
         var tutorIds = model.Tutors.Select(x => x.TutorId).ToList();
 
         foreach (var tutorId in tutorIds)
         {
             var temp = projectRepositoryOld.GetProjectsByTutor(tutorId).ToList();
-            temp.ForEach(x => x.TutorID = tutorId);
+            temp.ForEach(x => x.TutorId = tutorId);
             model.Projects.AddRange(temp);
         }
 

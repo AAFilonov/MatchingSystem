@@ -74,7 +74,7 @@ namespace MatchingSystem.UI.ApiControllers
             var currentMatchingId = sessionData .SelectedMatching;
             var need = stageTransitionService.isNeedToTransit(currentMatchingId);
             if (need)
-                stageTransitionService.TransitionIfExistNeed(currentMatchingId);
+                stageTransitionService.MoveToNextStage(currentMatchingId);
 
             return Ok();
         }

@@ -94,6 +94,7 @@ public partial class MatchingInitializationService : Repository, IMatchingInitia
 
     private void InitTutorDefaultProjects(DiplomaMatchingContext context, MatchingInitData data)
     {
+        //TODO - кейс распределения магистров
         //создать проекты по умолчанию для преподавателей
         data.tutorRecords =
             projectRepository.CreateDefaultProjectsForTutors(data.tutorRecords, data.matching.matchingId, context);
@@ -170,12 +171,9 @@ public partial class MatchingInitializationService : Repository, IMatchingInitia
 
     private MatchingEntity InitMatchingEntity(MatchingInitData data, DiplomaMatchingContext context)
     {
-        var matching = new MatchingEntity
-        {
-            MatchingName = data.matching.name,
-            MatchingTypeId = data.matching.typeCode == "MG" ? 2 : 1,
-            CreatorUserId = data.creatorId
-        };
+        var matching = new MatchingEntity();
+        matching.MatchingName = data.matching.name;
+        matching.MatchingTypeId = 1;
         matching = matchingRepository.save(matching, context);
         logger.LogInformation("Матчинг созадан успешно, matchingId ={}", data.matching.matchingId);
         return matching;

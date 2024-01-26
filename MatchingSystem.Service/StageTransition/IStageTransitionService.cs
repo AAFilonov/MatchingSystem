@@ -3,5 +3,5 @@
 public interface IStageTransitionService
 {
     public bool isNeedToTransit(int matchingId);
-    public void TransitionIfExistNeed(int MatchingId);
+    public void MoveToNextStage(int MatchingId);
 }

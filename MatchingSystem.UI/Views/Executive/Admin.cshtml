@@ -144,7 +144,6 @@ function getCurrentDate (){
                  axios.get(`${params.basePath}/api/matchingInitialization/student_data_report`,{ responseType: 'blob'})                                                                      
                             .then(response => {
                                 this.matchingData =  response.data; 
-                                console.log(response.data);
                                 const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }) ;
                                 const link = document.createElement('a') ;
                                 link.href = URL.createObjectURL(blob) ;

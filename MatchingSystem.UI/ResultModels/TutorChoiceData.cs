@@ -2,6 +2,7 @@
 using MatchingSystem.DataLayer.Feature.Tutor;
 using MatchingSystem.DataLayer.Feature.TutorChoise;
 using MatchingSystem.DataLayer.OldEntities;
+using TutorChoiceDto = MatchingSystem.DataLayer.Feature.TutorChoise.TutorChoiceDto;
 
 namespace MatchingSystem.UI.ResultModels
 {

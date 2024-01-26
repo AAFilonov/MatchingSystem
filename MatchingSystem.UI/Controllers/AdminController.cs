@@ -1,5 +1,4 @@
 using MatchingSystem.DataLayer.Feature.Matching.repo;
-using MatchingSystem.DataLayer.Feature.Tutor.repo;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -8,7 +7,7 @@ using MatchingSystem.UI.Services;
 
 namespace MatchingSystem.UI.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")] TODO DPL-15 баг авотризации админа
     public class AdminController : Controller
     {
         private readonly IMatchingRepository matchingRepository;

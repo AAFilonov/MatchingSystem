@@ -12,6 +12,7 @@ using MatchingSystem.DataLayer.Feature.Tutor.repo;
 using MatchingSystem.DataLayer.Feature.TutorChoise;
 using MatchingSystem.DataLayer.OldDto.MatchingMonitoring;
 using MatchingSystem.DataLayer.OldEntities;
+using TutorChoiceDto = MatchingSystem.DataLayer.Feature.TutorChoise.TutorChoiceDto;
 
 namespace MatchingSystem.Service.Monitoring;
 
@@ -204,26 +205,26 @@ public class MonitoringService : IMonitoringService
         var assignedStudent = new List<ProjectMonitoringDto>();
         foreach (var tutorChoice in tutorsChoices)
         foreach (var stud in students.Where(x => x.StudentID == tutorChoice.StudentID))
-        foreach (var proj in projects.Where(x => x.ProjectID == tutorChoice.ProjectID))
+        foreach (var proj in projects.Where(x => x.ProjectId == tutorChoice.ProjectID))
         foreach (var pref in studentPreferences.Where(x =>
-                     x.StudentID == tutorChoice.StudentID && proj.ProjectID == tutorChoice.ProjectID))
+                     x.StudentID == tutorChoice.StudentID && proj.ProjectId == tutorChoice.ProjectID))
         {
             var tutchoice = tutorsChoices.Where(x => x.StudentID == stud.StudentID
                                                      &&
-                                                     x.ProjectID == proj.ProjectID
+                                                     x.ProjectID == proj.ProjectId
             );
-            var tutor = tutors.Where(x => x.TutorId == proj.TutorID).FirstOrDefault();
+            var tutor = tutors.Where(x => x.TutorId == proj.TutorId).FirstOrDefault();
             assignedStudent.Add(new ProjectMonitoringDto
             {
                 assignmentStudentId = stud.StudentID.Value,
-                projectId = proj.ProjectID.Value,
+                projectId = proj.ProjectId.Value,
                 projectName = tutor.NameAbbreviation + " : " + proj.ProjectName,
                 quota = proj.Qty == null ? null : proj.Qty.Value,
                 info = proj.Info,
                 availableGroupsNameList = proj.AvailableGroupsName_List,
                 technologiesNameList = proj.TechnologiesName_List,
                 workDirectionsNameList = proj.WorkDirectionsName_List,
-                tutorId = proj.TutorID.Value,
+                tutorId = proj.TutorId.Value,
                 orderInStudentPrefs = pref.OrderNumber,
                 isActive = tutchoice.Count() == 0 || !tutchoice.Select(x => x.IsInQuota).Contains(true) ? false : true
             });
@@ -235,24 +236,24 @@ public class MonitoringService : IMonitoringService
         {
             var studPrefs = new List<ProjectMonitoringDto>();
             foreach (var pref in studentPreferences.Where(x => x.StudentID == student.StudentID))
-            foreach (var proj in projects.Where(x => x.ProjectID == pref.ProjectID))
+            foreach (var proj in projects.Where(x => x.ProjectId == pref.ProjectID))
             {
-                var tutor = tutors.Where(x => x.TutorId == proj.TutorID).FirstOrDefault();
+                var tutor = tutors.Where(x => x.TutorId == proj.TutorId).FirstOrDefault();
                 var tutchoice = tutorsChoices.Where(x => x.StudentID == pref.StudentID
                                                          &&
-                                                         x.ProjectID == proj.ProjectID
+                                                         x.ProjectID == proj.ProjectId
                 );
                 studPrefs.Add(
                     new ProjectMonitoringDto
                     {
-                        projectId = proj.ProjectID.Value,
+                        projectId = proj.ProjectId.Value,
                         projectName = tutor.NameAbbreviation + " : " + proj.ProjectName,
                         quota = proj.Qty == null ? null : proj.Qty.Value,
                         info = proj.Info,
                         availableGroupsNameList = proj.AvailableGroupsName_List,
                         technologiesNameList = proj.TechnologiesName_List,
                         workDirectionsNameList = proj.WorkDirectionsName_List,
-                        tutorId = proj.TutorID.Value,
+                        tutorId = proj.TutorId.Value,
                         orderInStudentPrefs = pref.OrderNumber,
                         isActive = tutchoice.Count() == 0 || !tutchoice.Select(x => x.IsInQuota).Contains(true)
                             ? false

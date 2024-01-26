@@ -48,7 +48,7 @@ namespace MatchingSystem.UI.Controllers
 
             HttpContext.Session.Set<SessionData>("Data", data);
 
-            userRepository.SetLastVisitDate(data.UserDto.UserId, data.SelectedRole, data.SelectedMatching);
+            userRepository.UpdateLastVisitDate(data.UserDto.UserId, data.SelectedRole, data.SelectedMatching);
 
             return roleName switch
             {

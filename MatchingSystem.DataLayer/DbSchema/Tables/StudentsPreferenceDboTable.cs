@@ -1,12 +1,12 @@
-﻿using MatchingSystem.DataLayer.Feature._LinkTables;
+﻿using MatchingSystem.DataLayer.Feature.StudentPreference;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace MatchingSystem.DataLayer.DbSchema.Tables;
 
-public class StudentsPreferenceDboTable : IEntityTypeConfiguration<StudentsPreference>
+public class StudentsPreferenceDboTable : IEntityTypeConfiguration<StudentsPreferenceEntity>
 {
-    public void Configure(EntityTypeBuilder<StudentsPreference> entity)
+    public void Configure(EntityTypeBuilder<StudentsPreferenceEntity> entity)
     {
 
         entity.Property(e => e.PreferenceId).HasColumnName("PreferenceID");

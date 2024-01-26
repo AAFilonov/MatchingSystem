@@ -12,7 +12,9 @@ using MatchingSystem.DataLayer.Feature.Role.repo;
 using MatchingSystem.DataLayer.Feature.Stage.repo;
 using MatchingSystem.DataLayer.Feature.Statistics;
 using MatchingSystem.DataLayer.Feature.Student.repo;
+using MatchingSystem.DataLayer.Feature.StudentPreference.repo;
 using MatchingSystem.DataLayer.Feature.Tutor.repo;
+using MatchingSystem.DataLayer.Feature.TutorChoise.repo;
 using MatchingSystem.DataLayer.Feature.User.repo;
 using MatchingSystem.Service.Allocation;
 using MatchingSystem.Service.DocumentsProcessing;
@@ -116,6 +118,8 @@ namespace MatchingSystem.UI
             services.AddSingleton<ITutorRepository, TutorRepository>();
             services.AddSingleton<IAllocationRepository, AllocationRepository>();
             services.AddSingleton<IProjectRepository,ProjectRepository>();
+            services.AddSingleton<IStudentPreferenceRepository,StudentPreferenceRepository>();
+            services.AddSingleton<ITutorsChoiceRepository,TutorsChoiceRepository>();
             //--Services
             
             services.AddSession(options =>

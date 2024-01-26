@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using Lombok.NET;
 using MatchingSystem.DataLayer.Feature.Allocation.repo;
 using MatchingSystem.DataLayer.OldDto;
 using MatchingSystem.Service.Executive;
@@ -13,17 +14,12 @@ using MatchingSystem.UI.Services;
 namespace MatchingSystem.UI.ApiControllers
 {
     [ApiController]
-    public class ExecutiveController : ControllerBase
+    [AllArgsConstructor]
+    public partial class ExecutiveController : ControllerBase
     {
         private readonly IExecutiveService executiveService;
         private readonly IStageTransitionService stageTransitionService;
         private readonly IAllocationRepository allocationRepository;
-
-        public ExecutiveController(IExecutiveService executiveService,IStageTransitionService stageTransitionService)
-        {
-            this.executiveService = executiveService;
-            this.stageTransitionService = stageTransitionService;
-        }
 
         [Route("api/[controller]/setNextStage")]
         [HttpPatch]
@@ -53,12 +49,8 @@ namespace MatchingSystem.UI.ApiControllers
         
         [Route("api/[controller]/getAllocation")]
         [HttpGet]
-        public IActionResult GetAllocationByExecutive([FromQuery] int? userId, [FromQuery] int? matchingId)
+        public IActionResult GetAllocationByExecutive([FromQuery] int userId, [FromQuery] int matchingId)
         {
-            if (!userId.HasValue || !matchingId.HasValue)
-            {
-                return BadRequest("Некорректный запрос.");
-            }
             var model = executiveService.GetAllocationByExecutive(userId, matchingId);
             return new JsonResult(model);
         }
@@ -78,7 +70,7 @@ namespace MatchingSystem.UI.ApiControllers
             //check transition from 'manual adjustment' to 'final'
             var need = stageTransitionService.isNeedToTransit(currentMatchingId);
             if (need)
-                stageTransitionService.TransitionIfExistNeed(currentMatchingId);
+                stageTransitionService.MoveToNextStage(currentMatchingId);
             return Ok();
         }
     }

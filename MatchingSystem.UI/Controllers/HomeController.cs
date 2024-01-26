@@ -68,8 +68,7 @@ public class HomeController : Controller
 
                     data.CurrentStage = matchingRepository.GetCurrentStageDto(data.SelectedMatching);
 
-                    userRepository.SetLastVisitDate(user.UserId, selectedRole,
-                        Convert.ToInt32(selectedMatchingId));
+                    userRepository.UpdateLastVisitDate(user.UserId, selectedRole,selectedMatchingId);
 
                     HttpContext.Session.Set("Data", data);
                     return RedirectToLk(selectedRole);
@@ -141,7 +140,7 @@ public class HomeController : Controller
         HttpContext.Response.Cookies.Append("selectedMatching",
             data.RolesMatchings.First().MatchingId.ToString()!);
 
-        userRepository.SetLastVisitDate(user.UserId, data.RolesMatchings.First().RoleName!,
+        userRepository.UpdateLastVisitDate(user.UserId, data.RolesMatchings.First().RoleName!,
             data.RolesMatchings.First().MatchingId);
 
         data.CurrentStage = matchingRepository.GetCurrentStageDto(data.SelectedMatching);

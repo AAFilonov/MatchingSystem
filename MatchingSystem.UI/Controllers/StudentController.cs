@@ -24,6 +24,12 @@ namespace MatchingSystem.UI.Controllers
         {
             base.OnActionExecuting(ctx);
             data ??= HttpContext.Session.Get<SessionData>("Data");
+            if (data == null)
+            {
+                RedirectToAction("login", "Home");
+                return;
+            }
+            
             var studentId = studentRepositoryOld.GetStudentId(data.UserDto.UserId, data.SelectedMatching);
             studentDto = studentRepositoryOld.GetStudent(studentId);
         }
@@ -31,6 +37,12 @@ namespace MatchingSystem.UI.Controllers
         public override void OnActionExecuted(ActionExecutedContext ctx)
         {
             base.OnActionExecuted(ctx);
+            data ??= HttpContext.Session.Get<SessionData>("Data");
+            if (data == null)
+            {
+                RedirectToAction("login", "Home");
+                return;
+            }
             data.CurrentStage = matchingRepository.GetCurrentStageDto(data.SelectedMatching);
             HttpContext.Session.Set<SessionData>("Data", data);
         }
@@ -61,6 +73,10 @@ namespace MatchingSystem.UI.Controllers
 
         public IActionResult Preferences()
         {
+            if (studentDto == null)
+            {
+                return RedirectToAction("login", "Home");
+            }
             return View(studentDto.StudentID);
         }
     }
