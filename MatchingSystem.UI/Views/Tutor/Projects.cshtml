@@ -16,11 +16,11 @@
     <div class="row" v-if="currentStageCode < 3">
 
         <div class="col">
-            <button class="btn btn-primary" :disabled="isReady === 1 || isMagisterMatching()" data-toggle="modal" data-target="#add-project">Создать проект</button>
+            <button class="btn btn-primary" :disabled="isReady || isMagisterMatching()" data-toggle="modal" data-target="#add-project">Создать проект</button>
         </div>
 
         <div class="col text-right">
-            <button class="btn btn-success" :disabled="isReady === 1" v-on:click.prevent="setReady">Я готов</button>
+            <button class="btn btn-success" :disabled="isReady" v-on:click.prevent="setReady">Я готов</button>
         </div>
     </div>
     <table class="table table-hover mt-4 project-list">
@@ -127,7 +127,7 @@
                 <p class="text-danger" v-for="error in formErrors">{{error}}</p>
             </div>
             <div class="modal-footer">
-                <button type="submit" form="add-project-form" class="btn btn-primary">Сохранить</button>
+                <button type="submit" v-if="!isReady" form="add-project-form" class="btn btn-primary">Сохранить</button>
             </div>
         </div>
     </div>
@@ -203,7 +203,7 @@
                     <p class="text-danger" v-for="error in formErrors">{{error}}</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" form="edit-project-form" class="btn btn-primary" id="js-add-project">Сохранить</button>
+                    <button type="submit" v-if="!isReady" form="add-project-form" class="btn btn-primary">Сохранить</button>
                 </div>
             </div>
         </div>

@@ -1,31 +1,25 @@
 ﻿using System.Linq;
+using Lombok.NET;
 using MatchingSystem.DataLayer.Feature.Matching.repo;
 using MatchingSystem.DataLayer.Feature.Project.Repo;
-using MatchingSystem.DataLayer.Feature.Student;
 using MatchingSystem.DataLayer.Feature.Student.repo;
-using MatchingSystem.DataLayer.Feature.Tutor;
+using MatchingSystem.DataLayer.Feature.StudentPreference.repo;
 using MatchingSystem.DataLayer.Feature.Tutor.repo;
 using MatchingSystem.Service.Matching;
 
+
 namespace MatchingSystem.Service.StageTransition;
 
-public class StageTransitionService : IStageTransitionService
+[AllArgsConstructor]
+public partial  class StageTransitionService : IStageTransitionService
 {
     private readonly IMatchingRepository matchingRepository;
     private readonly IMatchingService matchingService;
+    private readonly IStudentPreferenceRepository studentPreferenceRepository;
     private readonly IProjectRepositoryOld projectRepositoryOld;
     private readonly IStudentRepositoryOld studentRepositoryOld;
+    private readonly IStudentRepository studentRepository;
     private readonly ITutorRepository tutorRepository;
-
-    public StageTransitionService(IMatchingRepository matchingRepository, ITutorRepository tutorRepository,
-        IStudentRepositoryOld studentRepositoryOld, IProjectRepositoryOld projectRepositoryOld, IMatchingService matchingService)
-    {
-        this.matchingRepository = matchingRepository;
-        this.tutorRepository = tutorRepository;
-        this.studentRepositoryOld = studentRepositoryOld;
-        this.projectRepositoryOld = projectRepositoryOld;
-        this.matchingService = matchingService;
-    }
 
     //isNeedToTransit    
     public bool isNeedToTransit(int matchingId)
@@ -39,12 +33,11 @@ public class StageTransitionService : IStageTransitionService
                     .All(x => tutorRepository.findById(x.TutorId).IsReadyToStart ?? true);
                 break;
             case 3: //переход со стадии заполнения списков предпочтений к 1 итерации
-                var studPref = studentRepositoryOld.GetStudentPreferencesByMatching(matchingId)
-                    .Where(x => x.OrderNumber == 1);
-                needToTransit = studPref.All(x => x.ProjectID != null);
+                var students = studentRepository.find(entity => entity.MatchingId == matchingId).ToList();
+                needToTransit = students.All(entity => entity.StudentsPreferences.Count > 0);
                 break;
             case 4:
-                needToTransit = needToTransitionInIteration(matchingId);
+                needToTransit = IsMoveToNextStageAvailible(matchingId);
                 break;
             case 5: //переход со стадии ручной корректировки распределения к финалу
                 needToTransit = studentRepositoryOld.GetStudentAssignedToProject(matchingId).All(x => x.ProjectID != null);
@@ -54,19 +47,19 @@ public class StageTransitionService : IStageTransitionService
         return needToTransit;
     }
 
-    public void TransitionIfExistNeed(int MatchingId)
+    public void MoveToNextStage(int MatchingId)
     {
         //TODO DPL-13 проверить что смена шагов работает правильно
-        matchingService.SetNextStage(MatchingId);
+        //matchingService.SetNextStage(MatchingId);
     }
 
-    private bool needToTransitionInIteration(int MatchingId)
+    private bool IsMoveToNextStageAvailible(int MatchingId)
     {
         var tutChoice = tutorRepository.getChoicesByMatchingCurrentStage(MatchingId);
         var projsClosed = projectRepositoryOld.GetProjectsByMatching(MatchingId).Where(x => x.IsClosed == true);
 
         //получить проекты которые уже закрыты на данной итерации (из списка полученных проектов)
-        var queryTutCh = tutChoice.Where(c => !(from p in projsClosed select p.ProjectID).Contains(c.ProjectID));
+        var queryTutCh = tutChoice.Where(c => !(from p in projsClosed select p.ProjectId).Contains(c.ProjectID));
 
         //проверить все ли проекты были обновлены преподавателями на текущей итерации
         return queryTutCh.Select(x => x.ProjectID)

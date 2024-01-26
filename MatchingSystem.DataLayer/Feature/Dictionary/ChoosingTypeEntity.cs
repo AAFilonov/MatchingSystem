@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using MatchingSystem.DataLayer.Feature._LinkTables;
+using MatchingSystem.DataLayer.Feature.StudentPreference;
 using MatchingSystem.DataLayer.Feature.TutorChoise;
 
 namespace MatchingSystem.DataLayer.Feature.Dictionary;
@@ -8,7 +8,7 @@ public class ChoosingTypeEntity
 {
     public ChoosingTypeEntity()
     {
-        StudentsPreferences = new HashSet<StudentsPreference>();
+        StudentsPreferences = new HashSet<StudentsPreferenceEntity>();
         TutorsChoices = new HashSet<TutorsChoiceEntity>();
     }
 
@@ -17,6 +17,6 @@ public class ChoosingTypeEntity
     public string TypeName { get; set; } = null!;
     public string? TypeNameRu { get; set; }
 
-    public virtual ICollection<StudentsPreference> StudentsPreferences { get; set; }
+    public virtual ICollection<StudentsPreferenceEntity> StudentsPreferences { get; set; }
     public virtual ICollection<TutorsChoiceEntity> TutorsChoices { get; set; }
 }

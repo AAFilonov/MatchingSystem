@@ -2,7 +2,7 @@
 
 namespace MatchingSystem.DataLayer.OldEntities
 {
-    public class TutorChoice_1
+    public class TutorChoiceDto
     {
         [JsonPropertyName("choiceId")]
         public int ChoiceID { get; set; }

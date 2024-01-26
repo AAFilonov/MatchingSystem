@@ -59,7 +59,7 @@
     async mounted() {
         this.studentId = document.getElementById('studentId').value;
         this.currentStageCode = parseInt(this.$refs.currentStageCode.value);
-        console.log(this.studentId);
+
         let request = await fetch(`${params.basePath}/api/Student/get_projects?studentId=${this.studentId}`, {
             method: 'get'
         });

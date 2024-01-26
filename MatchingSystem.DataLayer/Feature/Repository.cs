@@ -15,6 +15,7 @@ public class Repository
             try
             {
                 myDelegate.Invoke(context);
+                transaction.Commit();
             }
             catch (Exception e)
             {

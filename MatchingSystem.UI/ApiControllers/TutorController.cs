@@ -41,25 +41,20 @@ namespace MatchingSystem.UI.ApiControllers
             var currentMatchingId = sessionData .SelectedMatching;
             var need = stageTransitionService.isNeedToTransit(currentMatchingId);
             if (need)
-                stageTransitionService.TransitionIfExistNeed(currentMatchingId);
+                stageTransitionService.MoveToNextStage(currentMatchingId);
             return Ok();
         }
 
         [Route("api/[controller]/saveChoice")]
         [HttpPatch]
-        public IActionResult SaveChoice([FromBody] List<TutorChoice_1> data, [FromQuery] int tutorId)
+        public IActionResult SaveChoice([FromBody] List<TutorChoiceDto> data, [FromQuery] int tutorId)
         {
             tutorService.SaveChoice(data, tutorId);
             var sessionData = HttpContext.Session.Get<SessionData>("Data"); 
             var currentMatchingId = sessionData .SelectedMatching;
-            //check transition between Iterations
             var need = stageTransitionService.isNeedToTransit(currentMatchingId);
             if (need)
-                stageTransitionService.TransitionIfExistNeed(currentMatchingId);
-            //check transition from 'manual adjustment' to 'final'
-            need = stageTransitionService.isNeedToTransit(currentMatchingId);
-            if (need)
-                stageTransitionService.TransitionIfExistNeed(currentMatchingId);
+                stageTransitionService.MoveToNextStage(currentMatchingId);
             return Ok();
         }
     }

@@ -14,5 +14,5 @@ public interface IUserRepository :IRepository<UserEntity>
     List<UsersRoleEntity> GetStudentUsersByMatching(int matchingId);
     
     void UpdatePasswordHash(int userId, string newHash);
-    public void SetLastVisitDate(int userId, string roleId, int projectId);
+    public void UpdateLastVisitDate(int userId, string roleId, int matchingId);
 }

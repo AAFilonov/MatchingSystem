@@ -2,6 +2,7 @@
 using MatchingSystem.DataLayer.Feature._LinkTables;
 using MatchingSystem.DataLayer.Feature.Group;
 using MatchingSystem.DataLayer.Feature.Role;
+using MatchingSystem.DataLayer.Feature.StudentPreference;
 using MatchingSystem.DataLayer.Feature.TutorChoise;
 
 namespace MatchingSystem.DataLayer.Feature.Student;
@@ -10,7 +11,7 @@ public class StudentEntity
 {
     public StudentEntity()
     {
-        StudentsPreferences = new HashSet<StudentsPreference>();
+        StudentsPreferences = new HashSet<StudentsPreferenceEntity>();
         StudentsTechnologies = new HashSet<StudentsTechnology>();
         StudentsWorkDirections = new HashSet<StudentsWorkDirection>();
         TutorsChoices = new HashSet<TutorsChoiceEntity>();
@@ -25,7 +26,7 @@ public class StudentEntity
     public string? Info2 { get; set; }
 
     public virtual GroupEntity Group { get; set; } = null!;
-    public virtual ICollection<StudentsPreference> StudentsPreferences { get; set; }
+    public virtual ICollection<StudentsPreferenceEntity> StudentsPreferences { get; set; }
     public virtual ICollection<StudentsTechnology> StudentsTechnologies { get; set; }
     public virtual ICollection<StudentsWorkDirection> StudentsWorkDirections { get; set; }
     public virtual ICollection<TutorsChoiceEntity> TutorsChoices { get; set; }

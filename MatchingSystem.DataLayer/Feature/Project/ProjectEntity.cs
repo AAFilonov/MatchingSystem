@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using MatchingSystem.DataLayer.Feature._LinkTables;
+using MatchingSystem.DataLayer.Feature.StudentPreference;
 using MatchingSystem.DataLayer.Feature.Tutor;
 using MatchingSystem.DataLayer.Feature.TutorChoise;
 
@@ -13,7 +14,7 @@ public class ProjectEntity
         ProjectsGroups = new HashSet<ProjectsGroupEntity>();
         ProjectsTechnologies = new HashSet<ProjectsTechnology>();
         ProjectsWorkDirections = new HashSet<ProjectsWorkDirection>();
-        StudentsPreferences = new HashSet<StudentsPreference>();
+        StudentsPreferences = new HashSet<StudentsPreferenceEntity>();
         TutorsChoices = new HashSet<TutorsChoiceEntity>();
     }
 
@@ -35,6 +36,6 @@ public class ProjectEntity
     public virtual ICollection<ProjectsGroupEntity> ProjectsGroups { get; set; }
     public virtual ICollection<ProjectsTechnology> ProjectsTechnologies { get; set; }
     public virtual ICollection<ProjectsWorkDirection> ProjectsWorkDirections { get; set; }
-    public virtual ICollection<StudentsPreference> StudentsPreferences { get; set; }
+    public virtual ICollection<StudentsPreferenceEntity> StudentsPreferences { get; set; }
     public virtual ICollection<TutorsChoiceEntity> TutorsChoices { get; set; }
 }

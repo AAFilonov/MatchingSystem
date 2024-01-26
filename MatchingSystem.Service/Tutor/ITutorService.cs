@@ -10,5 +10,5 @@ public interface ITutorService
 
     public void SetReady(int tutorId);
 
-    public void SaveChoice(List<TutorChoice_1> data, int tutorId);
+    public void SaveChoice(List<TutorChoiceDto> data, int tutorId);
 }

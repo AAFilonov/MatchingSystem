@@ -31,7 +31,7 @@ public class MatchingService : IMatchingService
         stageRepository.save(currentStage);
     }
 
-    public void SetNextStage(int matchingId)
+    public void MoveToNextStage(int matchingId)
     {
         matchingRepositoryDapper.SetNextStage(matchingId);
     }

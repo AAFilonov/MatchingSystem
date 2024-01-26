@@ -167,6 +167,7 @@
                                            class="required"
                                            id="startDatePicker"
                                            required
+                                           value="new Date()"
                                            v-model="matchingData.matching.startDate">
                                 </div>
                                 <button  class="btn btn-primary"
@@ -212,9 +213,9 @@ let app = new Vue({
           matchingData:{
               matching:
                 {
-                    name:"",
+                    name:"AAA",
                     typeCode:"",
-                    startDate:"",
+                    startDate: new Date(),
                 },
               studentRecords:[], 
               groupRecords:[], 

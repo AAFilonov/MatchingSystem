@@ -10,6 +10,7 @@ using MatchingSystem.DataLayer.Feature.Project;
 using MatchingSystem.DataLayer.Feature.Role;
 using MatchingSystem.DataLayer.Feature.Stage;
 using MatchingSystem.DataLayer.Feature.Student;
+using MatchingSystem.DataLayer.Feature.StudentPreference;
 using MatchingSystem.DataLayer.Feature.Tutor;
 using MatchingSystem.DataLayer.Feature.TutorChoise;
 using MatchingSystem.DataLayer.Feature.User;
@@ -47,7 +48,7 @@ public class DiplomaMatchingContext: DbContext
     public virtual DbSet<StagesType> StagesTypes { get; set; } = null!;
     public virtual DbSet<StudentEntity> Students { get; set; } = null!;
     public virtual DbSet<StudentView> StudentsViews { get; set; } = null!;
-    public virtual DbSet<StudentsPreference> StudentsPreferences { get; set; } = null!;
+    public virtual DbSet<StudentsPreferenceEntity> StudentsPreferences { get; set; } = null!;
     public virtual DbSet<StudentsTechnology> StudentsTechnologies { get; set; } = null!;
     public virtual DbSet<StudentsWorkDirection> StudentsWorkDirections { get; set; } = null!;
     public virtual DbSet<TechnologyEntity> Technologies { get; set; } = null!;
