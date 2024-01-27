@@ -21,7 +21,7 @@
           label="Поиск по ФИО"
           hide-details>
         </v-text-field>
-        
+
         <v-text-field
           class="mr-10"
           class="input"
@@ -30,7 +30,7 @@
           label="Поиск по логину"
           hide-details>
         </v-text-field>
-        
+
         <v-btn v-on:click="filter">Фильтровать</v-btn>
       </div>
 
@@ -70,45 +70,77 @@
 
           <v-divider></v-divider>
 
-          <v-text-field
-            class="input"
-            outlined
-            v-model="selectedUser.login"
-            label="Login"
-            hide-details>
-          </v-text-field>
+          <div class="d-flex align-items-start">
+            <div class="w-50 mr-5">
+              <p class="text-body">Редактирование данных</p>
+              <v-text-field
+                class="input"
+                outlined
+                v-model="selectedUser.login"
+                label="Login"
+                hide-details>
+              </v-text-field>
 
-          <v-text-field
-            class="input"
-            outlined
-            v-model="selectedUser.email"
-            label="E-mail"
-            hide-details>
-          </v-text-field>
+              <v-text-field
+                class="input"
+                outlined
+                v-model="selectedUser.email"
+                label="E-mail"
+                hide-details>
+              </v-text-field>
 
-          <v-text-field
-            class="input"
-            outlined
-            v-model="selectedUser.name"
-            label="Name"
-            hide-details>
-          </v-text-field>
+              <v-text-field
+                class="input"
+                outlined
+                v-model="selectedUser.name"
+                label="Name"
+                hide-details>
+              </v-text-field>
 
-          <v-text-field
-            class="input"
-            outlined
-            v-model="selectedUser.surname"
-            label="Surname"
-            hide-details>
-          </v-text-field>
+              <v-text-field
+                class="input"
+                outlined
+                v-model="selectedUser.surname"
+                label="Surname"
+                hide-details>
+              </v-text-field>
 
-          <v-text-field
-            class="input"
-            outlined
-            v-model="selectedUser.patronimic"
-            label="Patronimic"
-            hide-details>
-          </v-text-field>
+              <v-text-field
+                class="input"
+                outlined
+                v-model="selectedUser.patronimic"
+                label="Patronimic"
+                hide-details>
+              </v-text-field>
+            </div>
+            <div class="w-50">
+              <p class="text-body">Сброс пароля</p>
+              <v-text-field
+                :error="errorPasswordConfirm"
+                class="input"
+                outlined
+                v-model="newPassword"
+                label="New password"
+                hide-details>
+              </v-text-field>
+
+              <v-text-field
+                :error="errorPasswordConfirm"
+                class="input"
+                outlined
+                v-model="newPasswordConfirm"
+                label="Confirm new password"
+                hide-details>
+              </v-text-field>
+
+              <v-btn
+                :disabled="errorPasswordConfirm || !newPassword || !newPasswordConfirm"
+                v-on:click="updatePassword"
+                class="mt-5 d-block ml-auto">
+                Update password
+              </v-btn>
+            </div>
+          </div>
 
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -119,13 +151,27 @@
             </v-btn>
             <v-btn
               color="primary"
-              v-on:click="saveUsers">
+              v-on:click="updateUser">
               Save
             </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
     </v-container>
+
+    <v-snackbar
+      v-model="snackbar"
+      :timeout="2000">
+      Пользователь успешно обновлён
+
+      <template v-slot:action>
+        <v-btn
+          text
+          v-on:click="snackbar = false">
+          Закрыть
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-app>
 
   <form class="d-none">
@@ -167,8 +213,13 @@ let app = new Vue({
             headers: [],
             selectedUser: {},
             dialogHasOpened: false,
+            snackbar: false,
             searchByAbbr: '',
             searchByLogin: '',
+            
+            newPassword: '',
+            newPasswordConfirm: '',
+            errorPasswordConfirm: false,
         }
     },
     methods: {
@@ -193,17 +244,37 @@ let app = new Vue({
           this.dialogHasOpened = true;
           this.selectedUser = JSON.parse(JSON.stringify(item));
         },
-        async saveUsers() {
-            await axios.post(`${params.basePath}/api/user/saveUser`, this.selectedUser);
-            
-            this.users = await this.fetchUsers();
-            this.dialogHasOpened = false;
+        async updateUser() {
+            try {
+              await axios.post(`${params.basePath}/api/user/updateUser`, this.selectedUser);
+                          
+              this.users = await this.fetchUsers();
+              this.dialogHasOpened = false;
+              this.snackbar = true;
+            } catch (e) {
+              console.error(`Error: ${e}`);
+            }
         },
         getSelectedUserNameAbbr(id) {
             return this.users?.find((user) => user.userId === id)?.nameAbbreviation;
         },
         async filter() {
           this.users = await this.fetchUsers();
+        },
+        async updatePassword() {
+          if (this.newPassword !== this.newPasswordConfirm) {
+            this.errorPasswordConfirm = true;
+            return;
+          }
+          try {
+            await axios.post(`${params.basePath}/api/user/changePassword`, {
+              user: this.selectedUser,
+              newPassword: this.newPassword,
+            });
+            this.snackbar = true;
+          } catch (e) {
+            console.error(`Error: ${e}`);
+          }
         }
     },
     async mounted() {
@@ -211,6 +282,14 @@ let app = new Vue({
         this.headers = [...tableHeaders];
         this.users = await this.fetchUsers();
         this.matchings = await this.fetchMatchings();
+    },
+    watch: {
+      newPassword() {
+        this.errorPasswordConfirm = false;
+      },
+      newPasswordConfirm() {
+        this.errorPasswordConfirm = false;
+      }
     }
 })
 </script>

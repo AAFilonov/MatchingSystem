@@ -7,9 +7,16 @@ using MatchingSystem.DataLayer.Feature.User;
 using MatchingSystem.DataLayer.Feature.User.repo;
 using MatchingSystem.Service.Matching;
 using Microsoft.AspNetCore.Mvc;
+using Scrypt;
 
 namespace MatchingSystem.UI.ApiControllers
 {
+    public class ChangePasswordRequest
+    {
+        public UserDto user { get; set; }
+        public string newPassword { get; set; }
+    }
+
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -32,6 +39,15 @@ namespace MatchingSystem.UI.ApiControllers
         public IActionResult GetMatchingsForUser([FromQuery] int userId)
         {
             var model = matchingService.GetMatchingsByUser(userId);
+            return new JsonResult(model);
+        }
+
+        [Route("api/[controller]/getMatchingsList")]
+        [HttpGet]
+        public IActionResult GetMatchingsList()
+        {
+            var model = matchingRepository.GetMatchingsDto().ToList();
+
             return new JsonResult(model);
         }
 
@@ -86,18 +102,9 @@ namespace MatchingSystem.UI.ApiControllers
             return new JsonResult(model);
         }
 
-        [Route("api/[controller]/getMatchingsList")]
-        [HttpGet]
-        public IActionResult GetMatchingsList()
-        {
-            var model = matchingRepository.GetMatchingsDto().ToList();
-
-            return new JsonResult(model);
-        }
-
-        [Route("api/[controller]/saveUser")]
+        [Route("api/[controller]/updateUser")]
         [HttpPost]
-        public void saveUsers(UserDto userDto)
+        public void updateUser(UserDto userDto)
         {
             UserEntity user = new UserEntity()
             {
@@ -108,6 +115,27 @@ namespace MatchingSystem.UI.ApiControllers
                 Surname = userDto.Surname,
                 Patronimic = userDto.Patronimic,
             };
+            userRepository.update(user);
+        }
+
+        [Route("api/[controller]/changePassword")]
+        [HttpPost]
+        public void changePassword(ChangePasswordRequest payload)
+        {
+            var encoder = new ScryptEncoder();
+            var passwordHash = encoder.Encode(payload.newPassword);
+
+            UserEntity user = new UserEntity()
+            {
+                UserId = payload.user.UserId,
+                Email = payload.user.Email,
+                Login = payload.user.Login,
+                Name = payload.user.Name,
+                Surname = payload.user.Surname,
+                Patronimic = payload.user.Patronimic,
+                PasswordHash = passwordHash,
+            };
+
             userRepository.update(user);
         }
     }
