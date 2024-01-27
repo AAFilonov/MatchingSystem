@@ -1,4 +1,5 @@
-﻿using MatchingSystem.DataLayer.Feature.CommonQuota.repo;
+﻿using MatchingSystem.Constants;
+using MatchingSystem.DataLayer.Feature.CommonQuota.repo;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -59,6 +60,8 @@ namespace MatchingSystem.UI.Controllers
         [HttpGet]
         public IActionResult Admin()
         {
+            ViewData["version"] = SystemParameters.getInstance().VERSION;
+            data.Version = SystemParameters.getInstance().VERSION;
             data.CurrentStage = matchingRepository.GetCurrentStageDto(data.SelectedMatching);
             return View();
         }
