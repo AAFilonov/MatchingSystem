@@ -15,6 +15,7 @@ namespace MatchingSystem.UI.Helpers
         
         public string MatchingTypeCode { get; set; }
         public string SelectedRole { get; set; }
+        public string Version { get; set; }
         public int CountRoles { get; set; }
         public StageDto CurrentStage { get; set; }
         public int TutorId { get; set; }
