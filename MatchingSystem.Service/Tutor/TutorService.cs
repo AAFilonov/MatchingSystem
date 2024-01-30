@@ -17,6 +17,7 @@ public partial class TutorService : ITutorService
     private readonly ITutorRepository tutorRepository;
     private readonly ITutorsChoiceRepository tutorsChoiceRepository;
     private readonly ICommonQuotaRepository commonQuotaRepository;
+    private readonly IQuotaRequestRepository quotaRequestRepository;
 
     public IterationData GetChoice(int tutorId)
     {
@@ -26,7 +27,7 @@ public partial class TutorService : ITutorService
 
         var viewModel = new IterationData
         {
-            CommonQuota = commonQuotaRepository.find( entity =>entity.TutorId== tutorId).First().Qty
+            CommonQuota = quotaRequestRepository.GetActiveTutorQuota(tutorId).Qty
         };
 
 

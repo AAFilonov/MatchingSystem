@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Lombok.NET;
 using MatchingSystem.Constants;
 using MatchingSystem.DataLayer.Feature.CommonQuota.repo;
 using MatchingSystem.DataLayer.Feature.Dictionary.repo;
@@ -13,7 +14,8 @@ using MatchingSystem.DataLayer.OldDto.IO.Params;
 
 namespace MatchingSystem.Service.Projects;
 
-public class ProjectsService : IProjectsService
+[AllArgsConstructor]
+public partial class ProjectsService : IProjectsService
 {
     private readonly IDictionaryRepository dictionaryRepository;
     private readonly IMatchingRepository matchingRepository;
@@ -21,20 +23,8 @@ public class ProjectsService : IProjectsService
     private readonly ITutorRepository tutorRepository;
     private readonly IGroupRepository groupRepository;
     private readonly ICommonQuotaRepository commonQuotaRepository;
-
-    public ProjectsService(
-        IDictionaryRepository dictionaryRepository,
-        ITutorRepository tutorRepository,
-        IMatchingRepository matchingRepository,
-        IProjectRepositoryOld projectRepositoryOld,ICommonQuotaRepository commonQuotaRepository, IGroupRepository groupRepository)
-    {
-        this.dictionaryRepository = dictionaryRepository;
-        this.tutorRepository = tutorRepository;
-        this.matchingRepository = matchingRepository;
-        this.projectRepositoryOld = projectRepositoryOld;
-        this.commonQuotaRepository = commonQuotaRepository;
-        this.groupRepository = groupRepository;
-    }
+    private readonly IQuotaRequestRepository quotaRequestRepository;
+    
 
     public bool AddTutorProject(ProjectRequest project)
     {
@@ -73,15 +63,13 @@ public class ProjectsService : IProjectsService
 
     public TutorProjectsModel GetProjectsData(int tutorId)
     {
-        var model = new TutorProjectsModel
-        {
-            Projects = projectRepositoryOld.GetProjectsByTutor(tutorId).ToList(),
-            Groups = groupRepository.GetGroupsByTutor(tutorId),
-            Technology = dictionaryRepository.GetTechnologiesAll(),
-            WorkDirections = dictionaryRepository.GetWorkDirectionsAll(),
-            CommonQuota = commonQuotaRepository.find( entity =>entity.TutorId== tutorId).First().Qty,
-            IsReady = tutorRepository.findById(tutorId).IsReadyToStart
-        };
+        var model = new TutorProjectsModel();
+        model.Projects = projectRepositoryOld.GetProjectsByTutor(tutorId).ToList();
+        model.Groups = groupRepository.GetGroupsByTutor(tutorId);
+        model.Technology = dictionaryRepository.GetTechnologiesAll();
+        model.WorkDirections = dictionaryRepository.GetWorkDirectionsAll();
+        model.CommonQuota = quotaRequestRepository.GetActiveTutorQuota(tutorId)?.Qty;
+        model.IsReady = tutorRepository.findById(tutorId).IsReadyToStart;
 
         model.Projects.ForEach(x =>
             x.AvailableGroupsName_List = x.AvailableGroupsName_List?.Replace(", ", "<br/>")

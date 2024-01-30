@@ -31,7 +31,7 @@ public partial class  CommonCommonQuotaService : ICommonQuotaService
         TutorEntity tutorEntity = tutorRepository.findById(tutorId);
         var model = new TutorQuotaData();
         model.History = quotaRequestRepository.GetQuotaRequestHistoryByTutor(tutorId, tutorEntity.MatchingId);
-        model.CommonQuota = quotaRequestRepository.GetActiveTutorQuota(tutorId, tutorEntity.MatchingId)?.Qty;
+        model.CommonQuota = quotaRequestRepository.GetActiveTutorQuota(tutorId)?.Qty;
 
         if (stageTypeCode == 4) model.Projects = projectRepositoryOld.GetProjectsByTutor(tutorId);
         return model;
@@ -80,10 +80,10 @@ public partial class  CommonCommonQuotaService : ICommonQuotaService
                 DeclineRequest(commonQuotaRequest, context);
                 return;
             }
-            AcceptRequest(commonQuotaRequest, context);
 
-           StageEntity stage =  matchingRepository.GetCurrentStage(commonQuotaRequest.Stage.MatchingId);
-           if (stage.StageTypeId == (int)StageTypeEnum.ITERATION)
+            StageEntity stage =  matchingRepository.GetCurrentStage(commonQuotaRequest.Stage.MatchingId);
+            AcceptRequest(commonQuotaRequest, context);
+            if (stage.StageTypeId == (int)StageTypeEnum.ITERATION)
                UpdateTutorProjectQuotaDeltas(commonQuotaRequest, context);
         });
     }
@@ -97,8 +97,7 @@ public partial class  CommonCommonQuotaService : ICommonQuotaService
     
     private void AcceptRequest(CommonQuotaEntity commonQuotaRequest, DiplomaMatchingContext context)
     {
-        var oldCommonQuota =
-            quotaRequestRepository.GetActiveTutorQuota(commonQuotaRequest.TutorId, commonQuotaRequest.Stage.MatchingId);
+        var oldCommonQuota = quotaRequestRepository.GetActiveTutorQuota(commonQuotaRequest.TutorId);
         commonQuotaRequest.IsNotification = true;
         commonQuotaRequest.QuotaStateId = (int)CommonQuotaStateEnum.ACTIVE;
         oldCommonQuota.IsNotification = true;

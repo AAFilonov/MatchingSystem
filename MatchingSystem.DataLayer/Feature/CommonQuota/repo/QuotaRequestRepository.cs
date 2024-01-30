@@ -8,10 +8,9 @@ namespace MatchingSystem.DataLayer.Feature.CommonQuota.repo;
 
 public class QuotaRequestRepository : GenericRepository<CommonQuotaEntity>, IQuotaRequestRepository
 {
-    public CommonQuotaEntity GetActiveTutorQuota(int tutorId, int matchingId)
+    public CommonQuotaEntity GetActiveTutorQuota(int tutorId)
     {
-        return find(entity => entity.Stage.MatchingId == matchingId &&
-                              entity.QuotaStateId == (int)CommonQuotaStateEnum.ACTIVE &&
+        return find(entity => entity.QuotaStateId == (int)CommonQuotaStateEnum.ACTIVE &&
                               entity.TutorId == tutorId).SingleOrDefault() ??
                throw new Exception("Не найдена квота для преподавателя tutorId=" + tutorId);
     }
