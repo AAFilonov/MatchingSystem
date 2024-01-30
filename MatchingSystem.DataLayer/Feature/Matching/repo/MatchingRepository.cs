@@ -41,11 +41,9 @@ public class MatchingRepository : GenericRepository<MatchingEntity>, IMatchingRe
         return StageDto.fromEntity(stage);
     }
 
-    public Stage.StageEntity GetCurrentStage(int matchingId)
+    public StageEntity GetCurrentStage(int matchingId)
     {
-        List<Stage.StageEntity> stages = _matchingSystemContext.Matchings.Find(matchingId)?.Stages.ToList();
-        Stage.StageEntity currentStage = stages.Where(stage => stage.IsCurrent == true).FirstOrDefault();
-        return currentStage;
+        return findById(matchingId).Stages.Single(entity => entity.IsCurrent == true);
     }
 
     public IEnumerable<MatchingDto> GetMatchingsDto()
