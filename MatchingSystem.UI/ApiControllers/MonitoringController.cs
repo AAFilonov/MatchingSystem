@@ -22,8 +22,6 @@ public class MonitoringController : ControllerBase
     {
         var sessionData = HttpContext.Session.Get<SessionData>("Data");
         var result = monitoringService.getMonitoringData(sessionData.SelectedMatching);
-        result.studentRecords.ForEach(dto => dto.preferences.Sort((project1, project2) =>
-            project1.orderInStudentPrefs.Value.CompareTo(project2.orderInStudentPrefs)));
         return new JsonResult(result);
     }
 
@@ -33,18 +31,6 @@ public class MonitoringController : ControllerBase
     {
         var sessionData = HttpContext.Session.Get<SessionData>("Data");
         var result = monitoringService.getMonitoringData(sessionData.SelectedMatching);
-        result.studentRecords.ForEach(dto => dto.preferences.Sort((project1, project2) =>
-            project1.orderInStudentPrefs.Value.CompareTo(project2.orderInStudentPrefs)));
-        
-        result.tutorRecords.ForEach(tutor => 
-            tutor.waitingList.ForEach(dto => 
-                dto.preferences.Sort((project1, project2) =>
-                    project1.orderInStudentPrefs.Value.CompareTo(project2.orderInStudentPrefs)))
-        );
-        result.tutorRecords.ForEach(tutor => 
-            tutor.waitingList.Sort((student1, student2) =>
-                student1.orderInTutorPrefs.Value.CompareTo(student2.orderInTutorPrefs))
-        );
         return new JsonResult(result);
     }
 }

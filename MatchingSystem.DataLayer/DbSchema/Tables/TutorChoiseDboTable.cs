@@ -1,4 +1,4 @@
-﻿using MatchingSystem.DataLayer.Feature.TutorChoise;
+﻿using MatchingSystem.DataLayer.Feature.TutorChoice;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

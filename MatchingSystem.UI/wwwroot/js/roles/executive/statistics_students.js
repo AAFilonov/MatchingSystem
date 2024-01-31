@@ -16,24 +16,18 @@
 
             if (response.ok) {
                 this.statistics = await response.json();
-                console.log(currentStage);
-                console.log(this.statistics);
             } else DisplayNotification('Произошла внутренняя ошибка сервера.', 'error');
         },
         async projectsByStudentInfoWindow(item) {
             this.student = item;
-            let request = await fetch(`${params.basePath}/api/Statistics/getStatisticsStudentsProjects?matchingId=${this.matchingId}&studentId=${this.student.studentID}`);
+            let request = await fetch(`${params.basePath}/api/Statistics/getStatisticsStudentsProjects?matchingId=${this.matchingId}&studentId=${this.student.studentId}`);
             if (request.ok) {
 
                 let result = await request.json();
-                console.log(result)
                 this.projects = result;
-                //console.log(this.student)
                 setTimeout(() => {
                     $('#projectsByStudent').modal('show');
                 }, 100);
-
-
             }
         },
     },

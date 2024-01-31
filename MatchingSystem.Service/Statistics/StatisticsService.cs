@@ -1,25 +1,26 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Lombok.NET;
+using MatchingSystem.DataLayer.Feature.Matching.repo;
 using MatchingSystem.DataLayer.Feature.Project;
 using MatchingSystem.DataLayer.Feature.Statistics;
+using MatchingSystem.DataLayer.Feature.Statistics.repo;
 using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.Service.Statistics;
 
-public class StatisticsService : IStatisticsService
+[AllArgsConstructor]
+public partial class StatisticsService : IStatisticsService
 {
+    private readonly IStatisticsRepositoryOld statisticsRepositoryOld;
     private readonly IStatisticsRepository statisticsRepository;
-
-    public StatisticsService(IStatisticsRepository statisticsRepository)
-    {
-        this.statisticsRepository = statisticsRepository;
-    }
+    private readonly IMatchingRepository matchingRepository;
 
     public IEnumerable<StatisticsMain> GetStatisticsMain(int? matchingId, int? currentStage)
     {
         if (currentStage > 4) currentStage = 4;
 
-        var result = statisticsRepository.GetStatisticsMain(matchingId.Value, currentStage.Value);
+        var result = statisticsRepositoryOld.GetStatisticsMain(matchingId.Value, currentStage.Value);
 
         foreach (var stat in result) stat.StatValue_Str = stat.StatValue_Str?.Replace(",", "<br>");
 
@@ -28,7 +29,7 @@ public class StatisticsService : IStatisticsService
 
     public IEnumerable<StatisticsMain> GetStatisticsGroups(int? matchingId)
     {
-        var result = statisticsRepository.GetStatisticsGroups(matchingId.Value);
+        var result = statisticsRepositoryOld.GetStatisticsGroups(matchingId.Value);
 
         foreach (var stat in result) stat.StatValue_Str = stat.StatValue_Str?.Replace(",", "<br>");
 
@@ -39,36 +40,33 @@ public class StatisticsService : IStatisticsService
     {
         if (currentStage > 4) currentStage = 4;
 
-        var result = statisticsRepository.GetStatisticsTutors(matchingId.Value, currentStage.Value);
+        var result = statisticsRepositoryOld.GetStatisticsTutors(matchingId.Value, currentStage.Value);
 
         return result;
     }
 
-    public IEnumerable<StatisticsStudents> GetStatisticsStudents(int? matchingId, int? currentStage)
+    public IEnumerable<StudentStatistics> GetStatisticsStudents(int matchingId)
     {
-        if (currentStage > 4) currentStage = 4;
-
-        var result = statisticsRepository.GetStatisticsStudents(matchingId.Value, currentStage.Value);
-
-        return result;
+        int currentStage = matchingRepository.GetCurrentStage(matchingId).StageId;
+        return statisticsRepository.GetStatisticsStudents(matchingId,currentStage);
     }
 
     public IEnumerable<TutorsProjectAllocation> GetStatisticsTutorsProjectAllocated(int? matchingId, int? tutorId)
     {
-        var result = statisticsRepository.GetStatisticsTutorProjectAllocated(matchingId.Value, tutorId.Value);
+        var result = statisticsRepositoryOld.GetStatisticsTutorProjectAllocated(matchingId.Value, tutorId.Value);
         return result;
     }
 
     public IEnumerable<StatisticsStudentsProjects> GetStatisticsStudentsProjects(int? matchingId, int? studentId)
     {
-        var model = statisticsRepository.GetStatisticsStudentsProjects(matchingId.Value, studentId.Value);
+        var model = statisticsRepositoryOld.GetStatisticsStudentsProjects(matchingId.Value, studentId.Value);
 
         return model.OrderBy(project => project.OrderNumber);
     }
 
     public IEnumerable<ProjectDto> GetStatisticsTutorsProjects(int? matchingId, int? tutorId)
     {
-        var result = statisticsRepository.GetStatisticsTutorsProjects(matchingId.Value, tutorId.Value);
+        var result = statisticsRepositoryOld.GetStatisticsTutorsProjects(matchingId.Value, tutorId.Value);
         return result;
     }
 }

@@ -4,7 +4,7 @@ using MatchingSystem.DataLayer.Feature.Project;
 using MatchingSystem.DataLayer.Feature.Stage;
 using MatchingSystem.DataLayer.Feature.Student;
 
-namespace MatchingSystem.DataLayer.Feature.TutorChoise;
+namespace MatchingSystem.DataLayer.Feature.TutorChoice;
 
 public class TutorsChoiceEntity
 {

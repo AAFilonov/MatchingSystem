@@ -4,14 +4,11 @@ namespace MatchingSystem.DataLayer.OldDto.MatchingMonitoring;
 
 public class StudentMonitoringDto
 {
+    public int studentId { get; set; }
     public string groupName { get; set; }
     public string nameAbbreviation { get; set; }
-    public List<ProjectMonitoringDto> preferences { get; set; }
-    public ProjectMonitoringDto? assignedProject  { get; set; }
+    public List<int> preferenceProjectIds { get; set; }
+    public List<int> alreadyTryedProjectIds { get; set; }
+    public int? assignedProjectId  { get; set; }
     public int? orderInTutorPrefs { get; set; }
-
-    public override string ToString()
-    {
-        return $"[{nameof(groupName)}: {groupName}, {nameof(nameAbbreviation)}: {nameAbbreviation}, {nameof(preferences)}: {preferences}, {nameof(assignedProject)}: {assignedProject}, {nameof(orderInTutorPrefs)}: {orderInTutorPrefs}]";
-    }
 }

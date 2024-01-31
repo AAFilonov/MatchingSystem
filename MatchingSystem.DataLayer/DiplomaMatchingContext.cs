@@ -12,7 +12,7 @@ using MatchingSystem.DataLayer.Feature.Stage;
 using MatchingSystem.DataLayer.Feature.Student;
 using MatchingSystem.DataLayer.Feature.StudentPreference;
 using MatchingSystem.DataLayer.Feature.Tutor;
-using MatchingSystem.DataLayer.Feature.TutorChoise;
+using MatchingSystem.DataLayer.Feature.TutorChoice;
 using MatchingSystem.DataLayer.Feature.User;
 using MatchingSystem.DataLayer.Utils;
 using Microsoft.EntityFrameworkCore;

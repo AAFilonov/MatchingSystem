@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using MatchingSystem.DataLayer.Feature.StudentPreference;
-using MatchingSystem.DataLayer.Feature.TutorChoise;
+using MatchingSystem.DataLayer.Feature.TutorChoice;
 
 namespace MatchingSystem.DataLayer.Feature.Dictionary;
 

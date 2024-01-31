@@ -1,25 +1,19 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Lombok.NET;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using MatchingSystem.DataLayer.Feature.Matching.repo;
-using MatchingSystem.DataLayer.Feature.Statistics;
 using MatchingSystem.UI.Helpers;
 using MatchingSystem.UI.Services;
 
 namespace MatchingSystem.UI.Controllers
 {
     [Authorize(Roles = "Executive")]
-    public class StatisticsController : Controller
+    [AllArgsConstructor]
+    public partial class StatisticsController : Controller
     {
         private readonly IMatchingRepository matchingRepository;
-        private readonly IStatisticsRepository statisticsRepository;
         private SessionData data;
-
-        public StatisticsController(IMatchingRepository matchingRepository, IStatisticsRepository statisticsRepository)
-        {
-            this.matchingRepository = matchingRepository;
-            this.statisticsRepository = statisticsRepository;
-        }
         
         public override void OnActionExecuting(ActionExecutingContext ctx)
         {

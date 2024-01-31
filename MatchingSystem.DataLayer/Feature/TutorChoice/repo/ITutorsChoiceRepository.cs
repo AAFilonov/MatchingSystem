@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using MatchingSystem.DataLayer.OldEntities;
 
-namespace MatchingSystem.DataLayer.Feature.TutorChoise.repo;
+namespace MatchingSystem.DataLayer.Feature.TutorChoice.repo;
 
 public interface ITutorsChoiceRepository : IRepository<TutorsChoiceEntity>
 {

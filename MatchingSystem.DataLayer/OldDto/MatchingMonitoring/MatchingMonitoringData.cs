@@ -9,6 +9,7 @@ public class MatchingMonitoringData
 {
     public List<StudentMonitoringDto> studentRecords { get; set; } = new();
     public List<TutorMonitoringDto> tutorRecords { get; set; } = new();
+    public List<ProjectMonitoringDto> projectRecords { get; set; } = new();
 
     public override string ToString()
     {

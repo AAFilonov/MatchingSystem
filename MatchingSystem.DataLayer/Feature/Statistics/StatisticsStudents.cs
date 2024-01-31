@@ -1,11 +1,11 @@
 ﻿#nullable enable
 using System;
 
-namespace MatchingSystem.DataLayer.OldEntities
+namespace MatchingSystem.DataLayer.Feature.Statistics
 {
-    public class StatisticsStudents
+    public class StudentStatistics
     {
-        public int? StudentID { get; set; }
+        public int? StudentId { get; set; }
         public string? StudentNameAbbreviation { get; set; }
         public DateTime? StudentLastVisitDate { get; set; }
         public string? StudentGroupName { get; set; }
