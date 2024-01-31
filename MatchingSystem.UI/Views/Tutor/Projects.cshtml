@@ -197,13 +197,13 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <input type="hidden" name="projectId" :value="edit.projectID">
+                            <input type="hidden" name="projectId" :value="edit.projectId">
                         </div>
                     </form>
                     <p class="text-danger" v-for="error in formErrors">{{error}}</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" v-if="!isReady" form="add-project-form" class="btn btn-primary">Сохранить</button>
+                    <button type="submit" v-if="!isReady" form="edit-project-form" class="btn btn-primary">Сохранить</button>
                 </div>
             </div>
         </div>
