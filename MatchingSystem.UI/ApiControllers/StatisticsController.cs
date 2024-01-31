@@ -57,20 +57,9 @@ namespace MatchingSystem.UI.ApiControllers
 
         [Route("api/[controller]/getStatisticsStudents")]
         [HttpGet]
-        public IActionResult GetStatisticsStudents([FromQuery] int? matchingId, [FromQuery] int? currentStage)
+        public IActionResult GetStatisticsStudents([FromQuery] int matchingId, [FromQuery] int currentStage)
         {
-            if (!matchingId.HasValue || !currentStage.HasValue)
-            {
-                return BadRequest("Некорректный запрос.");
-            }
-
-            if (currentStage > 4)
-            {
-                currentStage = 4;
-            }
-
-            var result = statisticsService.GetStatisticsStudents(matchingId, currentStage);
-
+            var result = statisticsService.GetStatisticsStudents(matchingId);
             return new JsonResult(result);
         }
 
@@ -91,12 +80,8 @@ namespace MatchingSystem.UI.ApiControllers
         
         [Route("api/[controller]/getStatisticsStudentsProjects")]
         [HttpGet]
-        public IActionResult GetStatisticsStudentsProjects([FromQuery] int? matchingId, [FromQuery] int? studentId)
+        public IActionResult GetStatisticsStudentsProjects([FromQuery] int matchingId, [FromQuery] int studentId)
         {
-            if (!matchingId.HasValue || !studentId.HasValue)
-            {
-                return BadRequest("Некорректный запрос.");
-            }
             var model = statisticsService.GetStatisticsStudentsProjects(matchingId, studentId);
             return new JsonResult(model);
         }

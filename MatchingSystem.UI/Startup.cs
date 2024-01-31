@@ -10,11 +10,11 @@ using MatchingSystem.DataLayer.Feature.Matching.repo;
 using MatchingSystem.DataLayer.Feature.Project.Repo;
 using MatchingSystem.DataLayer.Feature.Role.repo;
 using MatchingSystem.DataLayer.Feature.Stage.repo;
-using MatchingSystem.DataLayer.Feature.Statistics;
+using MatchingSystem.DataLayer.Feature.Statistics.repo;
 using MatchingSystem.DataLayer.Feature.Student.repo;
 using MatchingSystem.DataLayer.Feature.StudentPreference.repo;
 using MatchingSystem.DataLayer.Feature.Tutor.repo;
-using MatchingSystem.DataLayer.Feature.TutorChoise.repo;
+using MatchingSystem.DataLayer.Feature.TutorChoice.repo;
 using MatchingSystem.DataLayer.Feature.User.repo;
 using MatchingSystem.Service.Allocation;
 using MatchingSystem.Service.DocumentsProcessing;
@@ -85,13 +85,14 @@ namespace MatchingSystem.UI
                 new ProjectRepositoryOldDapper(SystemParameters.getInstance().CONNECTION_STRING));
             services.AddTransient<IExecutiveServiceOld, ExecutiveServiceDapper>(_ =>
                 new ExecutiveServiceDapper(SystemParameters.getInstance().CONNECTION_STRING));
-            services.AddSingleton<IStatisticsRepository, StatisticsRepository>(_ =>
-                new StatisticsRepository(SystemParameters.getInstance().CONNECTION_STRING));
+            services.AddSingleton<IStatisticsRepositoryOld, StatisticsRepositoryOldDapper>(_ =>
+                new StatisticsRepositoryOldDapper(SystemParameters.getInstance().CONNECTION_STRING));
 
             //--Services
             services.AddSingleton<IMatchingRepository, MatchingRepository>();
             services.AddSingleton<IQuotaNotificationService, QuotaNotificationService>();
             services.AddSingleton<IStatisticsService, StatisticsService>();
+            services.AddSingleton<IStatisticsRepository, StatisticsRepository>();
             services.AddSingleton<IAllocationService, AllocationService>();
             services.AddSingleton<IExecutiveService, ExecutiveService>();
             services.AddSingleton<IProjectsService, ProjectsService>();

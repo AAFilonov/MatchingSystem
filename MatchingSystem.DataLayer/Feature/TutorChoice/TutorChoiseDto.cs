@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace MatchingSystem.DataLayer.Feature.TutorChoise;
+namespace MatchingSystem.DataLayer.Feature.TutorChoice;
 #nullable enable
 public class TutorChoiceDto
 {

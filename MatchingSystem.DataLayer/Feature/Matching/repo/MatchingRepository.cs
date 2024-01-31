@@ -50,12 +50,4 @@ public class MatchingRepository : GenericRepository<MatchingEntity>, IMatchingRe
     {
         return _matchingSystemContext.Matchings.Select(matching => new MatchingDto(matching));
     }
-    
-    public IEnumerable<MatchingEntity> GetMatchings()
-    {
-        return _matchingSystemContext.Matchings.Include(matching =>matching.MatchingType ).ToList();
-    }
-    
-    
-    
 }

@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Lombok.NET;
-using MatchingSystem.DataLayer.Feature.CommonQuota;
 using MatchingSystem.DataLayer.Feature.CommonQuota.repo;
 using MatchingSystem.DataLayer.Feature.Tutor;
 using MatchingSystem.DataLayer.Feature.Tutor.repo;
-using MatchingSystem.DataLayer.Feature.TutorChoise.repo;
+using MatchingSystem.DataLayer.Feature.TutorChoice.repo;
 using MatchingSystem.DataLayer.OldDto;
 using MatchingSystem.DataLayer.OldEntities;
 
@@ -16,7 +15,6 @@ public partial class TutorService : ITutorService
 {
     private readonly ITutorRepository tutorRepository;
     private readonly ITutorsChoiceRepository tutorsChoiceRepository;
-    private readonly ICommonQuotaRepository commonQuotaRepository;
     private readonly IQuotaRequestRepository quotaRequestRepository;
 
     public IterationData GetChoice(int tutorId)

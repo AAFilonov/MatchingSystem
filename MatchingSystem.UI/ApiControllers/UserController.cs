@@ -106,15 +106,12 @@ namespace MatchingSystem.UI.ApiControllers
         [HttpPost]
         public void updateUser(UserDto userDto)
         {
-            UserEntity user = new UserEntity()
-            {
-                UserId = userDto.UserId,
-                Email = userDto.Email,
-                Login = userDto.Login,
-                Name = userDto.Name,
-                Surname = userDto.Surname,
-                Patronimic = userDto.Patronimic,
-            };
+            UserEntity user = userRepository.findById(userDto.UserId);
+            user.Email = userDto.Email;
+            user.Login = userDto.Login;
+            user.Name = userDto.Name;
+            user.Surname = userDto.Surname;
+            user.Patronimic = userDto.Patronimic;
             userRepository.update(user);
         }
 
@@ -124,18 +121,8 @@ namespace MatchingSystem.UI.ApiControllers
         {
             var encoder = new ScryptEncoder();
             var passwordHash = encoder.Encode(payload.newPassword);
-
-            UserEntity user = new UserEntity()
-            {
-                UserId = payload.user.UserId,
-                Email = payload.user.Email,
-                Login = payload.user.Login,
-                Name = payload.user.Name,
-                Surname = payload.user.Surname,
-                Patronimic = payload.user.Patronimic,
-                PasswordHash = passwordHash,
-            };
-
+            UserEntity user = userRepository.findById(payload.user.UserId);
+            user.PasswordHash = passwordHash;
             userRepository.update(user);
         }
     }

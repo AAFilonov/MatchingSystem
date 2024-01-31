@@ -53,15 +53,15 @@
                                 </td>
 
                                 <td >
-                                    <a v-on:click.prevent="viewProject(item.assignedProject)" class="btn" v-if="item.assignedProject">
-                                        {{item.assignedProject.projectName}}
+                                    <a v-on:click.prevent="viewProject(item.assignedProjectId)" class="btn" v-if="item.assignedProjectId">
+                                        {{formatProjectName(item.assignedProjectId)}}
                                     </a>
                                     <span v-else>---</span>
                                 </td>
                                 <td>
-                                    <div v-for="project in item.preferences">
-                                        <a v-on:click.prevent="viewProject(project)" class="btn" :class="{ refused: !project.isActive}">
-                                            {{project.orderInStudentPrefs}}.{{project.projectName}}
+                                    <div v-for="(projectId, index) in item.preferenceProjectIds">
+                                        <a v-on:click.prevent="viewProject(projectId)" class="btn">
+                                            {{index+1}}.{{formatProjectName(projectId)}} - {{formatProjectStatus(item,projectId)}}
                                         </a>
                                     </div>
                                 </td>
@@ -78,70 +78,83 @@
                     </v-progress-circular>
                 </v-row>
             </v-container>
-            <v-dialog
-                v-model="showProjectModal"
-                max-width="600">
-                <v-card tile v-if="projectToView">
-                    <v-toolbar dark>
-                        <v-toolbar-title>Проект</v-toolbar-title>
-                    </v-toolbar>
-                    <v-card-text>
-                        <v-form>
-                            <v-text-field
-                                :label="'Название'"
-                                v-model="projectToView.projectName"
-                                readonly>
-                            </v-text-field>
-
-                            <v-text-field
-                                :label="'Описание'"
-                                v-model="projectToView.info"
-                                readonly>
-                            </v-text-field>
-
-                            <v-text-field
-                                v-if="projectToView.quota!=null"
-                                :label="'Квота'"
-                                v-model="projectToView.quota"
-                                readonly>
-                            </v-text-field>
-                            <v-text-field
-                                v-else
-                                :label="'Квота'"
-                                value="Не важно"
-                                readonly>
-                            </v-text-field>
-
-                            <v-text-field
-                                :label="'Технологии'"
-                                v-model="projectToView.technologiesNameList"
-                                readonly>
-                            </v-text-field>
-
-                            <v-text-field
-                                :label="'Направления ВКР'"
-                                v-model="projectToView.workDirectionsNameList"
-                                readonly>
-                            </v-text-field>
-
-                            <v-text-field
-                                :label="'Группы'"
-                                v-model="projectToView.availableGroupsNameList"
-                                readonly>
-                            </v-text-field>
-
-                        </v-form>
-
-                    </v-card-text>
-                    <v-card-actions class="justify-end">
-                        <v-btn
-                            text
-                            v-on:click="showProjectModal = false">
-                            Close
-                        </v-btn>
-                    </v-card-actions>
-                </v-card>
-            </v-dialog>
+           <v-dialog
+                    v-model="showProjectModal"
+                    max-width="600">
+                    <v-card tile v-if="projectToView">
+                        <v-toolbar dark>
+                            <v-toolbar-title>Проект</v-toolbar-title>
+                        </v-toolbar>
+                        <v-card-text>
+                            <v-form>
+                                <v-text-field
+                                    :label="'Название'"
+                                    v-model="projectToView.projectName"
+                                    readonly>
+                                </v-text-field>
+                                
+                                <v-text-field
+                                    :label="'Преподаватель'"
+                                    v-model="findTutorById(projectToView.tutorId).nameAbbreviation"
+                                    readonly>
+                                </v-text-field>
+        
+                                <v-text-field
+                                    :label="'Описание'"
+                                    v-model="projectToView.info"
+                                    readonly>
+                                </v-text-field>
+        
+                                <v-text-field
+                                    v-if="projectToView.quota!=null"
+                                    :label="'Квота'"
+                                    v-model="projectToView.quota"
+                                    readonly>
+                                </v-text-field>
+                                <v-text-field
+                                    v-else
+                                    :label="'Квота'"
+                                    value="projectToView.quota"
+                                    readonly>
+                                </v-text-field>
+                                
+                                <v-text-field
+                                    :label="'Технологии'"
+                                    v-model="projectToView.technologiesNameList"
+                                    readonly>
+                                </v-text-field>
+        
+                                <v-text-field
+                                    :label="'Направления ВКР'"
+                                    v-model="projectToView.workDirectionsNameList"
+                                    readonly>
+                                </v-text-field>
+        
+                                <v-text-field
+                                    :label="'Группы'"
+                                    v-model="projectToView.availableGroupsNameList"
+                                    readonly>
+                                </v-text-field>
+                             <div>
+                                <label>Назначены:</label>
+                                <div v-for="studentId in projectToView.assignedStudentsIds">
+                                    <span >
+                                        {{findStudentById(studentId).orderInTutorPrefs || '??'}}.{{findStudentById(studentId).nameAbbreviation}}
+                                        {{formatStudentStatus(projectToView,studentId)}}
+                                    </span>
+                                </div>
+                             </div>
+                            </v-form>
+                        </v-card-text>
+                        <v-card-actions class="justify-end">
+                            <v-btn
+                                text
+                                v-on:click="showProjectModal = false">
+                                Close
+                            </v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
 
         </v-app>
     </div>
@@ -185,6 +198,8 @@ let app = new Vue({
       return {
          tableSearch:"",
          students: null,
+         projects: null,
+         tutors: null,
          headers: [],
          projectToView:null,
          showProjectModal:false,
@@ -192,10 +207,11 @@ let app = new Vue({
   },
   mounted(){ 
       this.headers = tableHeaders;
-      //this.students = studentsData;
       axios.get(`${params.basePath}/api/monitoring/students`) 
       .then(response => {
-          this.students =  response.data.studentRecords;
+          this.students = response.data.studentRecords;
+          this.projects = response.data.projectRecords;
+          this.tutors = response.data.tutorRecords;
       })
       .catch(function(reason){
           DisplayNotification('Ошибка при загрузке данных','error' );
@@ -203,11 +219,40 @@ let app = new Vue({
    
    },
   methods:{
-     viewProject(project){       
-          this.projectToView=project;
-          this.showProjectModal=true;
-          
+     findTutorById(tutorIdToOpen){
+         return this.tutors.find(value => value.tutorId==tutorIdToOpen) ??{};
+      },
+     findProjectById(projectIdToOpen){
+        return this.projects.find(value => value.projectId==projectIdToOpen) ??{};
      },
- }
+     findStudentById(studentIdToOpen){
+        return this.students.find(value => value.studentId==studentIdToOpen) ??{};
+     },    
+     viewProject(projectIdToOpen){       
+          this.projectToView = this.findProjectById(projectIdToOpen);
+          this.showProjectModal=true;
+     },
+     formatProjectName(projectIdToOpen){     
+          let project = this.findProjectById(projectIdToOpen);
+          return `${project.projectName}(${this.findTutorById(project.tutorId).nameAbbreviation})`;
+     },       
+     formatStudentStatus(projectToView, studentId){     
+          if (projectToView.assignedStudentsIdsInQuota.includes(studentId))
+             return "(В квоте)";
+          else 
+              return "(В квоту не вошел)";
+     },
+     formatProjectStatus(student,projectId){    
+         let project = this.findProjectById(projectId);
+          if (project.assignedStudentsIdsInQuota.includes(student.studentId))
+             return "Назначен на проект";
+            else if (project.assignedStudentsIds.includes(student.studentId)) 
+                return "Отвергнут  на текущей итерации";
+          else if (student.assignedProjectId ==null && student.alreadyTryedProjectIds.includes(projectId)) 
+              return "Отвергнут преподавателем";
+          else 
+              return "Не пробовал"
+     },       
+  }
 })
 </script>
