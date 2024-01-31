@@ -13,11 +13,11 @@ namespace MatchingSystem.UI.Controllers
     public partial class StatisticsController : Controller
     {
         private readonly IMatchingRepository matchingRepository;
-        private SessionData data;
-        
+       
         public override void OnActionExecuting(ActionExecutingContext ctx)
         {
             base.OnActionExecuting(ctx);
+            var data = HttpContext.Session.Get<SessionData>("Data");
             if (data == null)
             {
                 data = HttpContext.Session.Get<SessionData>("Data");
@@ -27,6 +27,7 @@ namespace MatchingSystem.UI.Controllers
         public override void OnActionExecuted(ActionExecutedContext ctx)
         {
             base.OnActionExecuted(ctx);
+            var data = HttpContext.Session.Get<SessionData>("Data");
             data.CurrentStage = matchingRepository.GetCurrentStageDto(data.SelectedMatching);
             HttpContext.Session.Set<SessionData>("Data", data);
         }
@@ -34,6 +35,7 @@ namespace MatchingSystem.UI.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            var data = HttpContext.Session.Get<SessionData>("Data");
             return View("~/Views/General/Index.cshtml", data.UserDto);
         }
         
