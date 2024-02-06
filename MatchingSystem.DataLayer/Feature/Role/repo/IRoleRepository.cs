@@ -8,6 +8,7 @@ namespace MatchingSystem.DataLayer.Feature.Role.repo;
 public interface IRoleRepository:IRepository<UsersRoleEntity>
 {
     IEnumerable<RoleDto> GetRolesForUserAndMatching(int userId, int matchingId);
+    IEnumerable<RoleDto> GetRoles();
     IEnumerable<RoleMatching> GetRolesForUser(int userId);
     void AssignRoleForUser(int userId, int matchingId, int roleId, DiplomaMatchingContext? extContext = null);
 

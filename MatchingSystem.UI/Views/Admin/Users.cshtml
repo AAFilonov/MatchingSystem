@@ -9,178 +9,263 @@
 }
 
 <div id="app">
-  <v-app>
-    <v-container style="max-width: 1200px">
-      <h2 class="col col-12">Мониторинг распределения: Студенты</h2>
+<v-app>
+<v-container style="max-width: 1200px">
+<h2 class="col col-12">Мониторинг распределения: Студенты</h2>
 
-      <div class="d-flex align-items-center mb-5">
-        <v-text-field
-          class="mr-10"
-          outlined
-          v-model="searchByAbbr"
-          label="Поиск по ФИО"
-          hide-details>
-        </v-text-field>
+<div class="d-flex align-items-center mb-5">
+  <v-text-field
+    class="mr-10"
+    outlined
+    v-model="searchByAbbr"
+    label="Поиск по ФИО"
+    hide-details>
+  </v-text-field>
 
+  <v-text-field
+    class="mr-10"
+    class="input"
+    outlined
+    v-model="searchByLogin"
+    label="Поиск по логину"
+    hide-details>
+  </v-text-field>
+
+  <v-btn v-on:click="filter">Фильтровать</v-btn>
+</div>
+
+<div>
+  <v-data-table
+    v-if="users.length"
+    :headers="usersHeaders"
+    :items="users"
+    :items-per-page="15"
+    class="elevation-1">
+    <template v-slot:item="{ item }">
+      <tr v-on:click="selectRow(item)" class="text-center cursor-pointer">
+        <td>{{ formattingValue(item.userId) }}</td>
+        <td>{{ formattingValue(item.login) }}</td>
+        <td>{{ formattingValue(item.email) }}</td>
+        <td>{{ formattingValue(item.nameAbbreviation) }}</td>
+        <td>
+          <v-btn plain v-on:click.stop="openRoleDialog(item.userId, item.nameAbbreviation)">role</v-btn>
+        </td>
+      </tr>
+    </template>
+  </v-data-table>
+</div>
+
+
+<v-row v-else align="center" justify="center" v-else style="min-height: 250px">
+  <v-progress-circular
+    indeterminate
+    size="200"
+    color="primary"
+    class="">
+  </v-progress-circular>
+</v-row>
+
+<v-dialog persistent width="1000px" v-model="editDialogHasOpened">
+  <v-card class="dialog-card">
+    <v-card-title class="text-h5 lighten-2">
+      Редактирование {{ getSelectedUserNameAbbr(selectedUser.userId) }}
+    </v-card-title>
+
+    <v-divider></v-divider>
+
+    <div class="d-flex align-items-start">
+      <div class="w-50 mr-5">
+        <p class="text-body">Редактирование данных</p>
         <v-text-field
-          class="mr-10"
           class="input"
           outlined
-          v-model="searchByLogin"
-          label="Поиск по логину"
+          v-model="selectedUser.login"
+          label="Login"
           hide-details>
         </v-text-field>
 
-        <v-btn v-on:click="filter">Фильтровать</v-btn>
+        <v-text-field
+          class="input"
+          outlined
+          v-model="selectedUser.email"
+          label="E-mail"
+          hide-details>
+        </v-text-field>
+
+        <v-text-field
+          class="input"
+          outlined
+          v-model="selectedUser.name"
+          label="Name"
+          hide-details>
+        </v-text-field>
+
+        <v-text-field
+          class="input"
+          outlined
+          v-model="selectedUser.surname"
+          label="Surname"
+          hide-details>
+        </v-text-field>
+
+        <v-text-field
+          class="input"
+          outlined
+          v-model="selectedUser.patronimic"
+          label="Patronimic"
+          hide-details>
+        </v-text-field>
       </div>
+      <div class="w-50">
+        <p class="text-body">Сброс пароля</p>
+        <v-text-field
+          :error="errorPasswordConfirm"
+          class="input"
+          outlined
+          v-model="newPassword"
+          label="New password"
+          hide-details>
+        </v-text-field>
 
-      <div>
-        <v-data-table
-          v-if="users.length"
-          :headers="headers"
-          :items="users"
-          :items-per-page="15"
-          class="elevation-1">
-          <template v-slot:item="{ item }">
-            <tr v-on:click="selectRow(item)" class="text-center cursor-pointer">
-              <td>{{ formattingValue(item.userId) }}</td>
-              <td>{{ formattingValue(item.login) }}</td>
-              <td>{{ formattingValue(item.email) }}</td>
-              <td>{{ formattingValue(item.nameAbbreviation) }}</td>
-            </tr>
-          </template>
-        </v-data-table>
-      </div>
+        <v-text-field
+          :error="errorPasswordConfirm"
+          class="input"
+          outlined
+          v-model="newPasswordConfirm"
+          label="Confirm new password"
+          hide-details>
+        </v-text-field>
 
-
-      <v-row v-else align="center" justify="center" v-else style="min-height: 250px">
-        <v-progress-circular
-          indeterminate
-          size="200"
-          color="primary"
-          class="">
-        </v-progress-circular>
-      </v-row>
-
-      <v-dialog persistent width="1000px" v-model="dialogHasOpened">
-        <v-card class="dialog-card">
-          <v-card-title class="text-h5 lighten-2">
-            Редактирование {{ getSelectedUserNameAbbr(selectedUser.userId) }}
-          </v-card-title>
-
-          <v-divider></v-divider>
-
-          <div class="d-flex align-items-start">
-            <div class="w-50 mr-5">
-              <p class="text-body">Редактирование данных</p>
-              <v-text-field
-                class="input"
-                outlined
-                v-model="selectedUser.login"
-                label="Login"
-                hide-details>
-              </v-text-field>
-
-              <v-text-field
-                class="input"
-                outlined
-                v-model="selectedUser.email"
-                label="E-mail"
-                hide-details>
-              </v-text-field>
-
-              <v-text-field
-                class="input"
-                outlined
-                v-model="selectedUser.name"
-                label="Name"
-                hide-details>
-              </v-text-field>
-
-              <v-text-field
-                class="input"
-                outlined
-                v-model="selectedUser.surname"
-                label="Surname"
-                hide-details>
-              </v-text-field>
-
-              <v-text-field
-                class="input"
-                outlined
-                v-model="selectedUser.patronimic"
-                label="Patronimic"
-                hide-details>
-              </v-text-field>
-            </div>
-            <div class="w-50">
-              <p class="text-body">Сброс пароля</p>
-              <v-text-field
-                :error="errorPasswordConfirm"
-                class="input"
-                outlined
-                v-model="newPassword"
-                label="New password"
-                hide-details>
-              </v-text-field>
-
-              <v-text-field
-                :error="errorPasswordConfirm"
-                class="input"
-                outlined
-                v-model="newPasswordConfirm"
-                label="Confirm new password"
-                hide-details>
-              </v-text-field>
-
-              <v-btn
-                :disabled="errorPasswordConfirm || !newPassword || !newPasswordConfirm"
-                v-on:click="updatePassword"
-                class="mt-5 d-block ml-auto">
-                Update password
-              </v-btn>
-            </div>
-          </div>
-
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn
-              color="error"
-              v-on:click="dialogHasOpened = false">
-              Close
-            </v-btn>
-            <v-btn
-              color="primary"
-              v-on:click="updateUser">
-              Save
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    </v-container>
-
-    <v-snackbar
-      v-model="snackbar"
-      :timeout="2000">
-      Пользователь успешно обновлён
-
-      <template v-slot:action>
         <v-btn
-          text
-          v-on:click="snackbar = false">
-          Закрыть
+          :disabled="errorPasswordConfirm || !newPassword || !newPasswordConfirm"
+          v-on:click="updatePassword"
+          class="mt-5 d-block ml-auto">
+          Update password
         </v-btn>
-      </template>
-    </v-snackbar>
-  </v-app>
+      </div>
+    </div>
 
-  <form class="d-none">
-    <input type="hidden" ref="matching" value="@data.SelectedMatching?">
-  </form>
+    <v-card-actions>
+      <v-spacer></v-spacer>
+      <v-btn
+        color="error"
+        v-on:click="editDialogHasOpened = false">
+        Close
+      </v-btn>
+      <v-btn
+        color="primary"
+        v-on:click="updateUser">
+        Save
+      </v-btn>
+    </v-card-actions>
+  </v-card>
+</v-dialog>
+
+<v-dialog persistent width="1000px" v-model="roleDialogHasOpened">
+  <v-card class="dialog-card">
+    <div v-if="!hasAddedRole">
+      <div>Роли</div>
+      <div class="mb-lg-5">{{ roleDialogTitle }}</div>
+
+      <v-data-table
+        v-if="roles.length"
+        :headers="rolesHeaders"
+        :items="roles"
+        :items-per-page="5"
+        class="elevation-1">
+        <template v-slot:item="{ item }">
+          <tr class="text-center cursor-pointer">
+            <td>{{ item.matchingName }}</td>
+            <td>{{ item.roleName_ru }}</td>
+            <td>
+              <v-btn icon color="error" fab small v-on:click.stop="removeRole(item.userId, item.matchingId, item.roleCode)">
+                <v-icon light>
+                  mdi-close-circle
+                </v-icon>
+              </v-btn>
+            </td>
+          </tr>
+        </template>
+      </v-data-table>
+
+      <v-card-actions class="mt-lg-5">
+        <v-spacer></v-spacer>
+        <v-btn
+          color="error"
+          v-on:click="roleDialogHasOpened = false">
+          Close
+        </v-btn>
+        <v-btn
+          color="primary"
+          v-on:click="hasAddedRole = true">
+          Add
+        </v-btn>
+      </v-card-actions>
+    </div>
+
+    <div v-else>
+      <div>Добавление роли</div>
+      <div class="mb-lg-5">{{ roleDialogTitle }}</div>
+
+      <v-select
+        item-text="name"
+        item-value="value"
+        label="Matching"
+        v-model="selectedMatching"
+        outlined
+        :items="matchingsOptions">
+      </v-select>
+      
+      <v-select
+        item-text="name"
+        item-value="value"
+        label="Role"
+        v-model="selectedRole"
+        outlined
+        :items="rolesOptions">
+      </v-select>
+
+      <v-card-actions class="mt-lg-5">
+        <v-spacer></v-spacer>
+        <v-btn
+          color="error"
+          v-on:click="hasAddedRole = false">
+          Back
+        </v-btn>
+        <v-btn
+          color="primary"
+          :disabled="!selectedRole || !selectedMatching"
+          v-on:click="createRole">
+          Create role
+        </v-btn>
+      </v-card-actions>
+    </div>
+  </v-card>
+</v-dialog>
+</v-container>
+
+<v-snackbar
+  v-model="snackbar"
+  :timeout="2000">
+  {{ snackbarText }}
+
+  <template v-slot:action>
+    <v-btn
+      text
+      v-on:click="snackbar = false">
+      Закрыть
+    </v-btn>
+  </template>
+</v-snackbar>
+</v-app>
+
+<form class="d-none">
+  <input type="hidden" ref="matching" value="@data.SelectedMatching?">
+</form>
 </div>
 
 <script>
-const tableHeaders = [{
+const userTableHeaders = [{
   value: 'userId',
   text: 'Id',
   sortable: true,
@@ -199,98 +284,211 @@ const tableHeaders = [{
   text: 'ФИО',      
   sortable: true,          
   align: 'center'    
-}                                     
-];
+},{
+   value: '',
+   text: 'Action',      
+   align: 'center'    
+}];
+
+const roleTableHeaders = [{
+  value: 'matching_id',
+  text: 'Matching ID',
+  sortable: true,
+  align: 'center'
+}, {
+  value: 'role_id',
+  text: 'Role ID',
+  sortable: true,
+  align: 'center'
+},{
+   value: '',
+   text: 'Action',      
+   align: 'center'    
+}];
 
 let app = new Vue({
-    el: '#app',
-    vuetify: new Vuetify(),
-    data() {
-        return {
-            matchingId: null,
-            users: [],
-            matchings: [],
-            headers: [],
-            selectedUser: {},
-            dialogHasOpened: false,
-            snackbar: false,
-            searchByAbbr: '',
-            searchByLogin: '',
-            
-            newPassword: '',
-            newPasswordConfirm: '',
-            errorPasswordConfirm: false,
-        }
+  el: '#app',
+  vuetify: new Vuetify(),
+  data() {
+    return {
+      matchingId: null,
+      
+      users: [],
+      roles: [],
+      matchings: [],
+      
+      matchingsOptions: [],
+      rolesOptions: [],
+      
+      usersHeaders: [],
+      rolesHeaders: [],
+      
+      selectedUser: {},
+      
+      editDialogHasOpened: false,
+      roleDialogHasOpened: false,
+      hasAddedRole: false,
+      
+      snackbar: false,
+      roleDialogTitle: '',
+      roleDialogId: -1,
+      snackbarText: '',
+      
+      searchByAbbr: '',
+      searchByLogin: '',
+      
+      newPassword: '',
+      newPasswordConfirm: '',
+      errorPasswordConfirm: false,
+      
+      selectedMatching: '',
+      selectedRole: '',
+    }
+  },
+  methods: {
+    async fetchUsers() {
+      try {
+        return (await axios.get(`${params.basePath}/api/user/getUsers?login=${this.searchByLogin}&abbr=${this.searchByAbbr}`)).data;
+      } catch (e) {
+        console.error(`Error: ${e}`);
+      }
     },
-    methods: {
-        async fetchUsers() {
-          try {
-            return (await axios.get(`${params.basePath}/api/user/getUsers?login=${this.searchByLogin}&abbr=${this.searchByAbbr}`)).data;
-          } catch (e) {
-            console.error(`Error: ${e}`);
-          }
-        },
-        async fetchMatchings() {
-          try {
-            return (await axios.get(`${params.basePath}/api/user/getMatchingsList`)).data;
-          } catch (e) {
-            console.error(`Error: ${e}`);
-          }
-        },
-        formattingValue(value) {
-          return value || '—';    
-        },
-        selectRow(item) {
-          this.dialogHasOpened = true;
-          this.selectedUser = JSON.parse(JSON.stringify(item));
-        },
-        async updateUser() {
-            try {
-              await axios.post(`${params.basePath}/api/user/updateUser`, this.selectedUser);
-                          
-              this.users = await this.fetchUsers();
-              this.dialogHasOpened = false;
-              this.snackbar = true;
-            } catch (e) {
-              console.error(`Error: ${e}`);
-            }
-        },
-        getSelectedUserNameAbbr(id) {
-            return this.users?.find((user) => user.userId === id)?.nameAbbreviation;
-        },
-        async filter() {
-          this.users = await this.fetchUsers();
-        },
-        async updatePassword() {
-          if (this.newPassword !== this.newPasswordConfirm) {
-            this.errorPasswordConfirm = true;
-            return;
-          }
-          try {
-            await axios.post(`${params.basePath}/api/user/changePassword`, {
-              user: this.selectedUser,
-              newPassword: this.newPassword,
-            });
-            this.snackbar = true;
-          } catch (e) {
-            console.error(`Error: ${e}`);
-          }
-        }
+    async fetchMatchings() {
+      try {
+        return (await axios.get(`${params.basePath}/api/user/getMatchingsList`)).data;
+      } catch (e) {
+        console.error(`Error: ${e}`);
+      }
+    },async fetchRoles() {
+      try {
+        return (await axios.get(`${params.basePath}/api/user/getRolesList`)).data;
+      } catch (e) {
+        console.error(`Error: ${e}`);
+      }
     },
-    async mounted() {
-        this.matchingId = parseInt(this.$refs.matching.value);
-        this.headers = [...tableHeaders];
+    async fetchUserRoles(userId) {
+      try {
+        return (await axios.get(`${params.basePath}/api/user/getAllRoles?userId=${userId}`)).data;
+      } catch (e) {
+        console.error(`Error: ${e}`);
+      }
+    },
+    async updateUser() {
+      try {
+        await axios.post(`${params.basePath}/api/user/updateUser`, this.selectedUser);
+                    
         this.users = await this.fetchUsers();
-        this.matchings = await this.fetchMatchings();
+        this.editDialogHasOpened = false;
+        this.snackbarText = 'Пользователь успешно обновлён'
+        this.snackbar = true;
+      } catch (e) {
+        console.error(`Error: ${e}`);
+      }
     },
-    watch: {
-      newPassword() {
-        this.errorPasswordConfirm = false;
-      },
-      newPasswordConfirm() {
-        this.errorPasswordConfirm = false;
+    async createRole() {
+      try {
+        await axios.post(`${params.basePath}/api/user/assignRole`, {
+          UserId: this.roleDialogId,
+          MatchingId: this.selectedMatching,
+          RoleId: this.selectedRole,
+        });
+                    
+        this.snackbarText = 'Роль успешно создана'
+        this.snackbar = true;
+        this.roles = await this.fetchUserRoles(this.roleDialogId);
+      } catch (e) {
+        this.snackbarText = 'Не удалось создать Роль';
+        this.snackbar = true;
+        console.error(`Error: ${e}`);
+      }
+    },
+    async removeRole(userId, matchingId, roleId) {
+      if (!confirm('Подтверждение удаления роли')) {
+        return;
+      }
+      try {
+        await axios.post(`${params.basePath}/api/user/removeRole`, {
+          UserId: userId,
+          MatchingId: matchingId,
+          RoleId: roleId,
+        });
+                    
+        this.snackbarText = 'Роль успешно удалена'
+        this.snackbar = true;
+        this.roles = await this.fetchUserRoles(this.roleDialogId);
+      } catch (e) {
+        console.error(`Error: ${e}`);
+      }
+    },
+    formattingValue(value) {
+      return value || '—';    
+    },
+    selectRow(item) {
+      this.editDialogHasOpened = true;
+      this.selectedUser = JSON.parse(JSON.stringify(item));
+    },
+    getSelectedUserNameAbbr(id) {
+        return this.users?.find((user) => user.userId === id)?.nameAbbreviation;
+    },
+    async openRoleDialog(userId, userName) {
+      this.roleDialogHasOpened = true;
+      this.roleDialogTitle = userName;
+      this.roleDialogId = userId;
+      
+      this.roles = await this.fetchUserRoles(this.roleDialogId);
+    },
+    async filter() {
+      this.users = await this.fetchUsers();
+    },
+    async updatePassword() {
+      if (this.newPassword !== this.newPasswordConfirm) {
+        this.errorPasswordConfirm = true;
+        return;
+      }
+      try {
+        await axios.post(`${params.basePath}/api/user/changePassword`, {
+          user: this.selectedUser,
+          newPassword: this.newPassword,
+        });
+        this.snackbar = true;
+      } catch (e) {
+        console.error(`Error: ${e}`);
       }
     }
+  },
+  async mounted() {
+    this.matchingId = parseInt(this.$refs.matching.value);
+    this.usersHeaders = [...userTableHeaders];
+    this.rolesHeaders = [...roleTableHeaders];
+    this.users = await this.fetchUsers();
+    this.matchingsOptions = (await this.fetchMatchings()).reduce((acc, el) => {
+      return [...acc,  { value: el.matchingID, name: el.matchingName }]
+    }, []);
+    this.rolesOptions = (await this.fetchRoles()).reduce((acc, el) => {
+      return [...acc,  { value: el.roleCode, name: el.roleName_ru }]
+    }, []);
+  },
+  watch: {
+    newPassword() {
+      this.errorPasswordConfirm = false;
+    },
+    newPasswordConfirm() {
+      this.errorPasswordConfirm = false;
+    },
+    editDialogHasOpened() {
+      this.newPassword = '';
+      this.newPasswordConfirm = '';
+      this.errorPasswordConfirm = false;
+    },
+    roleDialogHasOpened() {
+      this.selectedMatching = '';
+      this.selectedRole = '';
+    },
+    hasAddedRole() {
+      this.selectedMatching = '';
+      this.selectedRole = '';
+    }
+  }
 })
 </script>
 

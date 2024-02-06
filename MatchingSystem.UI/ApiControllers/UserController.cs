@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using MatchingSystem.DataLayer.Feature.Matching;
 using MatchingSystem.DataLayer.Feature.Matching.repo;
+using MatchingSystem.DataLayer.Feature.Role;
 using MatchingSystem.DataLayer.Feature.Role.repo;
 using MatchingSystem.DataLayer.Feature.User;
 using MatchingSystem.DataLayer.Feature.User.repo;
@@ -47,7 +49,14 @@ namespace MatchingSystem.UI.ApiControllers
         public IActionResult GetMatchingsList()
         {
             var model = matchingRepository.GetMatchingsDto().ToList();
+            return new JsonResult(model);
+        }
 
+        [Route("api/[controller]/getRolesList")]
+        [HttpGet]
+        public IActionResult GetRolesList()
+        {
+            var model = roleRepository.GetRoles();
             return new JsonResult(model);
         }
 
@@ -56,6 +65,14 @@ namespace MatchingSystem.UI.ApiControllers
         public IActionResult GetRolesForUser([FromQuery] int matchingId, [FromQuery] int userId)
         {
             var model = roleRepository.GetRolesForUserAndMatching(userId, matchingId);
+            return new JsonResult(model);
+        }
+
+        [Route("api/[controller]/getAllRoles")]
+        [HttpGet]
+        public IActionResult GetAllRolesForUser([FromQuery] int userId)
+        {
+            var model = roleRepository.GetRolesForUser(userId);
             return new JsonResult(model);
         }
 
@@ -124,6 +141,35 @@ namespace MatchingSystem.UI.ApiControllers
             UserEntity user = userRepository.findById(payload.user.UserId);
             user.PasswordHash = passwordHash;
             userRepository.update(user);
+        }
+
+        [Route("api/[controller]/assignRole")]
+        [HttpPost]
+        public void assignRole(UsersRoleEntity payload)
+        {
+            IEnumerable<UsersRoleEntity> userRole = roleRepository.find(role =>
+                role.UserId == payload.UserId
+                && role.MatchingId == payload.MatchingId
+                && role.RoleId == payload.RoleId
+            );
+            if (userRole.Count() != 0)
+            {
+                throw new Exception("Роль с такой конфигурацией уже существует");
+            }
+
+            roleRepository.AssignRoleForUser(payload.UserId, (int)payload.MatchingId, payload.RoleId);
+        }
+
+        [Route("api/[controller]/removeRole")]
+        [HttpPost]
+        public void removeRole(UsersRoleEntity payload)
+        {
+            IEnumerable<UsersRoleEntity> userRole = roleRepository.find(role =>
+                role.UserId == payload.UserId
+                && role.MatchingId == payload.MatchingId
+                && role.RoleId == payload.RoleId
+            );
+            roleRepository.removeRange(userRole);
         }
     }
 }
