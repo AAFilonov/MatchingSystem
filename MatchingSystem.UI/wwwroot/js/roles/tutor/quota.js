@@ -50,7 +50,7 @@
             if (this.stageTypeCode === 4) {
                 let data = this.projectsToChange.map(i => {
                     return {
-                        projectId: i.projectID,
+                        ProjectID: parseInt(i.projectId),
                         quota: parseInt(i.delta)
                     }
                 });
