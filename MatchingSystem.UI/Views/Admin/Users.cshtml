@@ -215,7 +215,7 @@
         outlined
         :items="matchingsOptions">
       </v-select>
-      
+
       <v-select
         item-text="name"
         item-value="value"
@@ -223,6 +223,17 @@
         v-model="selectedRole"
         outlined
         :items="rolesOptions">
+      </v-select>
+      
+      @*Если роль === 'Студент'*@
+      <v-select
+        v-if="selectedRole === 2"
+        item-text="name"
+        item-value="value"
+        label="Group"
+        v-model="selectedGroup"
+        outlined
+        :items="groupsOptions">
       </v-select>
 
       <v-card-actions class="mt-lg-5">
@@ -234,7 +245,7 @@
         </v-btn>
         <v-btn
           color="primary"
-          :disabled="!selectedRole || !selectedMatching"
+          :disabled="hasDisabledAssignmentRole"
           v-on:click="createRole">
           Create role
         </v-btn>
@@ -317,8 +328,9 @@ let app = new Vue({
       roles: [],
       matchings: [],
       
-      matchingsOptions: [],
-      rolesOptions: [],
+      matchingsOptions: [], //
+      rolesOptions: [],     // for select
+      groupsOptions: [],    //
       
       usersHeaders: [],
       rolesHeaders: [],
@@ -329,53 +341,62 @@ let app = new Vue({
       roleDialogHasOpened: false,
       hasAddedRole: false,
       
-      snackbar: false,
-      roleDialogTitle: '',
-      roleDialogId: -1,
-      snackbarText: '',
+      snackbar: false, // toastification
+      snackbarText: '', // toastification text
+      roleDialogTitle: '', // Название для диалогового окна выбора ролей
+      roleDialogId: -1, // ID юзера, диалоговое окно по ролям которого открыто
       
-      searchByAbbr: '',
-      searchByLogin: '',
+      searchByAbbr: '',  // Поиск по ФИО
+      searchByLogin: '', // Поиск по Логину
       
-      newPassword: '',
-      newPasswordConfirm: '',
-      errorPasswordConfirm: false,
+      newPassword: '',              //
+      newPasswordConfirm: '',       // Обновление пароля
+      errorPasswordConfirm: false,  //
       
-      selectedMatching: '',
-      selectedRole: '',
+      selectedMatching: null,
+      selectedRole: null,
+      selectedGroup: null, // значение select для кейса с ролью "Студент"
     }
   },
   methods: {
     async fetchUsers() {
       try {
-        return (await axios.get(`${params.basePath}/api/user/getUsers?login=${this.searchByLogin}&abbr=${this.searchByAbbr}`)).data;
+        return (await axios.get(`${params.basePath}/api/admin/getUsers?login=${this.searchByLogin}&abbr=${this.searchByAbbr}`)).data;
       } catch (e) {
         console.error(`Error: ${e}`);
       }
     },
     async fetchMatchings() {
       try {
-        return (await axios.get(`${params.basePath}/api/user/getMatchingsList`)).data;
+        return (await axios.get(`${params.basePath}/api/admin/getMatchingsList`)).data;
       } catch (e) {
         console.error(`Error: ${e}`);
       }
-    },async fetchRoles() {
+    },
+    async fetchRoles() {
       try {
-        return (await axios.get(`${params.basePath}/api/user/getRolesList`)).data;
+        return (await axios.get(`${params.basePath}/api/admin/getRolesList`)).data;
+      } catch (e) {
+        console.error(`Error: ${e}`);
+      }
+    },
+    async fetchGroups() {
+      try {
+        return (await axios.get(`${params.basePath}/api/admin/getGroupsList`)).data;
       } catch (e) {
         console.error(`Error: ${e}`);
       }
     },
     async fetchUserRoles(userId) {
       try {
-        return (await axios.get(`${params.basePath}/api/user/getAllRoles?userId=${userId}`)).data;
+        return (await axios.get(`${params.basePath}/api/admin/getAllRoles?userId=${userId}`)).data;
       } catch (e) {
         console.error(`Error: ${e}`);
       }
     },
     async updateUser() {
       try {
-        await axios.post(`${params.basePath}/api/user/updateUser`, this.selectedUser);
+        await axios.post(`${params.basePath}/api/admin/updateUser`, this.selectedUser);
                     
         this.users = await this.fetchUsers();
         this.editDialogHasOpened = false;
@@ -387,10 +408,13 @@ let app = new Vue({
     },
     async createRole() {
       try {
-        await axios.post(`${params.basePath}/api/user/assignRole`, {
-          UserId: this.roleDialogId,
-          MatchingId: this.selectedMatching,
-          RoleId: this.selectedRole,
+        await axios.post(`${params.basePath}/api/admin/assignRole`, {
+          userRoleEntity: {
+            UserId: this.roleDialogId,
+            MatchingId: this.selectedMatching,
+            RoleId: this.selectedRole,
+          },
+          groupId: this.selectedGroup || 0,
         });
                     
         this.snackbarText = 'Роль успешно создана'
@@ -407,13 +431,13 @@ let app = new Vue({
         return;
       }
       try {
-        await axios.post(`${params.basePath}/api/user/removeRole`, {
+        await axios.post(`${params.basePath}/api/admin/removeRole`, {
           UserId: userId,
           MatchingId: matchingId,
           RoleId: roleId,
         });
                     
-        this.snackbarText = 'Роль успешно удалена'
+        this.snackbarText = 'Роль успешно удалена';
         this.snackbar = true;
         this.roles = await this.fetchUserRoles(this.roleDialogId);
       } catch (e) {
@@ -446,10 +470,11 @@ let app = new Vue({
         return;
       }
       try {
-        await axios.post(`${params.basePath}/api/user/changePassword`, {
+        await axios.post(`${params.basePath}/api/admin/changePassword`, {
           user: this.selectedUser,
           newPassword: this.newPassword,
         });
+        this.snackbarText = 'Пароль успешно обновлён';
         this.snackbar = true;
       } catch (e) {
         console.error(`Error: ${e}`);
@@ -461,11 +486,15 @@ let app = new Vue({
     this.usersHeaders = [...userTableHeaders];
     this.rolesHeaders = [...roleTableHeaders];
     this.users = await this.fetchUsers();
+    
     this.matchingsOptions = (await this.fetchMatchings()).reduce((acc, el) => {
       return [...acc,  { value: el.matchingID, name: el.matchingName }]
     }, []);
     this.rolesOptions = (await this.fetchRoles()).reduce((acc, el) => {
       return [...acc,  { value: el.roleCode, name: el.roleName_ru }]
+    }, []);
+    this.groupsOptions = (await this.fetchGroups()).reduce((acc, el) => {
+      return [...acc,  { value: el.groupID, name: el.groupName }]
     }, []);
   },
   watch: {
@@ -481,12 +510,31 @@ let app = new Vue({
       this.errorPasswordConfirm = false;
     },
     roleDialogHasOpened() {
-      this.selectedMatching = '';
-      this.selectedRole = '';
+      this.selectedMatching = null;
+      this.selectedRole = null;
+      this.selectedGroup = null;
     },
     hasAddedRole() {
-      this.selectedMatching = '';
-      this.selectedRole = '';
+      this.selectedMatching = null;
+      this.selectedRole = null;
+      this.selectedGroup = null;
+    },
+  },
+  computed: {
+    hasDisabledAssignmentRole() {
+      if (this.selectedMatching === null) {
+        return true;
+      }
+      
+      if (this.selectedRole === null) {
+        return true;
+      }
+      
+      if (this.selectedRole === 2 && this.selectedGroup === null) {
+        return true;
+      }
+      
+      return false;
     }
   }
 })

@@ -10,7 +10,7 @@ public class RoleRepository : GenericRepository<UsersRoleEntity>, IRoleRepositor
 {
     public IEnumerable<RoleDto> GetRolesForUserAndMatching(int userId, int matchingId)
     {
-        return findAll().Where(role => role.MatchingId == matchingId && role.UserId == userId)
+        return findAll().Where(role => role.MatchingId == matchingId && role.UserId == userId && !role.IsDeleted)
             .ToList()
             .Select(role =>
             {
@@ -38,7 +38,7 @@ public class RoleRepository : GenericRepository<UsersRoleEntity>, IRoleRepositor
     public IEnumerable<RoleMatching> GetRolesForUser(int userId)
     {
         var UserRoles = findAll().Where(role => role.UserId == userId).ToList();
-        var roles = UserRoles.Select(userRole =>
+        var roles = UserRoles.Where(userRole => !userRole.IsDeleted).Select(userRole =>
         {
             var role = new RoleMatching();
             role.UserId = userId;
