@@ -22,7 +22,7 @@ public class ProjectEntity
     public string? ProjectName { get; set; }
     public string? Info { get; set; }
     public int TutorId { get; set; }
-    public bool? IsClosed { get; set; }
+    public bool IsClosed { get; set; }
     public bool? IsDefault { get; set; }
     public int? MatchingId { get; set; }
     public short? ProjectQuotaQty { get; set; }

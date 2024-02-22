@@ -49,6 +49,7 @@ public partial class MonitoringService : Repository, IMonitoringService
                 dto.projectName = entity.ProjectName;
                 dto.quota = entity.ProjectQuotaQty?.ToString() ?? "Не важно";
                 dto.info = entity.Info;
+                dto.isClosed = entity.IsClosed;
                 dto.tutorId = entity.TutorId;
                 var tutorChoises = entity.TutorsChoices
                     .Where(choiceEntity => choiceEntity.StageId == currentStage.StageId)
@@ -103,7 +104,11 @@ public partial class MonitoringService : Repository, IMonitoringService
                 TutorsChoiceEntity tutorsChoice =
                     entity.TutorsChoices.FirstOrDefault(choiceEntity => choiceEntity.StageId == currentStage.StageId);
                 dto.assignedProjectId = tutorsChoice?.ProjectId;
-                dto.orderInTutorPrefs = tutorsChoice?.SortOrderNumber == 32767 ? null : tutorsChoice?.SortOrderNumber;
+                var tutorPrefsOnCurrentStage = tutorsChoice?.Project?.TutorsChoices
+                    .Where(choiceEntity => choiceEntity.StageId == currentStage.StageId).ToList();
+                dto.orderInTutorPrefs = tutorsChoice?.SortOrderNumber == 32767
+                    ? null
+                    : tutorPrefsOnCurrentStage?.FindIndex(choice => choice.StudentId == dto.studentId) + 1;
                 return dto;
             }).ToList();
         });

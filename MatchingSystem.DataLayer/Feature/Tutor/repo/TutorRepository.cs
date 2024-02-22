@@ -6,10 +6,10 @@ namespace MatchingSystem.DataLayer.Feature.Tutor.repo;
 
 public class TutorRepository : GenericRepository<TutorEntity>, ITutorRepository
 {
-    public IEnumerable<TutorChoiceDto> GetChoiceByTutor(int tutorId)
+    public IEnumerable<TutorChoiceDto> GetChoiceByTutor(int tutorId, int stageId)
     {
         return _matchingSystemContext.TutorsChoices
-            .Where(choice => choice.Project.TutorId == tutorId)
+            .Where(choice => choice.Project.TutorId == tutorId && choice.Stage.StageId == stageId)
             .Select(entity => new TutorChoiceDto(entity))
             .ToList();
     }
