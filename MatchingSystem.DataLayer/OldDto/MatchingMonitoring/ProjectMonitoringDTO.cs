@@ -4,6 +4,7 @@ namespace MatchingSystem.DataLayer.OldDto.MatchingMonitoring;
 
 public class ProjectMonitoringDto
 {
+    public bool isClosed { get; set; }
     public int projectId { get; set; }
     public string projectName { get; set; }
     public string quota { get; set; }

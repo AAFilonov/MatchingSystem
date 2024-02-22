@@ -2,6 +2,8 @@
 using System.Linq;
 using Lombok.NET;
 using MatchingSystem.DataLayer.Feature.CommonQuota.repo;
+using MatchingSystem.DataLayer.Feature.Matching.repo;
+using MatchingSystem.DataLayer.Feature.Stage;
 using MatchingSystem.DataLayer.Feature.Tutor;
 using MatchingSystem.DataLayer.Feature.Tutor.repo;
 using MatchingSystem.DataLayer.Feature.TutorChoice.repo;
@@ -15,13 +17,16 @@ public partial class TutorService : ITutorService
 {
     private readonly ITutorRepository tutorRepository;
     private readonly ITutorsChoiceRepository tutorsChoiceRepository;
+    private readonly IMatchingRepository matchingRepository;
     private readonly IQuotaRequestRepository quotaRequestRepository;
 
     public IterationData GetChoice(int tutorId)
     {
-        var result = tutorRepository.GetChoiceByTutor(tutorId).ToList();
+        TutorEntity tutor = tutorRepository.findById(tutorId);
+        StageEntity currentStage= matchingRepository.GetCurrentStage(tutor!.MatchingId);
+        List<DataLayer.Feature.TutorChoice.TutorChoiceDto> result = tutorRepository.GetChoiceByTutor(tutorId,currentStage.StageId ).ToList();
 
-        var projects = result.Select(x => x.ProjectID).Distinct();
+        IEnumerable<int?> projects = result.Select(x => x.ProjectID).Distinct();
 
         var viewModel = new IterationData
         {
