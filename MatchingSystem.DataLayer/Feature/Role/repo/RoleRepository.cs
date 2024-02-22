@@ -21,6 +21,19 @@ public class RoleRepository : GenericRepository<UsersRoleEntity>, IRoleRepositor
                 return dto;
             });
     }
+    
+    public IEnumerable<RoleDto> GetRoles()
+    {
+        return _matchingSystemContext.Roles.ToList().Select(role =>
+        {
+            var dto = new RoleDto();
+            dto.RoleCode = role.RoleCode;
+            dto.RoleName = role.RoleName;
+            dto.RoleName_ru = role.RoleNameRu;
+
+            return dto;
+        });
+    }
 
     public IEnumerable<RoleMatching> GetRolesForUser(int userId)
     {
