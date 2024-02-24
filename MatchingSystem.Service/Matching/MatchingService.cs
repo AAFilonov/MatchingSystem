@@ -34,10 +34,9 @@ public class MatchingService : IMatchingService
     public void MoveToNextStage(int matchingId)
     {
         matchingRepositoryDapper.SetNextStage(matchingId);
+        //TODO DPL-4 сделать вызов StageService
     }
-    // [napp].[goto_NextStage]  - TODO DPL-12 переписать эту хранимку на шарповой бизнеслогике
-  
-
+    
     public int CreateMatching(MatchingInitDto data)
     {
         MatchingEntity matching = new MatchingEntity();

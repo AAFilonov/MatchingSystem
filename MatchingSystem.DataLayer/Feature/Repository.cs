@@ -1,4 +1,5 @@
 using System;
+using MatchingSystem.Constants;
 using MatchingSystem.DataLayer.Utils;
 
 namespace MatchingSystem.DataLayer.Feature;
@@ -9,6 +10,12 @@ public class Repository
 
     public void CallInTransaction(Action<DiplomaMatchingContext> myDelegate)
     {
+        if (SystemParameters.getInstance().DB_TYPE == DbType.SqliteMemory)
+        {
+            myDelegate.Invoke(_matchingSystemContext);
+            return;
+        }
+        
         CallInContext(context =>
         {
             using var transaction = context.Database.BeginTransaction();
@@ -27,33 +34,37 @@ public class Repository
     
     protected void CallInContext(Action<DiplomaMatchingContext> myDelegate, DiplomaMatchingContext? extContext = null)
     {
-        if (extContext == null)
+        InvokeDelegateInContext(context =>
         {
-            using var context =  _matchingSystemContext;
             myDelegate.Invoke(context);
             context.SaveChanges();
-        }
-        else
-        {
-            myDelegate.Invoke(extContext);
-            extContext.SaveChanges();
-        }
+            return 0;
+        },extContext);
     }
 
     protected T CallInContext<T>(Func<DiplomaMatchingContext, T> myDelegate, DiplomaMatchingContext? extContext = null)
     {
-        if (extContext == null)
+        return InvokeDelegateInContext(context =>
         {
-            using var context = _matchingSystemContext;
             var result = myDelegate.Invoke(context);
             context.SaveChanges();
             return result;
-        }
-        else
-        {
-            T result = myDelegate.Invoke(extContext);
-            extContext.SaveChanges();
-            return result;
-        }
+        }, extContext);
+    }
+
+    private T InvokeDelegateInContext<T>(
+        Func<DiplomaMatchingContext?, T> callAction,
+        DiplomaMatchingContext? extContext = null)
+    {
+        //inMemory база данных не поддерживает транзакции и при вызове
+        //using context вызывает Dispose что нежелательно при ее использовании в тестах
+        if (SystemParameters.getInstance().DB_TYPE == DbType.EFInMemory) extContext = _matchingSystemContext;
+
+        if (extContext != null) 
+            return callAction.Invoke(extContext);
+        
+        using DiplomaMatchingContext context = _matchingSystemContext;
+        return callAction.Invoke(context);
+
     }
 }

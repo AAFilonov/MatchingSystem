@@ -8,7 +8,7 @@ public enum DbType
     SqlServer,
     SqliteMemory,
     SqliteFile,
-    InMemory,
+    EFInMemory,
 }
 
 public class SystemParameters
