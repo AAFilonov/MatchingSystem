@@ -13,13 +13,13 @@ public class StageEntity
     }
 
     public int StageId { get; set; }
-    public int StageTypeId { get; set; }
-    public string? StageName { get; set; }
-    public short? IterationNumber { get; set; }
+    public int StageTypeId { get; set; } //TODO DPL-38 заменить на enum
+    public string? StageName { get; set; } //TODO DPL-38 выпилить поле 
+    public short? IterationNumber { get; set; } //TODO DPL-38 short на int
     public DateTime? StartDate { get; set; }
     public DateTime? EndPlanDate { get; set; }
     public DateTime? EndDate { get; set; }
-    public bool? IsCurrent { get; set; }
+    public bool? IsCurrent { get; set; } //TODO DPL-38 сделать обязатаельными
     public int MatchingId { get; set; }
 
     public virtual Matching.MatchingEntity Matching { get; set; } = null!;

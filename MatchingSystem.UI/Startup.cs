@@ -25,6 +25,7 @@ using MatchingSystem.Service.Monitoring;
 using MatchingSystem.Service.Notification;
 using MatchingSystem.Service.Projects;
 using MatchingSystem.Service.Quotas;
+using MatchingSystem.Service.Stage;
 using MatchingSystem.Service.StageTransition;
 using MatchingSystem.Service.Statistics;
 using MatchingSystem.Service.Student;
@@ -57,7 +58,6 @@ namespace MatchingSystem.UI
 
         public void ConfigureServices(IServiceCollection services)
         {
-           // var connectionString = Configuration.GetConnectionString("DefaultConnection");
             SystemParameters.Init(Configuration);
             services.AddDistributedMemoryCache();
             services.AddMvc();
@@ -66,17 +66,11 @@ namespace MatchingSystem.UI
                 .AddRazorRuntimeCompilation();
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options => options.LoginPath = new PathString("/Home/Login"));
-
-
+            
             var optionsBuilder = new DbContextOptionsBuilder<DiplomaMatchingContext>();
             optionsBuilder.UseSqlServer(SystemParameters.getInstance().CONNECTION_STRING);
             optionsBuilder.UseLazyLoadingProxies();
-        
-
-           //var dbContext = new DiplomaMatchingContext(SystemProperties.CreateDbContextOptions().Options);
-           //services.AddTransient<DbContext, DiplomaMatchingContext>(_ => dbContext);
-      
-
+            
             services.AddTransient<IMatchingRepositoryDapper, MatchingRepositoryDapper>(_ =>
                 new MatchingRepositoryDapper(SystemParameters.getInstance().CONNECTION_STRING));
             services.AddTransient<IStudentRepositoryOld, StudentRepositoryOld>(_ =>
@@ -88,26 +82,12 @@ namespace MatchingSystem.UI
             services.AddSingleton<IStatisticsRepositoryOld, StatisticsRepositoryOldDapper>(_ =>
                 new StatisticsRepositoryOldDapper(SystemParameters.getInstance().CONNECTION_STRING));
 
-            //--Services
+            //--Repository
             services.AddSingleton<IMatchingRepository, MatchingRepository>();
             services.AddSingleton<IQuotaNotificationService, QuotaNotificationService>();
-            services.AddSingleton<IStatisticsService, StatisticsService>();
             services.AddSingleton<IStatisticsRepository, StatisticsRepository>();
-            services.AddSingleton<IAllocationService, AllocationService>();
-            services.AddSingleton<IExecutiveService, ExecutiveService>();
-            services.AddSingleton<IProjectsService, ProjectsService>();
-            services.AddSingleton<IStudentService, StudentService>();
-            services.AddSingleton<ICommonQuotaService, CommonCommonQuotaService>();
-            services.AddSingleton<ITutorService, TutorService>();
             services.AddSingleton<IUserRepository, UserRepository>();            
             services.AddSingleton<IRoleRepository, RoleRepository>();
-            services.AddSingleton<ITutorsParsingService, TutorParsingService>();            
-            services.AddSingleton<IStudentsParsingService, StudentsParsingService>();            
-            services.AddSingleton<IDocumentsProcessingService, DocumentsProcessingService>();
-            services.AddSingleton<IMatchingInitializationService, MatchingInitializationService>();            
-            services.AddSingleton<IMonitoringService, MonitoringService>();
-            services.AddSingleton<IStageTransitionService, StageTransitionService>();
-            services.AddSingleton<IMatchingService, MatchingService>();
             services.AddSingleton<ICommonQuotaRepository, CommonQuotaRepository>();
             services.AddSingleton<IQuotaNotificationRepository, QuotaNotificationRepository>();
             services.AddSingleton<IQuotaRequestRepository, QuotaRequestRepository>();
@@ -121,7 +101,23 @@ namespace MatchingSystem.UI
             services.AddSingleton<IProjectRepository,ProjectRepository>();
             services.AddSingleton<IStudentPreferenceRepository,StudentPreferenceRepository>();
             services.AddSingleton<ITutorsChoiceRepository,TutorsChoiceRepository>();
+            
             //--Services
+            services.AddSingleton<IStageService, StageService>();
+            services.AddSingleton<IMatchingService, MatchingService>();
+            services.AddSingleton<ITutorsParsingService, TutorParsingService>();            
+            services.AddSingleton<IStudentsParsingService, StudentsParsingService>();            
+            services.AddSingleton<IDocumentsProcessingService, DocumentsProcessingService>();
+            services.AddSingleton<IMatchingInitializationService, MatchingInitializationService>();            
+            services.AddSingleton<IMonitoringService, MonitoringService>();
+            services.AddSingleton<IStageTransitionService, StageTransitionService>();
+            services.AddSingleton<IAllocationService, AllocationService>();
+            services.AddSingleton<IExecutiveService, ExecutiveService>();
+            services.AddSingleton<IProjectsService, ProjectsService>();
+            services.AddSingleton<IStudentService, StudentService>();
+            services.AddSingleton<ICommonQuotaService, CommonCommonQuotaService>();
+            services.AddSingleton<ITutorService, TutorService>();
+            services.AddSingleton<IStatisticsService, StatisticsService>();
             
             services.AddSession(options =>
             {

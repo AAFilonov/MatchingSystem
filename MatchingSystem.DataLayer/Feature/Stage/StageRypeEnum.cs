@@ -7,6 +7,6 @@ public enum StageTypeEnum
     ACCUMULATION_STUDENTS_PREFERENCES=3,
     ITERATION=4,
     MANUAL_ADJUSTMENT=6,
-    FINAL=7,
-    ARCHIVE=8,
+    FINAL=7, 
+    //DPL-39 выпилить этап ARCHIVE из базы 
 }
