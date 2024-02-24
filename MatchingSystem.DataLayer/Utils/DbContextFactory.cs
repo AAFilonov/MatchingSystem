@@ -30,9 +30,10 @@ public class DbContextFactory
     }
     private static void disposeSqlLiteInMemory()
     {
-        _inMemoryDiplomaMatchingContext?.Database.EnsureDeleted();
+        _inMemoryDiplomaMatchingContext?.Dispose();
         _dbConnection?.Close();
-        _inMemoryDiplomaMatchingContext.Dispose();
+        _dbConnection = null;
+        /// _dbConnection.BackupDatabase(); - базу данных можно бэкапать из памяти
         _inMemoryDiplomaMatchingContext = null;
     }
 
@@ -95,8 +96,10 @@ public class DbContextFactory
                 .Options;
 
             _inMemoryDiplomaMatchingContext = new DiplomaMatchingContext(options);
-        }
-
+       }
+//Если возвращать разные контексты - у нас не применяться изменения  в одном тесте
+//Если возвращать один и тот же  - у нас после выполнения первого теста база будет почищена на момент второго
+//Нужно разбраться почему не применяются изменения или почему база данных не пересоздается начисто
         if (firstRun && SystemParameters.getInstance().USE_MIGRATIONS) ApplyMigrations(_inMemoryDiplomaMatchingContext);
 
         return _inMemoryDiplomaMatchingContext;
