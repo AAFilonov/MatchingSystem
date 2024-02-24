@@ -14,6 +14,7 @@ public class UsersRoleEntity
     public DateTime? LastVisitDate { get; set; }
     public int? StudentId { get; set; }
     public int? TutorId { get; set; }
+    public bool IsDeleted { get; set; }
 
     public virtual MatchingEntity? Matching { get; set; }
     public virtual RoleEntity Role { get; set; } = null!;

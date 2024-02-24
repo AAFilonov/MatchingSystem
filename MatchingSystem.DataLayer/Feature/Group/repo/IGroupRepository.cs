@@ -9,6 +9,6 @@ namespace MatchingSystem.DataLayer.Feature.Group.repo
       void AssignGroupsToTutors(List<TutorInitDto> tutors, DiplomaMatchingContext? extContext = null);
       List<GroupEntity> CreateGroups(MatchingInitData data, DiplomaMatchingContext? extContext = null);
       IEnumerable<GroupDto> GetGroupsByTutor(int tutorId);
-      
+      IEnumerable<GroupDto> GetGroups();
     }
 }

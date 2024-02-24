@@ -40,4 +40,9 @@ public class GroupRepository : GenericRepository<GroupEntity>, IGroupRepository
         return find(value => value.TutorsGroups.Any(tutorGroup => tutorGroup.TutorId == tutorId))
             .Select(info => new GroupDto(info));
     }
+    
+    public IEnumerable<GroupDto> GetGroups()
+    {
+        return _matchingSystemContext.Groups.ToList().Select(group => new GroupDto(group));
+    }
 }

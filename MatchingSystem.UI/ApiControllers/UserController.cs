@@ -13,12 +13,6 @@ using Scrypt;
 
 namespace MatchingSystem.UI.ApiControllers
 {
-    public class ChangePasswordRequest
-    {
-        public UserDto user { get; set; }
-        public string newPassword { get; set; }
-    }
-
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -44,132 +38,12 @@ namespace MatchingSystem.UI.ApiControllers
             return new JsonResult(model);
         }
 
-        [Route("api/[controller]/getMatchingsList")]
-        [HttpGet]
-        public IActionResult GetMatchingsList()
-        {
-            var model = matchingRepository.GetMatchingsDto().ToList();
-            return new JsonResult(model);
-        }
-
-        [Route("api/[controller]/getRolesList")]
-        [HttpGet]
-        public IActionResult GetRolesList()
-        {
-            var model = roleRepository.GetRoles();
-            return new JsonResult(model);
-        }
-
         [Route("api/[controller]/getRoles")]
         [HttpGet]
         public IActionResult GetRolesForUser([FromQuery] int matchingId, [FromQuery] int userId)
         {
             var model = roleRepository.GetRolesForUserAndMatching(userId, matchingId);
             return new JsonResult(model);
-        }
-
-        [Route("api/[controller]/getAllRoles")]
-        [HttpGet]
-        public IActionResult GetAllRolesForUser([FromQuery] int userId)
-        {
-            var model = roleRepository.GetRolesForUser(userId);
-            return new JsonResult(model);
-        }
-
-        [Route("api/[controller]/getUsers")]
-        [HttpGet]
-        public IActionResult GetUsers([FromQuery] string abbr = "", [FromQuery] string login = "")
-        {
-            var model = userRepository.findAll()
-                .Where(user =>
-                {
-                    var nameAbbr = "" + user.NameAbbreviation;
-                    if (abbr == null && login == null)
-                    {
-                        return true;
-                    }
-
-                    if (abbr != null && login != null)
-                    {
-                        return nameAbbr.ToLower().Contains(abbr.ToLower()) &&
-                               user.Login.ToLower().Contains(login.ToLower());
-                    }
-
-                    if (abbr != null)
-                    {
-                        return nameAbbr.ToLower().Contains(abbr.ToLower());
-                    }
-
-                    return user.Login.ToLower().Contains(login.ToLower());
-                })
-                .Select(user =>
-                {
-                    var dto = new UserDto();
-                    dto.UserId = user.UserId;
-                    dto.Email = user.Email;
-                    dto.Login = user.Login;
-                    dto.Name = user.Name;
-                    dto.Surname = user.Surname;
-                    dto.Patronimic = user.Patronimic;
-                    dto.NameAbbreviation = user.NameAbbreviation;
-
-                    return dto;
-                }).ToList();
-
-            return new JsonResult(model);
-        }
-
-        [Route("api/[controller]/updateUser")]
-        [HttpPost]
-        public void updateUser(UserDto userDto)
-        {
-            UserEntity user = userRepository.findById(userDto.UserId);
-            user.Email = userDto.Email;
-            user.Login = userDto.Login;
-            user.Name = userDto.Name;
-            user.Surname = userDto.Surname;
-            user.Patronimic = userDto.Patronimic;
-            userRepository.update(user);
-        }
-
-        [Route("api/[controller]/changePassword")]
-        [HttpPost]
-        public void changePassword(ChangePasswordRequest payload)
-        {
-            var encoder = new ScryptEncoder();
-            var passwordHash = encoder.Encode(payload.newPassword);
-            UserEntity user = userRepository.findById(payload.user.UserId);
-            user.PasswordHash = passwordHash;
-            userRepository.update(user);
-        }
-
-        [Route("api/[controller]/assignRole")]
-        [HttpPost]
-        public void assignRole(UsersRoleEntity payload)
-        {
-            IEnumerable<UsersRoleEntity> userRole = roleRepository.find(role =>
-                role.UserId == payload.UserId
-                && role.MatchingId == payload.MatchingId
-                && role.RoleId == payload.RoleId
-            );
-            if (userRole.Count() != 0)
-            {
-                throw new Exception("Роль с такой конфигурацией уже существует");
-            }
-
-            roleRepository.AssignRoleForUser(payload.UserId, (int)payload.MatchingId, payload.RoleId);
-        }
-
-        [Route("api/[controller]/removeRole")]
-        [HttpPost]
-        public void removeRole(UsersRoleEntity payload)
-        {
-            IEnumerable<UsersRoleEntity> userRole = roleRepository.find(role =>
-                role.UserId == payload.UserId
-                && role.MatchingId == payload.MatchingId
-                && role.RoleId == payload.RoleId
-            );
-            roleRepository.removeRange(userRole);
         }
     }
 }

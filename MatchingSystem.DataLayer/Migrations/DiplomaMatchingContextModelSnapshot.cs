@@ -736,6 +736,9 @@ namespace MatchingSystem.DataLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserRoleId"));
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime?>("LastVisitDate")
                         .HasColumnType("datetime");
 
@@ -981,6 +984,65 @@ namespace MatchingSystem.DataLayer.Migrations
                     b.ToView("Students", "dbo_v");
                 });
 
+            modelBuilder.Entity("MatchingSystem.DataLayer.Feature.StudentPreference.StudentsPreferenceEntity", b =>
+                {
+                    b.Property<int>("PreferenceId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("PreferenceID");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PreferenceId"));
+
+                    b.Property<DateTime?>("CreateDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<bool?>("IsAvailable")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValueSql("((1))");
+
+                    b.Property<bool?>("IsInUse")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValueSql("((0))");
+
+                    b.Property<bool?>("IsUsed")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValueSql("((0))");
+
+                    b.Property<short>("OrderNumber")
+                        .HasColumnType("smallint");
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("int")
+                        .HasColumnName("ProjectID");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int")
+                        .HasColumnName("StudentID");
+
+                    b.Property<int?>("TypeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("TypeID")
+                        .HasDefaultValueSql("((1))");
+
+                    b.HasKey("PreferenceId")
+                        .HasName("PK_StudentsPreferences");
+
+                    b.HasIndex("ProjectId");
+
+                    b.HasIndex("StudentId");
+
+                    b.HasIndex("TypeId");
+
+                    b.ToTable("StudentsPreferences");
+                });
+
             modelBuilder.Entity("MatchingSystem.DataLayer.Feature.Tutor.TutorEntity", b =>
                 {
                     b.Property<int>("TutorId")
@@ -1057,7 +1119,7 @@ namespace MatchingSystem.DataLayer.Migrations
                     b.ToView("Tutors", "dbo_v");
                 });
 
-            modelBuilder.Entity("MatchingSystem.DataLayer.Feature.TutorChoise.TutorsChoiceEntity", b =>
+            modelBuilder.Entity("MatchingSystem.DataLayer.Feature.TutorChoice.TutorsChoiceEntity", b =>
                 {
                     b.Property<int>("ChoiceId")
                         .ValueGeneratedOnAdd()
@@ -1330,65 +1392,6 @@ namespace MatchingSystem.DataLayer.Migrations
                     b.ToTable("Projects_WorkDirections", (string)null);
                 });
 
-            modelBuilder.Entity("MatchingSystem.DataLayer.Feature._LinkTables.StudentsPreference", b =>
-                {
-                    b.Property<int>("PreferenceId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("PreferenceID");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PreferenceId"));
-
-                    b.Property<DateTime?>("CreateDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getdate())");
-
-                    b.Property<bool?>("IsAvailable")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValueSql("((1))");
-
-                    b.Property<bool?>("IsInUse")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValueSql("((0))");
-
-                    b.Property<bool?>("IsUsed")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValueSql("((0))");
-
-                    b.Property<short>("OrderNumber")
-                        .HasColumnType("smallint");
-
-                    b.Property<int>("ProjectId")
-                        .HasColumnType("int")
-                        .HasColumnName("ProjectID");
-
-                    b.Property<int>("StudentId")
-                        .HasColumnType("int")
-                        .HasColumnName("StudentID");
-
-                    b.Property<int?>("TypeId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("TypeID")
-                        .HasDefaultValueSql("((1))");
-
-                    b.HasKey("PreferenceId")
-                        .HasName("PK_StudentsPreferences");
-
-                    b.HasIndex("ProjectId");
-
-                    b.HasIndex("StudentId");
-
-                    b.HasIndex("TypeId");
-
-                    b.ToTable("StudentsPreferences");
-                });
-
             modelBuilder.Entity("MatchingSystem.DataLayer.Feature._LinkTables.StudentsTechnology", b =>
                 {
                     b.Property<int>("StudentTechnologyId")
@@ -1469,7 +1472,7 @@ namespace MatchingSystem.DataLayer.Migrations
                     b.ToTable("Tutors_Groups", (string)null);
                 });
 
-            modelBuilder.Entity("MatchingSystem.DataLayer._Technical.VersionInfo", b =>
+            modelBuilder.Entity("MatchingSystem.DataLayer.Utils.VersionInfo", b =>
                 {
                     b.Property<DateTime?>("AppliedOn")
                         .HasColumnType("datetime");
@@ -1621,7 +1624,33 @@ namespace MatchingSystem.DataLayer.Migrations
                     b.Navigation("Group");
                 });
 
-            modelBuilder.Entity("MatchingSystem.DataLayer.Feature.TutorChoise.TutorsChoiceEntity", b =>
+            modelBuilder.Entity("MatchingSystem.DataLayer.Feature.StudentPreference.StudentsPreferenceEntity", b =>
+                {
+                    b.HasOne("MatchingSystem.DataLayer.Feature.Project.ProjectEntity", "Project")
+                        .WithMany("StudentsPreferences")
+                        .HasForeignKey("ProjectId")
+                        .IsRequired()
+                        .HasConstraintName("FK_StudentsPreferences_Projects");
+
+                    b.HasOne("MatchingSystem.DataLayer.Feature.Student.StudentEntity", "Student")
+                        .WithMany("StudentsPreferences")
+                        .HasForeignKey("StudentId")
+                        .IsRequired()
+                        .HasConstraintName("FK_StudentsPreferences_Students");
+
+                    b.HasOne("MatchingSystem.DataLayer.Feature.Dictionary.ChoosingTypeEntity", "Type")
+                        .WithMany("StudentsPreferences")
+                        .HasForeignKey("TypeId")
+                        .HasConstraintName("FK_StudentsPreferences_ChoosingTypes");
+
+                    b.Navigation("Project");
+
+                    b.Navigation("Student");
+
+                    b.Navigation("Type");
+                });
+
+            modelBuilder.Entity("MatchingSystem.DataLayer.Feature.TutorChoice.TutorsChoiceEntity", b =>
                 {
                     b.HasOne("MatchingSystem.DataLayer.Feature.Project.ProjectEntity", "Project")
                         .WithMany("TutorsChoices")
@@ -1711,32 +1740,6 @@ namespace MatchingSystem.DataLayer.Migrations
                     b.Navigation("Project");
 
                     b.Navigation("directionEntity");
-                });
-
-            modelBuilder.Entity("MatchingSystem.DataLayer.Feature._LinkTables.StudentsPreference", b =>
-                {
-                    b.HasOne("MatchingSystem.DataLayer.Feature.Project.ProjectEntity", "Project")
-                        .WithMany("StudentsPreferences")
-                        .HasForeignKey("ProjectId")
-                        .IsRequired()
-                        .HasConstraintName("FK_StudentsPreferences_Projects");
-
-                    b.HasOne("MatchingSystem.DataLayer.Feature.Student.StudentEntity", "Student")
-                        .WithMany("StudentsPreferences")
-                        .HasForeignKey("StudentId")
-                        .IsRequired()
-                        .HasConstraintName("FK_StudentsPreferences_Students");
-
-                    b.HasOne("MatchingSystem.DataLayer.Feature.Dictionary.ChoosingTypeEntity", "Type")
-                        .WithMany("StudentsPreferences")
-                        .HasForeignKey("TypeId")
-                        .HasConstraintName("FK_StudentsPreferences_ChoosingTypes");
-
-                    b.Navigation("Project");
-
-                    b.Navigation("Student");
-
-                    b.Navigation("Type");
                 });
 
             modelBuilder.Entity("MatchingSystem.DataLayer.Feature._LinkTables.StudentsTechnology", b =>

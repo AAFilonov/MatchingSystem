@@ -63,7 +63,7 @@ public class MatchingService : IMatchingService
     
     public IEnumerable<MatchingDto> GetMatchingsByUser(int userId)
     {
-        IEnumerable<int?> matchingIds =roleRepository.findAll().Where(role => role.UserId.Equals(userId)).Select(role => role.MatchingId);
+        IEnumerable<int?> matchingIds = roleRepository.findAll().Where(role => role.UserId.Equals(userId) && !role.IsDeleted).Select(role => role.MatchingId);
         return matchingRepository.find(matching => matchingIds.Contains(matching.MatchingId))
             .Select(matching => new MatchingDto(matching));
     }
