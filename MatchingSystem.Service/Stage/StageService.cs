@@ -71,9 +71,6 @@ public partial class StageService : IStageService
                 EndDate = null,
             };
 
-            if (SystemParameters.getInstance().DB_TYPE == DbType.SqliteMemory)
-                newStage.StageId = stageRepository.findAll().Last().StageId + 1;
-
             stageRepository.save(newStage, context);
         });
         logger.LogInformation("Перевод распределения с id={} на этап {} завершен успешно",
