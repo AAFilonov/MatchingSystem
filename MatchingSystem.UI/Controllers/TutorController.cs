@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using MatchingSystem.DataLayer.Feature.Matching.repo;
+using MatchingSystem.DataLayer.Feature.Stage;
 using MatchingSystem.DataLayer.Feature.Tutor;
 using MatchingSystem.DataLayer.Feature.Tutor.repo;
 using Microsoft.AspNetCore.Mvc;
@@ -36,7 +37,7 @@ namespace MatchingSystem.UI.Controllers
         public override void OnActionExecuted(ActionExecutedContext ctx)
         {
             base.OnActionExecuted(ctx);
-            data.CurrentStage = matchingRepository.GetCurrentStageDto(data.SelectedMatching);
+            data.CurrentStage = StageDto.fromEntity(matchingRepository.GetCurrentStage(data.SelectedMatching));
             HttpContext.Session.Set("Data", data);
         }
 

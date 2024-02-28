@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MatchingSystem.DataLayer.Feature.Group.repo;
+using MatchingSystem.DataLayer.Feature.Matching;
 using MatchingSystem.DataLayer.Feature.Matching.repo;
 using MatchingSystem.DataLayer.Feature.Role;
 using MatchingSystem.DataLayer.Feature.Role.repo;
@@ -53,7 +54,10 @@ namespace MatchingSystem.UI.ApiControllers
         [HttpGet]
         public IActionResult GetMatchingsList()
         {
-            var model = matchingRepository.GetMatchingsDto().ToList();
+            var model = matchingRepository
+                .findAll()
+                .Select(entity => new MatchingDto(entity))
+                .ToList();
             return new JsonResult(model);
         }
 

@@ -8,6 +8,7 @@ using MatchingSystem.DataLayer.Feature.Group.repo;
 using MatchingSystem.DataLayer.Feature.Matching.repo;
 using MatchingSystem.DataLayer.Feature.Project;
 using MatchingSystem.DataLayer.Feature.Project.Repo;
+using MatchingSystem.DataLayer.Feature.Stage;
 using MatchingSystem.DataLayer.Feature.Tutor.repo;
 using MatchingSystem.DataLayer.OldDto;
 using MatchingSystem.DataLayer.OldDto.IO.Params;
@@ -80,14 +81,15 @@ public partial class ProjectsService : IProjectsService
 
     public void EditQuota(int projectId, int quota, int tutorId, int matchingId)
     {
-        var currentStageCode = matchingRepository.GetCurrentStageDto(matchingId).StageTypeCode;
+        StageEntity currentStage = matchingRepository.GetCurrentStage(matchingId);
 
-        switch (currentStageCode)
+        switch (currentStage.StageTypeId)
         {
-            case StageCode.CollectStudentPreferences:
+            case (int)StageTypeEnum.ACCUMULATION_STUDENTS_PREFERENCES:
                 projectRepositoryOld.UpdateProjectQuotaStage3(tutorId, projectId, quota);
                 break;
-            case StageCode.CollectTutorPreferences:
+            case (int)StageTypeEnum.ITERATION:
+            case (int)StageTypeEnum.MATCHING_PREPARATION:
                 projectRepositoryOld.UpdateProjectQuotaStage4(tutorId, projectId, (short)quota);
                 break;
         }

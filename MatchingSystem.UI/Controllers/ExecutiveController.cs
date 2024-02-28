@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using MatchingSystem.DataLayer.Feature.Matching.repo;
+using MatchingSystem.DataLayer.Feature.Stage;
 using MatchingSystem.Service.Executive;
 using MatchingSystem.UI.Helpers;
 using MatchingSystem.UI.Services;
@@ -38,7 +39,7 @@ namespace MatchingSystem.UI.Controllers
         {
             base.OnActionExecuted(ctx);
             if (data == null) return;
-            data.CurrentStage = matchingRepository.GetCurrentStageDto(data.SelectedMatching);
+            data.CurrentStage = StageDto.fromEntity(matchingRepository.GetCurrentStage(data.SelectedMatching));
             HttpContext.Session.Set("Data", data);
         }
 
@@ -62,7 +63,7 @@ namespace MatchingSystem.UI.Controllers
         {
             ViewData["version"] = SystemParameters.getInstance().VERSION;
             data.Version = SystemParameters.getInstance().VERSION;
-            data.CurrentStage = matchingRepository.GetCurrentStageDto(data.SelectedMatching);
+            data.CurrentStage = StageDto.fromEntity(matchingRepository.GetCurrentStage(data.SelectedMatching));
             return View();
         }
         

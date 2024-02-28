@@ -2,6 +2,7 @@
 using Lombok.NET;
 using MatchingSystem.DataLayer.Feature.Matching.repo;
 using MatchingSystem.DataLayer.Feature.Project.Repo;
+using MatchingSystem.DataLayer.Feature.Stage;
 using MatchingSystem.DataLayer.Feature.Student.repo;
 using MatchingSystem.DataLayer.Feature.StudentPreference.repo;
 using MatchingSystem.DataLayer.Feature.Tutor.repo;
@@ -25,21 +26,21 @@ public partial  class StageTransitionService : IStageTransitionService
     public bool isNeedToTransit(int matchingId)
     {
         var needToTransit = false;
-        var curStageDto = matchingRepository.GetCurrentStageDto(matchingId);
-        switch (curStageDto.StageTypeCode)
+        StageEntity currentStage = matchingRepository.GetCurrentStage(matchingId);
+        switch (currentStage.StageTypeId)
         {
-            case 2: //переход со стадии создания проектов к заполнению списков предпочтений
+            case (int)StageTypeEnum.MATCHING_PREPARATION: //переход со стадии создания проектов к заполнению списков предпочтений
                 needToTransit = tutorRepository.find(entity => entity.MatchingId==matchingId)
                     .All(x => tutorRepository.findById(x.TutorId).IsReadyToStart ?? true);
                 break;
-            case 3: //переход со стадии заполнения списков предпочтений к 1 итерации
+            case (int)StageTypeEnum.ACCUMULATION_STUDENTS_PREFERENCES: //переход со стадии заполнения списков предпочтений к 1 итерации
                 var students = studentRepository.find(entity => entity.MatchingId == matchingId).ToList();
                 needToTransit = students.All(entity => entity.StudentsPreferences.Count > 0);
                 break;
-            case 4:
+            case (int)StageTypeEnum.ITERATION:
                 needToTransit = IsMoveToNextStageAvailible(matchingId);
                 break;
-            case 5: //переход со стадии ручной корректировки распределения к финалу
+            case (int)StageTypeEnum.FINAL: //переход со стадии ручной корректировки распределения к финалу
                 needToTransit = studentRepositoryOld.GetStudentAssignedToProject(matchingId).All(x => x.ProjectID != null);
                 break;
         }

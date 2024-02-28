@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using MatchingSystem.DataLayer.Feature.Dictionary.repo;
 using MatchingSystem.DataLayer.Feature.Matching.repo;
+using MatchingSystem.DataLayer.Feature.Stage;
 using MatchingSystem.DataLayer.Feature.Student;
 using MatchingSystem.DataLayer.Feature.Student.repo;
 using MatchingSystem.UI.Helpers;
@@ -43,7 +44,8 @@ namespace MatchingSystem.UI.Controllers
                 RedirectToAction("login", "Home");
                 return;
             }
-            data.CurrentStage = matchingRepository.GetCurrentStageDto(data.SelectedMatching);
+            var stageEntity = matchingRepository.GetCurrentStage(data.SelectedMatching);
+            data.CurrentStage = StageDto.fromEntity(stageEntity);
             HttpContext.Session.Set<SessionData>("Data", data);
         }
 

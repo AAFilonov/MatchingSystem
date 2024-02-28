@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using MatchingSystem.DataLayer.Feature.Matching.repo;
 using MatchingSystem.DataLayer.Feature.Role.repo;
+using MatchingSystem.DataLayer.Feature.Stage;
 using MatchingSystem.DataLayer.Feature.User;
 using MatchingSystem.DataLayer.Feature.User.repo;
 using Microsoft.AspNetCore.Mvc;
@@ -65,9 +66,8 @@ public class HomeController : Controller
                         .MatchingType.MatchingTypeCode;
                     string selectedRole = HttpContext.Request.Cookies["selectedRole"];
                     data.SelectedRole = selectedRole;
-
-                    data.CurrentStage = matchingRepository.GetCurrentStageDto(data.SelectedMatching);
-
+                    
+                    data.CurrentStage = StageDto.fromEntity(matchingRepository.GetCurrentStage(data.SelectedMatching));
                     userRepository.UpdateLastVisitDate(user.UserId, selectedRole,selectedMatchingId);
 
                     HttpContext.Session.Set("Data", data);
@@ -143,7 +143,7 @@ public class HomeController : Controller
         userRepository.UpdateLastVisitDate(user.UserId, data.RolesMatchings.First().RoleName!,
             data.RolesMatchings.First().MatchingId);
 
-        data.CurrentStage = matchingRepository.GetCurrentStageDto(data.SelectedMatching);
+        data.CurrentStage = StageDto.fromEntity(matchingRepository.GetCurrentStage(data.SelectedMatching));
 
         data.MatchingTypeCode = matchingRepository.findAll()
             .First(matching => matching.MatchingId.Equals(data.SelectedMatching)).MatchingType.MatchingTypeCode;
