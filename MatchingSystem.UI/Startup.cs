@@ -118,6 +118,7 @@ namespace MatchingSystem.UI
             services.AddSingleton<ICommonQuotaService, CommonCommonQuotaService>();
             services.AddSingleton<ITutorService, TutorService>();
             services.AddSingleton<IStatisticsService, StatisticsService>();
+            services.AddSingleton<IMainStatisticsService, MainStatisticsService>();
             
             services.AddSession(options =>
             {

@@ -20,7 +20,7 @@ namespace MatchingSystem.UI.ApiControllers
         [HttpGet]
         public IActionResult GetStatisticsMain([FromQuery] int? matchingId, [FromQuery] int? currentStage)
         {
-            var result = statisticsService.GetStatisticsMain(matchingId, currentStage);
+            var result = statisticsService.GetStatisticsMain((int) matchingId);
             return new JsonResult(result);
         }
         
@@ -28,10 +28,6 @@ namespace MatchingSystem.UI.ApiControllers
         [HttpGet]
         public IActionResult GetStatisticsGroups([FromQuery] int? matchingId)
         {
-            if (!matchingId.HasValue)
-            {
-                return BadRequest("Некорректный запрос.");
-            }
             var result = statisticsService.GetStatisticsGroups(matchingId);    
             return new JsonResult(result);            
         }
@@ -40,15 +36,6 @@ namespace MatchingSystem.UI.ApiControllers
         [HttpGet]
         public IActionResult GetStatisticsTutors([FromQuery] int? matchingId, [FromQuery] int? currentStage)
         {
-            if (!matchingId.HasValue || !currentStage.HasValue)
-            {
-                return BadRequest("Некорректный запрос.");
-            }
-
-            if (currentStage > 4)
-            {
-                currentStage = 4;
-            }
             var result = statisticsService.GetStatisticsTutors(matchingId, currentStage);
 
             return new JsonResult(result);
@@ -63,21 +50,15 @@ namespace MatchingSystem.UI.ApiControllers
             return new JsonResult(result);
         }
 
-
         [Route("api/[controller]/getStatisticsTutorProjectAllocated")]
         [HttpGet]
         public IActionResult GetStatisticsTutorsProjectAllocated([FromQuery] int? matchingId, [FromQuery] int? tutorId)
         {
-            if (!matchingId.HasValue || !tutorId.HasValue)
-            {
-                return BadRequest("Некорректный запрос.");
-            }
             var result = statisticsService.GetStatisticsTutorsProjectAllocated(matchingId, tutorId);
 
             return new JsonResult(result);
         }
-        
-        
+
         [Route("api/[controller]/getStatisticsStudentsProjects")]
         [HttpGet]
         public IActionResult GetStatisticsStudentsProjects([FromQuery] int matchingId, [FromQuery] int studentId)
@@ -86,15 +67,10 @@ namespace MatchingSystem.UI.ApiControllers
             return new JsonResult(model);
         }
 
- 
         [Route("api/[controller]/getStatisticsTutorProjects")]
         [HttpGet]
         public IActionResult GetStatisticsTutorsProjects([FromQuery] int? matchingId, [FromQuery] int? tutorId)
         {
-            if (!matchingId.HasValue || !tutorId.HasValue)
-            {
-                return BadRequest("Некорректный запрос.");
-            }
             var result = statisticsService.GetStatisticsTutorsProjects(matchingId, tutorId);
             return new JsonResult(result);
         }

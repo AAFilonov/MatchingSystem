@@ -24,16 +24,23 @@ public class DbContextFactory
                 disposeEfInMemory();
                 break;
             case DbType.SqlServer:
+                disposeSqlServer();
+                break;
             case DbType.SqliteFile:
                 break;
         }
     }
+
+    private static void disposeSqlServer()
+    {
+        GetContext().Database.EnsureDeleted();
+    }
+
     private static void disposeSqlLiteInMemory()
     {
         _inMemoryDiplomaMatchingContext?.Dispose();
         _dbConnection?.Close();
         _dbConnection = null;
-        /// _dbConnection.BackupDatabase(); - базу данных можно бэкапать из памяти
         _inMemoryDiplomaMatchingContext = null;
     }
 

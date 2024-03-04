@@ -7,7 +7,8 @@ namespace MatchingSystem.Service.Statistics;
 
 public interface IStatisticsService
 {
-    public IEnumerable<StatisticsMain> GetStatisticsMain(int? matchingId, int? currentStage);
+    //TODO DPL-42 написать реализации
+    public IEnumerable<StatisticsMain> GetStatisticsMain(int matchingId);
     public IEnumerable<StatisticsMain> GetStatisticsGroups(int? matchingId);
 
     public IEnumerable<StatisticsTutors> GetStatisticsTutors(int? matchingId, int? currentStage);
