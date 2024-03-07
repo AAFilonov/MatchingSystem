@@ -10,12 +10,6 @@ namespace MatchingSystem.DataLayer.Feature.Statistics.repo;
 
 public class StatisticsRepository : Repository, IStatisticsRepository
 {
-    //DPL-35 переписать статистику
-    public IEnumerable<StatisticsMain> GetStatisticsMain(int matchingId, int currentStage)
-    {
-        throw new System.NotImplementedException();
-    }
-
     public IEnumerable<StatisticsTutors> GetStatisticsTutors(int matchingId, int currentStage)
     {
         throw new System.NotImplementedException();
@@ -28,22 +22,22 @@ public class StatisticsRepository : Repository, IStatisticsRepository
 
     public IEnumerable<StudentStatistics> GetStatisticsStudents(int matchingId, int currentStage)
     {
-        return CallInContext<IEnumerable<StudentStatistics>>(context =>
+        return CallInContext(context =>
         {
             List<StudentEntity> views = context.Students
-                .Where(entity =>entity.MatchingId == matchingId)
+                .Where(entity => entity.MatchingId == matchingId)
                 //stage 3
                 .Include(student => student.StudentsPreferences)
                 .Include(student => student.StudentsTechnologies)
                 .Include(student => student.StudentsWorkDirections)
                 .Include(student => student.Group)
                 .Include(student => student.UsersRoles)
-                .ThenInclude(entity =>entity.User )
+                .ThenInclude(entity => entity.User)
                 //stage 4
                 .Include(student => student.TutorsChoices)
-                .ThenInclude(choice =>choice.Project )
+                .ThenInclude(choice => choice.Project)
                 .Include(student => student.TutorsChoices)
-                .ThenInclude(choice =>choice.typeEntity)
+                .ThenInclude(choice => choice.typeEntity)
                 .ToList();
 
             return views.Select(entity =>
@@ -52,7 +46,8 @@ public class StatisticsRepository : Repository, IStatisticsRepository
                 //stage 3
                 statistic.StudentId = entity.StudentId;
                 statistic.StudentNameAbbreviation = entity.UsersRoles.FirstOrDefault().User.NameAbbreviation;
-                statistic.StudentLastVisitDate = entity.UsersRoles.FirstOrDefault(ur =>ur.StudentId==entity.StudentId)?.LastVisitDate;
+                statistic.StudentLastVisitDate = entity.UsersRoles
+                    .FirstOrDefault(ur => ur.StudentId == entity.StudentId)?.LastVisitDate;
                 statistic.StudentGroupName = entity.Group.GroupName;
                 statistic.IsSetInfo = string.IsNullOrEmpty(entity.Info);
                 statistic.IsSetTechnologies = entity.StudentsTechnologies.Any();
@@ -67,7 +62,8 @@ public class StatisticsRepository : Repository, IStatisticsRepository
                 {
                     statistic.ProjectIsAllocated = tutorChoice.Project.IsClosed;
                     statistic.ChoiceIsInQuota = tutorChoice.IsInQuota;
-                    statistic.PreferenceTypeName_ru = tutorChoice.typeEntity.TypeNameRu; //statistic.tutorChoice.typeEntity.TypeNameRu;
+                    statistic.PreferenceTypeName_ru =
+                        tutorChoice.typeEntity.TypeNameRu; //statistic.tutorChoice.typeEntity.TypeNameRu;
                 }
 
                 return statistic;

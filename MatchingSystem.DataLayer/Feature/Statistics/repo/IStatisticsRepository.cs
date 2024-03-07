@@ -6,7 +6,7 @@ namespace MatchingSystem.DataLayer.Feature.Statistics.repo
 {
     public interface IStatisticsRepository
     {
-        IEnumerable<StatisticsMain> GetStatisticsMain(int matchingId, int currentStage);
+
         IEnumerable<StatisticsTutors> GetStatisticsTutors(int matchingId, int currentStage);
         IEnumerable<ProjectDto> GetStatisticsTutorsProjects(int matchingId, int studentId);
         IEnumerable<StudentStatistics> GetStatisticsStudents(int matchingId, int currentStage);

@@ -13,12 +13,17 @@ public class TestUtils
 {
     public static DiplomaMatchingContext InitDb(string settingsPath = "appsettings.Test.json")
     {
+        InitConfiguration(settingsPath);
+        return DbContextFactory.GetContext();
+    }
+    public static IConfiguration InitConfiguration(string settingsPath = "appsettings.Test.json")
+    {
         var builder = new ConfigurationBuilder()
             .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
             .AddJsonFile(settingsPath, optional: true);
         IConfiguration configuration = builder.Build();
         SystemParameters.Init(configuration);
-        return DbContextFactory.GetContext();
+        return configuration;
     }
     
     public static void DisposeDb()
