@@ -54,7 +54,7 @@ namespace MatchingSystem.DataLayer.Migrations
                         .HasColumnName("PreferenceID");
 
                     b.Property<int?>("ProjectId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ProjectID");
 
                     b.Property<string>("ProjectName")
@@ -164,7 +164,7 @@ namespace MatchingSystem.DataLayer.Migrations
                         .HasColumnName("PreferenceID");
 
                     b.Property<int?>("ProjectId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ProjectID");
 
                     b.Property<short?>("SortOrderNumber")
@@ -574,7 +574,7 @@ namespace MatchingSystem.DataLayer.Migrations
                 {
                     b.Property<int>("ProjectId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ProjectID");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProjectId"));

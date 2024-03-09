@@ -571,7 +571,7 @@ namespace MatchingSystem.DataLayer.Migrations
                 {
                     b.Property<int>("ProjectId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ProjectID");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProjectId"));
@@ -588,7 +588,7 @@ namespace MatchingSystem.DataLayer.Migrations
                         .HasDefaultValueSql("(getdate())");
 
                     b.Property<string>("Info")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<bool>("IsClosed")
                         .HasColumnType("bit");

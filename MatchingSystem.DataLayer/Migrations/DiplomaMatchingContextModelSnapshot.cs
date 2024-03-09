@@ -568,7 +568,7 @@ namespace MatchingSystem.DataLayer.Migrations
                 {
                     b.Property<int>("ProjectId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ProjectID");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProjectId"));
@@ -577,7 +577,7 @@ namespace MatchingSystem.DataLayer.Migrations
                         .HasColumnType("datetime");
 
                     b.Property<int?>("CloseStage")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("CreateDate")
                         .ValueGeneratedOnAdd()
@@ -594,7 +594,7 @@ namespace MatchingSystem.DataLayer.Migrations
                         .HasColumnType("bit");
 
                     b.Property<int?>("MatchingId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("MatchingID");
 
                     b.Property<string>("ProjectName")
@@ -608,7 +608,7 @@ namespace MatchingSystem.DataLayer.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<int>("TutorId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("TutorID");
 
                     b.Property<DateTime?>("UpdateDate")

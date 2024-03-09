@@ -15,9 +15,10 @@ namespace MatchingSystem.DataLayer.Migrations
                 name: "ChoosingTypes",
                 columns: table => new
                 {
-                    TypeID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TypeCode = table.Column<int>(type: "int", nullable: false),
+                    TypeID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1")
+                        .Annotation("Sqlite:Autoincrement", true),
+                    TypeCode = table.Column<int>(type: "integer", nullable: false),
                     TypeName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     TypeName_ru = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
                 },
@@ -30,8 +31,9 @@ namespace MatchingSystem.DataLayer.Migrations
                 name: "MatchingType",
                 columns: table => new
                 {
-                    MatchingTypeID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    MatchingTypeID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1")
+                        .Annotation("Sqlite:Autoincrement", true),
                     MatchingTypeName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     MatchingTypeName_ru = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     MatchingTypeCode = table.Column<string>(type: "nvarchar(10)", nullable: false)
@@ -45,9 +47,10 @@ namespace MatchingSystem.DataLayer.Migrations
                 name: "QuotasStates",
                 columns: table => new
                 {
-                    QuotaStateID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    QuotaStateCode = table.Column<int>(type: "int", nullable: false),
+                    QuotaStateID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1")
+                        .Annotation("Sqlite:Autoincrement", true),
+                    QuotaStateCode = table.Column<int>(type: "integer", nullable: false),
                     QuotaStateName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     QuotaStateName_ru = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
                 },
@@ -60,9 +63,10 @@ namespace MatchingSystem.DataLayer.Migrations
                 name: "Roles",
                 columns: table => new
                 {
-                    RoleID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RoleCode = table.Column<int>(type: "int", nullable: true),
+                    RoleID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1")
+                        .Annotation("Sqlite:Autoincrement", true),
+                    RoleCode = table.Column<int>(type: "integer", nullable: true),
                     RoleName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     RoleType = table.Column<short>(type: "smallint", nullable: true),
                     RoleName_ru = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
@@ -76,9 +80,10 @@ namespace MatchingSystem.DataLayer.Migrations
                 name: "StagesTypes",
                 columns: table => new
                 {
-                    StageTypeID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    StageTypeCode = table.Column<int>(type: "int", nullable: false),
+                    StageTypeID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1")
+                        .Annotation("Sqlite:Autoincrement", true),
+                    StageTypeCode = table.Column<int>(type: "integer", nullable: false),
                     StageTypeName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     StageTypeName_ru = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
                 },
@@ -91,10 +96,11 @@ namespace MatchingSystem.DataLayer.Migrations
                 name: "Technologies",
                 columns: table => new
                 {
-                    TechnologyID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TechnologyID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1")
+                        .Annotation("Sqlite:Autoincrement", true),
                     TechnologyName_ru = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    TechnologyCode = table.Column<int>(type: "int", nullable: false)
+                    TechnologyCode = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -105,13 +111,14 @@ namespace MatchingSystem.DataLayer.Migrations
                 name: "Tutors",
                 columns: table => new
                 {
-                    TutorID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TutorBK = table.Column<int>(type: "int", nullable: true),
+                    TutorID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1")
+                        .Annotation("Sqlite:Autoincrement", true),
+                    TutorBK = table.Column<int>(type: "integer", nullable: true),
                     IsClosed = table.Column<bool>(type: "bit", nullable: false),
                     CloseIterationNumber = table.Column<short>(type: "smallint", nullable: true),
                     IsReadyToStart = table.Column<bool>(type: "bit", nullable: true),
-                    MatchingID = table.Column<int>(type: "int", nullable: false)
+                    MatchingID = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -122,12 +129,13 @@ namespace MatchingSystem.DataLayer.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    UserID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1")
+                        .Annotation("Sqlite:Autoincrement", true),
                     Login = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(200)", nullable: true),
                     LastVisitDate = table.Column<DateTime>(type: "datetime", nullable: true),
-                    UserBK = table.Column<int>(type: "int", nullable: true),
+                    UserBK = table.Column<int>(type: "integer", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Surname = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
@@ -155,10 +163,11 @@ namespace MatchingSystem.DataLayer.Migrations
                 name: "WorkDirections",
                 columns: table => new
                 {
-                    DirectionID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DirectionID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1")
+                        .Annotation("Sqlite:Autoincrement", true),
                     DirectionName_ru = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    DirectionCode = table.Column<int>(type: "int", nullable: false)
+                    DirectionCode = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -169,11 +178,12 @@ namespace MatchingSystem.DataLayer.Migrations
                 name: "Matching",
                 columns: table => new
                 {
-                    MatchingID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    MatchingID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1")
+                        .Annotation("Sqlite:Autoincrement", true),
                     MatchingName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    MatchingTypeID = table.Column<int>(type: "int", nullable: false),
-                    CreatorUserID = table.Column<int>(type: "int", nullable: true)
+                    MatchingTypeID = table.Column<int>(type: "integer", nullable: false),
+                    CreatorUserID = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -190,16 +200,17 @@ namespace MatchingSystem.DataLayer.Migrations
                 name: "Projects",
                 columns: table => new
                 {
-                    ProjectID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProjectID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1")
+                        .Annotation("Sqlite:Autoincrement", true),
                     ProjectName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     Info = table.Column<string>(type: "text", nullable: true),
-                    TutorID = table.Column<int>(type: "int", nullable: false),
+                    TutorID = table.Column<int>(type: "integer", nullable: false),
                     IsClosed = table.Column<bool>(type: "bit", nullable: true),
                     IsDefault = table.Column<bool>(type: "bit", nullable: true),
-                    MatchingID = table.Column<int>(type: "int", nullable: true),
+                    MatchingID = table.Column<int>(type: "integer", nullable: true),
                     ProjectQuotaQty = table.Column<short>(type: "smallint", nullable: true),
-                    CloseStage = table.Column<int>(type: "int", nullable: true),
+                    CloseStage = table.Column<int>(type: "integer", nullable: true),
                     CloseDate = table.Column<DateTime>(type: "datetime", nullable: true),
                     CreateDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())"),
                     UpdateDate = table.Column<DateTime>(type: "datetime", nullable: true),
@@ -219,11 +230,12 @@ namespace MatchingSystem.DataLayer.Migrations
                 name: "Groups",
                 columns: table => new
                 {
-                    GroupID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    GroupBK = table.Column<int>(type: "int", nullable: true),
+                    GroupID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1")
+                        .Annotation("Sqlite:Autoincrement", true),
+                    GroupBK = table.Column<int>(type: "integer", nullable: true),
                     GroupName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    MatchingID = table.Column<int>(type: "int", nullable: true)
+                    MatchingID = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -239,16 +251,17 @@ namespace MatchingSystem.DataLayer.Migrations
                 name: "Stages",
                 columns: table => new
                 {
-                    StageID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    StageTypeID = table.Column<int>(type: "int", nullable: false),
+                    StageID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1")
+                        .Annotation("Sqlite:Autoincrement", true),
+                    StageTypeID = table.Column<int>(type: "integer", nullable: false),
                     StageName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     IterationNumber = table.Column<short>(type: "smallint", nullable: true),
                     StartDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())"),
                     EndPlanDate = table.Column<DateTime>(type: "datetime", nullable: true),
                     EndDate = table.Column<DateTime>(type: "datetime", nullable: true),
                     IsCurrent = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "((1))"),
-                    MatchingID = table.Column<int>(type: "int", nullable: false)
+                    MatchingID = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -269,10 +282,11 @@ namespace MatchingSystem.DataLayer.Migrations
                 name: "Projects_Technologies",
                 columns: table => new
                 {
-                    ProjectTechnologyID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ProjectID = table.Column<int>(type: "int", nullable: false),
-                    TechnologyID = table.Column<int>(type: "int", nullable: false)
+                    ProjectTechnologyID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1")
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ProjectID = table.Column<int>(type: "integer", nullable: false),
+                    TechnologyID = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -293,10 +307,11 @@ namespace MatchingSystem.DataLayer.Migrations
                 name: "Projects_WorkDirections",
                 columns: table => new
                 {
-                    ProjectDirectionID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ProjectID = table.Column<int>(type: "int", nullable: false),
-                    DirectionID = table.Column<int>(type: "int", nullable: false)
+                    ProjectDirectionID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1")
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ProjectID = table.Column<int>(type: "integer", nullable: false),
+                    DirectionID = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -317,10 +332,11 @@ namespace MatchingSystem.DataLayer.Migrations
                 name: "Projects_Groups",
                 columns: table => new
                 {
-                    ProjectGroupID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ProjectID = table.Column<int>(type: "int", nullable: false),
-                    GroupID = table.Column<int>(type: "int", nullable: false)
+                    ProjectGroupID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1")
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ProjectID = table.Column<int>(type: "integer", nullable: false),
+                    GroupID = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -341,12 +357,13 @@ namespace MatchingSystem.DataLayer.Migrations
                 name: "Students",
                 columns: table => new
                 {
-                    StudentID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    StudentBK = table.Column<int>(type: "int", nullable: true),
-                    GroupID = table.Column<int>(type: "int", nullable: false),
+                    StudentID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1")
+                        .Annotation("Sqlite:Autoincrement", true),
+                    StudentBK = table.Column<int>(type: "integer", nullable: true),
+                    GroupID = table.Column<int>(type: "integer", nullable: false),
                     Info = table.Column<string>(type: "text", nullable: true),
-                    MatchingID = table.Column<int>(type: "int", nullable: true),
+                    MatchingID = table.Column<int>(type: "integer", nullable: true),
                     Info2 = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true)
                 },
                 constraints: table =>
@@ -363,10 +380,11 @@ namespace MatchingSystem.DataLayer.Migrations
                 name: "Tutors_Groups",
                 columns: table => new
                 {
-                    TutorGroupID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TutorID = table.Column<int>(type: "int", nullable: false),
-                    GroupID = table.Column<int>(type: "int", nullable: false)
+                    TutorGroupID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1")
+                        .Annotation("Sqlite:Autoincrement", true),
+                    TutorID = table.Column<int>(type: "integer", nullable: false),
+                    GroupID = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -387,16 +405,17 @@ namespace MatchingSystem.DataLayer.Migrations
                 name: "CommonQuotas",
                 columns: table => new
                 {
-                    CommonQuotaID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TutorID = table.Column<int>(type: "int", nullable: false),
+                    CommonQuotaID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1")
+                        .Annotation("Sqlite:Autoincrement", true),
+                    TutorID = table.Column<int>(type: "integer", nullable: false),
                     Qty = table.Column<short>(type: "smallint", nullable: true),
                     CreateDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(getdate())"),
-                    QuotaStateID = table.Column<int>(type: "int", nullable: false),
+                    QuotaStateID = table.Column<int>(type: "integer", nullable: false),
                     UpdateDate = table.Column<DateTime>(type: "datetime", nullable: true),
                     IsNotification = table.Column<bool>(type: "bit", nullable: false),
                     Message = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
-                    StageID = table.Column<int>(type: "int", nullable: true)
+                    StageID = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -423,10 +442,11 @@ namespace MatchingSystem.DataLayer.Migrations
                 name: "Students_Technologies",
                 columns: table => new
                 {
-                    StudentTechnologyID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    StudentID = table.Column<int>(type: "int", nullable: false),
-                    TechnologyID = table.Column<int>(type: "int", nullable: false)
+                    StudentTechnologyID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1")
+                        .Annotation("Sqlite:Autoincrement", true),
+                    StudentID = table.Column<int>(type: "integer", nullable: false),
+                    TechnologyID = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -447,10 +467,11 @@ namespace MatchingSystem.DataLayer.Migrations
                 name: "Students_WorkDirections",
                 columns: table => new
                 {
-                    StudentDirectionID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    StudentID = table.Column<int>(type: "int", nullable: false),
-                    DirectionID = table.Column<int>(type: "int", nullable: false)
+                    StudentDirectionID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1")
+                        .Annotation("Sqlite:Autoincrement", true),
+                    StudentID = table.Column<int>(type: "integer", nullable: false),
+                    DirectionID = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -471,13 +492,14 @@ namespace MatchingSystem.DataLayer.Migrations
                 name: "StudentsPreferences",
                 columns: table => new
                 {
-                    PreferenceID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    StudentID = table.Column<int>(type: "int", nullable: false),
-                    ProjectID = table.Column<int>(type: "int", nullable: false),
+                    PreferenceID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1")
+                        .Annotation("Sqlite:Autoincrement", true),
+                    StudentID = table.Column<int>(type: "integer", nullable: false),
+                    ProjectID = table.Column<int>(type: "integer", nullable: false),
                     OrderNumber = table.Column<short>(type: "smallint", nullable: false),
                     IsAvailable = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "((1))"),
-                    TypeID = table.Column<int>(type: "int", nullable: true, defaultValueSql: "((1))"),
+                    TypeID = table.Column<int>(type: "integer", nullable: true, defaultValueSql: "((1))"),
                     IsInUse = table.Column<bool>(type: "bit", nullable: true, defaultValueSql: "((0))"),
                     IsUsed = table.Column<bool>(type: "bit", nullable: true, defaultValueSql: "((0))"),
                     CreateDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())")
@@ -506,17 +528,18 @@ namespace MatchingSystem.DataLayer.Migrations
                 name: "TutorsChoice",
                 columns: table => new
                 {
-                    ChoiceID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    StudentID = table.Column<int>(type: "int", nullable: false),
-                    ProjectID = table.Column<int>(type: "int", nullable: false),
+                    ChoiceID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1")
+                        .Annotation("Sqlite:Autoincrement", true),
+                    StudentID = table.Column<int>(type: "integer", nullable: false),
+                    ProjectID = table.Column<int>(type: "integer", nullable: false),
                     SortOrderNumber = table.Column<short>(type: "smallint", nullable: true, defaultValueSql: "((32767))"),
                     IsInQuota = table.Column<bool>(type: "bit", nullable: false),
                     IsChangeble = table.Column<bool>(type: "bit", nullable: true, defaultValueSql: "((1))"),
-                    TypeID = table.Column<int>(type: "int", nullable: false, defaultValueSql: "((2))"),
-                    PreferenceID = table.Column<int>(type: "int", nullable: true),
+                    TypeID = table.Column<int>(type: "integer", nullable: false, defaultValueSql: "((2))"),
+                    PreferenceID = table.Column<int>(type: "integer", nullable: true),
                     IterationNumber = table.Column<short>(type: "smallint", nullable: true),
-                    StageID = table.Column<int>(type: "int", nullable: false),
+                    StageID = table.Column<int>(type: "integer", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())"),
                     UpdateDate = table.Column<DateTime>(type: "datetime", nullable: true),
                     IsFromPreviousIteration = table.Column<bool>(type: "bit", nullable: true)
@@ -550,14 +573,15 @@ namespace MatchingSystem.DataLayer.Migrations
                 name: "Users_Roles",
                 columns: table => new
                 {
-                    UserRoleID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserID = table.Column<int>(type: "int", nullable: false),
-                    RoleID = table.Column<int>(type: "int", nullable: false),
-                    MatchingID = table.Column<int>(type: "int", nullable: true),
+                    UserRoleID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1")
+                        .Annotation("Sqlite:Autoincrement", true),
+                    UserID = table.Column<int>(type: "integer", nullable: false),
+                    RoleID = table.Column<int>(type: "integer", nullable: false),
+                    MatchingID = table.Column<int>(type: "integer", nullable: true),
                     LastVisitDate = table.Column<DateTime>(type: "datetime", nullable: true),
-                    StudentID = table.Column<int>(type: "int", nullable: true),
-                    TutorID = table.Column<int>(type: "int", nullable: true)
+                    StudentID = table.Column<int>(type: "integer", nullable: true),
+                    TutorID = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
