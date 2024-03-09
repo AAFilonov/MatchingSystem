@@ -21,6 +21,7 @@ public class TutorEntity
     public short? CloseIterationNumber { get; set; }
     public bool? IsReadyToStart { get; set; }
     public int MatchingId { get; set; }
+    public bool IsDeleted { get; set; }
 
     public virtual ICollection<CommonQuota.CommonQuotaEntity> CommonQuota { get; set; }
     public virtual ICollection<ProjectEntity> Projects { get; set; }

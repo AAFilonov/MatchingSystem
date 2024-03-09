@@ -40,7 +40,7 @@ public class StatisticsRepository : Repository, IStatisticsRepository
                 .ThenInclude(choice => choice.typeEntity)
                 .ToList();
 
-            return views.Select(entity =>
+            return views.Where(entity => !entity.IsDeleted).Select(entity =>
             {
                 var statistic = new StudentStatistics();
                 //stage 3

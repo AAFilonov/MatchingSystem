@@ -16,6 +16,7 @@ using MatchingSystem.DataLayer.Feature.StudentPreference.repo;
 using MatchingSystem.DataLayer.Feature.Tutor.repo;
 using MatchingSystem.DataLayer.Feature.TutorChoice.repo;
 using MatchingSystem.DataLayer.Feature.User.repo;
+using MatchingSystem.Service.Admin;
 using MatchingSystem.Service.Allocation;
 using MatchingSystem.Service.DocumentsProcessing;
 using MatchingSystem.Service.Executive;
@@ -119,6 +120,7 @@ namespace MatchingSystem.UI
             services.AddSingleton<ITutorService, TutorService>();
             services.AddSingleton<IStatisticsService, StatisticsService>();
             services.AddSingleton<IMainStatisticsService, MainStatisticsService>();
+            services.AddSingleton<IAdminService, AdminService>();
             
             services.AddSession(options =>
             {

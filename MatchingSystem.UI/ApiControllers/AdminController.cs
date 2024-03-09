@@ -1,16 +1,13 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
+using Lombok.NET;
 using MatchingSystem.DataLayer.Feature.Group.repo;
 using MatchingSystem.DataLayer.Feature.Matching;
 using MatchingSystem.DataLayer.Feature.Matching.repo;
 using MatchingSystem.DataLayer.Feature.Role;
 using MatchingSystem.DataLayer.Feature.Role.repo;
-using MatchingSystem.DataLayer.Feature.Student;
-using MatchingSystem.DataLayer.Feature.Student.repo;
 using MatchingSystem.DataLayer.Feature.User;
 using MatchingSystem.DataLayer.Feature.User.repo;
-using MatchingSystem.Service.Matching;
+using MatchingSystem.Service.Admin;
 using Microsoft.AspNetCore.Mvc;
 using Scrypt;
 
@@ -22,33 +19,15 @@ namespace MatchingSystem.UI.ApiControllers
         public string NewPassword { get; set; }
     }
 
-    public class AssignRoleRequest
-    {
-        public UsersRoleEntity userRoleEntity { get; set; }
-        public int groupId { get; set; }
-    }
-
     [ApiController]
-    public class AdminController : ControllerBase
+    [AllArgsConstructor]
+    public partial class AdminController : ControllerBase
     {
         private readonly IUserRepository userRepository;
         private readonly IMatchingRepository matchingRepository;
         private readonly IRoleRepository roleRepository;
-        private readonly IMatchingService matchingService;
         private readonly IGroupRepository groupRepository;
-        private readonly IStudentRepository studentRepository;
-
-        public AdminController(IUserRepository userRepository, IMatchingRepository matchingRepository,
-            IRoleRepository roleRepository, IMatchingService matchingService, IGroupRepository groupRepository,
-            IStudentRepository studentRepository)
-        {
-            this.userRepository = userRepository;
-            this.matchingRepository = matchingRepository;
-            this.roleRepository = roleRepository;
-            this.matchingService = matchingService;
-            this.groupRepository = groupRepository;
-            this.studentRepository = studentRepository;
-        }
+        private readonly IAdminService adminService;
 
         [Route("api/[controller]/getMatchingsList")]
         [HttpGet]
@@ -152,88 +131,36 @@ namespace MatchingSystem.UI.ApiControllers
             userRepository.update(user);
         }
 
-        [Route("api/[controller]/assignRole")]
+        [Route("api/[controller]/assignDefaultRole")]
         [HttpPost]
-        public void AssignRole(AssignRoleRequest payload)
+        public void AssignDefaultRole(AssignDefaultRoleRequest payload)
         {
-            IEnumerable<UsersRoleEntity> userRole = roleRepository.find(role =>
-                role.UserId == payload.userRoleEntity.UserId
-                && role.MatchingId == payload.userRoleEntity.MatchingId
-                && role.RoleId == payload.userRoleEntity.RoleId
-            );
-            
-            if (userRole.Count() != 0 && userRole.First().IsDeleted == false)
-            {
-                throw new Exception("Роль с такой конфигурацией уже существует");
-            }
+            adminService.AssignDefaultRole(payload);
+        }
 
-            // RoleId = Student
-            if (payload.userRoleEntity.RoleId == (int)RolesEnum.STUDENT && payload.groupId != null)
-            {
-                roleRepository.CallInTransaction((context) =>
-                {
-                    StudentEntity newStudentEntity = new StudentEntity
-                    {
-                        GroupId = payload.groupId,
-                        MatchingId = payload.userRoleEntity.MatchingId,
-                    };
-                    studentRepository.save(newStudentEntity, context);
+        [Route("api/[controller]/assignStudentRole")]
+        [HttpPost]
+        public void AssignStudentRole(AssignStudentRoleRequest payload)
+        {
+            adminService.AssignStudentRole(payload);
+        }
 
-                    var possibleStudentRole = roleRepository.find(role =>
-                        role.MatchingId == payload.userRoleEntity.MatchingId
-                        && role.RoleId == (int)RolesEnum.STUDENT
-                        && role.UserId == payload.userRoleEntity.UserId
-                    ).FirstOrDefault();
-
-                    if (possibleStudentRole != null)
-                    {
-                        possibleStudentRole.IsDeleted = false;
-                        roleRepository.update(possibleStudentRole, context);
-                    }
-                    else
-                    {
-                        var studentRole = new UsersRoleEntity
-                        {
-                            MatchingId = payload.userRoleEntity.MatchingId,
-                            RoleId = (int)RolesEnum.STUDENT,
-                            UserId = payload.userRoleEntity.UserId,
-                            StudentId = newStudentEntity.StudentId,
-                        };
-                    
-                        roleRepository.save(studentRole, context);
-                    }
-                });
-            }
-            else // RoleId ни студент, ни преподаватель
-            {
-                // Создание записи в User_Roles
-                roleRepository.AssignRoleForUser(payload.userRoleEntity.UserId, (int)payload.userRoleEntity.MatchingId,
-                    payload.userRoleEntity.RoleId);
-            }
+        [Route("api/[controller]/assignTutorRole")]
+        [HttpPost]
+        public void AssignTutorRole(AssignTutorRoleRequest payload)
+        {
+            adminService.AssignTutorRole(payload);
         }
 
         [Route("api/[controller]/removeRole")]
         [HttpPost]
-        public void RemoveRole(UsersRoleEntity payload)
+        public void RemoveRole(RemoveRoleRequest payload)
         {
-            if (payload.RoleId == (int)RolesEnum.STUDENT)
+            switch (payload.User.RoleId)
             {
-                UsersRoleEntity userRole = roleRepository.find(role =>
-                    role.UserId == payload.UserId
-                    && role.MatchingId == payload.MatchingId
-                    && role.RoleId == payload.RoleId
-                ).Single();
-                userRole.IsDeleted = true;
-                roleRepository.update(userRole);
-            }
-            else
-            {
-                UsersRoleEntity userRole = roleRepository.find(role =>
-                    role.UserId == payload.UserId
-                    && role.MatchingId == payload.MatchingId
-                    && role.RoleId == payload.RoleId
-                ).Single();
-                roleRepository.remove(userRole);
+                case (int)RolesEnum.STUDENT: adminService.RemoveStudentRole(payload); break;
+                case (int)RolesEnum.TUTOR: adminService.RemoveTutorRole(payload); break;
+                default: adminService.RemoveDefaultRole(payload); break;
             }
         }
     }

@@ -32,7 +32,7 @@ public partial class MonitoringService : Repository, IMonitoringService
         StageEntity currentStage = matchingRepository.GetCurrentStage(matchingId);
         return CallInContext(context =>
         {
-            var students = context.Projects
+            var projects = context.Projects
                 .Where(entity => entity.MatchingId == matchingId)
                 .Include(entity => entity.TutorsChoices)
                 .Include(entity => entity.ProjectsWorkDirections)
@@ -42,7 +42,7 @@ public partial class MonitoringService : Repository, IMonitoringService
                 .Include(entity => entity.ProjectsGroups)
                 .ThenInclude(entity => entity.groupEntity)
                 .ToList();
-            return students.Select(entity =>
+            return projects.Select(entity =>
             {
                 var dto = new ProjectMonitoringDto();
                 dto.projectId = entity.ProjectId;
@@ -86,7 +86,7 @@ public partial class MonitoringService : Repository, IMonitoringService
                 .ThenInclude(entity => entity.User)
                 .Include(student => student.TutorsChoices)
                 .ToList();
-            return students.Select(entity =>
+            return students.Where(student => !student.IsDeleted).Select(entity =>
             {
                 var dto = new StudentMonitoringDto();
                 dto.studentId = entity.StudentId;
@@ -127,7 +127,7 @@ public partial class MonitoringService : Repository, IMonitoringService
                 .ThenInclude(tutor => tutor.User)
                 .Include(tutor => tutor.CommonQuota)
                 .ToList();
-            return tutors.Select(entity =>
+            return tutors.Where(tutor => !tutor.IsDeleted).Select(entity =>
             {
                 var dto = new TutorMonitoringDto();
                 dto.tutorId = entity.TutorId;

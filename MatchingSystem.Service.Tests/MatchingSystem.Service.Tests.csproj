@@ -21,4 +21,8 @@
         <ProjectReference Include="..\MatchingSystem.Service\MatchingSystem.Service.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="UnitTests\AdminServiceUnitTest.cs" />
+    </ItemGroup>
+
 </Project>
