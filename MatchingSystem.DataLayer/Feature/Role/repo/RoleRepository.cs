@@ -62,7 +62,7 @@ public class RoleRepository : GenericRepository<UsersRoleEntity>, IRoleRepositor
             {
                 MatchingId = matchingId,
                 RoleId = roleId,
-                UserId = userId
+                UserId = userId,
             }, extContext
         );
     }

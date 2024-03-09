@@ -224,7 +224,7 @@
         outlined
         :items="rolesOptions">
       </v-select>
-      
+
       @*Если роль === 'Студент'*@
       <v-select
         v-if="selectedRole === 2"
@@ -235,6 +235,28 @@
         outlined
         :items="groupsOptions">
       </v-select>
+
+      @*Если роль === 'Преподаватель'*@
+      <v-select
+        v-if="selectedRole === 1"
+        item-text="name"
+        item-value="value"
+        label="Assigned groups"
+        v-model="selectedAssignedGroups"
+        outlined
+        multiple
+        :items="groupsOptions">
+      </v-select>
+      
+      @*Если роль === 'Преподаватель'*@
+      <v-text-field
+        label="Start quota"
+        v-if="selectedRole === 1"
+        v-model="quota"
+        outlined
+        type="number"
+        >
+      </v-text-field>
 
       <v-card-actions class="mt-lg-5">
         <v-spacer></v-spacer>
@@ -356,6 +378,8 @@ let app = new Vue({
       selectedMatching: null,
       selectedRole: null,
       selectedGroup: null, // значение select для кейса с ролью "Студент"
+      selectedAssignedGroups: [], // значение select для кейса с ролью "Преподаватель"
+      quota: 0,
     }
   },
   methods: {
@@ -407,21 +431,35 @@ let app = new Vue({
       }
     },
     async createRole() {
-      try {
-        await axios.post(`${params.basePath}/api/admin/assignRole`, {
-          userRoleEntity: {
-            UserId: this.roleDialogId,
-            MatchingId: this.selectedMatching,
-            RoleId: this.selectedRole,
-          },
-          groupId: this.selectedGroup || 0,
-        });
+      try {        
+        const userDto = {
+           UserId: this.roleDialogId,
+           MatchingId: this.selectedMatching,
+           RoleId: this.selectedRole,
+        };
+        
+        if (this.selectedRole === 2) {
+          await axios.post(`${params.basePath}/api/admin/assignStudentRole`, {
+            User: userDto,
+            GroupId: this.selectedGroup || 0,
+          })
+        } else if (this.selectedRole === 1) {
+          await axios.post(`${params.basePath}/api/admin/assignTutorRole`, {
+            User: userDto,
+            AssignedGroups: this.selectedAssignedGroups || [],
+            Quota: +this.quota,
+          })
+        } else {
+          await axios.post(`${params.basePath}/api/admin/assignDefaultRole`, {
+            User: userDto,
+          })
+        }
                     
         this.snackbarText = 'Роль успешно создана'
         this.snackbar = true;
         this.roles = await this.fetchUserRoles(this.roleDialogId);
       } catch (e) {
-        this.snackbarText = 'Не удалось создать Роль';
+        this.snackbarText = `Ошибка создания роли. \n${e.response.data}`;
         this.snackbar = true;
         console.error(`Error: ${e}`);
       }
@@ -432,9 +470,11 @@ let app = new Vue({
       }
       try {
         await axios.post(`${params.basePath}/api/admin/removeRole`, {
-          UserId: userId,
-          MatchingId: matchingId,
-          RoleId: roleId,
+          User: {
+            UserId: userId,
+            MatchingId: matchingId,
+            RoleId: roleId,
+          }
         });
                     
         this.snackbarText = 'Роль успешно удалена';
@@ -519,6 +559,11 @@ let app = new Vue({
       this.selectedRole = null;
       this.selectedGroup = null;
     },
+    selectedRole() {
+      this.selectedGroup = null;
+      this.selectedAssignedGroups = [];
+      this.quota = 0;
+    }
   },
   computed: {
     hasDisabledAssignmentRole() {
@@ -531,6 +576,10 @@ let app = new Vue({
       }
       
       if (this.selectedRole === 2 && this.selectedGroup === null) {
+        return true;
+      }
+      
+      if (this.selectedRole === 1 && this.selectedAssignedGroups.length === 0) {
         return true;
       }
       

@@ -24,6 +24,7 @@ public class StudentEntity
     public string? Info { get; set; }
     public int? MatchingId { get; set; }
     public string? Info2 { get; set; }
+    public bool IsDeleted { get; set; }
 
     public virtual GroupEntity Group { get; set; } = null!;
     public virtual ICollection<StudentsPreferenceEntity> StudentsPreferences { get; set; }

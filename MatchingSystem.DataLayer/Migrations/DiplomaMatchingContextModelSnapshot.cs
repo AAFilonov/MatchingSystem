@@ -587,7 +587,7 @@ namespace MatchingSystem.DataLayer.Migrations
                     b.Property<string>("Info")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool?>("IsClosed")
+                    b.Property<bool>("IsClosed")
                         .HasColumnType("bit");
 
                     b.Property<bool?>("IsDefault")
@@ -906,6 +906,9 @@ namespace MatchingSystem.DataLayer.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<int?>("MatchingId")
                         .HasColumnType("int")
                         .HasColumnName("MatchingID");
@@ -1056,6 +1059,9 @@ namespace MatchingSystem.DataLayer.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<bool>("IsClosed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<bool?>("IsReadyToStart")
