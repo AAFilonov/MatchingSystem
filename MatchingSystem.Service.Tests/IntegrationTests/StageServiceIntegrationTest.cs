@@ -26,7 +26,6 @@ public class StageServiceIntegrationTest
     {
         _context = TestUtils.InitDb("appsettings.Test.SqliteMemory.json");
         _context.Database.EnsureCreated();
-        TestUtils.initDictionaryTables(_context);
         _context.Matchings.Add(new MatchingEntity() { MatchingId = 1, MatchingName = "TestMatching", MatchingTypeId = 1});
         _context.SaveChanges();
 
@@ -51,8 +50,6 @@ public class StageServiceIntegrationTest
     [Test]
     public void testAllStages_ThenCurrentStageChanges()//проверяем что стадии последовательно меняются в правильном порядке
     {
-        _context.MatchingTypes.Add(new MatchingType()
-            { MatchingTypeId = 12, MatchingTypeCode = "BA", MatchingTypeName = "Bachelors" });
         _context.SaveChanges();
         _context.Stages.Add(new StageEntity()
         {

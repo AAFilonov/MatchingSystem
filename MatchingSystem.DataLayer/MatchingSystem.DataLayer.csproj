@@ -35,12 +35,19 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\MatchingSystem.Common\MatchingSystem.Common.csproj" />
       <ProjectReference Include="..\MatchingSystem.Constants\MatchingSystem.Constants.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="Feature\QuotaNotification" />
       <Folder Include="_Technical" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="MatchingSystem.Common">
+        <HintPath>..\MatchingSystem.Service.Tests\bin\Debug\net6.0\MatchingSystem.Common.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>

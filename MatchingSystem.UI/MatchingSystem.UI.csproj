@@ -126,6 +126,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\MatchingSystem.Common\MatchingSystem.Common.csproj" />
         <ProjectReference Include="..\MatchingSystem.Constants\MatchingSystem.Constants.csproj" />
         <ProjectReference Include="..\MatchingSystem.DataLayer\MatchingSystem.DataLayer.csproj" />
         <ProjectReference Include="..\MatchingSystem.Service\MatchingSystem.Service.csproj" />
