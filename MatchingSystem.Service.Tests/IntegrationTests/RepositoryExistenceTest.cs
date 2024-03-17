@@ -42,7 +42,6 @@ public class RepositoryExistenceTest
     {
         //Запускает реальную базу данных и накатывает на нее миграции. В базе будет то что создано по итогу миграций
         var context = TestUtils.InitDb("appsettings.Test.SqliteMemory.json");
-        TestUtils.initDictionaryTables(context);
 
         context.Matchings.AddRange(matchingExpected);
         context.SaveChanges();
