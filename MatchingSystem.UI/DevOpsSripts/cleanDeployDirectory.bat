@@ -53,11 +53,13 @@ echo copying coplite
 echo[
 
 ::ШАГ 4
-::заменить плейсхолдер в конфиге на строку подключения
+::заменить плейсхолдеры в конфиге
 set TARGET_PATH=%DEPLOY_DIRECTORY%\%destDirName%
 set TARGET_FILENAME=appsettings.Production.json
 
 call  %THIS_FOLDER%\replacePlaceholder.bat %TARGET_PATH% %TARGET_FILENAME% PLACEHOLDER %THIS_FOLDER%\connectionString.txt
+echo[
+call  %THIS_FOLDER%\replacePlaceholder.bat %TARGET_PATH% %TARGET_FILENAME% MAIL_PASS_PLACEHOLDER %THIS_FOLDER%\mailPassword.txt
 echo[
 
 
