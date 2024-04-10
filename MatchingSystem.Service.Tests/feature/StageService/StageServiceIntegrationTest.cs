@@ -2,14 +2,19 @@
 using MatchingSystem.DataLayer;
 using MatchingSystem.DataLayer.Feature.Matching;
 using MatchingSystem.DataLayer.Feature.Matching.repo;
+using MatchingSystem.DataLayer.Feature.Project.Repo;
 using MatchingSystem.DataLayer.Feature.Stage;
 using MatchingSystem.DataLayer.Feature.Stage.repo;
+using MatchingSystem.DataLayer.Feature.Student.repo;
+using MatchingSystem.DataLayer.Feature.Tutor.repo;
+using MatchingSystem.DataLayer.Feature.TutorChoice.repo;
+using MatchingSystem.Service.Iterations;
 using MatchingSystem.Service.Stage;
 using MatchingSystem.Service.Tests.Utils;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 
-namespace MatchingSystem.Service.Tests.IntegrationTests;
+namespace MatchingSystem.Service.Tests.feature.StageService;
 
 [TestFixture]
 [NonParallelizable]
@@ -35,10 +40,17 @@ public class StageServiceIntegrationTest
         _matchingRepository = new MatchingRepository();
 
         var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
-        _stageService = new StageService(_stageRepository, _matchingRepository,
-            loggerFactory.CreateLogger<StageService>());
-        
-      
+
+        IStudentRepository studentRepository = new StudentRepository();
+        ITutorRepository tutorRepository = new TutorRepository();
+        IProjectRepository projectRepository = new ProjectRepository();
+        ITutorsChoiceRepository tutorsChoiceRepository= new TutorsChoiceRepository();
+        var iterationsService = new IterationsService(tutorRepository, projectRepository, studentRepository, tutorsChoiceRepository);
+        _stageService = new Stage.StageService(
+            _stageRepository, 
+            _matchingRepository,
+            iterationsService,
+            loggerFactory.CreateLogger<Stage.StageService>());
     }
     
     [OneTimeTearDown]

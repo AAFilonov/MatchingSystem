@@ -2,6 +2,7 @@
 using MatchingSystem.DataLayer.Feature._LinkTables;
 using MatchingSystem.DataLayer.Feature.Project;
 using MatchingSystem.DataLayer.Feature.Role;
+using Newtonsoft.Json;
 
 namespace MatchingSystem.DataLayer.Feature.Tutor;
 
@@ -23,8 +24,12 @@ public class TutorEntity
     public int MatchingId { get; set; }
     public bool IsDeleted { get; set; }
 
+    [JsonIgnore]
     public virtual ICollection<CommonQuota.CommonQuotaEntity> CommonQuota { get; set; }
+    [JsonIgnore]
     public virtual ICollection<ProjectEntity> Projects { get; set; }
+    [JsonIgnore]
     public virtual ICollection<TutorsGroup> TutorsGroups { get; set; }
+    [JsonIgnore]
     public virtual ICollection<UsersRoleEntity> UsersRoles { get; set; }
 }

@@ -17,56 +17,6 @@ IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = 'dbo')
 GO
 GO
 
-/****** Object:  UserDefinedFunction [napp_in].[get_CurrentStageID_ByMatching]    Script Date: 17.03.2024 12:32:36 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-
--- =============================================
--- Author:		Antyukhova Ekaterina
--- Create date: 19.02.2020
--- Update date: 
--- Description:	Возвращает ID этапа 
--- =============================================
-CREATE FUNCTION [napp_in].[get_CurrentStageID_ByMatching]
-(
-    @MatchingID int
-)
-    RETURNS int
-AS
-BEGIN
-    declare
-        @CurrentStageID int
-    ;
-
-    set @CurrentStageID =
-            (
-                select top 1
-                    Stage.StageID
-                from
-                    dbo.Stages Stage with (nolock)
-
-                where
-                    Stage.MatchingID = @MatchingID
-                  and
-                    Stage.IsCurrent = 1 -- true
-            )
-    ;
-
-    if (@CurrentStageID is not null)
-        return @CurrentStageID;
-
-    return -1;
-
-
-END
-
-
-GO
 
 
 
@@ -76,11 +26,6 @@ GO
 
 SET QUOTED_IDENTIFIER ON
 GO
-
-
-
-
-
 
 -- =============================================
 -- Author:		Antyukhova Ekaterina
@@ -120,76 +65,6 @@ BEGIN
 
 END
 
-
-
-
-
-
-GO
-
-
-
-GO
-
-/****** Object:  UserDefinedFunction [napp].[get_CurrentStage_ByMatching]    Script Date: 17.03.2024 12:29:18 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-
--- =============================================
--- Author:		Antyukhova Ekaterina
--- Create date: 13.02.2020
--- Update date: 14.05.2020
--- Description:	Описание текущего состояния распределения. 
---				Название и код этапа, дата начала и плановая дата окончания  этапа, номер итерации, это этап  Итераций
---				Название распределения
--- =============================================
-CREATE FUNCTION [napp].[get_CurrentStage_ByMatching]
-(
-    @MatchingID int
-)
-    RETURNS table
-        as
-        return
-
-        select top 1
-            Stage.StageID
-                   ,Stage.StageName
-                   ,Stage.StartDate
-                   ,Stage.EndPlanDate
-                   ,Stage.IterationNumber
-
-                   ,StagesType.StageTypeID
-                   ,StagesType.StageTypeCode
-                   ,StagesType.StageTypeName
-                   ,StagesType.StageTypeName_ru
-
-                   ,Matching.MatchingID
-                   ,Matching.MatchingName
-
-
-        from
-            dbo.Matching Matching with (nolock)
-
-                join dbo.Stages Stage with (nolock) on
-                Stage.MatchingID = Matching.MatchingID
-
-                join dbo.StagesTypes StagesType with (nolock) on
-                StagesType.StageTypeID = Stage.StageTypeID
-
-        where
-            Matching.MatchingID = @MatchingID
-          and
-            Stage.IsCurrent = 1 -- true
-
-
-
-GO
-
 GO
 
 /****** Object:  StoredProcedure [napp_in].[create_TutorsChoice_Copy]    Script Date: 17.03.2024 12:28:42 ******/
@@ -198,11 +73,6 @@ GO
 
 SET QUOTED_IDENTIFIER ON
 GO
-
-
-
-
-
 
 -- =============================================
 -- Author:		Antyukhova Ekaterina
@@ -644,13 +514,6 @@ END
 
 
 
-GO
-
-USE [DiplomaTest]
-GO
-
-/****** Object:  StoredProcedure [napp].[goto_NextStage]    Script Date: 17.03.2024 12:25:53 ******/
-DROP PROCEDURE [napp].[goto_NextStage]
 GO
 
 /****** Object:  StoredProcedure [napp].[goto_NextStage]    Script Date: 17.03.2024 12:25:53 ******/

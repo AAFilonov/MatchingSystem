@@ -3,6 +3,7 @@ using Lombok.NET;
 using MatchingSystem.DataLayer.Feature.Matching.repo;
 using MatchingSystem.DataLayer.Feature.Stage;
 using MatchingSystem.DataLayer.Feature.Stage.repo;
+using MatchingSystem.Service.Iterations;
 using Microsoft.Extensions.Logging;
 
 namespace MatchingSystem.Service.Stage;
@@ -12,12 +13,13 @@ public partial class StageService : IStageService
 {
     private readonly IStageRepository stageRepository;
     private readonly IMatchingRepository matchingRepository;
+    private readonly IIterationsService iterationsService;
     private readonly ILogger<StageService> logger;
 
     public void MoveToNextStage(int matchingId)
     {
         logger.LogInformation("Начат перевод распределения с id={} на следующий этап", matchingId);
-        var currentStage = matchingRepository.GetCurrentStage(matchingId);
+        StageEntity currentStage = matchingRepository.GetCurrentStage(matchingId);
         logger.LogInformation("Текущая стадия распредления {} имеет StageId={} и находится на этапе StageTypeId={}",
             matchingId,
             currentStage.StageId,
@@ -26,19 +28,21 @@ public partial class StageService : IStageService
         switch ((StageTypeEnum)currentStage.StageTypeId)
         {
             case StageTypeEnum.MATCHING_INITIALIZATION:
-                UpdateStages(currentStage, StageTypeEnum.MATCHING_PREPARATION);
+                CreateNewStage(currentStage, StageTypeEnum.MATCHING_PREPARATION);
                 break;
             case StageTypeEnum.MATCHING_PREPARATION:
-                UpdateStages(currentStage, StageTypeEnum.ACCUMULATION_STUDENTS_PREFERENCES);
+                CreateNewStage(currentStage, StageTypeEnum.ACCUMULATION_STUDENTS_PREFERENCES);
                 break;
             case StageTypeEnum.ACCUMULATION_STUDENTS_PREFERENCES:
-                UpdateStages(currentStage, StageTypeEnum.ITERATION, 1);
+                CreateNewStage(currentStage, StageTypeEnum.ITERATION, 1);
+                //TODO DPL-4 MoveToNextInteration(currentStage); // обработка связанная с созданием TutorChoise
                 break;
             case StageTypeEnum.ITERATION:
-                MoveToNextInteration(currentStage);
+                CreateNewStage(currentStage, StageTypeEnum.MANUAL_ADJUSTMENT, 1);
+                //MoveToNextInteration(currentStage);
                 break;
             case StageTypeEnum.MANUAL_ADJUSTMENT:
-                UpdateStages(currentStage, StageTypeEnum.FINAL);
+                CreateNewStage(currentStage, StageTypeEnum.FINAL);
                 break;
             case StageTypeEnum.FINAL:
                 //терминальный
@@ -48,7 +52,7 @@ public partial class StageService : IStageService
         }
     }
 
-    private void UpdateStages(StageEntity currentStage, StageTypeEnum newStageType, short? iterationNumber = null)
+    private void CreateNewStage(StageEntity currentStage, StageTypeEnum newStageType, short? iterationNumber = null)
     {
         logger.LogInformation("Выполняется переход с этапа {} на этап {}({})", currentStage.StageTypeId,
             (int)newStageType, newStageType);
@@ -74,11 +78,28 @@ public partial class StageService : IStageService
         logger.LogInformation("Перевод распределения с id={} на этап {} завершен успешно",
             currentStage.MatchingId, newStageType);
     }
-
-    private void MoveToNextInteration(StageEntity currentStage)
+    
+    /* TODO DPL-4
+     метод вызывается в конце прошлой итерации или на шаге StageTypeEnum.ACCUMULATION_STUDENTS_PREFERENCES
+     генерим Allocation из данных в базе
+     сначала мы прогоняем алгоритм матчинга для текущего состояния базы, в Allocation назначения InDTO
+     затем мы создаем новый Stage со следующим номером итерации
+     затем создаем TutorChoise для этой итерации  по в Allocation - назначения InDTO дублируем в назначения InDB
+     при этом существующие назначения дублируются в новую итерацию, а новые создаются с нуля
+     затем провятем является ли состояние распределения финальным
+        если да мы создаем новый Stage c StageTypeEnum.MANUAL_ADJUSTMENT
+    */
+    private void MoveToNextIteration(StageEntity currentStage)
     {
-        UpdateStages(currentStage, StageTypeEnum.MANUAL_ADJUSTMENT);
-
-        //TODO DPL-4 - написать логи
+        DiplomaAllocation allocation = iterationsService.getAllocation(currentStage);
+        if (!iterationsService.isInFinalIteration(allocation))
+        {
+            CreateNewStage(currentStage, StageTypeEnum.ITERATION, 1);
+            iterationsService.computeIteration(allocation);
+        }
+        else
+        {
+            CreateNewStage(currentStage, StageTypeEnum.MANUAL_ADJUSTMENT);
+        }
     }
 }

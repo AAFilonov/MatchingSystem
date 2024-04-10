@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 using MatchingSystem.DataLayer.Feature.Dictionary;
 using MatchingSystem.DataLayer.Feature.Project;
 using MatchingSystem.DataLayer.Feature.Stage;
@@ -22,8 +23,12 @@ public class TutorsChoiceEntity
     public DateTime? UpdateDate { get; set; }
     public bool? IsFromPreviousIteration { get; set; }
 
+    [JsonIgnore]
     public virtual ProjectEntity Project { get; set; } = null!;
+    [JsonIgnore]
     public virtual StageEntity Stage { get; set; } = null!;
+    [JsonIgnore]
     public virtual StudentEntity Student { get; set; } = null!;
+    [JsonIgnore]
     public virtual ChoosingTypeEntity typeEntity { get; set; } = null!;
 }

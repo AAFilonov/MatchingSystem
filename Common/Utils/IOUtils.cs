@@ -1,8 +1,6 @@
-﻿using System.IO;
+﻿namespace Common.Utils;
 
-namespace MatchingSystem.Constants.Utils;
-
-public class IOUtils
+public static class IOUtils
 {
     private const string TestBinDirectoryPath = "./../../../";
 

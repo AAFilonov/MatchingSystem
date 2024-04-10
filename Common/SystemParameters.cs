@@ -1,15 +1,6 @@
-﻿using System;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 
-namespace MatchingSystem.Constants;
-
-public enum DbType
-{
-    SqlServer,
-    SqliteMemory,
-    SqliteFile,
-    EFInMemory,
-}
+namespace Common;
 
 public class SystemParameters
 {

@@ -25,4 +25,10 @@
       <Compile Remove="UnitTests\AdminServiceUnitTest.cs" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Reference Include="MatchingSystem.Common">
+        <HintPath>bin\Debug\net6.0\MatchingSystem.Common.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>

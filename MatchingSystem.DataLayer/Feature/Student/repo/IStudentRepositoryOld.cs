@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using MatchingSystem.DataLayer.Feature.Dictionary;
+using MatchingSystem.DataLayer.Feature.StudentPreference;
 using MatchingSystem.DataLayer.OldDto.IO.Params;
 using MatchingSystem.DataLayer.OldDto.MatchingInit;
 using MatchingSystem.DataLayer.OldEntities;
@@ -13,9 +14,9 @@ namespace MatchingSystem.DataLayer.Feature.Student.repo
         AllocatedByStudent GetAllocationByStudent(int studentId);
         Task<StudentDto> GetStudentAsync(int studentId);
         StudentDto GetStudent(int studentId);
-        IEnumerable<StudentPreferences> GetStudentPreferencesByMatching(int matchingId);
-        public IEnumerable<StudentPreferences> GetStudentAssignedToProject(int matchingId);
-        IEnumerable<StudentPreferences> GetStudentAvailablePreferencesByMatching(int matchingId);
+        IEnumerable<StudentPreferenceDto> GetStudentPreferencesByMatching(int matchingId);
+        public IEnumerable<StudentPreferenceDto> GetStudentAssignedToProject(int matchingId);
+        IEnumerable<StudentPreferenceDto> GetStudentAvailablePreferencesByMatching(int matchingId);
         Task<int> GetStudentIdAsync(int userId, int matchingId);
         int GetStudentId(int userId, int matchingId);
         void CreateUserRoles_Students(List<StudentInitDto> studs, int matchingID);

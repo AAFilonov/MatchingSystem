@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using MatchingSystem.DataLayer.Feature.Tutor;
 using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.DataLayer.Feature.CommonQuota.repo;

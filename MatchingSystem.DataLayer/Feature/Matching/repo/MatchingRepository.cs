@@ -2,8 +2,6 @@
 using System.Linq;
 using MatchingSystem.DataLayer.Feature.Allocation;
 using MatchingSystem.DataLayer.Feature.Stage;
-using MatchingSystem.DataLayer.OldEntities;
-using Microsoft.EntityFrameworkCore;
 
 namespace MatchingSystem.DataLayer.Feature.Matching.repo;
 

@@ -7,8 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\Common\Common.csproj" />
         <ProjectReference Include="..\MatchingLibrary\MatchingLibrary.csproj"/>
-        <ProjectReference Include="..\MatchingSystem.Common\MatchingSystem.Common.csproj" />
     </ItemGroup>
 
     <ItemGroup>

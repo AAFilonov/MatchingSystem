@@ -1,5 +1,3 @@
-using MatchingLibrary.Allocation;
-
 namespace MatchingLibrary.Allocators.interfaces;
 
 public interface IAllocator<in TAllocation>

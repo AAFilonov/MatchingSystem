@@ -1,5 +1,5 @@
-﻿using MatchingSystem.Constants;
-using MatchingSystem.Constants.Utils;
+﻿using Common;
+using Common.Utils;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -15,11 +15,11 @@ namespace MatchingSystem.DataLayer.Migrations
             string filename ="";
             if (SystemParameters.getInstance().DB_TYPE==DbType.SqlServer)
             {
-                filename = "../MatchingSystem.DataLayer/Migrations/sql/fillDictionariesMsSQL.sql";
+                filename = "../MatchingSystem.DataLayer/Migrations/sql/mssql/fillDictionaries.sql";
             }
             if (SystemParameters.getInstance().DB_TYPE==DbType.SqliteMemory ||SystemParameters.getInstance().DB_TYPE==DbType.SqliteFile )
             {
-                filename = "../MatchingSystem.DataLayer/Migrations/sql/fillDictionariesSqlite.sql";
+                filename = "../MatchingSystem.DataLayer/Migrations/sql/sqlite/fillDictionaries.sql";
             }
        
            var sql = IOUtils.ReadFileAsString(filename);

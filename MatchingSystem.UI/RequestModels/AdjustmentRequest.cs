@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using MatchingSystem.DataLayer.Feature.Allocation;
-using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.UI.RequestModels
 {

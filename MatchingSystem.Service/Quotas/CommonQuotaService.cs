@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Lombok.NET;
 using MatchingSystem.DataLayer;
@@ -9,11 +8,9 @@ using MatchingSystem.DataLayer.Feature.Matching.repo;
 using MatchingSystem.DataLayer.Feature.Project;
 using MatchingSystem.DataLayer.Feature.Project.Repo;
 using MatchingSystem.DataLayer.Feature.Stage;
-using MatchingSystem.DataLayer.Feature.Stage.repo;
 using MatchingSystem.DataLayer.Feature.Tutor;
 using MatchingSystem.DataLayer.Feature.Tutor.repo;
 using MatchingSystem.DataLayer.OldDto;
-using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.Service.Quotas;
 

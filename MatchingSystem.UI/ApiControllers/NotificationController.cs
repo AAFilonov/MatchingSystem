@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using MatchingSystem.Service.Notification;
+﻿using MatchingSystem.Service.Notification;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MatchingSystem.UI.ApiControllers

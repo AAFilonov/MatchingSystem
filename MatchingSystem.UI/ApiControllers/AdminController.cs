@@ -68,7 +68,7 @@ namespace MatchingSystem.UI.ApiControllers
         [HttpGet]
         public IActionResult GetUsers([FromQuery] string abbr = "", [FromQuery] string login = "")
         {
-            var model = userRepository.findAll()
+            var model = userRepository.findAll().ToList()
                 .Where(user =>
                 {
                     var nameAbbr = "" + user.NameAbbreviation;

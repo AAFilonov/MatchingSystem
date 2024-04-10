@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using MatchingSystem.Constants;
+using Common;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace MatchingSystem.DataLayer.Feature;
@@ -20,9 +21,9 @@ public class GenericRepository<TEntity> : Repository, IRepository<TEntity> where
         return _matchingSystemContext.Set<TEntity>().Where(predicate);
     }
 
-    public IEnumerable<TEntity> findAll()
+    public DbSet<TEntity> findAll()
     {
-        return _matchingSystemContext.Set<TEntity>().ToList();
+        return _matchingSystemContext.Set<TEntity>();
     }
 
     public TEntity save(TEntity item, DiplomaMatchingContext? extContext = null)

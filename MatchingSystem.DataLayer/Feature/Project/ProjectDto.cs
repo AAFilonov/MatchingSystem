@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace MatchingSystem.DataLayer.Feature.Project
+﻿namespace MatchingSystem.DataLayer.Feature.Project
 {
     #nullable enable
     public class ProjectDto

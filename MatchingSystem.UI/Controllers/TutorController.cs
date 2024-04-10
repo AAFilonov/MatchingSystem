@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using MatchingSystem.DataLayer.Feature.Matching.repo;
 using MatchingSystem.DataLayer.Feature.Stage;
-using MatchingSystem.DataLayer.Feature.Tutor;
 using MatchingSystem.DataLayer.Feature.Tutor.repo;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;

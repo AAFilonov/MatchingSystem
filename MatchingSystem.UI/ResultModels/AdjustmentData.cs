@@ -2,7 +2,6 @@
 using MatchingSystem.DataLayer.Feature.Allocation;
 using MatchingSystem.DataLayer.Feature.Project;
 using MatchingSystem.DataLayer.Feature.Tutor;
-using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.UI.ResultModels
 {

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
 
 namespace MatchingSystem.DataLayer.Feature.Dictionary.repo;
 
@@ -8,7 +7,7 @@ public class DictionaryRepository : GenericRepository<TechnologyEntity>, IDictio
 {
     public IEnumerable<TechnologyDto> GetTechnologiesAll()
     {
-        var technologyList = findAll();
+        var technologyList = findAll().ToList();
         return technologyList.Select(info =>
         {
             TechnologyDto dto = new TechnologyDto();

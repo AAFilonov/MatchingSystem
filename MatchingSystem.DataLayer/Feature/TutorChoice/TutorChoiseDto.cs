@@ -9,7 +9,8 @@ public class TutorChoiceDto
     {
         ChoiceID = entity.ChoiceId;
         StudentID = entity.StudentId;
-        StudentNameAbbreviation = entity.Student.UsersRoles.First().User.NameAbbreviation;
+        var user = entity.Student.UsersRoles.FirstOrDefault();
+        StudentNameAbbreviation =user?.User?.NameAbbreviation;
         GroupName = entity.Student.Group.GroupName;
         ProjectID = entity.ProjectId;
         ProjectName = entity.Project.ProjectName;

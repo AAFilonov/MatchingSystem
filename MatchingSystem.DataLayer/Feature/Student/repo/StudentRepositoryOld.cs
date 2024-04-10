@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Dapper;
 using MatchingSystem.DataLayer.Feature.Dictionary;
+using MatchingSystem.DataLayer.Feature.StudentPreference;
 using MatchingSystem.DataLayer.OldDto.IO.Params;
 using MatchingSystem.DataLayer.OldDto.MatchingInit;
 using MatchingSystem.DataLayer.OldEntities;
@@ -80,9 +81,9 @@ namespace MatchingSystem.DataLayer.Feature.Student.repo
             );
             return result;
         }
-        public IEnumerable<StudentPreferences> GetStudentPreferencesByMatching(int matchingId)
+        public IEnumerable<StudentPreferenceDto> GetStudentPreferencesByMatching(int matchingId)
         {
-            var result = Connection.Query<StudentPreferences>(
+            var result = Connection.Query<StudentPreferenceDto>(
                 "SELECT " +
                 "stud.StudentID, " +
                 "stud_pref.ProjectID, " +
@@ -96,9 +97,9 @@ namespace MatchingSystem.DataLayer.Feature.Student.repo
             return result;
         }
         
-        public IEnumerable<StudentPreferences> GetStudentAssignedToProject(int matchingId)
+        public IEnumerable<StudentPreferenceDto> GetStudentAssignedToProject(int matchingId)
         {
-            var result = Connection.Query<StudentPreferences>(
+            var result = Connection.Query<StudentPreferenceDto>(
                 "SELECT " +
                 "stud.StudentID, " +
                 "tch.ProjectID, " +
@@ -112,9 +113,9 @@ namespace MatchingSystem.DataLayer.Feature.Student.repo
             return result;
         }
 
-        public IEnumerable<StudentPreferences> GetStudentAvailablePreferencesByMatching(int matchingId)
+        public IEnumerable<StudentPreferenceDto> GetStudentAvailablePreferencesByMatching(int matchingId)
         {
-            var result = Connection.Query<StudentPreferences>(
+            var result = Connection.Query<StudentPreferenceDto>(
                    "SELECT " +
                    "stud.StudentID," +
                    "stud_pref.ProjectID," +

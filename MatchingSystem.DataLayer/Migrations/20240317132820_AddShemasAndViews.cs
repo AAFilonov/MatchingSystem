@@ -1,5 +1,5 @@
-﻿using MatchingSystem.Constants;
-using MatchingSystem.Constants.Utils;
+﻿using Common;
+using Common.Utils;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -12,13 +12,12 @@ namespace MatchingSystem.DataLayer.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            if (SystemParameters.getInstance().DB_TYPE==DbType.SqlServer)
+            if (SystemParameters.getInstance().DB_TYPE == DbType.SqlServer)
             {
-                var filename = "../MatchingSystem.DataLayer/Migrations/sql/AddShemasAndViews.sql";
+                var filename = "../MatchingSystem.DataLayer/Migrations/sql/mssql/AddShemasAndViews.sql";
                 var sql = IOUtils.ReadFileAsString(filename);   
                 migrationBuilder.Sql(sql);
             }
-         
         }
 
         /// <inheritdoc />

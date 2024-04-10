@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using MatchingSystem.DataLayer.Feature.TutorChoice;
+using Newtonsoft.Json;
 
 namespace MatchingSystem.DataLayer.Feature.Stage;
 
@@ -22,9 +23,12 @@ public class StageEntity
     public bool? IsCurrent { get; set; } //TODO DPL-38 сделать обязатаельными
     public int MatchingId { get; set; }
 
+    [JsonIgnore]
     public virtual Matching.MatchingEntity Matching { get; set; } = null!;
     public virtual StagesType StageType { get; set; } = null!;
+    [JsonIgnore]
     public virtual ICollection<CommonQuota.CommonQuotaEntity> CommonQuota { get; set; }
+    [JsonIgnore]
     public virtual ICollection<TutorsChoiceEntity> TutorsChoices { get; set; }
 
     public override string ToString()

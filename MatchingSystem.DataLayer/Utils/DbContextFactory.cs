@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using MatchingSystem.Constants;
+using Common;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;

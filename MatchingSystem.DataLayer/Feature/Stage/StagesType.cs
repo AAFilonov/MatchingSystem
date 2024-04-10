@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace MatchingSystem.DataLayer.Feature.Stage;
 
@@ -14,5 +15,6 @@ public class StagesType
     public string StageTypeName { get; set; } = null!;
     public string? StageTypeNameRu { get; set; }
 
+    [JsonIgnore]
     public virtual ICollection<StageEntity> Stages { get; set; }
 }

@@ -1,5 +1,5 @@
 using System;
-using MatchingSystem.Constants;
+using Common;
 using MatchingSystem.DataLayer.Utils;
 
 namespace MatchingSystem.DataLayer.Feature;
@@ -58,7 +58,8 @@ public class Repository
     {
         //inMemory база данных не поддерживает транзакции и при вызове
         //using context вызывает Dispose что нежелательно при ее использовании в тестах
-        if (SystemParameters.getInstance().DB_TYPE == DbType.EFInMemory) extContext = _matchingSystemContext;
+        if (SystemParameters.getInstance().DB_TYPE == DbType.EFInMemory || SystemParameters.getInstance().DB_TYPE == DbType.SqliteMemory)
+            extContext = _matchingSystemContext;
 
         if (extContext != null) 
             return callAction.Invoke(extContext);

@@ -1,0 +1,72 @@
+{
+  "lecturers": [
+    {
+      "capacity": 2,
+      "tutorId": 1,
+      "ownedProjectIds": [
+        1,
+        2,
+        3
+      ],
+      "preferenceStudentsIds": []
+    }
+  ],
+  "students": [
+    {
+      "studentId": 3,
+      "assignedProjectId_InDB": null,
+      "assignedProjectId_InDto": 3,
+      "preferenceProjectIds": [
+        3,
+        1,
+        2
+      ]
+    },
+    {
+      "studentId": 2,
+      "assignedProjectId_InDB": null,
+      "assignedProjectId_InDto": 2,
+      "preferenceProjectIds": [
+        2,
+        3,
+        1
+      ]
+    },
+    {
+      "studentId": 1,
+      "assignedProjectId_InDB": null,
+      "assignedProjectId_InDto": 1,
+      "preferenceProjectIds": [
+        1,
+        2,
+        3
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "capacity": 1,
+      "projectId": 1,
+      "assignedStudentsIds_InDB": [],
+      "assignedStudentsIds_InDTO": [
+        1
+      ]
+    },
+    {
+      "capacity": 1,
+      "projectId": 2,
+      "assignedStudentsIds_InDB": [],
+      "assignedStudentsIds_InDTO": [
+        2
+      ]
+    },
+    {
+      "capacity": 1,
+      "projectId": 3,
+      "assignedStudentsIds_InDB": [],
+      "assignedStudentsIds_InDTO": [
+        3
+      ]
+    }
+  ]
+}

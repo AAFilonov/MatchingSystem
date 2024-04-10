@@ -1,8 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
 using MatchingSystem.Service.Statistics;
 
 namespace MatchingSystem.UI.ApiControllers

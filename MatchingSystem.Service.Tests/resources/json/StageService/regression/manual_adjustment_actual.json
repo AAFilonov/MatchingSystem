@@ -1,0 +1,438 @@
+{
+  "allocation": {
+    "lecturers": [
+      {
+        "capacity": 3,
+        "tutorId": 1,
+        "ownedProjectIds": [
+          1,
+          2,
+          3
+        ],
+        "preferenceStudentsIds": [
+          1,
+          2,
+          3
+        ]
+      }
+    ],
+    "students": [
+      {
+        "studentId": 1,
+        "assignedProjectId_InDB": 1,
+        "assignedProjectId_InDto": 1,
+        "preferenceProjectIds": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "studentId": 2,
+        "assignedProjectId_InDB": 2,
+        "assignedProjectId_InDto": 2,
+        "preferenceProjectIds": [
+          2,
+          3
+        ]
+      },
+      {
+        "studentId": 3,
+        "assignedProjectId_InDB": 3,
+        "assignedProjectId_InDto": 3,
+        "preferenceProjectIds": [
+          3
+        ]
+      }
+    ],
+    "projects": [
+      {
+        "capacity": 1,
+        "projectId": 1,
+        "assignedStudentsIds_InDB": [
+          1
+        ],
+        "assignedStudentsIds_InDTO": [
+          1
+        ]
+      },
+      {
+        "capacity": 1,
+        "projectId": 2,
+        "assignedStudentsIds_InDB": [
+          2
+        ],
+        "assignedStudentsIds_InDTO": [
+          2
+        ]
+      },
+      {
+        "capacity": 1,
+        "projectId": 3,
+        "assignedStudentsIds_InDB": [
+          3
+        ],
+        "assignedStudentsIds_InDTO": [
+          3
+        ]
+      }
+    ]
+  },
+  "stages": [
+    {
+      "StageID": 1,
+      "StartDate": "2024-04-10T14:07:14.877",
+      "EndPlanDate": null,
+      "IterationNumber": null,
+      "StageTypeCode": 3,
+      "StageTypeName_ru": "Сбор предпочтений студентов"
+    },
+    {
+      "StageID": 2,
+      "StartDate": "2024-04-10T14:07:15.66",
+      "EndPlanDate": null,
+      "IterationNumber": 1,
+      "StageTypeCode": 4,
+      "StageTypeName_ru": "Итерация"
+    },
+    {
+      "StageID": 3,
+      "StartDate": "2024-04-10T14:07:15.803",
+      "EndPlanDate": null,
+      "IterationNumber": 2,
+      "StageTypeCode": 4,
+      "StageTypeName_ru": "Итерация"
+    },
+    {
+      "StageID": 4,
+      "StartDate": "2024-04-10T14:07:15.84",
+      "EndPlanDate": null,
+      "IterationNumber": 3,
+      "StageTypeCode": 4,
+      "StageTypeName_ru": "Итерация"
+    },
+    {
+      "StageID": 5,
+      "StartDate": "2024-04-10T14:07:15.84",
+      "EndPlanDate": null,
+      "IterationNumber": null,
+      "StageTypeCode": 5,
+      "StageTypeName_ru": "Ручная корректировка распределения"
+    }
+  ],
+  "choisesHistory": [
+    {
+      "ChoiceID": 1,
+      "StudentID": 1,
+      "StudentNameAbbreviation": null,
+      "GroupName": "Группа 1",
+      "ProjectID": 1,
+      "ProjectName": "Проект 1",
+      "IsInQuota": true,
+      "Qty": 1,
+      "SortOrderNumber": 32767,
+      "ProjectIsClosed": false,
+      "UpdateDate": null,
+      "TypeCode": 2
+    },
+    {
+      "ChoiceID": 2,
+      "StudentID": 2,
+      "StudentNameAbbreviation": null,
+      "GroupName": "Группа 1",
+      "ProjectID": 1,
+      "ProjectName": "Проект 1",
+      "IsInQuota": false,
+      "Qty": 1,
+      "SortOrderNumber": 32767,
+      "ProjectIsClosed": false,
+      "UpdateDate": null,
+      "TypeCode": 2
+    },
+    {
+      "ChoiceID": 3,
+      "StudentID": 3,
+      "StudentNameAbbreviation": null,
+      "GroupName": "Группа 1",
+      "ProjectID": 1,
+      "ProjectName": "Проект 1",
+      "IsInQuota": false,
+      "Qty": 1,
+      "SortOrderNumber": 32767,
+      "ProjectIsClosed": false,
+      "UpdateDate": null,
+      "TypeCode": 2
+    },
+    {
+      "ChoiceID": 4,
+      "StudentID": 1,
+      "StudentNameAbbreviation": null,
+      "GroupName": "Группа 1",
+      "ProjectID": 1,
+      "ProjectName": "Проект 1",
+      "IsInQuota": true,
+      "Qty": 1,
+      "SortOrderNumber": 32767,
+      "ProjectIsClosed": false,
+      "UpdateDate": null,
+      "TypeCode": 2
+    },
+    {
+      "ChoiceID": 5,
+      "StudentID": 2,
+      "StudentNameAbbreviation": null,
+      "GroupName": "Группа 1",
+      "ProjectID": 2,
+      "ProjectName": "Проект 2",
+      "IsInQuota": true,
+      "Qty": 1,
+      "SortOrderNumber": 32767,
+      "ProjectIsClosed": false,
+      "UpdateDate": null,
+      "TypeCode": 2
+    },
+    {
+      "ChoiceID": 6,
+      "StudentID": 3,
+      "StudentNameAbbreviation": null,
+      "GroupName": "Группа 1",
+      "ProjectID": 2,
+      "ProjectName": "Проект 2",
+      "IsInQuota": false,
+      "Qty": 1,
+      "SortOrderNumber": 32767,
+      "ProjectIsClosed": false,
+      "UpdateDate": null,
+      "TypeCode": 2
+    },
+    {
+      "ChoiceID": 7,
+      "StudentID": 1,
+      "StudentNameAbbreviation": null,
+      "GroupName": "Группа 1",
+      "ProjectID": 1,
+      "ProjectName": "Проект 1",
+      "IsInQuota": true,
+      "Qty": 1,
+      "SortOrderNumber": 32767,
+      "ProjectIsClosed": false,
+      "UpdateDate": null,
+      "TypeCode": 2
+    },
+    {
+      "ChoiceID": 8,
+      "StudentID": 2,
+      "StudentNameAbbreviation": null,
+      "GroupName": "Группа 1",
+      "ProjectID": 2,
+      "ProjectName": "Проект 2",
+      "IsInQuota": true,
+      "Qty": 1,
+      "SortOrderNumber": 32767,
+      "ProjectIsClosed": false,
+      "UpdateDate": null,
+      "TypeCode": 2
+    },
+    {
+      "ChoiceID": 9,
+      "StudentID": 3,
+      "StudentNameAbbreviation": null,
+      "GroupName": "Группа 1",
+      "ProjectID": 3,
+      "ProjectName": "Проект 3",
+      "IsInQuota": true,
+      "Qty": 1,
+      "SortOrderNumber": 32767,
+      "ProjectIsClosed": false,
+      "UpdateDate": null,
+      "TypeCode": 2
+    },
+    {
+      "ChoiceID": 10,
+      "StudentID": 1,
+      "StudentNameAbbreviation": null,
+      "GroupName": "Группа 1",
+      "ProjectID": 1,
+      "ProjectName": "Проект 1",
+      "IsInQuota": true,
+      "Qty": 1,
+      "SortOrderNumber": 32767,
+      "ProjectIsClosed": false,
+      "UpdateDate": null,
+      "TypeCode": 2
+    },
+    {
+      "ChoiceID": 11,
+      "StudentID": 2,
+      "StudentNameAbbreviation": null,
+      "GroupName": "Группа 1",
+      "ProjectID": 2,
+      "ProjectName": "Проект 2",
+      "IsInQuota": true,
+      "Qty": 1,
+      "SortOrderNumber": 32767,
+      "ProjectIsClosed": false,
+      "UpdateDate": null,
+      "TypeCode": 2
+    },
+    {
+      "ChoiceID": 12,
+      "StudentID": 3,
+      "StudentNameAbbreviation": null,
+      "GroupName": "Группа 1",
+      "ProjectID": 3,
+      "ProjectName": "Проект 3",
+      "IsInQuota": true,
+      "Qty": 1,
+      "SortOrderNumber": 32767,
+      "ProjectIsClosed": false,
+      "UpdateDate": null,
+      "TypeCode": 2
+    }
+  ],
+  "finalChoises": [
+    {
+      "ChoiceID": 10,
+      "StudentID": 1,
+      "StudentNameAbbreviation": null,
+      "GroupName": "Группа 1",
+      "ProjectID": 1,
+      "ProjectName": "Проект 1",
+      "IsInQuota": true,
+      "Qty": 1,
+      "SortOrderNumber": 32767,
+      "ProjectIsClosed": false,
+      "UpdateDate": null,
+      "TypeCode": 2
+    },
+    {
+      "ChoiceID": 11,
+      "StudentID": 2,
+      "StudentNameAbbreviation": null,
+      "GroupName": "Группа 1",
+      "ProjectID": 2,
+      "ProjectName": "Проект 2",
+      "IsInQuota": true,
+      "Qty": 1,
+      "SortOrderNumber": 32767,
+      "ProjectIsClosed": false,
+      "UpdateDate": null,
+      "TypeCode": 2
+    },
+    {
+      "ChoiceID": 12,
+      "StudentID": 3,
+      "StudentNameAbbreviation": null,
+      "GroupName": "Группа 1",
+      "ProjectID": 3,
+      "ProjectName": "Проект 3",
+      "IsInQuota": true,
+      "Qty": 1,
+      "SortOrderNumber": 32767,
+      "ProjectIsClosed": false,
+      "UpdateDate": null,
+      "TypeCode": 2
+    }
+  ],
+  "preferences": [
+    {
+      "PreferenceId": 1,
+      "StudentID": 1,
+      "ProjectID": 1,
+      "OrderNumber": 1,
+      "IsAvailable": true,
+      "TypeId": 1,
+      "IsInUse": false,
+      "IsUsed": false,
+      "CreateDate": "2024-04-10T14:07:15.02"
+    },
+    {
+      "PreferenceId": 2,
+      "StudentID": 1,
+      "ProjectID": 2,
+      "OrderNumber": 2,
+      "IsAvailable": true,
+      "TypeId": 1,
+      "IsInUse": false,
+      "IsUsed": false,
+      "CreateDate": "2024-04-10T14:07:15.02"
+    },
+    {
+      "PreferenceId": 3,
+      "StudentID": 1,
+      "ProjectID": 3,
+      "OrderNumber": 3,
+      "IsAvailable": true,
+      "TypeId": 1,
+      "IsInUse": false,
+      "IsUsed": false,
+      "CreateDate": "2024-04-10T14:07:15.02"
+    },
+    {
+      "PreferenceId": 4,
+      "StudentID": 2,
+      "ProjectID": 1,
+      "OrderNumber": 1,
+      "IsAvailable": true,
+      "TypeId": 1,
+      "IsInUse": false,
+      "IsUsed": false,
+      "CreateDate": "2024-04-10T14:07:15.02"
+    },
+    {
+      "PreferenceId": 5,
+      "StudentID": 2,
+      "ProjectID": 2,
+      "OrderNumber": 2,
+      "IsAvailable": true,
+      "TypeId": 1,
+      "IsInUse": false,
+      "IsUsed": false,
+      "CreateDate": "2024-04-10T14:07:15.02"
+    },
+    {
+      "PreferenceId": 6,
+      "StudentID": 2,
+      "ProjectID": 3,
+      "OrderNumber": 3,
+      "IsAvailable": true,
+      "TypeId": 1,
+      "IsInUse": false,
+      "IsUsed": false,
+      "CreateDate": "2024-04-10T14:07:15.02"
+    },
+    {
+      "PreferenceId": 7,
+      "StudentID": 3,
+      "ProjectID": 1,
+      "OrderNumber": 1,
+      "IsAvailable": true,
+      "TypeId": 1,
+      "IsInUse": false,
+      "IsUsed": false,
+      "CreateDate": "2024-04-10T14:07:15.02"
+    },
+    {
+      "PreferenceId": 8,
+      "StudentID": 3,
+      "ProjectID": 2,
+      "OrderNumber": 2,
+      "IsAvailable": true,
+      "TypeId": 1,
+      "IsInUse": false,
+      "IsUsed": false,
+      "CreateDate": "2024-04-10T14:07:15.02"
+    },
+    {
+      "PreferenceId": 9,
+      "StudentID": 3,
+      "ProjectID": 3,
+      "OrderNumber": 3,
+      "IsAvailable": true,
+      "TypeId": 1,
+      "IsInUse": false,
+      "IsUsed": false,
+      "CreateDate": "2024-04-10T14:07:15.02"
+    }
+  ]
+}

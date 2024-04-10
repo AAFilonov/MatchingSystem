@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using MatchingSystem.DataLayer.Feature.Project;
 using MatchingSystem.DataLayer.OldDto;
-using MatchingSystem.DataLayer.OldEntities;
 
 namespace MatchingSystem.Service.Projects;
 

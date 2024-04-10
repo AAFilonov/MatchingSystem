@@ -1,8 +1,7 @@
 ﻿using System;
-using MatchingSystem.Constants;
+using Common;
 using MatchingSystem.DataLayer;
 using MatchingSystem.DataLayer.Feature.Allocation.repo;
-using MatchingSystem.DataLayer.Feature.CommonQuota;
 using MatchingSystem.DataLayer.Feature.CommonQuota.repo;
 using MatchingSystem.DataLayer.Feature.Dictionary.repo;
 using MatchingSystem.DataLayer.Feature.Group.repo;
@@ -20,7 +19,6 @@ using MatchingSystem.Service.Admin;
 using MatchingSystem.Service.Allocation;
 using MatchingSystem.Service.DocumentsProcessing;
 using MatchingSystem.Service.Executive;
-using MatchingSystem.Service.Mail;
 using MatchingSystem.Service.Matching;
 using MatchingSystem.Service.MatchingInitialization;
 using MatchingSystem.Service.Monitoring;
@@ -122,7 +120,6 @@ namespace MatchingSystem.UI
             services.AddSingleton<IStatisticsService, StatisticsService>();
             services.AddSingleton<IMainStatisticsService, MainStatisticsService>();
             services.AddSingleton<IAdminService, AdminService>();
-            services.AddSingleton<IMailService, MailService>();
             
             services.AddSession(options =>
             {

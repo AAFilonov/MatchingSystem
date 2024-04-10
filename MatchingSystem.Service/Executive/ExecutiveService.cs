@@ -6,7 +6,6 @@ using MatchingSystem.DataLayer.Feature.Project;
 using MatchingSystem.DataLayer.Feature.Project.Repo;
 using MatchingSystem.DataLayer.Feature.Tutor.repo;
 using MatchingSystem.DataLayer.OldDto;
-using MatchingSystem.DataLayer.OldEntities;
 using MatchingSystem.Service.Matching;
 
 namespace MatchingSystem.Service.Executive;

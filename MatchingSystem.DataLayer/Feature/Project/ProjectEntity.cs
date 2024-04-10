@@ -4,6 +4,7 @@ using MatchingSystem.DataLayer.Feature._LinkTables;
 using MatchingSystem.DataLayer.Feature.StudentPreference;
 using MatchingSystem.DataLayer.Feature.Tutor;
 using MatchingSystem.DataLayer.Feature.TutorChoice;
+using Newtonsoft.Json;
 
 namespace MatchingSystem.DataLayer.Feature.Project;
 
@@ -32,10 +33,16 @@ public class ProjectEntity
     public DateTime? UpdateDate { get; set; }
     public short? ProjectQuotaDelta { get; set; }
 
+    [JsonIgnore]
     public virtual TutorEntity Tutor { get; set; } = null!;
+    [JsonIgnore]
     public virtual ICollection<ProjectsGroupEntity> ProjectsGroups { get; set; }
+    [JsonIgnore]
     public virtual ICollection<ProjectsTechnology> ProjectsTechnologies { get; set; }
+    [JsonIgnore]
     public virtual ICollection<ProjectsWorkDirection> ProjectsWorkDirections { get; set; }
+    [JsonIgnore]
     public virtual ICollection<StudentsPreferenceEntity> StudentsPreferences { get; set; }
+    [JsonIgnore]
     public virtual ICollection<TutorsChoiceEntity> TutorsChoices { get; set; }
 }

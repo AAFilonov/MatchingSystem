@@ -4,16 +4,17 @@ using MatchingSystem.DataLayer.Feature.Matching;
 using MatchingSystem.DataLayer.Feature.Matching.repo;
 using MatchingSystem.DataLayer.Feature.Stage;
 using MatchingSystem.DataLayer.Feature.Stage.repo;
+using MatchingSystem.Service.Iterations;
 using MatchingSystem.Service.Stage;
 using MatchingSystem.Service.Tests.Utils;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace MatchingSystem.Service.Tests.UnitTests;
+namespace MatchingSystem.Service.Tests.feature.StageService;
 
 [TestFixture]
-public class StageServiceTest
+public class StageServiceUnitTest
 {
     private DiplomaMatchingContext _context;
     private IStageService _stageService;
@@ -35,13 +36,17 @@ public class StageServiceTest
         //нюанс использования мока - если подать лямбду то она вычислится в момент вызова
         mockMatchingRepository.GetCurrentStage(1).Returns(х=>_context.Stages.SingleOrDefault(entity => entity.IsCurrent == true));
         //если подать выражение без лямбды -  она вычислится в момент вызова  setUp и ее значение будет закэшировано (те список в тот момент будет пуст)
-        mockMatchingRepository.GetCurrentStage(2).Returns(_context.Stages.SingleOrDefault(entity => entity.IsCurrent == true));
+        mockMatchingRepository.GetCurrentStage(2)
+            .Returns(_context.Stages.SingleOrDefault(entity => entity.IsCurrent == true));
 
         //Используем не мок а реальный класс, тк у него все равно нет параметров.
         //Его возможно мокнуть,но фактически пришлось просто переписать реализации его методов
         IStageRepository mockStageRepository = new StageRepository();
+        IIterationsService iterationsService = Substitute.For<IIterationsService>();
+        iterationsService.isInFinalIteration(Arg.Any<DiplomaAllocation>()).Returns(true);
         var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
-        _stageService = new StageService(mockStageRepository, mockMatchingRepository, loggerFactory.CreateLogger<StageService>());
+        _stageService = new Stage.StageService(mockStageRepository, mockMatchingRepository, iterationsService,
+            loggerFactory.CreateLogger<Stage.StageService>());
     }
 
     private void initTables()

@@ -1,6 +1,5 @@
 ﻿using System.Linq;
-using MatchingSystem.Constants;
-using MatchingSystem.DataLayer;
+using Common;
 using MatchingSystem.DataLayer.Feature.Matching.repo;
 using MatchingSystem.DataLayer.Feature.Stage;
 using MatchingSystem.DataLayer.Feature.Statistics.repo;
@@ -23,7 +22,7 @@ public class StatisticsUnitTest
 
     private StatisticsRepositoryOldDapper _statisticsRepositoryOldDapper;
     private IMainStatisticsService _mainStatisticsService;
-
+    //TODO DPL-46 переписать используя jsonы с результатми хранимок
 
     [OneTimeSetUp]
     [DeploymentItem("appsettings.Test.SqlServer.json")]

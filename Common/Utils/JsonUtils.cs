@@ -1,7 +1,6 @@
-﻿using System.IO;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
-namespace MatchingSystem.Constants.Utils;
+namespace Common.Utils;
 
 public class JsonUtils
 {
@@ -10,7 +9,7 @@ public class JsonUtils
     {
         var settings = new JsonSerializerSettings
         {
-            Formatting = Formatting.Indented,
+            Formatting = Newtonsoft.Json.Formatting.Indented,
             ReferenceLoopHandling = ReferenceLoopHandling.Ignore
         };
         //settings.Converters.Add(new IntCollectionConverter());

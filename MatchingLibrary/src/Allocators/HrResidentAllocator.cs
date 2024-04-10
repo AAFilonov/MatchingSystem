@@ -5,7 +5,6 @@ using MatchingLibrary.Allocators.interfaces;
 namespace MatchingLibrary.Allocators;
 
 public class HrResidentAllocator : IAllocator<IOneToManyAllocation>
-//TODO ограничить чтобы предпочтения резидентов были по ToManyAllocated а у госпиталей на ToOne
 {
     public void computeIteration(IOneToManyAllocation allocation)
     {

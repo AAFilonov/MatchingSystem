@@ -1,5 +1,7 @@
-﻿using MailKit.Net.Smtp;
-using MatchingSystem.Constants;
+﻿
+
+using Common;
+using MailKit.Net.Smtp;
 using MimeKit;
 
 namespace MatchingSystem.Service.Mail;

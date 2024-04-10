@@ -4,7 +4,6 @@ using System.Linq;
 using Lombok.NET;
 using MatchingSystem.DataLayer;
 using MatchingSystem.DataLayer.Feature;
-using MatchingSystem.DataLayer.Feature.CommonQuota;
 using MatchingSystem.DataLayer.Feature.CommonQuota.repo;
 using MatchingSystem.DataLayer.Feature.Group.repo;
 using MatchingSystem.DataLayer.Feature.Matching;

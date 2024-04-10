@@ -10,7 +10,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\MatchingSystem.Constants\MatchingSystem.Constants.csproj" />
+        <ProjectReference Include="..\MatchingLibrary\MatchingLibrary.csproj" />
         <ProjectReference Include="..\MatchingSystem.DataLayer\MatchingSystem.DataLayer.csproj" />
     </ItemGroup>
 
@@ -24,6 +24,12 @@
 
     <ItemGroup>
         <Folder Include="User" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="MatchingSystem.Common">
+        <HintPath>..\MatchingSystem.Service.Tests\bin\Debug\net6.0\MatchingSystem.Common.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>
