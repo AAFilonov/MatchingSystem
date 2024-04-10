@@ -8,6 +8,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\MatchingLibrary\MatchingLibrary.csproj"/>
+        <ProjectReference Include="..\MatchingSystem.Common\MatchingSystem.Common.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -17,7 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="IntegrationTests"/>
+      <Folder Include="resources\twostepSplited\Integration\" />
     </ItemGroup>
 
 </Project>

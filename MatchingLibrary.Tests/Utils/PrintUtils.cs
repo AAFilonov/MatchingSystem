@@ -1,47 +1,46 @@
 using System.Text;
-using MatchingLibrary.Utils;
+using MatchingLibrary.Allocated;
 
 namespace MatchingLibrary.Tests.Utils;
 
-public class PrintUtils
+public class PrintUtilsV2
 {
-    public static string toString(ValueTuple<SimpleAllocated, SimpleAllocated> tuple)
+    public static string toString((IAllocated?, IAllocated?) tuple)
     {
-        return $"pair: [{tuple.Item1}:{tuple.Item2}],";
+        return $"[{tuple.Item1}:{tuple.Item2}],";
     }
-
-    public static string toString(ValueTuple<SimpleAllocated, List<SimpleAllocated>> tuple)
+    
+    public static string toString(ValueTuple<IAllocated, List<IAllocated>> tuple)
     {
         StringBuilder sb = new StringBuilder();
-        sb.Append("{ ");
+     
         if (tuple.Item2 != null)
         {
-            tuple.Item2.ForEach(student => sb.Append(student + " "));
+            tuple.Item2.ForEach(student => sb.Append(student));
         }
-        sb.Append("}");
-        return $"pair: [{tuple.Item1} {sb.ToString()}], ";
+        return $"[{tuple.Item1}:{sb.ToString()}], ";
     }
 
-    public static string toString(KeyValuePair<SimpleAllocated, SimpleAllocated> pair)
+    public static string toString(KeyValuePair<IAllocated, IAllocated> pair)
     {
-        return $"pair: [{pair.Key}: {pair.Value}], ";
+        return $"[{pair.Key}: {pair.Value}], ";
     }
 
-    public static string toString(Dictionary<SimpleAllocated, SimpleAllocated> pairs)
-    {
-        var result = new StringBuilder();
-        pairs.ToList().ForEach(pair => result.Append(toString(pair)));
-        return result.ToString();
-    }
-
-    public static string toString(List<(SimpleAllocated, SimpleAllocated)> pairs)
+    public static string toString(Dictionary<IAllocated, IAllocated> pairs)
     {
         var result = new StringBuilder();
         pairs.ToList().ForEach(pair => result.Append(toString(pair)));
         return result.ToString();
     }
 
-    public static string toString(List<(SimpleAllocated, List<SimpleAllocated>)> pairs)
+    public static string toString2(List<(IAllocated?, IAllocated?)> pairs)
+    {
+        var result = new StringBuilder();
+        pairs.ToList().ForEach(pair => result.Append(toString(pair)));
+        return result.ToString();
+    }
+
+    public static string toString(List<(IAllocated, List<IAllocated>)> pairs)
     {
         var result = new StringBuilder();
         pairs.ToList().ForEach(pair => result.Append(toString(pair)));
@@ -49,14 +48,14 @@ public class PrintUtils
     }
 
     
-    public static object toString(List<(SimpleAllocated, List<(SimpleAllocated, List<SimpleAllocated>)>)> pairs)
+    public static object toString(List<(IAllocated, List<(IAllocated, List<IAllocated>)>)> pairs)
     {
         var result = new StringBuilder();
         pairs.ToList().ForEach(pair => result.Append(toString(pair)));
         return result.ToString();
     }
 
-    private static string toString((SimpleAllocated, List<(SimpleAllocated, List<SimpleAllocated>)>) tuple)
+    private static string toString((IAllocated, List<(IAllocated, List<IAllocated>)>) tuple)
     {
         StringBuilder sb = new StringBuilder();
         sb.Append("{ ");
