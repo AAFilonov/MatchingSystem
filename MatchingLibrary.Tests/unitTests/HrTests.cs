@@ -266,4 +266,87 @@ public class HrTests
             Assert.AreEqual("[A:ac], [:b], ", resultString);
         }
     }
+      [TestFixture]
+    public class AppTest : HrTests
+    {
+            [Test]
+        public void IMMB_Example()
+        {
+            List<IToOneAllocated> subordinates = new List<IToOneAllocated>()
+            {
+                new ComplexToOneAllocated("a"),
+                new ComplexToOneAllocated("b"),
+                new ComplexToOneAllocated("c"),
+                new ComplexToOneAllocated("d"),
+                new ComplexToOneAllocated("e"),
+                new ComplexToOneAllocated("f"),
+                new ComplexToOneAllocated("g"),
+            };
+            List<IToManyAllocated> leaders = new List<IToManyAllocated>()
+            {
+                new ComplexToManyAllocated("A", 3),
+                new ComplexToManyAllocated("B", 3),
+                new ComplexToManyAllocated("C", 2),
+            };  
+
+            var allocation = new OneToManyAllocation(leaders, subordinates);
+            subordinates[0].SetPreferences(new List<IAllocated>() { leaders[0], leaders[1], leaders[2]});   // a: A B C
+            subordinates[1].SetPreferences(new List<IAllocated>() { leaders[2], leaders[0]});               // b: C A
+            subordinates[2].SetPreferences(new List<IAllocated>() { leaders[1], leaders[2], leaders[0]});   // c: B C A
+            subordinates[3].SetPreferences(new List<IAllocated>() { leaders[2], leaders[0], leaders[1],});  // d: C A B
+            subordinates[4].SetPreferences(new List<IAllocated>() { leaders[0], leaders[2], leaders[1],});  // e: A C B
+            subordinates[5].SetPreferences(new List<IAllocated>() { leaders[2], leaders[0],});              // f: C A
+            subordinates[6].SetPreferences(new List<IAllocated>() { leaders[0], leaders[1], leaders[2],});  // g: A B C
+            // a b c d e f g
+            // 0 1 2 3 4 5 6        
+            leaders[0].SetPreferences(new List<IAllocated>() {  // A: b f a g c e d
+                subordinates[1],            
+                subordinates[5],
+                subordinates[0],
+                subordinates[6],
+                subordinates[2],
+                subordinates[4],
+                subordinates[3],
+                });            
+            leaders[1].SetPreferences(new List<IAllocated>() {  // B: a g e c d
+                subordinates[0],            
+                subordinates[6],
+                subordinates[4],
+                subordinates[2],
+                subordinates[3],
+                }); 
+            leaders[2].SetPreferences(new List<IAllocated>() {  // C: a b c e d f g
+                subordinates[0],            
+                subordinates[1],
+                subordinates[2],
+                subordinates[4],
+                subordinates[3],
+                subordinates[5],
+                subordinates[6],
+                }); 
+
+            string resultString;
+            var alg = new HrResidentAllocator();
+            // iteration 1
+            alg.computeIteration(allocation);
+            resultString = PrintUtilsV2.toString(allocation.GetAllocationResult());
+            Assert.AreEqual("[A:aeg], [B:c], [C:bd], [:f], ", resultString);
+            // iteration 2
+            alg.computeIteration(allocation);
+            resultString = PrintUtilsV2.toString(allocation.GetAllocationResult());
+            Assert.AreEqual("[A:agf], [B:c], [C:bd], [:e], ", resultString);
+            // iteration 3
+            alg.computeIteration(allocation);
+            resultString = PrintUtilsV2.toString(allocation.GetAllocationResult());
+            Assert.AreEqual("[A:agf], [B:c], [C:be], [:d], ", resultString);
+            // iteration 4
+            alg.computeIteration(allocation);
+            resultString = PrintUtilsV2.toString(allocation.GetAllocationResult());
+            Assert.AreEqual("[A:agf], [B:c], [C:be], [:d], ", resultString);
+             // iteration 5
+            alg.computeIteration(allocation);
+            resultString = PrintUtilsV2.toString(allocation.GetAllocationResult());
+            Assert.AreEqual("[A:agf], [B:cd], [C:be], ", resultString);                        
+    }
+    }
 }

@@ -40,6 +40,7 @@ public class HrResidentAllocator : IAllocator<IOneToManyAllocation>
         {
             var worstAssignedStudent = findWorstAssignedStudent(hospital, allocation);
             AllocationUtils.breakAssignment(hospital, worstAssignedStudent);
+            worstAssignedStudent.GetPreferences().Remove(hospital);
         }
         else if (assignedResidents.Count == hospital.GetCapacity())
         {
